@@ -207,7 +207,6 @@
 
             </LinearLayout>
 
-
             <!--免提-->
             <LinearLayout
                     android:id="@+id/ll_handsfree"
@@ -215,7 +214,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                 <ImageView
                         android:id="@+id/iv_handsfree"
@@ -234,6 +234,32 @@
 
             </LinearLayout>
 
+            <!--切换摄像头-->
+            <LinearLayout
+                    android:id="@+id/ll_switch_camera"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                <ImageView
+                        android:id="@+id/iv_switch_camera"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleType="fitCenter"
+                        android:src="@mipmap/btn_chat_camera"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/size_content_assist"
+                        android:textColor="@color/normal_for_assist_text"
+                        android:layout_marginTop="@dimen/spacing_normal"
+                        android:text="@string/switch_camera"/>
+
+            </LinearLayout>
 
         </LinearLayout>
     </RelativeLayout>

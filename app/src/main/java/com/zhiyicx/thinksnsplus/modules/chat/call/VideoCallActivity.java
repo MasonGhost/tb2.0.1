@@ -13,6 +13,7 @@
  */
 package com.zhiyicx.thinksnsplus.modules.chat.call;
 
+import android.app.Application;
 import android.hardware.Camera;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
@@ -26,11 +27,9 @@ import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,8 +43,10 @@ import com.hyphenate.util.EMLog;
 import com.superrtc.sdk.VideoView;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.widget.chat.MyChronometer;
-
 
 import java.util.UUID;
 
@@ -101,6 +102,10 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
     RelativeLayout mRootLayout;
     @BindView(R.id.ll_bottom_container)
     LinearLayout mBottomContainer;
+    @BindView(R.id.iv_switch_camera)
+    ImageView mIvSwitchCamera;
+    @BindView(R.id.ll_switch_camera)
+    LinearLayout mLlSwitchCamera;
     private boolean isMuteState;
     private boolean isHandsfreeState;
     private boolean isAnswered;
@@ -115,7 +120,9 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
     boolean isRecording = false;
     //    private Button recordBtn;
     private EMVideoCallHelper callHelper;
-    private Button toggleVideoBtn;
+
+    private UserInfoBean userInfoBean;
+    private UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     private BrightnessDataProcess dataProcessor = new BrightnessDataProcess();
 
@@ -170,13 +177,13 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
         mIvMute.setOnClickListener(this);
         mIvHandsfree.setOnClickListener(this);
         mRootLayout.setOnClickListener(this);
+        mIvSwitchCamera.setOnClickListener(this);
 
         msgid = UUID.randomUUID().toString();
         isInComingCall = getIntent().getBooleanExtra("isComingCall", false);
         username = getIntent().getStringExtra("username");
-
-        mTvNick.setText(username);
-
+        // 用户信息
+        initUserInfo();
         // local surfaceview
         mLocalSurface.setOnClickListener(this);
         mLocalSurface.setZOrderMediaOverlay(true);
@@ -221,20 +228,32 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
         EMClient.getInstance().callManager().setCameraDataProcessor(dataProcessor);
     }
 
+    private void initUserInfo() {
+        if (mUserInfoBeanGreenDao == null) {
+            mUserInfoBeanGreenDao = new UserInfoBeanGreenDaoImpl((Application) AppApplication.getContext());
+        }
+        userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(username));
+        if (userInfoBean != null) {
+            mTvNick.setText(userInfoBean.getName());
+        }
+    }
+
     /**
      * 设置底部几个按钮的状态 如果是来店 那么隐藏静音公放等
      *
      * @param isComingCall 是否来电
      */
     private void setButtonState(boolean isComingCall) {
-        if (isComingCall){
+        if (isComingCall) {
             mLlMute.setVisibility(View.GONE);
-            mLlHandsfree.setVisibility(View.GONE);
+//            mLlHandsfree.setVisibility(View.GONE);
+            mLlSwitchCamera.setVisibility(View.GONE);
             mLlRefuseCall.setVisibility(View.VISIBLE);
             mLlAnswerCall.setVisibility(View.VISIBLE);
         } else {
             mLlMute.setVisibility(View.VISIBLE);
-            mLlHandsfree.setVisibility(View.VISIBLE);
+            mLlSwitchCamera.setVisibility(View.VISIBLE);
+//            mLlHandsfree.setVisibility(View.VISIBLE);
             mLlRefuseCall.setVisibility(View.GONE);
             mLlAnswerCall.setVisibility(View.GONE);
         }
@@ -437,16 +456,17 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
                 EMLog.d(TAG, "btn_answer_call clicked");
                 mBtnAnswerCall.setEnabled(false);
                 openSpeakerOn();
-                if (ringtone != null)
-                {ringtone.stop();}
-
-                mTvCallState.setText("answering...");
+                if (ringtone != null) {
+                    ringtone.stop();
+                }
+                mLlHangupCall.setVisibility(View.VISIBLE);
+                mLlSwitchCamera.setVisibility(View.VISIBLE);
+                mTvCallState.setText("正在接听...");
                 handler.sendEmptyMessage(MSG_CALL_ANSWER);
                 mIvHandsfree.setImageResource(R.mipmap.btn_chat_handsfree_on);
                 isAnswered = true;
                 isHandsfreeState = true;
                 setButtonState(false);
-                mIvHandsfree.setVisibility(View.VISIBLE);
                 mLocalSurface.setVisibility(View.VISIBLE);
                 break;
 
@@ -494,6 +514,9 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
                     openSpeakerOn();
                     isHandsfreeState = true;
                 }
+                break;
+            case R.id.iv_switch_camera: //switch camera
+                handler.sendEmptyMessage(MSG_CALL_SWITCH_CAMERA);
                 break;
             case R.id.root_layout:
                 if (callingState == CallingState.NORMAL) {

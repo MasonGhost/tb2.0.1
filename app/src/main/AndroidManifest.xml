@@ -622,6 +622,9 @@
         <!--语音通话页面-->
         <activity android:name=".modules.chat.call.VoiceCallActivity"
                 android:screenOrientation="portrait"/>
+        <!--视频通话页面-->
+        <activity android:name=".modules.chat.call.VideoCallActivity"
+                android:screenOrientation="portrait"/>
         <!-- 开机自启动服务 -->
         <receiver android:name=".modules.chat.receiver.StartServiceReceiver">
             <intent-filter android:priority="1000">
