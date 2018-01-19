@@ -231,9 +231,12 @@ public class UserInfoRepository implements IUserInfoRepository {
                         }
 
                     }
-                    for (String user_id : containerUsers) {
+                    for (String userId : containerUsers) {
+                        if (TextUtils.isEmpty(userId)) {
+                            continue;
+                        }
                         try {
-                            users.add(DefaultUserInfoConfig.getDefaultDeletUserInfo(mContext, Long.parseLong(user_id)));
+                            users.add(DefaultUserInfoConfig.getDefaultDeletUserInfo(mContext, Long.parseLong(userId)));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

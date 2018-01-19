@@ -614,7 +614,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.showSnackErrorMessage(mContext.getString(R.string.post_top_failed));
+                        mRootView.showSnackErrorMessage(message);
                     }
 
                     @Override
