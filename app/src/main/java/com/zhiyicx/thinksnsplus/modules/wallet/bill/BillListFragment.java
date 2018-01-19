@@ -23,6 +23,9 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -42,8 +45,14 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
 
     private ActionPopupWindow mActionPopupWindow;
 
-    private int[] mBillTypes = new int[]{0, 1, 2};// 0 支出，1 收入
-    private int mBillType;
+    /**
+     * 0 支出，1 收入
+     */
+    private int[] mBillTypes = new int[]{0, 1, 2};
+
+    private int mBillType = mBillTypes[2];
+
+    private long maxId = 0;
 
     public static BillListFragment newInstance() {
         return new BillListFragment();
@@ -67,12 +76,12 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                 TextView desc = holder.getView(R.id.withdrawals_desc);
                 TextView time = holder.getView(R.id.withdrawals_time);
                 TextView account = holder.getView(R.id.withdrawals_account);
-                boolean status_success = recharge.getStatus() == 1;
+                boolean statusSuccess = recharge.getStatus() == 1;
                 int action = recharge.getAction();
-                desc.setEnabled(status_success);
+                desc.setEnabled(statusSuccess);
                 String moneyStr = String.format(Locale.getDefault(), getString(R.string.dynamic_send_toll_select_money_),
                         PayConfig.realCurrency2GameCurrency(recharge.getAmount(), mPresenter.getRatio()));
-                desc.setText(status_success ? (action == 0 ? "- " + moneyStr : "+ " + moneyStr) :
+                desc.setText(statusSuccess ? (action == 0 ? "- " + moneyStr : "+ " + moneyStr) :
                         getString(recharge.getStatus() == 0 ? R.string.bill_doing : R.string.transaction_fail));
                 account.setText(getDes(recharge));
                 time.setText(TimeUtils.string2_ToDya_Yesterday_Week(recharge.getCreated_at()));
@@ -163,9 +172,19 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
     }
 
     @Override
-    public int getBillType() {
-        return mBillType;
+    public Integer getBillType() {
+        return mBillType == mBillTypes[2] ? null : mBillType;
     }
+
+    @Override
+    public void setMaxId(long maxId) {
+        this.maxId = maxId;
+    }
+
+//    @Override
+//    protected Long getMaxId(@NotNull List<RechargeSuccessBean> data) {
+//        return maxId;
+//    }
 
     private void initTopPopWindow() {
         if (mActionPopupWindow != null) {
@@ -183,7 +202,7 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                 .item1ClickListener(() -> {
                     mToolbarCenter.setText(getString(R.string.withdraw_all));
                     mPresenter.selectAll();
-                    mBillType = mBillTypes[0];
+                    mBillType = mBillTypes[2];
                     mActionPopupWindow.hide();
                 })
                 .item2ClickListener(() -> {

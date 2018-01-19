@@ -10,9 +10,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
-import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.MyFollowContract;
@@ -34,7 +32,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @contact email:648129313@qq.com
  */
 
-public class QuestionTopicAdapter extends CommonAdapter<BaseListBean>{
+public class QuestionTopicAdapter extends CommonAdapter<BaseListBean> {
 
     private ITSListPresenter mPresenter;
 
@@ -66,13 +64,14 @@ public class QuestionTopicAdapter extends CommonAdapter<BaseListBean>{
         subscrib.setText(isJoined ? getContext().getString(R.string.qa_topic_followed) : getContext().getString(R.string.qa_topic_follow));
         subscrib.setPadding(isJoined ? getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small) : getContext().getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
         RxView.clicks(subscrib)
+                .filter(aVoid -> mPresenter != null)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
                     if (!mPresenter.handleTouristControl()) {
-                        if (mPresenter instanceof QATopicListConstact.Presenter){
-                            ((QATopicListConstact.Presenter)mPresenter).handleTopicFollowState(position, topicBean.getId() + "", isJoined);
-                        } else if (mPresenter instanceof MyFollowContract.Presenter){
-                            ((MyFollowContract.Presenter)mPresenter).handleTopicFollowState(position, topicBean);
+                        if (mPresenter instanceof QATopicListConstact.Presenter) {
+                            ((QATopicListConstact.Presenter) mPresenter).handleTopicFollowState(position, topicBean.getId() + "", isJoined);
+                        } else if (mPresenter instanceof MyFollowContract.Presenter) {
+                            ((MyFollowContract.Presenter) mPresenter).handleTopicFollowState(position, topicBean);
                         }
                     } else {
                         subscrib.setChecked(false);
@@ -98,5 +97,9 @@ public class QuestionTopicAdapter extends CommonAdapter<BaseListBean>{
                 .setUnderlined(false);
         links.add(answerCountLink);
         return links;
+    }
+
+    public void setPresenter(ITSListPresenter presenter) {
+        mPresenter = presenter;
     }
 }
