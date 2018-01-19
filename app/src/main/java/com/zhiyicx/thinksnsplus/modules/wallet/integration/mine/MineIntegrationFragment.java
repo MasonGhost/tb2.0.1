@@ -26,6 +26,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter;
 import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge.IntegrationRechargeActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity;
@@ -76,7 +77,6 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
     Toolbar mToolbar;
 
 
-
     /**
      * 充值提示规则选择弹框
      */
@@ -103,6 +103,10 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
     }
 
     @Override
+    protected boolean setStatusbarGrey() {
+        return false;
+    }
+    @Override
     protected boolean setUseStatusView() {
         return false;
     }
@@ -125,13 +129,13 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
     @Override
     protected void initView(View rootView) {
         setStatusPlaceholderViewBackgroundColor(android.R.color.transparent);
-        mIvRefresh= (ImageView) mRootView.findViewById(R.id.iv_refresh);
+        mIvRefresh = (ImageView) mRootView.findViewById(R.id.iv_refresh);
         mToolbar.setBackgroundResource(android.R.color.transparent);
-        ((LinearLayout.LayoutParams)mToolbar.getLayoutParams()).setMargins(0, DeviceUtils.getStatuBarHeight(mActivity),0,0);
-        mTvToolbarCenter.setTextColor(ContextCompat.getColor(mActivity,R.color.white));
+        ((LinearLayout.LayoutParams) mToolbar.getLayoutParams()).setMargins(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0);
+        mTvToolbarCenter.setTextColor(ContextCompat.getColor(mActivity, R.color.white));
         mTvToolbarCenter.setText(getString(R.string.mine_integration));
         mTvToolbarRight.setText(getString(R.string.detail));
-        mTvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(),  R.mipmap.topbar_back_white), null, null, null);
+        mTvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.topbar_back_white), null, null, null);
 
         initListener();
     }
@@ -144,7 +148,7 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
 
     @Override
     protected void initData() {
-        initAdvert(mActivity,new ArrayList<>());
+        initAdvert(mActivity, new ArrayList<>());
     }
 
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
@@ -158,6 +162,7 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
                 toAdvert(context, adverts.get(position1).getAdvertFormat().getImage().getLink(), adverts.get(position1).getTitle())
         );
     }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -177,7 +182,10 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
         RxView.clicks(mBtReCharge)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_RECHARGE, true));
+                .subscribe(aVoid -> {
+                    Intent intent = new Intent(mActivity, IntegrationRechargeActivity.class);
+                    startActivity(intent);
+                });
         // 提取积分
         RxView.clicks(mBtWithdraw)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -188,8 +196,8 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    TSDevelopActivity.startDeveloperAcitvity(mActivity,getString(R.string.integration_shop)
-                    ,R.mipmap.pic_default_mall);
+                    TSDevelopActivity.startDeveloperAcitvity(mActivity, getString(R.string.integration_shop)
+                            , R.mipmap.pic_default_mall);
                 });
         // 积分规则
         RxView.clicks(mTvReChargeAndWithdrawRule)
@@ -294,7 +302,8 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
     }
 
     /**
-     *  jump  to  advert
+     * jump  to  advert
+     *
      * @param context
      * @param link
      * @param title

@@ -1,29 +1,29 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.modules.develop.TSDevelopActivity;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter;
 import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity;
@@ -32,9 +32,9 @@ import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsFragment;
-
-import org.simple.eventbus.Subscriber;
-import org.simple.eventbus.ThreadMode;
+import com.zhiyicx.thinksnsplus.widget.chooseview.ChooseDataBean;
+import com.zhiyicx.thinksnsplus.widget.chooseview.SingleChooseView;
+import com.zhiyicx.tspay.TSPayClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,6 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_WALLET_RECHARGE;
 import static com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.TAG_SHOWRULE_POP;
 
 /**
@@ -52,18 +51,13 @@ import static com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.TAG_SHOWRU
  * @Date 2017/05/22
  * @Contact master.jungle68@gmail.com
  */
-public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeContract.Presenter> implements IntegrationRechargeContract.View {
+public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeContract.Presenter> implements IntegrationRechargeContract.View,
+        SingleChooseView.OnItemChooseChangeListener {
 
-    @BindView(R.id.tv_mine_money)
-    TextView mTvMineMoney;
-    @BindView(R.id.bt_recharge)
-    CombinationButton mBtReCharge;
-    @BindView(R.id.bt_withdraw)
-    CombinationButton mBtWithdraw;
-    @BindView(R.id.bt_mine_integration)
-    CombinationButton btMineIntegration;
-    @BindView(R.id.tv_recharge_and_withdraw_rule)
-    TextView mTvReChargeAndWithdrawRule;
+    @BindView(R.id.tv_recharge_ratio)
+    TextView mTvMineIntegration;
+    @BindView(R.id.tv_recharge_rule)
+    TextView mTvRechargeRule;
     @BindView(R.id.tv_toolbar_center)
     TextView mTvToolbarCenter;
     @BindView(R.id.tv_toolbar_left)
@@ -74,14 +68,31 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
     TextView mTvToolbarRight;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.choose_view)
+    SingleChooseView mChooseView;
+    @BindView(R.id.v_line)
+    View mVLine;
+    @BindView(R.id.ll_recharge_choose_money_item)
+    LinearLayout mLlRechargeChooseMoneyItem;
+    @BindView(R.id.et_input)
+    EditText mEtInput;
+    @BindView(R.id.tv_custom_money)
+    TextView mTvCustomMoney;
+    @BindView(R.id.bt_recharge_style)
+    CombinationButton mBtRechargeStyle;
+    @BindView(R.id.bt_sure)
+    TextView mBtSure;
 
-
+    private String mPayType;     // type for recharge
 
     /**
      * 充值提示规则选择弹框
      */
     private CenterInfoPopWindow mRulePop;
-    private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
+    private ActionPopupWindow mPayStylePopupWindow;// pay type choose pop
+
+    private double mRechargeMoney; // money choosed for recharge
+
 
     public static IntegrationRechargeFragment newInstance() {
         return new IntegrationRechargeFragment();
@@ -113,27 +124,33 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
     }
 
     @Override
+    protected boolean setStatusbarGrey() {
+        return false;
+    }
+
+    @Override
     protected int setLeftImg() {
         return super.setLeftImg();
     }
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_mine_integration;
+        return R.layout.fragment_integration_recharge;
     }
 
     @Override
     protected void initView(View rootView) {
         setStatusPlaceholderViewBackgroundColor(android.R.color.transparent);
-        mIvRefresh= (ImageView) mRootView.findViewById(R.id.iv_refresh);
+        mIvRefresh = (ImageView) mRootView.findViewById(R.id.iv_refresh);
         mToolbar.setBackgroundResource(android.R.color.transparent);
-        ((LinearLayout.LayoutParams)mToolbar.getLayoutParams()).setMargins(0, DeviceUtils.getStatuBarHeight(mActivity),0,0);
-        mTvToolbarCenter.setTextColor(ContextCompat.getColor(mActivity,R.color.white));
-        mTvToolbarCenter.setText(getString(R.string.mine_integration));
-        mTvToolbarRight.setText(getString(R.string.detail));
-        mTvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(),  R.mipmap.topbar_back_white), null, null, null);
+        ((LinearLayout.LayoutParams) mToolbar.getLayoutParams()).setMargins(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0);
+        mTvToolbarCenter.setTextColor(ContextCompat.getColor(mActivity, R.color.white));
+        mTvToolbarCenter.setText(getString(R.string.integration_recharge));
+        mTvToolbarRight.setText(getString(R.string.recharge_record));
+        mTvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.topbar_back_white), null, null, null);
 
         initListener();
+        mLlRechargeChooseMoneyItem.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -144,20 +161,18 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
 
     @Override
     protected void initData() {
-        initAdvert(mActivity,new ArrayList<>());
+
+        List<ChooseDataBean> datas = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            ChooseDataBean chooseDataBean = new ChooseDataBean();
+            chooseDataBean.setId(i);
+            chooseDataBean.setText(i + "test");
+            datas.add(chooseDataBean);
+        }
+        mChooseView.updateData(datas);
+        mChooseView.setOnItemChooseChangeListener(this);
     }
 
-    private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
-        mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mRootView.findViewById(R.id.ll_advert));
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts == null || adverts != null && adverts.isEmpty()) {
-            mDynamicDetailAdvertHeader.hideAdvert();
-            return;
-        }
-        mDynamicDetailAdvertHeader.setAdverts(adverts);
-        mDynamicDetailAdvertHeader.setOnItemClickListener((v, position1, url) ->
-                toAdvert(context, adverts.get(position1).getAdvertFormat().getImage().getLink(), adverts.get(position1).getTitle())
-        );
-    }
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -173,26 +188,8 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
     }
 
     private void initListener() {
-        // 充值积分
-        RxView.clicks(mBtReCharge)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_RECHARGE, true));
-        // 提取积分
-        RxView.clicks(mBtWithdraw)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_WITHDRAW, true));     // 提现
-        // 积分商城
-        RxView.clicks(btMineIntegration)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> {
-                    TSDevelopActivity.startDeveloperAcitvity(mActivity,getString(R.string.integration_shop)
-                    ,R.mipmap.pic_default_mall);
-                });
         // 积分规则
-        RxView.clicks(mTvReChargeAndWithdrawRule)
+        RxView.clicks(mTvRechargeRule)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
@@ -204,6 +201,55 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
                 .subscribe(aVoid -> {
                     mActivity.finish();
                 });
+
+
+        // 选择充值方式
+        RxView.clicks(mBtRechargeStyle)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> {
+                    DeviceUtils.hideSoftKeyboard(getContext(), mBtRechargeStyle);
+                    initPayStylePop();
+                });
+        // 确认
+        RxView.clicks(mBtSure)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> {
+                    mBtSure.setEnabled(false);
+//                    mPresenter.getPayStr(mPayType, PayConfig.gameCurrency2RealCurrency(mRechargeMoney, mPresenter.getRatio()));
+                });// 传入的是真实货币分单位
+
+        RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
+            String mRechargeMoneyStr = charSequence.toString();
+            if (mRechargeMoneyStr.replaceAll(" ", "").length() > 0) {
+                mRechargeMoney = Double.parseDouble(mRechargeMoneyStr);
+                mChooseView.clearChoose();
+            } else {
+                mRechargeMoney = 0;
+            }
+            configSureButton();
+        }, throwable -> {
+            throwable.printStackTrace();
+            setCustomMoneyDefault();
+            mRechargeMoney = 0;
+            configSureButton();
+        });
+
+    }
+
+    /**
+     * 设置自定义金额数量
+     */
+    private void setCustomMoneyDefault() {
+        mEtInput.setText("");
+    }
+
+    /**
+     * 检查确认按钮是否可点击
+     */
+    private void configSureButton() {
+        mBtSure.setEnabled(mRechargeMoney > 0 && !TextUtils.isEmpty(mBtRechargeStyle.getRightText()));
     }
 
     private void jumpWalletRuleActivity() {
@@ -238,9 +284,50 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
         mRulePop.show();
     }
 
+    /**
+     * 充值方式选择弹框
+     */
+    private void initPayStylePop() {
+        List<String> rechargeTypes = new ArrayList<>();
+//        WalletConfigBean mWalletConfigBean =mPresenter.getSystemConfigBean();
+//        if (mWalletConfigBean.getRecharge_type() != null) {
+//            rechargeTypes.addAll(Arrays.asList(mWalletConfigBean.getRecharge_type()));
+//        }
+        if (mPayStylePopupWindow != null) {
+            mPayStylePopupWindow.show();
+            return;
+        }
+        mPayStylePopupWindow = ActionPopupWindow.builder()
+                .item2Str(rechargeTypes.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string
+                        .alipay)) : "")
+                .item3Str(rechargeTypes.contains(TSPayClient.CHANNEL_WXPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string
+                        .wxpay)) : "")
+                .item4Str(rechargeTypes.size() == 0 ? getString(R.string.recharge_disallow) : "")
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item2ClickListener(() -> {
+                    mPayType = TSPayClient.CHANNEL_ALIPAY;
+                    mBtRechargeStyle.setRightText(getString(R.string.choose_recharge_style_formart, getString(R.string.alipay)));
+                    mPayStylePopupWindow.hide();
+                    configSureButton();
+                })
+                .item3ClickListener(() -> {
+                    mPayType = TSPayClient.CHANNEL_WXPAY;
+                    mBtRechargeStyle.setRightText(getString(R.string.choose_recharge_style_formart, getString(R.string.wxpay)));
+                    mPayStylePopupWindow.hide();
+                    configSureButton();
+                })
+                .bottomClickListener(() -> mPayStylePopupWindow.hide())
+                .build();
+        mPayStylePopupWindow.show();
+    }
+
     @Override
     public void updateBalance(double balance) {
-        mTvMineMoney.setText(getString(R.string.money_format, balance));
+        mTvMineIntegration.setText(getString(R.string.money_format, balance));
     }
 
     @Override
@@ -293,19 +380,12 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
         startActivity(to);
     }
 
-    /**
-     *  jump  to  advert
-     * @param context
-     * @param link
-     * @param title
-     */
-    private void toAdvert(Context context, String link, String title) {
-        CustomWEBActivity.startToWEBActivity(context, link, title);
-    }
 
-    @Subscriber(tag = EVENT_WALLET_RECHARGE, mode = ThreadMode.MAIN)
-    public void onRechargeSuccessUpdate(String result) {
-        initData();
+    @Override
+    public void onItemChooseChanged(int position, ChooseDataBean dataBean) {
+        if (position != -1) {
+            mEtInput.setText("");
+//            mRechargeMoney = dataBean.getText();
+        }
     }
-
 }

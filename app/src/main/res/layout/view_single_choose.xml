@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-       xmlns:tools="http://schemas.android.com/tools"
     >
 
     <TextView
         android:id="@+id/tv_tip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginStart="@dimen/spacing_mid"
         android:layout_marginTop="@dimen/spacing_large"
+        android:text="@string/choose_recharge_money"
         android:textColor="@color/normal_for_assist_text"
-        android:textSize="@dimen/size_content_comment"
-        tools:text="@string/choose_recharge_money"/>
-
+        android:textSize="@dimen/size_content_comment"/>
 
     <com.zhiyicx.common.widget.NoPullRecycleView
         android:id="@+id/rv_list"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_mid"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginRight="@dimen/spacing_mid"
+        android:layout_marginStart="@dimen/spacing_mid"
+        android:layout_marginTop="@dimen/spacing_mid"
         />
 
 

@@ -90,19 +90,22 @@ public class SingleChooseView extends LinearLayout {
         mCommonAdapter = new CommonAdapter<ChooseDataBean>(getContext(), R.layout.item_single_choose, mListData) {
             @Override
             protected void convert(ViewHolder holder, ChooseDataBean data, int position) {
-                CheckBox checkBox = holder.getView(R.id.cb_item);
+                TextView checkBox = holder.getView(R.id.cb_item);
                 checkBox.setText(data.getText());
-                checkBox.setChecked(position == mCurrentChoosePositon);
-                checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    if (isChecked) {
-                        mCurrentChoosePositon = position;
-                    } else {
+                checkBox.setBackgroundResource(position == mCurrentChoosePositon ? R.drawable.shape_dynamic_topday_bg_radus_theme : R.drawable
+                        .shape_dynamic_topday_bg_radus_grey);
+                checkBox.setOnClickListener( l-> {
+                    if (mCurrentChoosePositon == position) {
                         mCurrentChoosePositon = -1;
+                    } else {
+                        mCurrentChoosePositon = position;
                     }
                     if (mOnItemChooseChangeListener != null) {
                         mOnItemChooseChangeListener.onItemChooseChanged(mCurrentChoosePositon, mCurrentChoosePositon == -1 ? null : mListData.get
                                 (mCurrentChoosePositon));
                     }
+
+                    mCommonAdapter.notifyDataSetChanged();
                 });
             }
         };
@@ -131,6 +134,16 @@ public class SingleChooseView extends LinearLayout {
         }
         mCommonAdapter.notifyDataSetChanged();
 
+    }
+
+    public void clearChoose() {
+        mCurrentChoosePositon = -1;
+        mCommonAdapter.notifyDataSetChanged();
+
+    }
+
+    public void setTip(String str) {
+        mTvTip.setText(str);
     }
 
     public interface OnItemChooseChangeListener {

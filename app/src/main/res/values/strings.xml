@@ -927,4 +927,8 @@
     <string name="withdraw_integration">提取积分</string>
     <string name="integration_shop">积分商城</string>
     <string name="integration_rule">积分规则</string>
+    <string name="integration_recharge">积分充值</string>
+    <string name="recharge_record">充值记录</string>
+    <string name="recharge_ratio">充值比率</string>
+    <string name="user_reharge_integration_rule">用户充值协议</string>
 </resources>
