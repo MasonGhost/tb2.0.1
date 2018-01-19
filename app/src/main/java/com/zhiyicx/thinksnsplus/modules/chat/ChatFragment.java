@@ -318,6 +318,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
             return;
         }
         mDatas.addAll(0, list);
+        mMessageList.refresh();
         if (isNeedScrollToBottom) {
             mMessageList.post(new Runnable() {
                 @Override
@@ -327,7 +328,6 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                 }
             });
         }
-        mMessageList.refresh();
     }
 
     @Override
