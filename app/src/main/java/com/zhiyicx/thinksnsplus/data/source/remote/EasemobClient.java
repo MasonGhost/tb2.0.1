@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import java.util.List;
 
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -34,6 +35,22 @@ public interface EasemobClient {
     Observable<ChatGroupBean> createGroup(@Query("groupname") String groupName, @Query("desc") String groupIntro, @Query("public") int isPublic,
                                           @Query("maxusers") int maxUser, @Query("members_only") boolean isMemberOnly, @Query("allowinvites") int isAllowInvites,
                                           @Query("owner") long owner, @Query("members") String members);
+
+    /**
+     * 更新群信息
+     *
+     * @param groupName      groupName
+     * @param groupIntro     groupIntro
+     * @param isPublic       isPublic
+     * @param maxUser        maxUser
+     * @param isMemberOnly   isMemberOnly
+     * @param isAllowInvites isAllowInvites
+     * @param groupFace      groupFace
+     */
+    @PATCH(ApiConfig.APP_PATH_CREATE_CHAT_GROUP)
+    Observable<ChatGroupBean> updateGroup(@Query("im_group_id") String im_group_id, @Query("groupname") String groupName, @Query("desc") String groupIntro, @Query("public") int isPublic,
+                                          @Query("maxusers") int maxUser, @Query("members_only") boolean isMemberOnly, @Query("allowinvites") int isAllowInvites,
+                                          @Query("group_face") String groupFace);
 
     /**
      * 批量获取群信息

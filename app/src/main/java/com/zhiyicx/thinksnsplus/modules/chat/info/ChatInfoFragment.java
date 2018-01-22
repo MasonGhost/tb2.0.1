@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.chat.info;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,10 +18,15 @@ import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.exceptions.HyphenateException;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.modules.chat.adapter.ChatMemberAdapter;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -34,7 +40,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_DELETE_GROUP;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_DELETE_QUIT;
 
 /**
@@ -44,7 +49,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_DELETE_
  * @contact email:648129313@qq.com
  */
 
-public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> implements ChatInfoContract.View {
+public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> implements ChatInfoContract.View, PhotoSelectorImpl.IPhotoBackListener {
 
     @BindView(R.id.iv_user_portrait)
     UserAvatarView mIvUserPortrait;
@@ -79,6 +84,8 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
 
     // 删除群聊
     private ActionPopupWindow mDeleteGroupPopupWindow;
+    private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
+    private PhotoSelectorImpl mPhotoSelector;
 
     public ChatInfoFragment instance(Bundle bundle) {
         ChatInfoFragment fragment = new ChatInfoFragment();
@@ -88,6 +95,12 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
 
     @Override
     protected void initView(View rootView) {
+        // 初始化图片选择器
+        mPhotoSelector = DaggerPhotoSelectorImplComponent
+                .builder()
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
+                        .SHAPE_RCTANGLE))
+                .build().photoSelectorImpl();
         mUserInfoBeans = getArguments().getParcelableArrayList(ChatConfig.MESSAGE_CHAT_MEMBER_LIST);
         mChatType = getArguments().getInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_SINGLE);
         mChatId = getArguments().getString("id");
@@ -105,11 +118,9 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             }
         }
         initDeletePopupWindow();
+        initPhotoPopupWindow();
     }
 
-    /**
-     *
-     */
     @Override
     protected void initData() {
         if (mChatType == EaseConstant.CHATTYPE_SINGLE) {
@@ -186,7 +197,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         return R.layout.fragment_chat_info;
     }
 
-    @OnClick({R.id.iv_add_user, R.id.tv_to_all_members, R.id.ll_manager, R.id.tv_clear_message, R.id.tv_delete_group})
+    @OnClick({R.id.iv_add_user, R.id.tv_to_all_members, R.id.ll_manager, R.id.tv_clear_message, R.id.tv_delete_group, R.id.ll_group_portrait})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_add_user:
@@ -205,6 +216,10 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             case R.id.tv_delete_group:
                 // （群主）删除群聊
                 mDeleteGroupPopupWindow.show();
+                break;
+            case R.id.ll_group_portrait:
+                // 修改群头像
+                mPhotoPopupWindow.show();
                 break;
             default:
         }
@@ -243,6 +258,34 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         }
     }
 
+    /**
+     * 初始化图片选择弹框
+     */
+    private void initPhotoPopupWindow() {
+        if (mPhotoPopupWindow != null) {
+            return;
+        }
+        mPhotoPopupWindow = ActionPopupWindow.builder()
+                .item1Str(mActivity.getString(R.string.choose_from_photo))
+                .item2Str(mActivity.getString(R.string.choose_from_camera))
+                .bottomStr(mActivity.getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(0.8f)
+                .with(mActivity)
+                .item1ClickListener(() -> {
+                    // 选择相册，单张
+                    mPhotoSelector.getPhotoListFromSelector(1, null);
+                    mPhotoPopupWindow.hide();
+                })
+                .item2ClickListener(() -> {
+                    // 选择相机，拍照
+                    mPhotoSelector.getPhotoFromCamera(null);
+                    mPhotoPopupWindow.hide();
+                })
+                .bottomClickListener(() -> mPhotoPopupWindow.hide()).build();
+    }
+
     @Override
     protected boolean useEventBus() {
         return true;
@@ -256,5 +299,33 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     @Override
     public String getChatId() {
         return mChatId;
+    }
+
+    @Override
+    public void updateGroup(ChatGroupBean chatGroupBean) {
+        EMGroup group = EMClient.getInstance().groupManager().getGroup(mChatId);
+        mTvGroupName.setText(group.getGroupName());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void getPhotoSuccess(List<ImageBean> photoList) {
+        EMGroup group = EMClient.getInstance().groupManager().getGroup(mChatId);
+        String member = "";
+        for (ChatUserInfoBean chatUserInfoBean: mUserInfoBeans){
+            member += chatUserInfoBean.getUser_id() + ",";
+        }
+        mPresenter.updateGroup(mChatId, group.getGroupName(), "暂无", 0, 200, true,
+                0, photoList.get(0).getImgUrl());
+    }
+
+    @Override
+    public void getPhotoFailure(String errorMsg) {
+        showSnackErrorMessage(errorMsg);
     }
 }
