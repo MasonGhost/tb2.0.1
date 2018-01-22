@@ -140,6 +140,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
     }
 }
+// for kotlin extension
+androidExtensions {
+    experimental = true
+}
+
 greendao {
     /**
      * daoPackage 生成的DAO，DaoMaster和DaoSession的包名。默认是实体的包名。
