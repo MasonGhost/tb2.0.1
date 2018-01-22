@@ -131,11 +131,11 @@ public class BaseMessageRepository implements IBaseMessageRepository{
                             }
                         } else if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.GroupChat){
                             // 群聊
-                            groupIds += itemBeanV2.getConversation().conversationId();
+                            groupIds += itemBeanV2.getConversation().conversationId() + ",";
                         }
                     }
                     if (!TextUtils.isEmpty(groupIds)){
-                        groupIds = groupIds.substring(0, groupIds.length());
+                        groupIds = groupIds.substring(0, groupIds.length() - 1);
                         BackgroundRequestTaskBean backgroundRequestTaskBean;
                         HashMap<String, Object> params = new HashMap<>();
                         params.put("group_ids", groupIds);
