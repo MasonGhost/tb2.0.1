@@ -347,9 +347,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             myMoney = userInfoBean.getWallet().getBalance();
         }
         mBtWallet.setRightText(getString(R.string.money_format_with_unit, PayConfig.realCurrency2GameCurrency(myMoney, mPresenter.getRatio())
-                , mPresenter.getGoldName()));
-        btMineIntegration.setRightText(getString(R.string.money_format_with_unit, PayConfig.realCurrency2GameCurrency(myMoney, mPresenter.getRatio())
-                , mPresenter.getGoldName()));
+                , ""));
+        btMineIntegration.setRightText(String.valueOf(userInfoBean.getFormatCurrencyNum()));
         this.mUserInfoBean = userInfoBean;
     }
 

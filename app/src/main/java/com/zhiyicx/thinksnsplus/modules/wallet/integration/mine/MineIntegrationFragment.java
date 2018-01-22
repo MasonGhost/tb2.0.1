@@ -88,11 +88,6 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
     }
 
     @Override
-    protected boolean useEventBus() {
-        return true;
-    }
-
-    @Override
     protected boolean showToolBarDivider() {
         return false;
     }
@@ -231,7 +226,7 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
             return;
         }
         mRulePop = CenterInfoPopWindow.builder()
-                .titleStr(getString(R.string.recharge_and_withdraw_rule))
+                .titleStr(getString(R.string.integration_rule))
                 .desStr(mPresenter.getTipPopRule())
                 .item1Str(getString(R.string.get_it))
                 .item1Color(R.color.themeColor)
@@ -310,11 +305,6 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
      */
     private void toAdvert(Context context, String link, String title) {
         CustomWEBActivity.startToWEBActivity(context, link, title);
-    }
-
-    @Subscriber(tag = EVENT_WALLET_RECHARGE, mode = ThreadMode.MAIN)
-    public void onRechargeSuccessUpdate(String result) {
-        initData();
     }
 
 }

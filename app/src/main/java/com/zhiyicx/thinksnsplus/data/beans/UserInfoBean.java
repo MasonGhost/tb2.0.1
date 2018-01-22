@@ -343,6 +343,14 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.im_pwd_hash = im_pwd_hash;
     }
 
+    /**
+     * @return 格式化后的用户积分
+     */
+    public long getFormatCurrencyNum() {
+
+        return currency == null ? 0 : currency.getSum();
+    }
+
     public IntegrationBean getCurrency() {
         return currency;
     }
@@ -639,11 +647,11 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     }
 
 
-    @Generated(hash = 703875029)
-    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
-                        String location, boolean following, boolean follower, String created_at, String updated_at,
-                        String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified,
-                        List<UserTagBean> tags, String im_pwd_hash, boolean initial_password, boolean has_deleted) {
+    @Generated(hash = 1966286923)
+    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex, String location,
+            boolean following, boolean follower, String created_at, String updated_at, String avatar, String cover,
+            IntegrationBean currency, UserInfoExtraBean extra, VerifiedBean verified, List<UserTagBean> tags,
+            String im_pwd_hash, boolean initial_password, boolean has_deleted) {
         this.user_id = user_id;
         this.name = name;
         this.phone = phone;
@@ -657,6 +665,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.updated_at = updated_at;
         this.avatar = avatar;
         this.cover = cover;
+        this.currency = currency;
         this.extra = extra;
         this.verified = verified;
         this.tags = tags;

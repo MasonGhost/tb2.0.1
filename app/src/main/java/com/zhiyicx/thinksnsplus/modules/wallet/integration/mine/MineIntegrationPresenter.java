@@ -86,7 +86,7 @@ public class MineIntegrationPresenter extends AppBasePresenter<MineIntegrationCo
                         if (data.getWallet() != null) {
                             mWalletBeanGreenDao.insertOrReplace(data.getWallet());
                         }
-                        mRootView.updateBalance(data.getWallet() != null ? PayConfig.realCurrency2GameCurrency(data.getWallet().getBalance(), getRatio()) : 0);
+                        mRootView.updateBalance(data.getFormatCurrencyNum());
                     }
 
                     @Override

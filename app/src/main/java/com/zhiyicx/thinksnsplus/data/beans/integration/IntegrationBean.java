@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @Date 2018/1/22
  * @Contact master.jungle68@gmail.com
  */
-public class IntegrationBean implements Serializable{
+public class IntegrationBean implements Serializable {
 
     private static final long serialVersionUID = 6734690561948710212L;
     /**
@@ -21,7 +21,7 @@ public class IntegrationBean implements Serializable{
 
     private int owner_id;
     private int type;
-    private int sum;
+    private long sum;
     private String created_at;
     private String updated_at;
 
@@ -41,11 +41,11 @@ public class IntegrationBean implements Serializable{
         this.type = type;
     }
 
-    public int getSum() {
+    public long getSum() {
         return sum;
     }
 
-    public void setSum(int sum) {
+    public void setSum(long sum) {
         this.sum = sum;
     }
 
