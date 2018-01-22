@@ -4,6 +4,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_CONFIG;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_CONFIG;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK;
@@ -48,4 +50,12 @@ public interface WalletClient {
 
     @GET(APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK)
     Observable<RechargeSuccessBean> rechargeSuccessCallBack(@Path("charge") String charge);
+
+    /*******************************************  积分  *********************************************/
+    /**
+     *
+     * @return 积分配置信息
+     */
+    @GET(APP_PAHT_INTEGRATION_CONFIG)
+    Observable<IntegrationConfigBean> getIntegrationConfig();
 }

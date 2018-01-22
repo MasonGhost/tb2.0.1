@@ -955,6 +955,13 @@ public class ApiConfig {
     public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK = "api/" + API_VERSION_2 + "/wallet/charges/{charge}?mode=retrieve";
     public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK_FORMAT = "api/" + API_VERSION_2 + "/wallet/charges/%s?mode=retrieve";
 
+    /**
+     * 积分
+     */
+    // 积分配置信息
+    public static final String APP_PAHT_INTEGRATION_CONFIG = "api/" + API_VERSION_2 + "/currency";
+
+
     /*排行榜相关*/
     /*用户*/
     // 全站粉丝排行榜

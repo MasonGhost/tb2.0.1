@@ -7,8 +7,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
-import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
@@ -29,13 +28,12 @@ import rx.android.schedulers.AndroidSchedulers;
 public class MineIntegrationPresenter extends AppBasePresenter<MineIntegrationContract.View> implements MineIntegrationContract.Presenter {
     public static final int DEFAULT_LOADING_SHOW_TIME = 1;
 
+
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
     BillRepository mBillRepository;
 
-    @Inject
-    WalletConfigBeanGreenDaoImpl mWalletConfigBeanGreenDao;
 
     /**
      * 用户信息是否拿到了
@@ -45,7 +43,7 @@ public class MineIntegrationPresenter extends AppBasePresenter<MineIntegrationCo
     /**
      * 钱包配置信息，必须的数据
      */
-    WalletConfigBean mWalletConfigBean;
+    private IntegrationConfigBean mIntegrationConfigBean;
 
 
     @Inject
@@ -55,7 +53,6 @@ public class MineIntegrationPresenter extends AppBasePresenter<MineIntegrationCo
 
     @Override
     public void updateUserInfo() {
-//        getWalletConfigFromServer(TAG_DEfault, false); // 默认主动获取一次
         Subscription timerSub = Observable.timer(DEFAULT_LOADING_SHOW_TIME, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> {
@@ -64,7 +61,7 @@ public class MineIntegrationPresenter extends AppBasePresenter<MineIntegrationCo
                     }
                 });
 
-        Subscription userInfoSub = mUserInfoRepository.getCurrentLoginUserInfo()
+        Subscription userInfoSub = mUserInfoRepository.getLocalUserInfoBeforeNet(AppApplication.getMyUserIdWithdefault())
                 .doAfterTerminate(() -> {
                     mRootView.handleLoading(false);
                     mIsUsreInfoRequseted = true;
@@ -106,14 +103,14 @@ public class MineIntegrationPresenter extends AppBasePresenter<MineIntegrationCo
     }
 
     /**
-     * check wallet config info, if walletconfig has cach used it or get it from server
+     * check wallet config info, if integrationconfig has cach used it or get it from server
      *
      * @param tag action tag
      */
     @Override
-    public void checkWalletConfig(int tag, final boolean isNeedTip) {
-        if (mWalletConfigBean != null) {
-            mRootView.walletConfigCallBack(mWalletConfigBean, tag);
+    public void checkIntegrationConfig(int tag, final boolean isNeedTip) {
+        if (mIntegrationConfigBean != null) {
+            mRootView.integrationConfigCallBack(mIntegrationConfigBean, tag);
             return;
         }
         getWalletConfigFromServer(tag, isNeedTip);
@@ -122,13 +119,10 @@ public class MineIntegrationPresenter extends AppBasePresenter<MineIntegrationCo
 
     @Override
     public String getTipPopRule() {
-        if (mWalletConfigBean == null) {
-            mWalletConfigBean = mWalletConfigBeanGreenDao.getSingleDataFromCache(Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + ""));
-            if (mWalletConfigBean == null) {
-                return "钱包规则";
-            }
+        if (mIntegrationConfigBean == null) {
+            return mContext.getResources().getString(R.string.integration_rule);
         }
-        return mWalletConfigBean.getRule();
+        return mIntegrationConfigBean.getRule();
 
     }
 
@@ -140,22 +134,20 @@ public class MineIntegrationPresenter extends AppBasePresenter<MineIntegrationCo
      */
     private void getWalletConfigFromServer(final int tag, final boolean isNeedTip) {
 
-        final Subscription walletConfigSub = mBillRepository.getWalletConfig()
+        final Subscription walletConfigSub = mBillRepository.getIntegrationConfig()
                 .doOnSubscribe(() -> {
                     if (isNeedTip) {
-                        mRootView.showSnackLoadingMessage(mContext.getString(R.string.wallet_config_info_get_loading_tip));
+                        mRootView.showSnackLoadingMessage(mContext.getString(R.string.integration_config_info_get_loading_tip));
                     }
                 })
-                .subscribe(new BaseSubscribeForV2<WalletConfigBean>() {
+                .subscribe(new BaseSubscribeForV2<IntegrationConfigBean>() {
                     @Override
-                    protected void onSuccess(WalletConfigBean data) {
-                        mWalletConfigBean = data;
-                        data.setUser_id(Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + ""));
-                        mWalletConfigBeanGreenDao.insertOrReplace(data);
+                    protected void onSuccess(IntegrationConfigBean data) {
+                        mIntegrationConfigBean = data;
                         if (isNeedTip) {
                             mRootView.dismissSnackBar();
                         }
-                        mRootView.walletConfigCallBack(data, tag);
+                        mRootView.integrationConfigCallBack(data, tag);
                     }
 
                     @Override

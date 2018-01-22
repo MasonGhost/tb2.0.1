@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.wallet.integration.mine;
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean;
 
 /**
  * @Describe
@@ -31,10 +32,10 @@ public interface MineIntegrationContract {
         /**
          * wallet callback
          *
-         * @param walletConfigBean wallet config info
+         * @param configBean integration config info
          * @param tag              action tag, 1 recharge 2 withdraw
          */
-        void walletConfigCallBack(WalletConfigBean walletConfigBean, int tag);
+        void integrationConfigCallBack(IntegrationConfigBean configBean, int tag);
 
     }
 
@@ -56,6 +57,6 @@ public interface MineIntegrationContract {
          *
          * @param tag action tag
          */
-        void checkWalletConfig(int tag, final boolean isNeedTip);
+        void checkIntegrationConfig(int tag, final boolean isNeedTip);
     }
 }

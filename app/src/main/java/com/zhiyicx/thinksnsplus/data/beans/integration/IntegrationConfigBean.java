@@ -2,14 +2,17 @@ package com.zhiyicx.thinksnsplus.data.beans.integration;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * @Describe 积分配置信息 doc @see{https://slimkit.github.io/plus-docs/v2/core/currency}
  * @Author Jungle68
  * @Date 2018/1/22
  * @Contact master.jungle68@gmail.com
  */
-public class IntegrationConfigBean {
+public class IntegrationConfigBean implements Serializable{
 
+    private static final long serialVersionUID = -1293476228114357406L;
     /**
      * recharge-ratio	int	兑换比例，人民币一分钱可兑换的积分数量
      * recharge-options	string	充值选项，人民币分单位

@@ -7,6 +7,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -49,8 +50,8 @@ public class BillRepository implements IBillRepository {
     }
 
     @Override
-    public Observable<List<RechargeSuccessBean>> getBillList(int after,Integer action) {
-        return dealRechargeList(mWalletClient.getRechargeSuccessList(TSListFragment.DEFAULT_PAGE_SIZE, after,action));
+    public Observable<List<RechargeSuccessBean>> getBillList(int after, Integer action) {
+        return dealRechargeList(mWalletClient.getRechargeSuccessList(TSListFragment.DEFAULT_PAGE_SIZE, after, action));
     }
 
     @Override
@@ -138,6 +139,17 @@ public class BillRepository implements IBillRepository {
         return mWalletClient.getWithdrawList(TSListFragment.DEFAULT_PAGE_SIZE, after)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /*******************************************  积分  *********************************************/
+    /**
+     * @return 积分配置信息
+     */
+    @Override
+    public Observable<IntegrationConfigBean> getIntegrationConfig() {
+        return mWalletClient.getIntegrationConfig()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 }

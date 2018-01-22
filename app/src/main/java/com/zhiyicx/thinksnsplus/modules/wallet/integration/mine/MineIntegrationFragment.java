@@ -21,6 +21,7 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean;
 import com.zhiyicx.thinksnsplus.modules.develop.TSDevelopActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
@@ -101,6 +102,7 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
     protected boolean setStatusbarGrey() {
         return false;
     }
+
     @Override
     protected boolean setUseStatusView() {
         return false;
@@ -162,7 +164,7 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (mPresenter.checkIsNeedTipPop()) {
-            getView().post(() -> mPresenter.checkWalletConfig(TAG_SHOWRULE_POP, false));
+            getView().post(() -> mPresenter.checkIntegrationConfig(TAG_SHOWRULE_POP, false));
         }
     }
 
@@ -185,7 +187,7 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
         RxView.clicks(mBtWithdraw)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_WITHDRAW, true));     // 提现
+                .subscribe(aVoid -> mPresenter.checkIntegrationConfig(WalletPresenter.TAG_WITHDRAW, true));     // 提现
         // 积分商城
         RxView.clicks(btMineIntegration)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -199,7 +201,7 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    mPresenter.checkWalletConfig(WalletPresenter.TAG_SHOWRULE_JUMP, true);
+                    mPresenter.checkIntegrationConfig(WalletPresenter.TAG_SHOWRULE_JUMP, true);
                 });
         RxView.clicks(mTvToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -258,19 +260,19 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
     /**
      * the api walletconfig call back
      *
-     * @param walletConfigBean wallet config info
-     * @param tag              action tag, 1 recharge 2 withdraw
+     * @param configBean integration config info
+     * @param tag        action tag, 1 recharge 2 withdraw
      */
     @Override
-    public void walletConfigCallBack(WalletConfigBean walletConfigBean, int tag) {
+    public void integrationConfigCallBack(IntegrationConfigBean configBean, int tag) {
         Bundle bundle = new Bundle();
         switch (tag) {
             case WalletPresenter.TAG_RECHARGE:
-                bundle.putParcelable(RechargeFragment.BUNDLE_DATA, walletConfigBean);
+                bundle.putSerializable(RechargeFragment.BUNDLE_DATA, configBean);
                 jumpActivity(bundle, RechargeActivity.class);
                 break;
             case WalletPresenter.TAG_WITHDRAW:
-                bundle.putParcelable(WithdrawalsFragment.BUNDLE_DATA, walletConfigBean);
+                bundle.putSerializable(WithdrawalsFragment.BUNDLE_DATA, configBean);
                 jumpActivity(bundle, WithdrawalsActivity.class);
                 break;
             case WalletPresenter.TAG_SHOWRULE_POP:

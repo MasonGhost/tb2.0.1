@@ -4,10 +4,14 @@ import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean;
 
 import java.util.List;
 
+import retrofit2.http.GET;
 import rx.Observable;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_CONFIG;
 
 /**
  * @Describe
@@ -34,4 +38,11 @@ public interface IBillRepository {
      * @return
      */
     Observable<List<WithdrawalsListBean>> getWithdrawListDetail(int after);
+
+    /*******************************************  积分  *********************************************/
+    /**
+     *
+     * @return 积分配置信息
+     */
+    Observable<IntegrationConfigBean> getIntegrationConfig();
 }

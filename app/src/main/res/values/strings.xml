@@ -921,6 +921,8 @@
     <string name="chat_delete_conversation_failed">删除聊天失败</string>
     <string name="chat_unconnected">聊天服务器未连接</string>
     <string name="chat_my_friends">我的好友</string>
+
+    <!--积分-->
     <string name="mine_integration">我的积分</string>
     <string name="recharge_integration">充值积分</string>
     <string name="current_integration">当前积分</string>
@@ -931,4 +933,6 @@
     <string name="recharge_record">充值记录</string>
     <string name="recharge_ratio">充值比率</string>
     <string name="user_reharge_integration_rule">用户充值协议</string>
+    <string name="integration_config_info_get_loading_tip">积分配置信息获取中&#8230;</string>
+
 </resources>
