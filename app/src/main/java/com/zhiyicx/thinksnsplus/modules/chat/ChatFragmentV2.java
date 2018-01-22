@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.media.ThumbnailUtils;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.chat.call.VideoCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.call.VoiceCallActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.info.ChatInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
 import com.zhiyicx.thinksnsplus.modules.chat.location.SendLocationActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatCallPresneter;
@@ -48,6 +50,10 @@ import com.zhiyicx.thinksnsplus.modules.chat.video.ImageGridActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+
+import static com.hyphenate.easeui.EaseConstant.EXTRA_CHAT_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig.MESSAGE_CHAT_MEMBER_LIST;
 
 /**
  * @author Catherine
@@ -140,7 +146,7 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     @Override
     protected void setUpView() {
         setChatFragmentHelper(this);
-        mUserInfoBeans = getArguments().getParcelableArrayList(ChatConfig.MESSAGE_CHAT_MEMBER_LIST);
+        mUserInfoBeans = getArguments().getParcelableArrayList(MESSAGE_CHAT_MEMBER_LIST);
         // 标题栏
         // 背景白色
         titleBar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
@@ -177,6 +183,11 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     }
 
     @Override
+    protected void toGroupDetails() {
+        onEnterToChatDetails();
+    }
+
+    @Override
     public void onEnterToChatDetails() {
         if (chatType == ChatConfig.CHATTYPE_GROUP) {
             EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatUsername);
@@ -185,6 +196,13 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
                 return;
             }
             // 跳转群组详情
+            Intent intent = new Intent(getActivity(), ChatInfoActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("id", toChatUsername);
+            bundle.putParcelableArrayList(MESSAGE_CHAT_MEMBER_LIST, (ArrayList<? extends Parcelable>) mUserInfoBeans);
+            bundle.putInt(EXTRA_CHAT_TYPE, chatType);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
     }
 
