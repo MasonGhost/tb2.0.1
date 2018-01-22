@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.integration.mine;
 
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -29,15 +28,6 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 public class MineIntegrationPresenter extends AppBasePresenter<MineIntegrationContract.View> implements MineIntegrationContract.Presenter {
     public static final int DEFAULT_LOADING_SHOW_TIME = 1;
-
-    /**
-     * action tag
-     */
-    public static final int TAG_DEfault = 0; // do nothing
-    public static final int TAG_RECHARGE = 1; // recharge
-    public static final int TAG_WITHDRAW = 2; // withdraw
-    public static final int TAG_SHOWRULE_POP = 3; // show rulepop
-    public static final int TAG_SHOWRULE_JUMP = 4; // jump rule
 
     @Inject
     UserInfoRepository mUserInfoRepository;
