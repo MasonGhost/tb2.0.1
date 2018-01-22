@@ -47,6 +47,8 @@ public class MyFollowFragment extends TSListFragment<MyFollowContract.Presenter,
 
     private String mType;
 
+    private QuestionTopicAdapter mTopicAdapter;
+
     public static MyFollowFragment instance(String type) {
         MyFollowFragment followFragment = new MyFollowFragment();
         Bundle bundle = new Bundle();
@@ -84,6 +86,9 @@ public class MyFollowFragment extends TSListFragment<MyFollowContract.Presenter,
                     @Override
                     public void onCompleted() {
                         initData();
+                        if (mTopicAdapter != null) {
+                            mTopicAdapter.setPresenter(mPresenter);
+                        }
                     }
 
                     @Override
@@ -122,11 +127,13 @@ public class MyFollowFragment extends TSListFragment<MyFollowContract.Presenter,
                     return mPresenter.getRatio();
                 }
             };
+            adapter.setOnItemClickListener(this);
+            return adapter;
         } else {
-            adapter = new QuestionTopicAdapter(getContext(), mListDatas, mFollowPresenter);
+            mTopicAdapter = new QuestionTopicAdapter(getContext(), mListDatas, mFollowPresenter);
+            mTopicAdapter.setOnItemClickListener(this);
+            return mTopicAdapter;
         }
-        adapter.setOnItemClickListener(this);
-        return adapter;
     }
 
     @Override

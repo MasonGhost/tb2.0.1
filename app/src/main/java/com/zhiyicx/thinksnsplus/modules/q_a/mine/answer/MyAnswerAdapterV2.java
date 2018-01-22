@@ -19,6 +19,8 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import rx.functions.Func1;
+
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -59,6 +61,7 @@ public class MyAnswerAdapterV2 extends MyAnswerAdapter {
         TextView tvLikeCount = holder.getView(R.id.tv_like_count);
         dealLikeUI(answerInfoBean, tvLikeCount);
         RxView.clicks(tvLikeCount)
+                .filter(aVoid -> mPresenter != null)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe((Void aVoid) -> mPresenter.handleLike(position, answerInfoBean));
         // 评论数量

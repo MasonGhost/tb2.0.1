@@ -170,9 +170,11 @@ public class ChatPresenter extends BasePresenter< ChatContract.View> implements 
             public void onSuccess() {
                 // 发送成功 需要刷新页面
                 LogUtils.d("Cathy", "发送成功" + message.getBody().toString());
-                Observable.just("")
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(s -> mRootView.refreshData());
+//                Observable.just("")
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribe(s -> {
+//                            mRootView.refreshData() ;
+//                        });
             }
 
             @Override

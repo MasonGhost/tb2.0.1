@@ -93,21 +93,24 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
             } else {
                 EMMessage message = messageItemBean.getConversation().getLastMessage();
                 String content;
-                if (message.getBody() instanceof EMTextMessageBody){
-                    content = messageItemBean.getConversation().isGroup() ? message.getFrom() + ": "  + ((EMTextMessageBody) message.getBody()).getMessage() : ((EMTextMessageBody) message.getBody()).getMessage();
+                if (message.getBody() instanceof EMTextMessageBody) {
+                    content = messageItemBean.getConversation().isGroup() ? message.getFrom() + ": " + ((EMTextMessageBody) message.getBody())
+                            .getMessage() : ((EMTextMessageBody) message.getBody()).getMessage();
                 } else {
-                    content = messageItemBean.getConversation().isGroup() ? message.getFrom() + ": " + message.getBody().toString() : message.getBody().toString();
+                    content = messageItemBean.getConversation().isGroup() ? message.getFrom() + ": " + message.getBody().toString() : message
+                            .getBody().toString();
                 }
                 holder.setText(R.id.tv_content, content);
             }
         }
-        if (messageItemBean.getConversation().getLastMessage().getMsgTime() == 0) {
+        if (messageItemBean.getConversation().getLastMessage() == null || messageItemBean.getConversation().getLastMessage().getMsgTime() == 0) {
             holder.setText(R.id.tv_time, "");
         } else {
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(messageItemBean.getConversation().getLastMessage().getMsgTime()));
         }
         try {
-            ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(messageItemBean.getConversation().getUnreadMsgCount())));
+            ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(messageItemBean
+                    .getConversation().getUnreadMsgCount())));
         } catch (Exception e) {
             e.printStackTrace();
         }

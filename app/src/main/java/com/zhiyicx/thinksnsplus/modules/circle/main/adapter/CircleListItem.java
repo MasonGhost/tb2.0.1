@@ -176,9 +176,11 @@ public class CircleListItem extends BaseCircleItem {
                             return;
                         }
                         if (mPresenter != null && CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
-                            initPayPopWindow(mContext, position, circleInfo, circleInfo.getMoney
-                                    (), mPresenter.getRatio(), mPresenter.getGoldName(), R.string
-                                    .buy_pay_circle_desc);
+                            if (mPresenter.handleTouristControl()) {
+                                initPayPopWindow(mContext, position, circleInfo, circleInfo.getMoney
+                                        (), mPresenter.getRatio(), mPresenter.getGoldName(), R.string
+                                        .buy_pay_circle_desc);
+                            }
                             return;
                         }
                         mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
