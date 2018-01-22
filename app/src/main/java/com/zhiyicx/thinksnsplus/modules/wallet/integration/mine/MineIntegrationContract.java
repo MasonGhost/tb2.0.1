@@ -23,7 +23,7 @@ public interface MineIntegrationContract {
          *
          * @param balance current user's balance
          */
-        void updateBalance(double balance);
+        void updateBalance(long balance);
 
         /**
          * handle request loading
