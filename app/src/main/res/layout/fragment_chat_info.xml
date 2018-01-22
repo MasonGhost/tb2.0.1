@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/general_for_line_light">
+
+    <!--单聊的模块-->
+    <LinearLayout
+            android:id="@+id/ll_single"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_large"
+            android:background="@color/white">
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+            <com.zhiyicx.baseproject.widget.UserAvatarView
+                    android:id="@+id/iv_user_portrait"
+                    android:layout_width="@dimen/chat_info_header_view_width"
+                    android:layout_height="@dimen/chat_info_header_view_width"
+                    app:ts_avatare_size="@dimen/chat_info_header_view_width"
+                    app:pressShape="circle"/>
+
+            <TextView
+                    android:id="@+id/tv_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/iv_user_portrait"
+                    android:textSize="@dimen/size_icon_assist"
+                    android:textColor="@color/normal_for_assist_text"
+                    tools:text="xxxx"/>
+        </LinearLayout>
+
+        <ImageView
+                android:id="@+id/iv_add_user"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/btn_chatdetail_add"
+                android:layout_marginLeft="@dimen/spacing_large"/>
+
+    </LinearLayout>
+
+    <!--群聊的模块-->
+    <LinearLayout
+            android:id="@+id/ll_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/white"
+            android:layout_marginBottom="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_normal">
+
+        <!--群头像-->
+        <LinearLayout
+                android:id="@+id/ll_group_portrait"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/spacing_mid"
+                android:paddingBottom="@dimen/spacing_mid"
+                android:paddingLeft="@dimen/spacing_large"
+                android:paddingRight="@dimen/spacing_large"
+                android:gravity="center_vertical">
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/chat_set_group_portrait"
+                    android:textColor="@color/important_for_content"
+                    android:textSize="@dimen/size_content"/>
+
+            <ImageView
+                    android:id="@+id/iv_group_portrait"
+                    android:layout_width="@dimen/margin_25"
+                    android:layout_height="@dimen/margin_25"
+                    android:src="@mipmap/ico_ts_assistant"
+                    android:layout_marginRight="@dimen/spacing_normal"/>
+
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_arrow_smallgrey"/>
+        </LinearLayout>
+
+        <View
+                style="@style/style_divider_horizontal_light"/>
+
+        <!--群名称-->
+        <LinearLayout
+                android:id="@+id/ll_group_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/spacing_mid"
+                android:paddingBottom="@dimen/spacing_mid"
+                android:paddingLeft="@dimen/spacing_large"
+                android:paddingRight="@dimen/spacing_large"
+                android:gravity="center_vertical">
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/chat_set_group_name"
+                    android:textColor="@color/important_for_content"
+                    android:textSize="@dimen/size_content"/>
+
+            <TextView
+                    android:id="@+id/tv_group_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="xxxx"
+                    android:textSize="@dimen/size_content_comment"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:layout_marginRight="@dimen/spacing_normal"/>
+
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_arrow_smallgrey"/>
+        </LinearLayout>
+
+        <View
+                style="@style/style_divider_horizontal_light"
+                android:layout_height="@dimen/spacing_normal"/>
+
+        <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_member_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:layout_marginBottom="@dimen/spacing_large"/>
+
+        <View
+                style="@style/style_divider_horizontal"/>
+
+        <TextView
+                android:id="@+id/tv_to_all_members"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/chat_view_all_members"
+                android:paddingTop="@dimen/spacing_mid"
+                android:paddingBottom="@dimen/spacing_mid"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                android:gravity="center"/>
+    </LinearLayout>
+
+    <!--群管理-->
+    <LinearLayout
+            android:id="@+id/ll_manager"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:paddingLeft="@dimen/spacing_large"
+            android:paddingRight="@dimen/spacing_large"
+            android:paddingTop="@dimen/spacing_mid"
+            android:paddingBottom="@dimen/spacing_mid"
+            android:gravity="center_vertical">
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="@string/chat_group_manager"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"/>
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_arrow_smallgrey"/>
+    </LinearLayout>
+
+    <!--单聊群聊公共的模块-->
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:layout_marginTop="@dimen/divider_line"
+            android:paddingLeft="@dimen/spacing_large"
+            android:paddingRight="@dimen/spacing_large"
+            android:paddingTop="@dimen/spacing_mid"
+            android:paddingBottom="@dimen/spacing_mid">
+
+        <TextView
+                android:id="@+id/tv_alert_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                android:text="@string/chat_info_shielded_message"/>
+
+        <TextView
+                android:id="@+id/tv_alert_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_note_assist"
+                android:layout_below="@+id/tv_alert_one"
+                android:layout_marginTop="@dimen/spacing_small_4dp"
+                android:text="@string/chat_info_shielded_message_alert"/>
+
+        <android.support.v7.widget.SwitchCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+    <!--清空记录-->
+    <TextView
+            android:id="@+id/tv_clear_message"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/chat_info_header_view_width"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_content"
+            android:text="@string/chat_info_clear_message"
+            android:paddingLeft="@dimen/spacing_large"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:gravity="center_vertical"
+            android:background="@color/white"/>
+
+    <!--解散群组-->
+    <TextView
+            android:id="@+id/tv_delete_group"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/chat_info_header_view_width"
+            android:background="@color/white"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:text="@string/chat_delete_group"
+            android:textSize="@dimen/size_content"
+            android:textColor="@color/important_for_note"
+            android:gravity="center"/>
+
+</LinearLayout>

@@ -781,4 +781,13 @@
     <string name="no_call_data">没有通话数据</string>
     <string name="switch_camera">切换摄像头</string>
     <string name="capture_image">抓取图片</string>
+    <string name="chat_info_title">群聊信息</string>
+    <string name="chat_info_shielded_message">屏蔽消息</string>
+    <string name="chat_info_shielded_message_alert">开启后将不再接受ta的消息</string>
+    <string name="chat_info_clear_message">清空聊天记录</string>
+    <string name="chat_view_all_members">查看群成员</string>
+    <string name="chat_group_manager">群管理</string>
+    <string name="chat_delete_group">解散群组</string>
+    <string name="chat_set_group_portrait">设置群头像</string>
+    <string name="chat_set_group_name">群名称</string>
 </resources>
