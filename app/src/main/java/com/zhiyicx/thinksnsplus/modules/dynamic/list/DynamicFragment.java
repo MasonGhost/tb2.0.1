@@ -236,7 +236,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             DaggerDynamicComponent
                     .builder()
                     .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                    .shareModule(new ShareModule(mActivity))
                     .dynamicPresenterModule(new DynamicPresenterModule(DynamicFragment.this))
                     .build()
                     .inject(DynamicFragment.this);
@@ -261,6 +260,21 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 });
 
 
+    }
+
+    @Override
+    protected boolean setUseCenterLoading() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseCenterLoadingAnimation() {
+        return true;
+    }
+
+    @Override
+    protected int getstatusbarAndToolbarHeight() {
+        return 0;
     }
 
     @Override
@@ -397,6 +411,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         } catch (Exception ignore) {
         }
         super.onCacheResponseSuccess(data, isLoadMore);
+        closeLoadingView();
     }
 
     /**
