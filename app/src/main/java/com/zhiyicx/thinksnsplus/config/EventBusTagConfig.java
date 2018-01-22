@@ -124,6 +124,8 @@ public class EventBusTagConfig {
     /**重新登录*/
     public static final String EVENT_IM_RELOGIN_V2 = "imReLoginV2";
     public static final String EVENT_IM_GET_GROUP_INFO = "getChatGroupInfo";
+    public static final String EVENT_IM_DELETE_GROUP = "group_delete";
+    public static final String EVENT_IM_DELETE_QUIT = "group_quit";
 
     /**
      * 消息底部提示信息相关

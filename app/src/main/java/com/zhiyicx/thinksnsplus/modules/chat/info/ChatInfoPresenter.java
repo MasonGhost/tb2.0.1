@@ -1,6 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.chat.info;
 
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMGroup;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
 import javax.inject.Inject;
 
@@ -15,7 +19,16 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Reposit
         implements ChatInfoContract.Presenter{
 
     @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
+    @Inject
     public ChatInfoPresenter(ChatInfoContract.Repository repository, ChatInfoContract.View rootView) {
         super(repository, rootView);
+    }
+
+    @Override
+    public boolean isGroupOwner() {
+        String owner = EMClient.getInstance().groupManager().getGroup(mRootView.getChatId()).getOwner();
+        return owner.equals(String.valueOf(AppApplication.getMyUserIdWithdefault()));
     }
 }

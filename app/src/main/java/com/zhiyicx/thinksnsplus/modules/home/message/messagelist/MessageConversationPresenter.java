@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.message.messagelist;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
@@ -343,5 +344,23 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                     checkBottomMessageTip();
                 });
         addSubscrebe(subscribe);
+    }
+
+    @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_DELETE_QUIT)
+    public void deleteGroup(String id){
+        if (!TextUtils.isEmpty(id)){
+            return;
+        }
+        MessageItemBeanV2 deleteItem = null;
+        for (MessageItemBeanV2 messageItemBeanV2 : mRootView.getRealMessageList()){
+            if (messageItemBeanV2.getConversation().conversationId().equals(id)){
+                deleteItem = messageItemBeanV2;
+                break;
+            }
+        }
+        if (deleteItem != null){
+            mRootView.getRealMessageList().remove(deleteItem);
+            mRootView.refreshData();
+        }
     }
 }

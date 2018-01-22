@@ -15,11 +15,11 @@ import com.zhiyicx.thinksnsplus.modules.home.mine.friends.IBaseFriendsRepository
 public interface ChatInfoContract {
 
     interface View extends IBaseView<Presenter>{
-
+        String getChatId();
     }
 
     interface Presenter extends IBasePresenter{
-
+        boolean isGroupOwner();
     }
 
     interface Repository extends IBaseFriendsRepository{
