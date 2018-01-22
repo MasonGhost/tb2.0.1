@@ -2,8 +2,11 @@ package com.zhiyicx.thinksnsplus.modules.wallet.integration.mine;
 
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean;
+
+import java.util.List;
 
 /**
  * @Describe
@@ -58,5 +61,11 @@ public interface MineIntegrationContract {
          * @param tag action tag
          */
         void checkIntegrationConfig(int tag, final boolean isNeedTip);
+
+        /**
+         *
+         * @return advert  for  integration
+         */
+        List<RealAdvertListBean> getIntegrationAdvert();
     }
 }

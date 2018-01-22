@@ -160,4 +160,17 @@ public class AllAdvertListBeanGreenDaoImpl extends CommonCacheImpl<AllAdverListB
         return null;
     }
 
+    /**
+     *
+     * @return 积分页广告
+     */
+    public AllAdverListBean getIntegrationAdvert() {
+
+        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(AdvertConfig.APP_WALLET_INTEGRATION_ADVERT)).build()
+                .list();
+        if (data != null && !data.isEmpty()) {
+            return data.get(0);
+        }
+        return null;
+    }
 }

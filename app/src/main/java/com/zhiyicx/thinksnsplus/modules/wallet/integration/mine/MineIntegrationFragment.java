@@ -114,11 +114,6 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
     }
 
     @Override
-    protected int setLeftImg() {
-        return super.setLeftImg();
-    }
-
-    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_mine_integration;
     }
@@ -145,15 +140,17 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
 
     @Override
     protected void initData() {
-        initAdvert(mActivity, new ArrayList<>());
+        initAdvert(mActivity, mPresenter.getIntegrationAdvert());
     }
 
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
-        mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mRootView.findViewById(R.id.ll_advert));
+        mRootView.findViewById(R.id.ll_advert_tag).setVisibility(View.GONE);
+
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts == null || adverts != null && adverts.isEmpty()) {
-            mDynamicDetailAdvertHeader.hideAdvert();
+            mRootView.findViewById(R.id.ll_advert).setVisibility(View.GONE);
             return;
         }
+        mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mRootView.findViewById(R.id.ll_advert));
         mDynamicDetailAdvertHeader.setAdverts(adverts);
         mDynamicDetailAdvertHeader.setOnItemClickListener((v, position1, url) ->
                 toAdvert(context, adverts.get(position1).getAdvertFormat().getImage().getLink(), adverts.get(position1).getTitle())
@@ -258,7 +255,7 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
     }
 
     /**
-     * the api walletconfig call back
+     * the api integrationconfig call back
      *
      * @param configBean integration config info
      * @param tag        action tag, 1 recharge 2 withdraw
@@ -267,18 +264,18 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
     public void integrationConfigCallBack(IntegrationConfigBean configBean, int tag) {
         Bundle bundle = new Bundle();
         switch (tag) {
-            case WalletPresenter.TAG_RECHARGE:
+            case MineIntegrationPresenter.TAG_RECHARGE:
                 bundle.putSerializable(RechargeFragment.BUNDLE_DATA, configBean);
                 jumpActivity(bundle, RechargeActivity.class);
                 break;
-            case WalletPresenter.TAG_WITHDRAW:
+            case MineIntegrationPresenter.TAG_WITHDRAW:
                 bundle.putSerializable(WithdrawalsFragment.BUNDLE_DATA, configBean);
                 jumpActivity(bundle, WithdrawalsActivity.class);
                 break;
-            case WalletPresenter.TAG_SHOWRULE_POP:
+            case MineIntegrationPresenter.TAG_SHOWRULE_POP:
                 showRulePopupWindow();
                 break;
-            case WalletPresenter.TAG_SHOWRULE_JUMP:
+            case MineIntegrationPresenter.TAG_SHOWRULE_JUMP:
                 jumpWalletRuleActivity();
                 break;
             default:

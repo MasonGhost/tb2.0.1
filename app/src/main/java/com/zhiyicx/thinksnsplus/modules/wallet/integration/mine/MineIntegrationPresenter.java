@@ -6,11 +6,15 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -27,6 +31,14 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 public class MineIntegrationPresenter extends AppBasePresenter<MineIntegrationContract.View> implements MineIntegrationContract.Presenter {
     public static final int DEFAULT_LOADING_SHOW_TIME = 1;
+    /**
+     * action tag
+     */
+    public static final int TAG_DEfault = 0; // do nothing
+    public static final int TAG_RECHARGE = 1; // recharge
+    public static final int TAG_WITHDRAW = 2; // withdraw
+    public static final int TAG_SHOWRULE_POP = 3; // show rulepop
+    public static final int TAG_SHOWRULE_JUMP = 4; // jump rule
 
 
     @Inject
@@ -34,6 +46,8 @@ public class MineIntegrationPresenter extends AppBasePresenter<MineIntegrationCo
     @Inject
     BillRepository mBillRepository;
 
+    @Inject
+    AllAdvertListBeanGreenDaoImpl mAdvertListBeanGreenDao;
 
     /**
      * 用户信息是否拿到了
@@ -169,5 +183,17 @@ public class MineIntegrationPresenter extends AppBasePresenter<MineIntegrationCo
         addSubscrebe(walletConfigSub);
     }
 
-
+    /**
+     *
+     * @return 广告信息
+     */
+    @Override
+    public List<RealAdvertListBean> getIntegrationAdvert() {
+        AllAdverListBean adverBean = mAdvertListBeanGreenDao.getIntegrationAdvert();
+        if (adverBean == null) {
+            return null;
+        } else {
+            return adverBean.getMRealAdvertListBeen();
+        }
+    }
 }
