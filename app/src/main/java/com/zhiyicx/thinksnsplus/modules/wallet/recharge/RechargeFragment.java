@@ -50,7 +50,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 public class RechargeFragment extends TSFragment<RechargeContract.Presenter> implements RechargeContract.View {
-    public static final String BUNDLE_DATA = "walletconfig";
+    public static final String BUNDLE_DATA = "integrationConfig";
 
     @BindView(R.id.ll_recharge_choose_money_item)
     LinearLayout mLlRechargeChooseMoneyItem;

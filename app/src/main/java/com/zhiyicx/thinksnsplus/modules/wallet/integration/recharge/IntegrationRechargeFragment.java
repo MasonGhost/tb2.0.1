@@ -192,15 +192,15 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
         RxView.clicks(mTvRechargeRule)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> {
-                    mPresenter.checkWalletConfig(WalletPresenter.TAG_SHOWRULE_JUMP, true);
-                });
+                .subscribe(aVoid ->
+                        mPresenter.checkWalletConfig(WalletPresenter.TAG_SHOWRULE_JUMP, true)
+                );
         RxView.clicks(mTvToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> {
-                    mActivity.finish();
-                });
+                .subscribe(aVoid ->
+                        mActivity.finish()
+                );
 
 
         // 选择充值方式
