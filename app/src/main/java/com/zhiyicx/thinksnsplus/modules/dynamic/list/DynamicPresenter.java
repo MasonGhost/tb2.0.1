@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
@@ -95,7 +96,6 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
             , DynamicCommentBeanGreenDaoImpl dynamicCommentBeanGreenDao
             , SendDynamicDataBeanV2GreenDaoImpl sendDynamicDataBeanV2GreenDao
             , TopDynamicBeanGreenDaoImpl topDynamicBeanGreenDao
-            , SharePolicy sharePolicy
             , BaseDynamicRepository baseDynamicRepository
     ) {
         super(rootView);
@@ -104,7 +104,9 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
         mDynamicCommentBeanGreenDao = dynamicCommentBeanGreenDao;
         mSendDynamicDataBeanV2GreenDao = sendDynamicDataBeanV2GreenDao;
         mTopDynamicBeanGreenDao = topDynamicBeanGreenDao;
-        mSharePolicy = sharePolicy;
+        if (rootView instanceof Fragment) {
+            mSharePolicy = new UmengSharePolicyImpl(((Fragment) rootView).getActivity());
+        }
         mDynamicRepository = baseDynamicRepository;
     }
 
@@ -450,6 +452,13 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
 
     @Override
     public void shareDynamic(DynamicDetailBeanV2 dynamicBean, Bitmap bitmap) {
+        if (mSharePolicy == null) {
+            if (mRootView instanceof Fragment) {
+                mSharePolicy = new UmengSharePolicyImpl(((Fragment) mRootView).getActivity());
+            } else {
+                return;
+            }
+        }
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mContext.getString(R.string.share));
