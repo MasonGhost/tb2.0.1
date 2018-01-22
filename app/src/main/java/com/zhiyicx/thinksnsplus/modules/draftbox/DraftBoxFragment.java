@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
@@ -18,12 +17,10 @@ import com.zhiyicx.thinksnsplus.modules.draftbox.adapter.AnswerDraftItem;
 import com.zhiyicx.thinksnsplus.modules.draftbox.adapter.PostDraftItem;
 import com.zhiyicx.thinksnsplus.modules.draftbox.adapter.QuestionDraftItem;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.news.PublishAnswerFragmentV2;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -118,11 +115,11 @@ public class DraftBoxFragment extends TSListFragment<DraftBoxContract.Presenter,
             startActivity(intent);
         } else if (draftBean instanceof AnswerDraftBean) {
             AnswerDraftBean realData = (AnswerDraftBean) draftBean;
-            PublishAnswerFragment.startQActivity(getActivity(), PublishType
+            PublishAnswerFragmentV2.startQActivity(getActivity(), PublishType
                     .PUBLISH_ANSWER, realData);
-        }else if (draftBean instanceof PostDraftBean){
+        } else if (draftBean instanceof PostDraftBean) {
             PostDraftBean realData = (PostDraftBean) draftBean;
-            BaseMarkdownActivity.startActivityForPublishPostInDraft(mActivity,realData);
+            BaseMarkdownActivity.startActivityForPublishPostInDraft(mActivity, realData);
         }
     }
 

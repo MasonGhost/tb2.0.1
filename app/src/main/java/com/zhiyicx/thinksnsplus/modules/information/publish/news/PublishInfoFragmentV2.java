@@ -37,6 +37,11 @@ public class PublishInfoFragmentV2 extends MarkdownFragment<PostDraftBean> {
      */
     private ActionPopupWindow mInstructionsPopupWindow;
 
+    /**
+     * 取消提示选择弹框
+     */
+    private ActionPopupWindow mCanclePopupWindow;
+
     private boolean isRefuse;
 
     public static PublishInfoFragmentV2 getInstance(Bundle bundle) {
@@ -54,11 +59,6 @@ public class PublishInfoFragmentV2 extends MarkdownFragment<PostDraftBean> {
     protected String setRightTitle() {
         return getString(R.string.next);
     }
-
-    /**
-     * 取消提示选择弹框
-     */
-    private ActionPopupWindow mCanclePopupWindow;
 
     @Override
     protected void initBundleDataWhenOnCreate() {

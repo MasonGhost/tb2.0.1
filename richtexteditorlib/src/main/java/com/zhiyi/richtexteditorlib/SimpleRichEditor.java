@@ -67,10 +67,12 @@ public class SimpleRichEditor extends RichEditor {
         void onInputListener(int titleLength, int contentLength);
 
         void onAfterInitialLoad(boolean ready);
+
+        void onSettingImageButtionClick();
     }
 
     @SuppressWarnings("unused")
-    public abstract static class OnEditorClickListenerImp implements OnEditorClickListener {
+    public abstract static class BaseOnEditorClickListenerImp implements OnEditorClickListener {
         @Override
         public void onImageClick(Long id) {
 
@@ -135,6 +137,7 @@ public class SimpleRichEditor extends RichEditor {
         addUndo();
         addRedo();
         addImageInsert();
+        addSetting();
 
 //        等效与以下
 //       mLuBottomMenu.
@@ -445,6 +448,25 @@ public class SimpleRichEditor extends RichEditor {
                     InputMethodManager imm = (InputMethodManager) getContext()
                             .getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(SimpleRichEditor.this.getWindowToken(), 0);
+                    return true;
+                }));
+        return this;
+    }
+
+    /**
+     * 自定义的 设置选项
+     *
+     * @return
+     */
+    public SimpleRichEditor addSetting() {
+        addRootCustomItem(ItemIndex.SETTING, getBaseItemFactory().generateItem(
+                getContext(),
+                ItemIndex.SETTING,
+                (item, isSelected) -> {
+                    InputMethodManager imm = (InputMethodManager) getContext()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(SimpleRichEditor.this.getWindowToken(), 0);
+                    mOnEditorClickListener.onSettingImageButtionClick();
                     return true;
                 }));
         return this;

@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.modules.markdown_editor;
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
@@ -26,6 +28,10 @@ public interface MarkdownContract {
         void onFailed(String filePath, long id);
 
         void sendPostSuccess(CirclePostListBean data);
+
+        void publishSuccess(AnswerInfoBean answerBean);
+
+        void updateSuccess();
     }
 
     interface Presenter extends IBaseTouristPresenter {
@@ -36,6 +42,14 @@ public interface MarkdownContract {
         void pareseBody(String body);
 
         void saveDraft(BaseDraftBean postDraftBean);
+
+        void publishAnswer(Long questionId, String body, int anonymity);
+        void updateAnswer(Long answerId, String body, int anonymity);
+        void updateQuestion(Long questionId, String body, int anonymity);
+
+        void deleteAnswer(AnswerDraftBean answer);
+
+        void saveAnswer(AnswerDraftBean answerDraftBean);
     }
 
 }

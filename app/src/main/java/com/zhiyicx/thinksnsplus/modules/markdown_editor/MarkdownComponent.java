@@ -5,6 +5,7 @@ import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.base.InjectComponent;
 import com.zhiyicx.thinksnsplus.modules.circle.publish.PublishPostActivity;
 import com.zhiyicx.thinksnsplus.modules.information.publish.news.PublishInfoActivityV2;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.news.PublishAnswerActivityV2;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.news.PublishQuestionActivityV2;
 
 import dagger.Component;
@@ -19,5 +20,8 @@ import dagger.Component;
 @Component(dependencies = AppComponent.class, modules = MarkdownPresenterModule.class)
 public interface MarkdownComponent extends InjectComponent<PublishPostActivity> {
     void inject(PublishInfoActivityV2 infoActivity);
+
     void inject(PublishQuestionActivityV2 questionActivity);
+
+    void inject(PublishAnswerActivityV2 answerActivity);
 }

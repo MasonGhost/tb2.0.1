@@ -29,6 +29,7 @@ import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
@@ -212,6 +213,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
 
     /**
      * 右上角 点击事件
+     *
      * @return true：提取 markdown 内容，做发布准备，false：提取整个网页内容
      */
     protected boolean rightClickkNeedMarkdown() {
@@ -220,7 +222,8 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
 
     /**
      * 左上角 点击事件
-     * @return true,提取 markdown 内容，做发布准备
+     *
+     * @return true, 提取 markdown 内容，做发布准备
      */
     protected boolean leftClickNeedMarkdown() {
         return false;
@@ -231,6 +234,14 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
      */
     protected void pareseBodyResult() {
 
+    }
+
+    /**
+     * 设置内容的默认文字，仅支持问答部分修改，待完善中
+     * @return
+     */
+    protected String setInputInitText() {
+        return getString(R.string.circle_post_default_title);
     }
 
     /**
@@ -395,6 +406,11 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
     }
 
     @Override
+    public void onSettingImageButtionClick() {
+
+    }
+
+    @Override
     public void onLinkClick(String name, String url) {
         showLinkDialog(LinkDialog.createLinkDialog(name, url), true);
     }
@@ -480,6 +496,16 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
         CirclePostDetailActivity.startActivity(getActivity(), data.getGroup_id(), data.getId(),
                 false, canGotoCircle());
         getActivity().finish();
+    }
+
+    @Override
+    public void publishSuccess(AnswerInfoBean answerBean) {
+
+    }
+
+    @Override
+    public void updateSuccess() {
+
     }
 
     @Override
@@ -675,13 +701,13 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
                 "    <link rel=\"stylesheet\" href=\"./index.css\">\n" +
                 "</head>\n" +
                 "<body contenteditable=\"false\">\n" +
-                "    <div class=\"content\" contenteditable=\"false\">\n" +
+                "    <div class=\"content\" contenteditable=\"false\" id=\"content\">\n" +
                 "        <header>\n" +
                 "            <div class=\"title\" title-placeholder=\"请输入标题\" id=\"title\" contenteditable=\"true\">" + title + "</div>\n" +
                 "            <span id=\"stay\" style=\"display: none;text-align:right\"><span id=\"txtCount\"></span>/20</span>\n" +
                 "        </header>\n" +
                 "        <div class=\"line\"></div>\n" +
-                "        <div id=\"editor\" contenteditable=\"true\" editor-placeholder=\"请输入正文\">" + content + "</div>\n" +
+                "        <div id=\"editor\" contenteditable=\"true\" editor-placeholder=\"" + setInputInitText() + "\">" + content + "</div>\n" +
                 "    </div>\n" +
                 "    <script src=\"./richeditor.js\" id=\"script\"></script>\n" +
                 "</body>\n" +
