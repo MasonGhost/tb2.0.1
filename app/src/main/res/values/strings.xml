@@ -788,6 +788,11 @@
     <string name="chat_view_all_members">查看群成员</string>
     <string name="chat_group_manager">群管理</string>
     <string name="chat_delete_group">解散群组</string>
+    <string name="chat_delete_group_alert">是否解散群组？</string>
+    <string name="chat_delete">解散</string>
     <string name="chat_set_group_portrait">设置群头像</string>
     <string name="chat_set_group_name">群名称</string>
+    <string name="chat_quit_group">退出群聊</string>
+    <string name="chat_quit_group_alert">是否退出群组？</string>
+    <string name="chat_quit">退出</string>
 </resources>

@@ -133,6 +133,9 @@
                 android:id="@+id/rv_member_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:scrollbars="none"
                 android:layout_marginTop="@dimen/spacing_large"
                 android:layout_marginBottom="@dimen/spacing_large"/>
 
@@ -208,6 +211,7 @@
                 android:text="@string/chat_info_shielded_message_alert"/>
 
         <android.support.v7.widget.SwitchCompat
+                android:id="@+id/sc_block_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
