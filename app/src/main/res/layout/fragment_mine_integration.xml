@@ -31,7 +31,7 @@
                 android:paddingTop="@dimen/spacing_big_large"
                 android:text="@string/current_integration"
                 android:textColor="@color/white"
-                android:textSize="@dimen/size_icon_assist"
+                android:textSize="@dimen/size_content_assist"
                 />
 
             <TextView
