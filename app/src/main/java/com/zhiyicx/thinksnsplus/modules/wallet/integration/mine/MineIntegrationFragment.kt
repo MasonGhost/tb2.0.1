@@ -56,39 +56,38 @@ import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.TAG_SHOWRULE_POP
 class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(), MineIntegrationContract.View {
 
     @BindView(R.id.tv_mine_money)
-    @JvmField
-    var mTvMineMoney: TextView? = null
+    lateinit var mTvMineMoney: TextView
+
     @BindView(R.id.bt_recharge)
-    @JvmField
-    var mBtReCharge: CombinationButton? = null
+    lateinit var mBtReCharge: CombinationButton
+
     @BindView(R.id.bt_withdraw)
-    @JvmField
-    var mBtWithdraw: CombinationButton? = null
+    lateinit var mBtWithdraw: CombinationButton
+
     @BindView(R.id.bt_mine_integration)
-    @JvmField
-    var btMineIntegration: CombinationButton? = null
+    lateinit var btMineIntegration: CombinationButton
+
     @BindView(R.id.tv_recharge_and_withdraw_rule)
-    @JvmField
-    var mTvReChargeAndWithdrawRule: TextView? = null
+    lateinit var mTvReChargeAndWithdrawRule: TextView
+
     @BindView(R.id.tv_toolbar_center)
-    @JvmField
-    var mTvToolbarCenter: TextView? = null
+    lateinit var mTvToolbarCenter: TextView
+
     @BindView(R.id.tv_toolbar_left)
-    @JvmField
-    var mTvToolbarLeft: TextView? = null
+    lateinit var mTvToolbarLeft: TextView
+
     @BindView(R.id.tv_toolbar_right)
-    @JvmField
-    var mTvToolbarRight: TextView? = null
+    lateinit var mTvToolbarRight: TextView
+
     @BindView(R.id.toolbar)
-    @JvmField
-    var mToolbar: Toolbar? = null
+    lateinit var mToolbar: Toolbar
 
 
     /**
      * 充值提示规则选择弹框
      */
-    private var mRulePop: CenterInfoPopWindow? = null
-    private var mDynamicDetailAdvertHeader: DynamicDetailAdvertHeader? = null
+    private  var mRulePop: CenterInfoPopWindow? = null
+    private lateinit var mDynamicDetailAdvertHeader: DynamicDetailAdvertHeader
 
     override fun showToolBarDivider(): Boolean {
         return false
@@ -117,12 +116,12 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
     override fun initView(rootView: View) {
         setStatusPlaceholderViewBackgroundColor(android.R.color.transparent)
         mIvRefresh = mRootView.findViewById(R.id.iv_refresh) as ImageView
-        mToolbar!!.setBackgroundResource(android.R.color.transparent)
-        (mToolbar!!.layoutParams as LinearLayout.LayoutParams).setMargins(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0)
-        mTvToolbarCenter!!.setTextColor(ContextCompat.getColor(mActivity, R.color.white))
-        mTvToolbarCenter!!.text = getString(R.string.mine_integration)
-        mTvToolbarRight!!.text = getString(R.string.detail)
-        mTvToolbarLeft!!.setCompoundDrawables(UIUtils.getCompoundDrawables(context, R.mipmap.topbar_back_white), null, null, null)
+        mToolbar.setBackgroundResource(android.R.color.transparent)
+        (mToolbar.layoutParams as LinearLayout.LayoutParams).setMargins(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0)
+        mTvToolbarCenter.setTextColor(ContextCompat.getColor(mActivity, R.color.white))
+        mTvToolbarCenter.text = getString(R.string.mine_integration)
+        mTvToolbarRight.text = getString(R.string.detail)
+        mTvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(context, R.mipmap.topbar_back_white), null, null, null)
 
         initListener()
     }
@@ -144,8 +143,8 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
             return
         }
         mDynamicDetailAdvertHeader = DynamicDetailAdvertHeader(context, mRootView.findViewById(R.id.ll_advert))
-        mDynamicDetailAdvertHeader!!.setAdverts(adverts)
-        mDynamicDetailAdvertHeader!!.setOnItemClickListener { v, position1, url -> toAdvert(context, adverts[position1].advertFormat!!.image.link, adverts[position1].title) }
+        mDynamicDetailAdvertHeader.setAdverts(adverts)
+        mDynamicDetailAdvertHeader.setOnItemClickListener { v, position1, url -> toAdvert(context, adverts[position1].advertFormat!!.image.link, adverts[position1].title) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -162,7 +161,7 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
 
     private fun initListener() {
         // 充值积分
-        RxView.clicks(mBtReCharge!!)
+        RxView.clicks(mBtReCharge)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe { _ ->
@@ -170,21 +169,21 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
                     startActivity(intent)
                 }
         // 提取积分
-        RxView.clicks(mBtWithdraw!!)
+        RxView.clicks(mBtWithdraw)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe { _ -> mPresenter.checkIntegrationConfig(WalletPresenter.TAG_WITHDRAW, true) }     // 提现
         // 积分商城
-        RxView.clicks(btMineIntegration!!)
+        RxView.clicks(btMineIntegration)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe { _ -> TSDevelopActivity.startDeveloperAcitvity(mActivity, getString(R.string.integration_shop), R.mipmap.pic_default_mall) }
         // 积分规则
-        RxView.clicks(mTvReChargeAndWithdrawRule!!)
+        RxView.clicks(mTvReChargeAndWithdrawRule)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe { _ -> mPresenter.checkIntegrationConfig(WalletPresenter.TAG_SHOWRULE_JUMP, true) }
-        RxView.clicks(mTvToolbarLeft!!)
+        RxView.clicks(mTvToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe { _ -> mActivity.finish() }
@@ -223,7 +222,7 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
     }
 
     override fun updateBalance(balance: Long) {
-        mTvMineMoney!!.text = balance.toString()
+        mTvMineMoney.text = balance.toString()
     }
 
     override fun handleLoading(isShow: Boolean) {
