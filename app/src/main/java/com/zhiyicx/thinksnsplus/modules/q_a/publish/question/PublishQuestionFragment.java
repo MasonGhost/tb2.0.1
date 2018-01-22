@@ -21,7 +21,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.news.PublishQuestionActivityV2;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.EditeQuestionDetailActivity;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -116,7 +116,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     }
 
     private void addTopic() {
-        Intent intent = new Intent(getActivity(), PublishQuestionActivityV2.class);
+        Intent intent = new Intent(getActivity(), EditeQuestionDetailActivity.class);
         Bundle bundle = new Bundle();
         saveQuestion();
         bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mDraftQuestion);

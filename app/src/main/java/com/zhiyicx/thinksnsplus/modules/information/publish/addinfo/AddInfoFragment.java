@@ -19,7 +19,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
-import com.zhiyicx.thinksnsplus.modules.information.publish.news.PublishInfoFragmentV2;
+import com.zhiyicx.thinksnsplus.modules.information.publish.detail.EditeInfoDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.information.publish.uploadcover.UploadCoverActivity;
 import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
 import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
@@ -94,7 +94,7 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
     protected void setRightClick() {
         Intent intent = new Intent(getActivity(), UploadCoverActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(BUNDLE_PUBLISH_BEAN, PublishInfoFragmentV2.mInfoPublishBean);
+        bundle.putParcelable(BUNDLE_PUBLISH_BEAN, EditeInfoDetailFragment.mInfoPublishBean);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -114,15 +114,15 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
         mToolbarRight.setEnabled(false);
         initListener();
 
-        if (PublishInfoFragmentV2.mInfoPublishBean.getTags() != null) {
-            mUserTagBeens.addAll(PublishInfoFragmentV2.mInfoPublishBean.getTags());
+        if (EditeInfoDetailFragment.mInfoPublishBean.getTags() != null) {
+            mUserTagBeens.addAll(EditeInfoDetailFragment.mInfoPublishBean.getTags());
         }
-        if (!TextUtils.isEmpty(PublishInfoFragmentV2.mInfoPublishBean.getCategoryName())) {
+        if (!TextUtils.isEmpty(EditeInfoDetailFragment.mInfoPublishBean.getCategoryName())) {
             mToolbarRight.setEnabled(true);
-            mBtAddCategory.setRightText(PublishInfoFragmentV2.mInfoPublishBean.getCategoryName());
-            mTvFrom.setEditInputString(PublishInfoFragmentV2.mInfoPublishBean.getFrom());
-            mTvAuthor.setEditInputString(PublishInfoFragmentV2.mInfoPublishBean.getAuthor());
-            mEtInfoSummary.setText(PublishInfoFragmentV2.mInfoPublishBean.getSubject());
+            mBtAddCategory.setRightText(EditeInfoDetailFragment.mInfoPublishBean.getCategoryName());
+            mTvFrom.setEditInputString(EditeInfoDetailFragment.mInfoPublishBean.getFrom());
+            mTvAuthor.setEditInputString(EditeInfoDetailFragment.mInfoPublishBean.getAuthor());
+            mEtInfoSummary.setText(EditeInfoDetailFragment.mInfoPublishBean.getSubject());
         }
 
         mUserInfoTagsAdapter = new UserInfoTagsAdapter(mUserTagBeens, getContext());
@@ -168,13 +168,13 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
         RxTextView.afterTextChangeEvents(mTvFrom.getEditInput())
                 .compose(this.bindToLifecycle())
                 .subscribe(charSeques -> {
-                    PublishInfoFragmentV2.mInfoPublishBean.setFrom(charSeques.editable().toString().trim());
+                    EditeInfoDetailFragment.mInfoPublishBean.setFrom(charSeques.editable().toString().trim());
                 });
         // 作者
         RxTextView.afterTextChangeEvents(mTvAuthor.getEditInput())
                 .compose(this.bindToLifecycle())
                 .subscribe(charSeques -> {
-                    PublishInfoFragmentV2.mInfoPublishBean.setAuthor(charSeques.editable().toString().trim());
+                    EditeInfoDetailFragment.mInfoPublishBean.setAuthor(charSeques.editable().toString().trim());
                 });
         // 摘要
         RxTextView.afterTextChangeEvents(mEtInfoSummary.getEtContent())
@@ -196,15 +196,15 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
                 mUserTagBeens.clear();
                 mUserTagBeens.addAll(choosedTags);
                 mUserInfoTagsAdapter.notifyDataChanged();
-                PublishInfoFragmentV2.mInfoPublishBean.setTags(mUserTagBeens);
+                EditeInfoDetailFragment.mInfoPublishBean.setTags(mUserTagBeens);
 
             } else if (requestCode == REQUST_CODE_CATEGORY) {
                 InfoTypeCatesBean category = data.getExtras().getParcelable(AddInfoCategoryFragment.BUNDLE_PUBLISH_CATEGORY);
                 if (category == null) {
                     return;
                 }
-                PublishInfoFragmentV2.mInfoPublishBean.setCategoryId(category.getId());
-                PublishInfoFragmentV2.mInfoPublishBean.setCategoryName(category.getName());
+                EditeInfoDetailFragment.mInfoPublishBean.setCategoryId(category.getId());
+                EditeInfoDetailFragment.mInfoPublishBean.setCategoryName(category.getName());
                 mBtAddCategory.setRightText(category.getName());
 
             }
@@ -214,7 +214,7 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
     }
 
     private void checkNextButton() {
-        if (PublishInfoFragmentV2.mInfoPublishBean.getCategoryId() != 0 && !mUserTagBeens.isEmpty()) {
+        if (EditeInfoDetailFragment.mInfoPublishBean.getCategoryId() != 0 && !mUserTagBeens.isEmpty()) {
             mToolbarRight.setEnabled(true);
         } else {
             mToolbarRight.setEnabled(false);

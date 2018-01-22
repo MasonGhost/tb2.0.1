@@ -649,9 +649,9 @@
                   android:screenOrientation="portrait"/>
         <activity android:name=".modules.circle.manager.members.blacklist.BlackListActivity"
                   android:screenOrientation="portrait"/>
-        <activity android:name=".modules.information.publish.news.PublishInfoActivityV2"/>
-        <activity android:name=".modules.q_a.publish.news.PublishQuestionActivityV2"/>
-        <activity android:name=".modules.q_a.answer.news.PublishAnswerActivityV2"/>
+        <activity android:name=".modules.information.publish.detail.EditeInfoDetailActivity"/>
+        <activity android:name=".modules.q_a.publish.detail.EditeQuestionDetailActivity"/>
+        <activity android:name=".modules.q_a.answer.news.EditeAnswerDetailActivity"/>
     </application>
 
 </manifest>

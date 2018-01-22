@@ -34,7 +34,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
-import com.zhiyicx.thinksnsplus.modules.q_a.answer.news.PublishAnswerFragmentV2;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.news.EditeAnswerDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerListItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerListItem.OnGoToWatchClickListener;
@@ -320,7 +320,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
             startActivity(intent);
         } else {
             // 跳转发布回答
-            PublishAnswerFragmentV2.startQActivity(getActivity(), PublishType
+            EditeAnswerDetailFragment.startQActivity(getActivity(), PublishType
                             .PUBLISH_ANSWER, mQaListInfoBean.getId()
                     , null, mQaListInfoBean.getSubject(), mQaListInfoBean.getAnonymity());
         }

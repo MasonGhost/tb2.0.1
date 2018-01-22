@@ -77,6 +77,12 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
     protected TextView mCircleName;
 
     /**
+     * 编辑器加载完成后 再 装载 草稿，不然 js 调不起来
+     * 防止重复加载草稿
+     */
+    private boolean canLoadDraft = true;
+
+    /**
      * 记录上传成功的照片 键值对：时间戳(唯一) -- 图片地址
      */
     protected HashMap<Long, String> mInsertedImages;
@@ -164,12 +170,9 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
      * 在这里初始化 编辑器
      */
     protected void editorPreLoad() {
-        Draft draft = getDraftData();
-        if (draft == null) {
+        mDraftBean = getDraftData();
+        if (mDraftBean == null) {
             mRichTextView.load();
-        } else {
-            loadDraft(draft);
-            restoreImageData();
         }
     }
 
@@ -238,6 +241,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
 
     /**
      * 设置内容的默认文字，仅支持问答部分修改，待完善中
+     *
      * @return
      */
     protected String setInputInitText() {
@@ -347,8 +351,6 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
         mFailedImages = new HashMap<>();
         mImages = new ArrayList<>();
 
-        editorPreLoad();
-
         initListener();
     }
 
@@ -359,6 +361,8 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
+
+        editorPreLoad();
     }
 
     @Override
@@ -431,9 +435,18 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
         setSynToDynamicCbVisiable(!isSelect);
     }
 
+    /**
+     * 编辑器加载完成
+     *
+     * @param ready
+     */
     @Override
     public void onAfterInitialLoad(boolean ready) {
-
+        if (mDraftBean != null && ready && canLoadDraft) {
+            loadDraft(mDraftBean);
+            restoreImageData();
+            canLoadDraft = false;
+        }
     }
 
     @Override

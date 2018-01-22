@@ -224,8 +224,8 @@ public class SimpleRichEditor extends RichEditor {
             }
 
         });
-        setOnLinkClickListener((linkName, url) -> showChangeLinkDialog(linkName, url));
-        setOnImageClickListener(id -> showImageClick(id));
+        setOnLinkClickListener(this::showChangeLinkDialog);
+        setOnImageClickListener(this::showImageClick);
 
         setOnInitialLoadListener(isReady -> {
             if (isReady) {
@@ -463,9 +463,6 @@ public class SimpleRichEditor extends RichEditor {
                 getContext(),
                 ItemIndex.SETTING,
                 (item, isSelected) -> {
-                    InputMethodManager imm = (InputMethodManager) getContext()
-                            .getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(SimpleRichEditor.this.getWindowToken(), 0);
                     mOnEditorClickListener.onSettingImageButtionClick();
                     return true;
                 }));

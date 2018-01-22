@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.answer.news;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -10,8 +11,9 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.news.PublishQuestionFragmentV2;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.EditeQuestionDetailFragment;
 
 /**
  * @Author Jliuer
@@ -19,7 +21,7 @@ import com.zhiyicx.thinksnsplus.modules.q_a.publish.news.PublishQuestionFragment
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class PublishAnswerFragmentV2 extends PublishQuestionFragmentV2 {
+public class EditeAnswerDetailFragment extends EditeQuestionDetailFragment {
 
     public static final String BUNDLE_SOURCE_ID = "source_id";
     public static final String BUNDLE_SOURCE_BODY = "source_body";
@@ -36,13 +38,18 @@ public class PublishAnswerFragmentV2 extends PublishQuestionFragmentV2 {
     private String mBody;
     private String mTitle;
 
-    public static PublishAnswerFragmentV2 newInstance(Bundle bundle) {
+    public static EditeAnswerDetailFragment newInstance(Bundle bundle) {
         if (bundle == null || bundle.getLong(BUNDLE_SOURCE_ID) <= 0) {
             throw new IllegalArgumentException("questin_id can not be null");
         }
-        PublishAnswerFragmentV2 publishContentFragment = new PublishAnswerFragmentV2();
+        EditeAnswerDetailFragment publishContentFragment = new EditeAnswerDetailFragment();
         publishContentFragment.setArguments(bundle);
         return publishContentFragment;
+    }
+
+    @Override
+    protected boolean leftClickNeedMarkdown() {
+        return false;
     }
 
     @Override
@@ -81,7 +88,6 @@ public class PublishAnswerFragmentV2 extends PublishQuestionFragmentV2 {
 
     @Override
     protected void initData() {
-        super.initData();
         mBody = getArguments().getString(BUNDLE_SOURCE_BODY, "");
         mType = (PublishType) getArguments().getSerializable(BUNDLE_SOURCE_TYPE);
         mTitle = getArguments().getString(BUNDLE_SOURCE_TITLE, "");
@@ -93,6 +99,16 @@ public class PublishAnswerFragmentV2 extends PublishQuestionFragmentV2 {
         } else if (mType == PublishType.UPDATE_QUESTION) {
             mToolbarCenter.setText(getString(R.string.qa_update_publish));
         }
+        super.initData();
+    }
+
+    @Override
+    protected PostDraftBean getDraftData() {
+        if (!TextUtils.isEmpty(mBody)) {
+            mDraftBean = new PostDraftBean();
+            mDraftBean.setHtml(getHtml("", pareseBody(mBody)));
+        }
+        return mDraftBean;
     }
 
     @Override
@@ -154,7 +170,7 @@ public class PublishAnswerFragmentV2 extends PublishQuestionFragmentV2 {
     public static void startQActivity(Context context, PublishType type, long sourceId,
                                       String body, String title, int anonymity) {
 
-        Intent intent = new Intent(context, PublishAnswerActivityV2.class);
+        Intent intent = new Intent(context, EditeAnswerDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable(BUNDLE_SOURCE_TYPE, type);
         bundle.putLong(BUNDLE_SOURCE_ID, sourceId);
@@ -167,7 +183,7 @@ public class PublishAnswerFragmentV2 extends PublishQuestionFragmentV2 {
 
     public static void startQActivity(Context context, PublishType type, AnswerDraftBean realData) {
 
-        Intent intent = new Intent(context, PublishAnswerActivityV2.class);
+        Intent intent = new Intent(context, EditeAnswerDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable(BUNDLE_SOURCE_TYPE, type);
         bundle.putLong(BUNDLE_SOURCE_ID, realData.getId());

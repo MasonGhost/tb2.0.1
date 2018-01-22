@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.q_a.publish.news;
+package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail;
 
 import android.content.Context;
 import android.content.Intent;
@@ -27,7 +27,7 @@ import static com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class PublishQuestionFragmentV2 extends MarkdownFragment<PostDraftBean> {
+public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean> {
 
     protected boolean isBack;
 
@@ -53,8 +53,8 @@ public class PublishQuestionFragmentV2 extends MarkdownFragment<PostDraftBean> {
         return true;
     }
 
-    public static PublishQuestionFragmentV2 newInstance(Bundle bundle) {
-        PublishQuestionFragmentV2 markdownFragment = new PublishQuestionFragmentV2();
+    public static EditeQuestionDetailFragment newInstance(Bundle bundle) {
+        EditeQuestionDetailFragment markdownFragment = new EditeQuestionDetailFragment();
         markdownFragment.setArguments(bundle);
         return markdownFragment;
     }
@@ -93,6 +93,7 @@ public class PublishQuestionFragmentV2 extends MarkdownFragment<PostDraftBean> {
 
     @Override
     public void onAfterInitialLoad(boolean ready) {
+        super.onAfterInitialLoad(ready);
         if (ready) {
             mRichTextView.hideTitle();
         }

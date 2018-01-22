@@ -1,21 +1,22 @@
-package com.zhiyicx.thinksnsplus.modules.q_a.publish.news;
+package com.zhiyicx.thinksnsplus.modules.q_a.answer.news;
 
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.DaggerMarkdownComponent;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownPresenterModule;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.EditeQuestionDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.EditeQuestionDetailFragment;
 
 /**
  * @Author Jliuer
- * @Date 2018/01/19/11:30
+ * @Date 2018/01/22/11:36
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class PublishQuestionActivityV2 extends BaseMarkdownActivity<PublishQuestionFragmentV2> {
+public class EditeAnswerDetailActivity extends EditeQuestionDetailActivity {
 
     @Override
-    protected PublishQuestionFragmentV2 getYourFragment() {
-        return PublishQuestionFragmentV2.newInstance(getIntent().getExtras());
+    protected EditeQuestionDetailFragment getYourFragment() {
+        return EditeAnswerDetailFragment.newInstance(getIntent().getExtras());
     }
 
     @Override
@@ -26,4 +27,6 @@ public class PublishQuestionActivityV2 extends BaseMarkdownActivity<PublishQuest
                 .markdownPresenterModule(new MarkdownPresenterModule(mContanierFragment))
                 .build().inject(this);
     }
+
+
 }

@@ -1,10 +1,8 @@
-package com.zhiyicx.thinksnsplus.modules.information.publish.news;
+package com.zhiyicx.thinksnsplus.modules.information.publish.detail;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 
-import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
@@ -15,11 +13,6 @@ import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoActiv
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
 
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 
 /**
  * @Author Jliuer
@@ -27,7 +20,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class PublishInfoFragmentV2 extends MarkdownFragment<PostDraftBean> {
+public class EditeInfoDetailFragment extends MarkdownFragment<PostDraftBean> {
 
     public static final String INFO_REFUSE = "info_refuse";
     public static InfoPublishBean mInfoPublishBean;
@@ -44,10 +37,10 @@ public class PublishInfoFragmentV2 extends MarkdownFragment<PostDraftBean> {
 
     private boolean isRefuse;
 
-    public static PublishInfoFragmentV2 getInstance(Bundle bundle) {
-        PublishInfoFragmentV2 publishInfoFragmentV2 = new PublishInfoFragmentV2();
-        publishInfoFragmentV2.setArguments(bundle);
-        return publishInfoFragmentV2;
+    public static EditeInfoDetailFragment getInstance(Bundle bundle) {
+        EditeInfoDetailFragment editeInfoDetailFragment = new EditeInfoDetailFragment();
+        editeInfoDetailFragment.setArguments(bundle);
+        return editeInfoDetailFragment;
     }
 
     @Override

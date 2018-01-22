@@ -18,7 +18,7 @@ import com.zhiyicx.thinksnsplus.modules.draftbox.adapter.PostDraftItem;
 import com.zhiyicx.thinksnsplus.modules.draftbox.adapter.QuestionDraftItem;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
-import com.zhiyicx.thinksnsplus.modules.q_a.answer.news.PublishAnswerFragmentV2;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.news.EditeAnswerDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -115,7 +115,7 @@ public class DraftBoxFragment extends TSListFragment<DraftBoxContract.Presenter,
             startActivity(intent);
         } else if (draftBean instanceof AnswerDraftBean) {
             AnswerDraftBean realData = (AnswerDraftBean) draftBean;
-            PublishAnswerFragmentV2.startQActivity(getActivity(), PublishType
+            EditeAnswerDetailFragment.startQActivity(getActivity(), PublishType
                     .PUBLISH_ANSWER, realData);
         } else if (draftBean instanceof PostDraftBean) {
             PostDraftBean realData = (PostDraftBean) draftBean;

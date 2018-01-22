@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.information.publish.news;
+package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail;
 
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
@@ -7,15 +7,15 @@ import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownPresenterModule;
 
 /**
  * @Author Jliuer
- * @Date 2018/01/18/9:48
+ * @Date 2018/01/19/11:30
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class PublishInfoActivityV2 extends BaseMarkdownActivity<PublishInfoFragmentV2> {
+public class EditeQuestionDetailActivity extends BaseMarkdownActivity<EditeQuestionDetailFragment> {
 
     @Override
-    protected PublishInfoFragmentV2 getYourFragment() {
-        return PublishInfoFragmentV2.getInstance(getIntent().getExtras());
+    protected EditeQuestionDetailFragment getYourFragment() {
+        return EditeQuestionDetailFragment.newInstance(getIntent().getExtras());
     }
 
     @Override

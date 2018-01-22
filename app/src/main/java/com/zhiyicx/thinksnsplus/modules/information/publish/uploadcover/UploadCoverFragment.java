@@ -22,11 +22,10 @@ import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.information.my_info.ManuscriptsActivity;
 import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoContract;
-import com.zhiyicx.thinksnsplus.modules.information.publish.news.PublishInfoFragmentV2;
+import com.zhiyicx.thinksnsplus.modules.information.publish.detail.EditeInfoDetailFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.List;
@@ -36,7 +35,6 @@ import butterknife.BindView;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoFragment.BUNDLE_PUBLISH_BEAN;
 
 /**
  * @Describe
@@ -100,11 +98,11 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
         super.setRightClick();
         mIvInfoCoverIamge.setVisibility(View.GONE);
         mTvInfoCover.setVisibility(View.VISIBLE);
-        int imageId = RegexUtils.getImageId(PublishInfoFragmentV2.mInfoPublishBean.getContent());
-        if (PublishInfoFragmentV2.mInfoPublishBean.isRefuse()) {
-            PublishInfoFragmentV2.mInfoPublishBean.setImage((long) imageId < 0 ? null : (long) imageId);
+        int imageId = RegexUtils.getImageId(EditeInfoDetailFragment.mInfoPublishBean.getContent());
+        if (EditeInfoDetailFragment.mInfoPublishBean.isRefuse()) {
+            EditeInfoDetailFragment.mInfoPublishBean.setImage((long) imageId < 0 ? null : (long) imageId);
         } else {
-            PublishInfoFragmentV2.mInfoPublishBean.setImage(PublishInfoFragmentV2.mInfoPublishBean.getCover() < 0 ? null : (long) PublishInfoFragmentV2.mInfoPublishBean.getCover());
+            EditeInfoDetailFragment.mInfoPublishBean.setImage(EditeInfoDetailFragment.mInfoPublishBean.getCover() < 0 ? null : (long) EditeInfoDetailFragment.mInfoPublishBean.getCover());
         }
 
     }
@@ -151,7 +149,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
         if (showUplaoding()) {
             showSnackSuccessMessage(getString(R.string.cover_upload_success));
         }
-        PublishInfoFragmentV2.mInfoPublishBean.setImage((long) id);
+        EditeInfoDetailFragment.mInfoPublishBean.setImage((long) id);
         mBtSure.setEnabled(true);
     }
 
@@ -193,19 +191,19 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
-        if (PublishInfoFragmentV2.mInfoPublishBean.isRefuse() && PublishInfoFragmentV2.mInfoPublishBean.getImage() != null) {
+        if (EditeInfoDetailFragment.mInfoPublishBean.isRefuse() && EditeInfoDetailFragment.mInfoPublishBean.getImage() != null) {
             int w = getResources().getDimensionPixelSize(R.dimen.upload_info_cover_width);
             int h = getResources().getDimensionPixelSize(R.dimen.upload_info_cover_height);
             mTvInfoCover.setVisibility(View.GONE);
             mIvInfoCoverIamge.setVisibility(View.VISIBLE);
 
             Glide.with(getActivity())
-                    .load(ImageUtils.imagePathConvertV2(PublishInfoFragmentV2.mInfoPublishBean.getImage().intValue(), w, h, ImageZipConfig.IMAGE_70_ZIP))
+                    .load(ImageUtils.imagePathConvertV2(EditeInfoDetailFragment.mInfoPublishBean.getImage().intValue(), w, h, ImageZipConfig.IMAGE_70_ZIP))
                     .centerCrop()
                     .into(mIvInfoCoverIamge);
         }
         mBtSure.setText(getString(mPresenter.getSystemConfigBean().getNewsContribute().hasPay()
-                && !PublishInfoFragmentV2.mInfoPublishBean.isRefuse() ? R.string.publish_withpay_info : R.string.publish_info));
+                && !EditeInfoDetailFragment.mInfoPublishBean.isRefuse() ? R.string.publish_withpay_info : R.string.publish_info));
 
     }
 
@@ -226,12 +224,12 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     // 不要封面也可以发布了
-//                    if (PublishInfoFragmentV2.mInfoPublishBean.getImage() <= 0 && PublishInfoFragmentV2.mInfoPublishBean.getCover() <= 0) {
+//                    if (EditeInfoDetailFragment.mInfoPublishBean.getImage() <= 0 && EditeInfoDetailFragment.mInfoPublishBean.getCover() <= 0) {
 //                        initWithdrawalsInstructionsPop();
 //                        return;
 //                    }
-                    if (PublishInfoFragmentV2.mInfoPublishBean.isRefuse()) {
-                        mPresenter.publishInfo(PublishInfoFragmentV2.mInfoPublishBean);
+                    if (EditeInfoDetailFragment.mInfoPublishBean.isRefuse()) {
+                        mPresenter.publishInfo(EditeInfoDetailFragment.mInfoPublishBean);
                         return;
                     }
                     initPayInfoPopWindow();
@@ -243,12 +241,12 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
         if (prompt == Prompt.DONE) {
             Intent intent = new Intent();
-            if (PublishInfoFragmentV2.mInfoPublishBean.isRefuse()) {
+            if (EditeInfoDetailFragment.mInfoPublishBean.isRefuse()) {
                 intent.setClass(getActivity(), ManuscriptsActivity.class);
             } else {
                 intent.setClass(getActivity(), InfoActivity.class);
             }
-            PublishInfoFragmentV2.mInfoPublishBean = null;
+            EditeInfoDetailFragment.mInfoPublishBean = null;
             startActivity(intent);
             mActivity.finish();
         }
@@ -256,7 +254,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
 
     private void initPayInfoPopWindow() {
         if (!mPresenter.getSystemConfigBean().getNewsContribute().hasPay()) {
-            mPresenter.publishInfo(PublishInfoFragmentV2.mInfoPublishBean);
+            mPresenter.publishInfo(EditeInfoDetailFragment.mInfoPublishBean);
             return;
         }
         if (mPayInfoPopWindow != null) {
@@ -273,17 +271,17 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(R.string.publish_pay_info) + getString(R
-                        .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(PublishInfoFragmentV2.mInfoPublishBean
+                        .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(EditeInfoDetailFragment.mInfoPublishBean
                         .getAmout(), mPresenter.getRatio()), mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.send_info_pay))
                 .buildItem1Str(getString(R.string.publish_info_pay_in))
                 .buildItem2Str(getString(R.string.publish_info_pay_out))
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig
-                        .realCurrency2GameCurrency(PublishInfoFragmentV2.mInfoPublishBean.getAmout(), mPresenter.getRatio())))
+                        .realCurrency2GameCurrency(EditeInfoDetailFragment.mInfoPublishBean.getAmout(), mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
-///                    PublishInfoFragmentV2.mInfoPublishBean.setContent(PublishInfoFragmentV2.mInfoPublishBean.getSubject() + PublishInfoFragmentV2.mInfoPublishBean.getContent());
-                    mPresenter.publishInfo(PublishInfoFragmentV2.mInfoPublishBean);
+///                    EditeInfoDetailFragment.mInfoPublishBean.setContent(EditeInfoDetailFragment.mInfoPublishBean.getSubject() + EditeInfoDetailFragment.mInfoPublishBean.getContent());
+                    mPresenter.publishInfo(EditeInfoDetailFragment.mInfoPublishBean);
                     mPayInfoPopWindow.hide();
                 })
                 .buildCenterPopWindowItem2ClickListener(() -> mPayInfoPopWindow.hide())
