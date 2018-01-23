@@ -46,6 +46,7 @@ import com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME
 import com.zhiyicx.common.utils.log.LogUtils
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_WALLET_RECHARGE
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.TAG_SHOWRULE_POP
+import com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge.IntegrationRechargeFragment
 
 /**
  * @Describe
@@ -243,7 +244,7 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
         val bundle = Bundle()
         when (tag) {
             MineIntegrationPresenter.TAG_RECHARGE -> {
-                bundle.putSerializable(RechargeFragment.BUNDLE_DATA, configBean)
+                bundle.putSerializable(IntegrationRechargeFragment.BUNDLE_DATA, configBean)
                 jumpActivity(bundle, IntegrationRechargeActivity::class.java)
             }
             MineIntegrationPresenter.TAG_WITHDRAW -> {

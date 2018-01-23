@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,15 +15,18 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.pingplusplus.android.Pingpp;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
+import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean;
 import com.zhiyicx.thinksnsplus.modules.develop.TSDevelopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter;
 import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity;
@@ -37,6 +41,7 @@ import com.zhiyicx.thinksnsplus.widget.chooseview.SingleChooseView;
 import com.zhiyicx.tspay.TSPayClient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -53,6 +58,7 @@ import static com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.TAG_SHOWRU
  */
 public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeContract.Presenter> implements IntegrationRechargeContract.View,
         SingleChooseView.OnItemChooseChangeListener {
+    public static final String BUNDLE_DATA = "data";
 
     @BindView(R.id.tv_recharge_ratio)
     TextView mTvMineIntegration;
@@ -84,6 +90,7 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
     TextView mBtSure;
 
     private String mPayType;     // type for recharge
+    private IntegrationConfigBean mIntegrationConfigBean;
 
     /**
      * 充值提示规则选择弹框
@@ -94,8 +101,10 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
     private double mRechargeMoney; // money choosed for recharge
 
 
-    public static IntegrationRechargeFragment newInstance() {
-        return new IntegrationRechargeFragment();
+    public static IntegrationRechargeFragment newInstance(Bundle bundle) {
+        IntegrationRechargeFragment integrationRechargeFragment = new IntegrationRechargeFragment();
+        integrationRechargeFragment.setArguments(bundle);
+        return integrationRechargeFragment;
     }
 
     @Override
@@ -128,10 +137,6 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
         return false;
     }
 
-    @Override
-    protected int setLeftImg() {
-        return super.setLeftImg();
-    }
 
     @Override
     protected int getBodyLayoutId() {
@@ -145,7 +150,7 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
         mToolbar.setBackgroundResource(android.R.color.transparent);
         ((LinearLayout.LayoutParams) mToolbar.getLayoutParams()).setMargins(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0);
         mTvToolbarCenter.setTextColor(ContextCompat.getColor(mActivity, R.color.white));
-        mTvToolbarCenter.setText(getString(R.string.integration_recharge));
+        mTvToolbarCenter.setText(getString(R.string.recharge_integration));
         mTvToolbarRight.setText(getString(R.string.recharge_record));
         mTvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.topbar_back_white), null, null, null);
 
@@ -161,16 +166,30 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
 
     @Override
     protected void initData() {
-
-        List<ChooseDataBean> datas = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            ChooseDataBean chooseDataBean = new ChooseDataBean();
-            chooseDataBean.setId(i);
-            chooseDataBean.setText(i + "test");
-            datas.add(chooseDataBean);
+        if (getArguments() != null) {
+            mIntegrationConfigBean = (IntegrationConfigBean) getArguments().getSerializable(BUNDLE_DATA);
         }
-        mChooseView.updateData(datas);
-        mChooseView.setOnItemChooseChangeListener(this);
+        if (mIntegrationConfigBean == null) {
+            return;
+        }
+        // 元对应的积分比例，服务器返回的是以分为单位的比例
+        mTvMineIntegration.setText(getString(R.string.integration_ratio_formart, mIntegrationConfigBean.getRechargeratio() * 100));
+        if (!TextUtils.isEmpty(mIntegrationConfigBean.getRechargeoptions())) {
+            List<ChooseDataBean> datas = new ArrayList<>();
+            String[] rechargeoptions = mIntegrationConfigBean.getRechargeoptions().split(ConstantConfig.SPLIT_SMBOL);
+            for (String rechargeoption : rechargeoptions) {
+                if (TextUtils.isEmpty(rechargeoption)) {
+                    continue;
+                }
+                ChooseDataBean chooseDataBean = new ChooseDataBean();
+                chooseDataBean.setText(rechargeoption);
+                datas.add(chooseDataBean);
+            }
+            mChooseView.updateData(datas);
+            mChooseView.setOnItemChooseChangeListener(this);
+        } else {
+            mChooseView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -289,10 +308,14 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
      */
     private void initPayStylePop() {
         List<String> rechargeTypes = new ArrayList<>();
-//        WalletConfigBean mWalletConfigBean =mPresenter.getSystemConfigBean();
-//        if (mWalletConfigBean.getRecharge_type() != null) {
-//            rechargeTypes.addAll(Arrays.asList(mWalletConfigBean.getRecharge_type()));
-//        }
+        if (mWalletConfigBean.getRecharge_type() != null) {
+            rechargeTypes.addAll(Arrays.asList(mWalletConfigBean.getRecharge_type()));
+        }
+
+        WalletConfigBean mWalletConfigBean =mPresenter.getSystemConfigBean();
+        if (mWalletConfigBean.getRecharge_type() != null) {
+            rechargeTypes.addAll(Arrays.asList(mWalletConfigBean.getRecharge_type()));
+        }
         if (mPayStylePopupWindow != null) {
             mPayStylePopupWindow.show();
             return;
@@ -388,4 +411,34 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
 //            mRechargeMoney = dataBean.getText();
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Pingpp.REQUEST_CODE_PAYMENT) {
+            if (resultCode == Activity.RESULT_OK) {
+                mBtSure.setEnabled(true);
+                String result = data.getExtras().getString("pay_result", "");
+                /* 处理返回值
+                 * "success" - 支付成功
+                 * "fail"    - 支付失败
+                 * "cancel"  - 取消支付
+                 * "invalid" - 支付插件未安装（一般是微信客户端未安装的情况）
+                 * "unknown" - app进程异常被杀死(一般是低内存状态下,app进程被杀死)
+                 */
+                String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
+                String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
+                int id = UIUtils.getResourceByName("pay_" + result, "string", getContext());
+                if (result.contains("success")) {
+                    showSnackSuccessMessage(getString(id));
+                } else {
+                    showSnackErrorMessage(getString(id));
+                }
+                if (result.equals("success")) {
+                    mPresenter.rechargeSuccess(mPayChargeId);
+                }
+            }
+        }
+    }
+
 }
