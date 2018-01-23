@@ -2,8 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail;
 
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
-import com.zhiyicx.thinksnsplus.modules.markdown_editor.DaggerMarkdownComponent;
-import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownPresenterModule;
 
 /**
  * @Author Jliuer
@@ -11,7 +9,7 @@ import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownPresenterModule;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class EditeQuestionDetailActivity extends BaseMarkdownActivity<EditeQuestionDetailFragment> {
+public class EditeQuestionDetailActivity extends BaseMarkdownActivity<EditeQuestionDetailPresenter, EditeQuestionDetailFragment> {
 
     @Override
     protected EditeQuestionDetailFragment getYourFragment() {
@@ -20,10 +18,9 @@ public class EditeQuestionDetailActivity extends BaseMarkdownActivity<EditeQuest
 
     @Override
     protected void componentInject() {
-        DaggerMarkdownComponent
-                .builder()
+        DaggerEditeQuestionDetailComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .markdownPresenterModule(new MarkdownPresenterModule(mContanierFragment))
+                .editeQuestionDetailPresenterModule(new EditeQuestionDetailPresenterModule(mContanierFragment))
                 .build().inject(this);
     }
 }

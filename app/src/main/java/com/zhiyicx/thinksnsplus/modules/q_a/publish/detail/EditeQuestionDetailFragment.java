@@ -12,6 +12,7 @@ import com.zhiyicx.baseproject.widget.popwindow.CenterAlertPopWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
@@ -27,7 +28,8 @@ import static com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean> {
+public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,EditeQuestionDetailContract.Presenter>
+        implements EditeQuestionDetailContract.View {
 
     protected boolean isBack;
 
@@ -139,6 +141,16 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean>
         mDraftBean.setFailedImages(mFailedImages);
         mDraftBean.setInsertedImages(mInsertedImages);
         mDraftBean.setImages(mImages);
+    }
+
+    @Override
+    public void publishSuccess(AnswerInfoBean answerBean) {
+
+    }
+
+    @Override
+    public void updateSuccess() {
+
     }
 
     protected void initAnonymityPopWindow(int strRes) {

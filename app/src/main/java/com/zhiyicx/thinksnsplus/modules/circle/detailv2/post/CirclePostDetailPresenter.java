@@ -219,22 +219,12 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                 , (currenPost, rewardsListBeens) -> {
                     Observable.empty()
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new rx.Subscriber<Object>() {
+                            .subscribe(new EmptySubscribe<Object>() {
                                 @Override
                                 public void onCompleted() {
                                     mRootView.updateReWardsView(new RewardsCountBean(currenPost.getReward_number(),
                                             "" + PayConfig.realCurrency2GameCurrency(currenPost.getReward_amount(), getRatio()),
                                             getGoldName()), rewardsListBeens);
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-
-                                }
-
-                                @Override
-                                public void onNext(Object o) {
-
                                 }
                             });
                     return currenPost;

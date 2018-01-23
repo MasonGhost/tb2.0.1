@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.q_a.answer.news;
+package com.zhiyicx.thinksnsplus.modules.q_a.answer;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +12,6 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
-import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.EditeQuestionDetailFragment;
 
 /**
@@ -40,7 +39,7 @@ public class EditeAnswerDetailFragment extends EditeQuestionDetailFragment {
 
     public static EditeAnswerDetailFragment newInstance(Bundle bundle) {
         if (bundle == null || bundle.getLong(BUNDLE_SOURCE_ID) <= 0) {
-            throw new IllegalArgumentException("questin_id can not be null");
+            throw new IllegalArgumentException("question_id can not be null");
         }
         EditeAnswerDetailFragment publishContentFragment = new EditeAnswerDetailFragment();
         publishContentFragment.setArguments(bundle);

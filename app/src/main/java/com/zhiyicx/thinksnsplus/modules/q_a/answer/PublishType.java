@@ -1,12 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.answer;
 
 /**
- * @Describe 打赏类型
- * @Author Jungle68
- * @Date 2017/5/23
- * @Contact master.jungle68@gmail.com
+ * @author Jliuer
+ * @Date 18/01/23 15:03
+ * @Email Jliuer@aliyun.com
+ * @Description 问答编辑器  发布内容 类型
+ *
+ * ps：针对回答编辑器 界面 复用 的 三种情况
  */
-
 public enum PublishType {
     PUBLISH_ANSWER(10001),
     UPDATE_ANSWER(10002),

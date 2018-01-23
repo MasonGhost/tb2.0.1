@@ -15,7 +15,5 @@ import dagger.Component;
  */
 @FragmentScoped
 @Component(dependencies = AppComponent.class,modules = PublishInfoPresenterModule.class)
-public interface PublishInfoComponent extends InjectComponent<PublishInfoActivity> {
-
-    void inject(UploadCoverActivity injectData);
+public interface PublishInfoComponent extends InjectComponent<UploadCoverActivity> {
 }

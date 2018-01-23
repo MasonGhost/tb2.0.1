@@ -34,7 +34,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
-import com.zhiyicx.thinksnsplus.modules.q_a.answer.news.EditeAnswerDetailFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.EditeAnswerDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerListItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerListItem.OnGoToWatchClickListener;

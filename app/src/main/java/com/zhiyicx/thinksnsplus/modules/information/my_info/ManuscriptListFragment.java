@@ -22,7 +22,7 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import javax.inject.Inject;
 
 import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO;
-import static com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoFragment.INFO_REFUSE;
+import static com.zhiyicx.thinksnsplus.modules.information.publish.detail.EditeInfoDetailFragment.INFO_REFUSE;
 
 /**
  * @Author Jliuer

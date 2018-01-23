@@ -29,11 +29,8 @@ import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
-import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
-import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.publish.choose_circle.ChooseCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.publish.choose_circle.ChooseCircleFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -56,10 +53,10 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<MarkdownContract.Presenter> implements
+public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownContract.Presenter> extends TSFragment<P> implements
         SimpleRichEditor.OnEditorClickListener, PhotoSelectorImpl.IPhotoBackListener,
-        MarkdownContract.View, RichEditor.OnMarkdownWordResultListener, RichEditor.OnImageDeleteListener,
-        BottomMenu.BottomMenuVisibleChangeListener {
+        MarkdownContract.View<P>, RichEditor.OnMarkdownWordResultListener, RichEditor.OnImageDeleteListener,
+        BottomMenu.BottomMenuVisibleChangeListener, SimpleRichEditor.BottomMenuItemConfig {
 
     public static final String BUNDLE_SOURCE_DATA = "sourceId";
 
@@ -83,7 +80,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
     private boolean canLoadDraft = true;
 
     /**
-     * 记录上传成功的照片 键值对：时间戳(唯一) -- 图片地址
+     * 记录上传成功的照片 键值对：时间戳(唯一) <key-value> 图片地址
      */
     protected HashMap<Long, String> mInsertedImages;
 
@@ -162,7 +159,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
      * @param visible
      */
     @Override
-    public void onVisibleChange(boolean visible) {
+    public void onBottomMenuVisibleChange(boolean visible) {
 
     }
 
@@ -248,6 +245,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
         return getString(R.string.circle_post_default_title);
     }
 
+
     /**
      * 点击 来自 xxx ，可以跳转到相应圈子
      *
@@ -269,6 +267,16 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
         if (getArguments() != null) {
             initBundleDataWhenOnCreate();
         }
+    }
+
+    /**
+     * 控制是否显示 设置（底部菜单）
+     *
+     * @return
+     */
+    @Override
+    public boolean needSetting() {
+        return true;
     }
 
     @Override
@@ -502,23 +510,6 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
             }
             mRichTextView.setImageUploadProcess(id, progress, imgeId);
         });
-    }
-
-    @Override
-    public void sendPostSuccess(CirclePostListBean data) {
-        CirclePostDetailActivity.startActivity(getActivity(), data.getGroup_id(), data.getId(),
-                false, canGotoCircle());
-        getActivity().finish();
-    }
-
-    @Override
-    public void publishSuccess(AnswerInfoBean answerBean) {
-
-    }
-
-    @Override
-    public void updateSuccess() {
-
     }
 
     @Override
