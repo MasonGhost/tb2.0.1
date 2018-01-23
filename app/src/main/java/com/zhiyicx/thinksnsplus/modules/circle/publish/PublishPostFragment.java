@@ -9,8 +9,11 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownContract;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
 
 /**
@@ -19,7 +22,7 @@ import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
  * @Email Jliuer@aliyun.com
  * @Description 发布帖子
  */
-public class PublishPostFragment extends MarkdownFragment<PostDraftBean> {
+public class PublishPostFragment extends MarkdownFragment<PostDraftBean,PublishPostContract.Presenter> implements PublishPostContract.View{
 
     public static final String BUNDLE_ISOUT_BOOLEAN = "isout";
     public static final String BUNDLE_DRAFT_DATA = "draft";
@@ -199,5 +202,12 @@ public class PublishPostFragment extends MarkdownFragment<PostDraftBean> {
         }
         mCbSynToDynamic.setVisibility(isVisiable && mCircleInfo.getAllow_feed() == 1 ? View
                 .VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void sendPostSuccess(CirclePostListBean data) {
+        CirclePostDetailActivity.startActivity(getActivity(), data.getGroup_id(), data.getId(),
+                false, canGotoCircle());
+        getActivity().finish();
     }
 }

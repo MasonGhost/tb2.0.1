@@ -27,8 +27,9 @@ public class ChatActivity extends TSActivity<ChatPresenter, ChatFragment> {
     @Override
     protected ChatFragment getFragment() {
         MessageItemBean messageItemBean =  getIntent().getExtras().getParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN);
-        if (messageItemBean ==null)
+        if (messageItemBean ==null) {
             throw new IllegalArgumentException("messageItemBean not be null ");
+        }
         return ChatFragment.newInstance(messageItemBean);
     }
 
