@@ -34,8 +34,8 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.news.EditeAnswerDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailHeaderView;
@@ -494,7 +494,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                 .item4ClickListener(() -> {
                     // 编辑
                     mDealInfoMationPopWindow.hide();
-                    PublishAnswerFragment.startQActivity(getActivity(), PublishType
+                    EditeAnswerDetailFragment.startQActivity(getActivity(), PublishType
                                     .UPDATE_ANSWER, mAnswerInfoBean.getId(), mAnswerInfoBean.getBody(),
                             mAnswerInfoBean.getQuestion().getSubject(), mAnswerInfoBean.getAnonymity());
 
@@ -557,6 +557,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
 
     /**
      * 评论
+     *
      * @param position
      */
     private void comment(int position) {
@@ -587,6 +588,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
 
     /**
      * 举报
+     *
      * @param position
      */
     private void goReportComment(int position) {

@@ -64,11 +64,15 @@ public class SimpleRichEditor extends RichEditor {
 
         void onTextStypeClick(boolean isSelect);
 
-        void onInputListener(int length);
+        void onInputListener(int titleLength, int contentLength);
+
+        void onAfterInitialLoad(boolean ready);
+
+        void onSettingImageButtionClick();
     }
 
     @SuppressWarnings("unused")
-    public abstract static class OnEditorClickListenerImp implements OnEditorClickListener {
+    public abstract static class BaseOnEditorClickListenerImp implements OnEditorClickListener {
         @Override
         public void onImageClick(Long id) {
 
@@ -133,6 +137,7 @@ public class SimpleRichEditor extends RichEditor {
         addUndo();
         addRedo();
         addImageInsert();
+        addSetting();
 
 //        等效与以下
 //       mLuBottomMenu.
@@ -208,7 +213,7 @@ public class SimpleRichEditor extends RichEditor {
             }
 
         });
-        setOnTextChangeListener(text -> mOnEditorClickListener.onInputListener(text));
+        setOnTextChangeListener((tittle, content) -> mOnEditorClickListener.onInputListener(tittle, content));
         setOnFocusChangeListener(isFocus -> {
             if (!isFocus) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -219,13 +224,14 @@ public class SimpleRichEditor extends RichEditor {
             }
 
         });
-        setOnLinkClickListener((linkName, url) -> showChangeLinkDialog(linkName, url));
-        setOnImageClickListener(id -> showImageClick(id));
+        setOnLinkClickListener(this::showChangeLinkDialog);
+        setOnImageClickListener(this::showImageClick);
 
         setOnInitialLoadListener(isReady -> {
             if (isReady) {
                 focusEditor();
             }
+            mOnEditorClickListener.onAfterInitialLoad(isReady);
         });
 
         mBottomMenu.setOnItemClickListener(new AbstractBottomMenuItem.OnItemClickListener() {
@@ -442,6 +448,22 @@ public class SimpleRichEditor extends RichEditor {
                     InputMethodManager imm = (InputMethodManager) getContext()
                             .getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(SimpleRichEditor.this.getWindowToken(), 0);
+                    return true;
+                }));
+        return this;
+    }
+
+    /**
+     * 自定义的 设置选项
+     *
+     * @return
+     */
+    public SimpleRichEditor addSetting() {
+        addRootCustomItem(ItemIndex.SETTING, getBaseItemFactory().generateItem(
+                getContext(),
+                ItemIndex.SETTING,
+                (item, isSelected) -> {
+                    mOnEditorClickListener.onSettingImageButtionClick();
                     return true;
                 }));
         return this;

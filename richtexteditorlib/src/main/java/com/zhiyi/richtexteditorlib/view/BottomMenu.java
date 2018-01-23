@@ -36,14 +36,28 @@ import java.util.Set;
 @SuppressWarnings({"unchecked", "unused", "WeakerAccess"})
 public class BottomMenu extends ViewGroup {
 
-    private final static int DEFAULT_HEIGHT = 54;//dp
+    /**
+     * 默认高度
+     */
+    private final static int DEFAULT_HEIGHT = 54;
 
+    /**
+     * y一排最多 8 个item
+     */
     private static int MAX_NUM_ONE_ROW = 8;
+
+    /**
+     * 支持 共三级 子项扩展
+     */
     private static int MAX_LEVELS = 3;
     private static int INNER_LAYOUT_PADDING_L = 0;
     private static int INNER_LAYOUT_PADDING_R = 0;
     private static int INNER_LAYOUT_PADDING_T = 0;
     private static int INNER_LAYOUT_PADDING_B = 0;
+
+    /**
+     * item 间距
+     */
     private static float INNER_ITEM_PADDING_RATE = 0.44f;
 
     private int[] colorSet;
@@ -214,7 +228,8 @@ public class BottomMenu extends ViewGroup {
             super.onRestoreInstanceState(ss.getSuperState());
             mTheme = ss.theme;
             colorSet = mTheme.getBackGroundColors();
-            restoreAllInfo(ss.pathRecord);//根据路径信息恢复其他信息
+            //根据路径信息恢复其他信息
+            restoreAllInfo(ss.pathRecord);
         }
     }
 

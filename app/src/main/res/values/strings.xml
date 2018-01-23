@@ -260,6 +260,7 @@
     <string name="circle">圈子</string>
     <string name="circle_post">帖子</string>
     <string name="circle_member">成员</string>
+    <string name="circle_post_default_title">请输入正文</string>
     <string name="select_circle">选择圈子</string>
     <string name="create">创建</string>
     <string name="create_reviewing">已经提交申请，请等待审核</string>
