@@ -605,6 +605,9 @@ public class SimpleRichEditor extends RichEditor {
 
     public SimpleRichEditor addRootCustomItem(long id, AbstractBottomMenuItem item) {
         checkNull(mBottomMenu);
+        if (item == null) {
+            return this;
+        }
 
         if (mRegister.isDefaultId(id)) {
             throw new RuntimeException(id + ":" + ItemIndex.HAS_REGISTER_EXCEPTION);
