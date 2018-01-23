@@ -28,7 +28,7 @@ import static com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,EditeQuestionDetailContract.Presenter>
+public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean, EditeQuestionDetailContract.Presenter>
         implements EditeQuestionDetailContract.View {
 
     protected boolean isBack;
@@ -144,6 +144,11 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
     }
 
     @Override
+    public boolean needSetting() {
+        return true;
+    }
+
+    @Override
     public void publishSuccess(AnswerInfoBean answerBean) {
 
     }
@@ -180,7 +185,6 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
             mAnonymityAlertPopWindow = CenterAlertPopWindow.builder()
                     .with(getActivity())
                     .parentView(getView())
-                    .isOutsideTouch(false)
                     .isFocus(false)
                     .animationStyle(R.style.style_actionPopupAnimation)
                     .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
