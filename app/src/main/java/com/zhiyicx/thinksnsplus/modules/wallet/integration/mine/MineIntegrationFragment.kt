@@ -244,7 +244,7 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
         when (tag) {
             MineIntegrationPresenter.TAG_RECHARGE -> {
                 bundle.putSerializable(RechargeFragment.BUNDLE_DATA, configBean)
-                jumpActivity(bundle, RechargeActivity::class.java)
+                jumpActivity(bundle, IntegrationRechargeActivity::class.java)
             }
             MineIntegrationPresenter.TAG_WITHDRAW -> {
                 bundle.putSerializable(WithdrawalsFragment.BUNDLE_DATA, configBean)

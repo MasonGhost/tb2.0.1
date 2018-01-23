@@ -232,6 +232,7 @@ dependencies {
     compile dataDependences.flowlayout
     //    compile dataDependences.contacts
     compile dataDependences.update
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation dataDependences.kotlin
+    implementation dataDependences.ankoCommon
 
 }
