@@ -9,44 +9,35 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-
+import butterknife.BindView
 import com.jakewharton.rxbinding.view.RxView
 import com.zhiyicx.baseproject.base.TSFragment
 import com.zhiyicx.baseproject.widget.button.CombinationButton
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow
+import com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME
 import com.zhiyicx.common.utils.DeviceUtils
 import com.zhiyicx.common.utils.UIUtils
+import com.zhiyicx.common.utils.log.LogUtils
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow
 import com.zhiyicx.thinksnsplus.R
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_INTEGRATION_RECHARGE
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean
-import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean
 import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean
 import com.zhiyicx.thinksnsplus.modules.develop.TSDevelopActivity
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter
+import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.TAG_SHOWRULE_POP
 import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge.IntegrationRechargeActivity
-import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity
-import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeFragment
+import com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge.IntegrationRechargeFragment
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleFragment
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsFragment
-
 import org.simple.eventbus.Subscriber
 import org.simple.eventbus.ThreadMode
-
-import java.util.ArrayList
 import java.util.concurrent.TimeUnit
-
-import butterknife.BindView
-
-import com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME
-import com.zhiyicx.common.utils.log.LogUtils
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_WALLET_RECHARGE
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.TAG_SHOWRULE_POP
-import com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge.IntegrationRechargeFragment
 
 /**
  * @Describe
@@ -87,7 +78,7 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
     /**
      * 充值提示规则选择弹框
      */
-    private  var mRulePop: CenterInfoPopWindow? = null
+    private var mRulePop: CenterInfoPopWindow? = null
     private lateinit var mDynamicDetailAdvertHeader: DynamicDetailAdvertHeader
 
     override fun showToolBarDivider(): Boolean {
@@ -123,8 +114,9 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
         mTvToolbarCenter.text = getString(R.string.mine_integration)
         mTvToolbarRight.text = getString(R.string.detail)
         mTvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(context, R.mipmap.topbar_back_white), null, null, null)
-
         initListener()
+        initAdvert(mActivity, mPresenter.integrationAdvert)
+
     }
 
     override fun onResume() {
@@ -133,7 +125,6 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
     }
 
     override fun initData() {
-        initAdvert(mActivity, mPresenter.integrationAdvert)
     }
 
     private fun initAdvert(context: Context, adverts: List<RealAdvertListBean>?) {
@@ -166,8 +157,7 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe { _ ->
-                    val intent = Intent(mActivity, IntegrationRechargeActivity::class.java)
-                    startActivity(intent)
+                    mPresenter.checkIntegrationConfig(WalletPresenter.TAG_RECHARGE, true)
                 }
         // 提取积分
         RxView.clicks(mBtWithdraw)
@@ -278,6 +268,15 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
      */
     private fun toAdvert(context: Context, link: String, title: String) {
         CustomWEBActivity.startToWEBActivity(context, link, title)
+    }
+
+    override fun useEventBus(): Boolean {
+        return true
+    }
+
+    @Subscriber(tag = EVENT_INTEGRATION_RECHARGE, mode = ThreadMode.MAIN)
+    fun onRechargeSuccessUpdate(result: String) {
+        initData()
     }
 
     companion object {

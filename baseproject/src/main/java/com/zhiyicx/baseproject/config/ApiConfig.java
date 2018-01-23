@@ -960,6 +960,11 @@ public class ApiConfig {
      */
     // 积分配置信息
     public static final String APP_PAHT_INTEGRATION_CONFIG = "api/" + API_VERSION_2 + "/currency";
+    public static final String APP_PAHT_INTEGRATION_RECHARGE = "api/" + API_VERSION_2 + "/currency/recharge";
+    public static final String APP_PAHT_INTEGRATION_RECHARGE_SUCCESS = "api/" + API_VERSION_2 + "/currency/orders/{order}";
+    // 凭据回执
+    public static final String APP_PAHT_INTEGRATION_RECHARGE_SUCCESS_CALLBACK = "api/" + API_VERSION_2 + "/currency/webhooks";
+    public static final String APP_PAHT_INTEGRATION_RECHARGE_SUCCESS_CALLBACK_FORMAT = "api/" + API_VERSION_2 + "/wallet/charges/%s?mode=retrieve";
 
 
     /*排行榜相关*/

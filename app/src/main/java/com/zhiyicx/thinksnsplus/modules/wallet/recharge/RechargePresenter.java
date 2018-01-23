@@ -27,11 +27,6 @@ import rx.Subscription;
 
 public class RechargePresenter extends AppBasePresenter<RechargeContract.View> implements RechargeContract.Presenter {
 
-    @Inject
-    AuthRepository mIAuthRepository;
-
-    @Inject
-    SystemRepository mSystemRepository;
 
     @Inject
     BackgroundRequestTaskBeanGreenDaoImpl mBackgroundRequestTaskBeanGreenDao;
@@ -50,7 +45,7 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.View> i
             mRootView.initmRechargeInstructionsPop();
             return;
         }
-        mSystemRepository.getPayStr(channel, (long) amount).doOnSubscribe(() -> {
+        mBillRepository.getPayStr(channel, (long) amount).doOnSubscribe(() -> {
             mRootView.configSureBtn(false);
             mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing));
         }).subscribe(new BaseSubscribeForV2<PayStrBean>() {

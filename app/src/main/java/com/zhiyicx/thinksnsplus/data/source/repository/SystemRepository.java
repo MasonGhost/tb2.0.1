@@ -269,13 +269,6 @@ public class SystemRepository implements ISystemRepository {
         return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS, systemConfigBean);
     }
 
-    @Override
-    public Observable<PayStrBean> getPayStr(String channel, double amount) {
-        return mCommonClient.getPayStr(channel, (long) amount)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
     /**
      * 系统反馈
      *

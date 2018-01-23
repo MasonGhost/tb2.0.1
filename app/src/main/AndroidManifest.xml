@@ -686,6 +686,7 @@
         <!--积分充值-->
         <activity
             android:name=".modules.wallet.integration.recharge.IntegrationRechargeActivity"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"/>
 
 

@@ -53,15 +53,6 @@ public interface ISystemRepository {
     Observable<List<SystemConversationBean>> getSystemConversations(long max_id, int limit);
 
     /**
-     * 获取支付信息
-     *
-     * @param channel 支付渠道
-     * @param amount  支付金额
-     * @return
-     */
-    Observable<PayStrBean> getPayStr(String channel, double amount);
-
-    /**
      * 获取本地系统会话列表
      *
      * @param max_Id

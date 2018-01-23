@@ -227,7 +227,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
         mActionPopupWindow = ActionPopupWindow.builder()
                 .item2Str(cash_types.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_withdrawals_style_formart, getString(R
                         .string.alipay)) : "")
-                .item3Str(cash_types.contains(TSPayClient.CHANNEL_WXPAY) ? getString(R.string.choose_withdrawals_style_formart, getString(R
+                .item3Str(cash_types.contains(TSPayClient.CHANNEL_WXPAY)||cash_types.contains(TSPayClient.CHANNEL_WX) ? getString(R.string.choose_withdrawals_style_formart, getString(R
                         .string.wxpay)) : "")
                 .item4Str(cash_types.size() == 0 ? getString(R.string.withdraw_disallow) : "")
                 .bottomStr(getString(R.string.cancel))

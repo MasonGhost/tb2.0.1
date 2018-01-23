@@ -309,7 +309,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
         }
         mPayStylePopupWindow = ActionPopupWindow.builder()
                 .item2Str(rechargeTypes.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string.alipay)) : "")
-                .item3Str(rechargeTypes.contains(TSPayClient.CHANNEL_WXPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)) : "")
+                .item3Str(rechargeTypes.contains(TSPayClient.CHANNEL_WXPAY)||rechargeTypes.contains(TSPayClient.CHANNEL_WX) ? getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)) : "")
                 .item4Str(rechargeTypes.size() == 0 ? getString(R.string.recharge_disallow) : "")
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -323,7 +323,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                     configSureButton();
                 })
                 .item3ClickListener(() -> {
-                    mPayType = TSPayClient.CHANNEL_WXPAY;
+                    mPayType = TSPayClient.CHANNEL_WX;
                     mBtRechargeStyle.setRightText(getString(R.string.choose_recharge_style_formart, getString(R.string.wxpay)));
                     mPayStylePopupWindow.hide();
                     configSureButton();

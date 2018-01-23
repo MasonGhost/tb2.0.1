@@ -934,6 +934,6 @@
     <string name="recharge_ratio">充值比率</string>
     <string name="user_reharge_integration_rule">用户充值协议</string>
     <string name="integration_config_info_get_loading_tip">积分配置信息获取中&#8230;</string>
-    <string name="integration_ratio_formart">1 元 = %d</string>
+    <string name="integration_ratio_formart">1元=%d积分</string>
 
 </resources>

@@ -1,8 +1,12 @@
 package com.zhiyicx.thinksnsplus.data.beans.integration;
 
 import com.google.gson.annotations.SerializedName;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.StringArrayConvert;
+
+import org.greenrobot.greendao.annotation.Convert;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * @Describe 积分配置信息 doc @see{https://slimkit.github.io/plus-docs/v2/core/currency}
@@ -10,7 +14,7 @@ import java.io.Serializable;
  * @Date 2018/1/22
  * @Contact master.jungle68@gmail.com
  */
-public class IntegrationConfigBean implements Serializable{
+public class IntegrationConfigBean implements Serializable {
 
     private static final long serialVersionUID = -1293476228114357406L;
     /**
@@ -30,6 +34,12 @@ public class IntegrationConfigBean implements Serializable{
     @SerializedName("recharge-min")
     private int rechargemin;
     private String rule;
+    @Convert(converter = StringArrayConvert.class, columnType = String.class)
+    private String[] cash;
+
+    @Convert(converter = StringArrayConvert.class, columnType = String.class)
+    @SerializedName("recharge-type")
+    private String[] recharge_type;
 
     public int getRechargeratio() {
         return rechargeratio;
@@ -71,6 +81,22 @@ public class IntegrationConfigBean implements Serializable{
         this.rule = rule;
     }
 
+    public String[] getCash() {
+        return cash;
+    }
+
+    public void setCash(String[] cash) {
+        this.cash = cash;
+    }
+
+    public String[] getRecharge_type() {
+        return recharge_type;
+    }
+
+    public void setRecharge_type(String[] recharge_type) {
+        this.recharge_type = recharge_type;
+    }
+
     @Override
     public String toString() {
         return "IntegrationConfigBean{" +
@@ -79,6 +105,8 @@ public class IntegrationConfigBean implements Serializable{
                 ", rechargemax=" + rechargemax +
                 ", rechargemin=" + rechargemin +
                 ", rule='" + rule + '\'' +
+                ", cash=" + Arrays.toString(cash) +
+                ", recharge_type=" + Arrays.toString(recharge_type) +
                 '}';
     }
 }

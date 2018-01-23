@@ -17,14 +17,20 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.pingplusplus.android.Pingpp;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.config.ConstantConfig;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
+import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean;
+import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean;
 import com.zhiyicx.thinksnsplus.modules.develop.TSDevelopActivity;
@@ -39,6 +45,9 @@ import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsFragment;
 import com.zhiyicx.thinksnsplus.widget.chooseview.ChooseDataBean;
 import com.zhiyicx.thinksnsplus.widget.chooseview.SingleChooseView;
 import com.zhiyicx.tspay.TSPayClient;
+
+import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,12 +100,14 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
 
     private String mPayType;     // type for recharge
     private IntegrationConfigBean mIntegrationConfigBean;
+    private String mPayChargeId; // recharge lables
 
     /**
      * 充值提示规则选择弹框
      */
-    private CenterInfoPopWindow mRulePop;
     private ActionPopupWindow mPayStylePopupWindow;// pay type choose pop
+    private ActionPopupWindow mRechargeInstructionsPopupWindow;// recharge instruction pop
+
 
     private double mRechargeMoney; // money choosed for recharge
 
@@ -159,12 +170,6 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mPresenter.updateUserInfo();
-    }
-
-    @Override
     protected void initData() {
         if (getArguments() != null) {
             mIntegrationConfigBean = (IntegrationConfigBean) getArguments().getSerializable(BUNDLE_DATA);
@@ -181,22 +186,18 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
                 if (TextUtils.isEmpty(rechargeoption)) {
                     continue;
                 }
-                ChooseDataBean chooseDataBean = new ChooseDataBean();
-                chooseDataBean.setText(rechargeoption);
-                datas.add(chooseDataBean);
+                try {
+                    ChooseDataBean chooseDataBean = new ChooseDataBean();
+                    chooseDataBean.setText(getString(R.string.money_format, PayConfig.realCurrencyFen2Yuan(Double.parseDouble(rechargeoption))));
+                    datas.add(chooseDataBean);
+                } catch (Exception e) {
+                }
+
             }
             mChooseView.updateData(datas);
             mChooseView.setOnItemChooseChangeListener(this);
         } else {
             mChooseView.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (mPresenter.checkIsNeedTipPop()) {
-            getView().post(() -> mPresenter.checkWalletConfig(TAG_SHOWRULE_POP, false));
         }
     }
 
@@ -212,7 +213,13 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid ->
-                        mPresenter.checkWalletConfig(WalletPresenter.TAG_SHOWRULE_JUMP, true)
+                        {
+                            Intent intent = new Intent(mActivity, WalletRuleActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString(WalletRuleFragment.BUNDLE_RULE, mIntegrationConfigBean.getRule());
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                        }
                 );
         RxView.clicks(mTvToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -236,7 +243,7 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     mBtSure.setEnabled(false);
-//                    mPresenter.getPayStr(mPayType, PayConfig.gameCurrency2RealCurrency(mRechargeMoney, mPresenter.getRatio()));
+                    mPresenter.getPayStr(mPayType, PayConfig.realCurrencyYuan2Fen(mRechargeMoney));
                 });// 传入的是真实货币分单位
 
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
@@ -271,51 +278,15 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
         mBtSure.setEnabled(mRechargeMoney > 0 && !TextUtils.isEmpty(mBtRechargeStyle.getRightText()));
     }
 
-    private void jumpWalletRuleActivity() {
-        Intent intent = new Intent(getActivity(), WalletRuleActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(WalletRuleFragment.BUNDLE_RULE, mPresenter.getTipPopRule());
-        intent.putExtras(bundle);
-        startActivity(intent);
-    }
-
-    /**
-     * 初始化登录选择弹框
-     */
-    private void showRulePopupWindow() {
-        if (mRulePop != null) {
-            mRulePop.show();
-            return;
-        }
-        mRulePop = CenterInfoPopWindow.builder()
-                .titleStr(getString(R.string.recharge_and_withdraw_rule))
-                .desStr(mPresenter.getTipPopRule())
-                .item1Str(getString(R.string.get_it))
-                .item1Color(R.color.themeColor)
-                .isOutsideTouch(true)
-                .isFocus(true)
-                .animationStyle(R.style.style_actionPopupAnimation)
-                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
-                .with(getActivity())
-                .buildCenterPopWindowItem1ClickListener(() -> mRulePop.hide())
-                .parentView(getView())
-                .build();
-        mRulePop.show();
-    }
-
     /**
      * 充值方式选择弹框
      */
     private void initPayStylePop() {
         List<String> rechargeTypes = new ArrayList<>();
-        if (mWalletConfigBean.getRecharge_type() != null) {
-            rechargeTypes.addAll(Arrays.asList(mWalletConfigBean.getRecharge_type()));
+        if (mIntegrationConfigBean.getRecharge_type() != null) {
+            rechargeTypes.addAll(Arrays.asList(mIntegrationConfigBean.getRecharge_type()));
         }
 
-        WalletConfigBean mWalletConfigBean =mPresenter.getSystemConfigBean();
-        if (mWalletConfigBean.getRecharge_type() != null) {
-            rechargeTypes.addAll(Arrays.asList(mWalletConfigBean.getRecharge_type()));
-        }
         if (mPayStylePopupWindow != null) {
             mPayStylePopupWindow.show();
             return;
@@ -323,7 +294,7 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
         mPayStylePopupWindow = ActionPopupWindow.builder()
                 .item2Str(rechargeTypes.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string
                         .alipay)) : "")
-                .item3Str(rechargeTypes.contains(TSPayClient.CHANNEL_WXPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string
+                .item3Str(rechargeTypes.contains(TSPayClient.CHANNEL_WXPAY)||rechargeTypes.contains(TSPayClient.CHANNEL_WX) ? getString(R.string.choose_pay_style_formart, getString(R.string
                         .wxpay)) : "")
                 .item4Str(rechargeTypes.size() == 0 ? getString(R.string.recharge_disallow) : "")
                 .bottomStr(getString(R.string.cancel))
@@ -348,67 +319,16 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
         mPayStylePopupWindow.show();
     }
 
-    @Override
-    public void updateBalance(double balance) {
-        mTvMineIntegration.setText(getString(R.string.money_format, balance));
-    }
-
-    @Override
-    public void handleLoading(boolean isShow) {
-        if (isShow) {
-            showLeftTopLoading();
-        } else {
-            hideLeftTopLoading();
-        }
-    }
-
-    /**
-     * the api walletconfig call back
-     *
-     * @param walletConfigBean wallet config info
-     * @param tag              action tag, 1 recharge 2 withdraw
-     */
-    @Override
-    public void walletConfigCallBack(WalletConfigBean walletConfigBean, int tag) {
-        Bundle bundle = new Bundle();
-        switch (tag) {
-            case WalletPresenter.TAG_RECHARGE:
-                bundle.putParcelable(RechargeFragment.BUNDLE_DATA, walletConfigBean);
-                jumpActivity(bundle, RechargeActivity.class);
-                break;
-            case WalletPresenter.TAG_WITHDRAW:
-                bundle.putParcelable(WithdrawalsFragment.BUNDLE_DATA, walletConfigBean);
-                jumpActivity(bundle, WithdrawalsActivity.class);
-                break;
-            case WalletPresenter.TAG_SHOWRULE_POP:
-                showRulePopupWindow();
-                break;
-            case WalletPresenter.TAG_SHOWRULE_JUMP:
-                jumpWalletRuleActivity();
-                break;
-            default:
-
-        }
-    }
-
-    /**
-     * activity jump
-     *
-     * @param bundle intent data
-     * @param cls    target class
-     */
-    private void jumpActivity(Bundle bundle, Class<?> cls) {
-        Intent to = new Intent(getActivity(), cls);
-        to.putExtras(bundle);
-        startActivity(to);
-    }
-
 
     @Override
     public void onItemChooseChanged(int position, ChooseDataBean dataBean) {
         if (position != -1) {
             mEtInput.setText("");
-//            mRechargeMoney = dataBean.getText();
+            try {
+                mRechargeMoney = Double.parseDouble(dataBean.getText());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -417,7 +337,7 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Pingpp.REQUEST_CODE_PAYMENT) {
             if (resultCode == Activity.RESULT_OK) {
-                mBtSure.setEnabled(true);
+                configSureBtn(true);
                 String result = data.getExtras().getString("pay_result", "");
                 /* 处理返回值
                  * "success" - 支付成功
@@ -441,4 +361,51 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
         }
     }
 
+    @Override
+    public double getMoney() {
+        return mRechargeMoney;
+    }
+
+    @Override
+    public void payCredentialsResult(@NotNull PayStrV2Bean payStrBean) {
+        mPayChargeId = payStrBean.getOrder().getId() + "";
+        TSPayClient.pay(ConvertUtils.object2JsonStr(payStrBean.getPingpp_order()), getActivity());
+    }
+
+    @Override
+    public void configSureBtn(boolean enable) {
+        mBtSure.setEnabled(enable);
+    }
+
+    @Override
+    public void rechargeSuccess(@NotNull RechargeSuccessBean rechargeSuccessBean) {
+        EventBus.getDefault().post("", EventBusTagConfig.EVENT_INTEGRATION_RECHARGE);
+    }
+
+    /**
+     * 充值说明选择弹框
+     */
+    @Override
+    public void initmRechargeInstructionsPop() {
+        if (mRechargeInstructionsPopupWindow != null) {
+            mRechargeInstructionsPopupWindow.show();
+            return;
+        }
+        mRechargeInstructionsPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.recharge_instructions))
+                .desStr(getString(R.string.recharge_instructions_detail))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .bottomClickListener(() -> mRechargeInstructionsPopupWindow.hide())
+                .build();
+        mRechargeInstructionsPopupWindow.show();
+    }
+
+    @Override
+    public boolean useInputMonye() {
+        return !mEtInput.getText().toString().isEmpty();
+    }
 }

@@ -171,12 +171,7 @@ public interface CommonClient {
     @GET(APP_PATH_GET_APP_NEW_VERSION)
     Observable<List<AppVersionBean>> getAppNewVersion(@Query("version_code") Integer version_code, @Query("type") String type);
 
-    /**
-     * 获取支付信息
-     */
-    @FormUrlEncoded
-    @POST(APP_PAHT_WALLET_RECHARGE)
-    Observable<PayStrBean> getPayStr(@Field("type") String channel, @Field("amount") long amount);
+
 
     /*******************************************  文件上传  *********************************************/
 

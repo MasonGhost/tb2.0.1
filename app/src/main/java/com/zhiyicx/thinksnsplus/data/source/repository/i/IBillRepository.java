@@ -1,6 +1,9 @@
 package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
+import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
+import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
+import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
@@ -8,10 +11,15 @@ import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean;
 
 import java.util.List;
 
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 import rx.Observable;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_CONFIG;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE_SUCCESS;
 
 /**
  * @Describe
@@ -22,27 +30,59 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_CONF
 public interface IBillRepository {
 
 
-    Observable<List<RechargeSuccessBean>> getBillList(int after,Integer action);
+    Observable<List<RechargeSuccessBean>> getBillList(int after, Integer action);
+
     Observable<List<RechargeSuccessBean>> dealRechargeList(Observable<List<RechargeSuccessBean>> data);
 
     Observable<WalletConfigBean> getWalletConfig();
+
     void getWalletConfigWhenStart(Long user_id);
 
     Observable<RechargeSuccessBean> rechargeSuccessCallBack(String charge);
+
     Observable<RechargeSuccessBean> rechargeSuccess(String charge);
 
     Observable<WithdrawResultBean> withdraw(double value, String type, String account);
+
     /**
-     *
      * @param after 获取更多数据，上一次获取列表的最后一条 ID
      * @return
      */
     Observable<List<WithdrawalsListBean>> getWithdrawListDetail(int after);
 
+    /**
+     * 获取支付信息
+     *
+     * @param channel 支付渠道
+     * @param amount  支付金额
+     * @return
+     */
+    Observable<PayStrBean> getPayStr(String channel, double amount);
+
     /*******************************************  积分  *********************************************/
     /**
-     *
      * @return 积分配置信息
      */
     Observable<IntegrationConfigBean> getIntegrationConfig();
+
+
+    /**
+     * 获取积分充值信息
+     */
+    /**
+     * @param type   充值方式 （见「启动信息接口」或者「钱包信息」）
+     * @param amount 用户充值金额，单位为真实货币「分」单位，充值完成后会根据积分兑换比例增加相应数量的积分
+     * @param extra  object,array 拓展信息字段，见 支付渠道-extra-参数说明
+     * @return
+     */
+    Observable<PayStrV2Bean> getIntegrationPayStr(String type, long amount, String extra);
+
+
+    /**
+     * 取回凭据
+     *
+     * @param order
+     * @return
+     */
+    Observable<RechargeSuccessV2Bean> integrationRechargeSuccess(String order);
 }
