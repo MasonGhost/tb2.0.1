@@ -24,6 +24,7 @@ public class MessageItemBeanV2 extends CacheBean implements Serializable {
     private String emKey;
     private EMConversation.EMConversationType type;
     private List<UserInfoBean> list;
+    private ChatGroupBean chatGroupBean;
 
     public UserInfoBean getUserInfo() {
         return userInfo;
@@ -65,6 +66,14 @@ public class MessageItemBeanV2 extends CacheBean implements Serializable {
         this.list = list;
     }
 
+    public ChatGroupBean getChatGroupBean() {
+        return chatGroupBean;
+    }
+
+    public void setChatGroupBean(ChatGroupBean chatGroupBean) {
+        this.chatGroupBean = chatGroupBean;
+    }
+
     @Override
     public String toString() {
         return "MessageItemBeanV2{" +
@@ -73,6 +82,7 @@ public class MessageItemBeanV2 extends CacheBean implements Serializable {
                 ", emKey='" + emKey + '\'' +
                 ", type=" + type +
                 ", list=" + list +
+                ", chatGroupBean=" + chatGroupBean +
                 '}';
     }
 }

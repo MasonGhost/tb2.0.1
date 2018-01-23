@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * @author Catherine
- * @describe
+ * @describe 群信息的成员item
  * @date 2018/1/22
  * @contact email:648129313@qq.com
  */

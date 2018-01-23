@@ -254,6 +254,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                 itemBeanV2.setEmKey(chatGroupBean.getId());
                 itemBeanV2.setList(chatGroupBean.getAffiliations());
                 itemBeanV2.setConversation(EMClient.getInstance().chatManager().getConversation(chatGroupBean.getId()));
+                itemBeanV2.setChatGroupBean(chatGroupBean);
                 messageItemBeanList.add(itemBeanV2);
             }
             if (!messageItemBeanList.isEmpty()){

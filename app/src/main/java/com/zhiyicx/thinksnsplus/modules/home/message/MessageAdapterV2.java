@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.view.View;
 
+import com.bumptech.glide.Glide;
 import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.implments.SwipeItemMangerImpl;
@@ -16,12 +17,14 @@ import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
@@ -80,9 +83,14 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                 break;
             case GroupChat:
                 // 群组
-                EMGroup group = EMClient.getInstance().groupManager().getGroup(messageItemBean.getEmKey());
-                userAvatarView.getIvAvatar().setImageResource(R.mipmap.ico_ts_assistant);
-                holder.setText(R.id.tv_name, group.getGroupName());
+                ChatGroupBean chatGroupBean = messageItemBean.getChatGroupBean();
+                Glide.with(mContext)
+                        .load(chatGroupBean.getGroup_face())
+                        .error(R.mipmap.ico_ts_assistant)
+                        .placeholder(R.mipmap.ico_ts_assistant)
+                        .transform(new GlideCircleTransform(mContext))
+                        .into(userAvatarView.getIvAvatar());
+                holder.setText(R.id.tv_name, chatGroupBean.getName());
                 swipeLayout.setSwipeEnabled(true);
                 break;
             default:
