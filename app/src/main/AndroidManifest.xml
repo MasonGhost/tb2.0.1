@@ -628,6 +628,8 @@
         <!--单聊详情-->
         <activity android:name=".modules.chat.info.ChatInfoActivity"
                 android:screenOrientation="portrait"/>
+        <!--修改群名称-->
+        <activity android:name=".modules.chat.edit.name.EditGroupNameActivity"/>
         <!-- 开机自启动服务 -->
         <receiver android:name=".modules.chat.receiver.StartServiceReceiver">
             <intent-filter android:priority="1000">

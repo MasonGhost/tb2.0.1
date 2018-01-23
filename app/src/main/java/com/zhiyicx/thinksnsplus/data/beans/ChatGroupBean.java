@@ -32,13 +32,16 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
      "affiliations_count": 3,
      "affiliations": [],
      "public": false
+     "group_face":
      */
 
     /**
      * 创建群组用的
      */
     private String im_group_id;
-    /**以下为获取群组的信息*/
+    /**
+     * 以下为获取群组的信息
+     */
     private String id;
     private String name;
     private String description;
@@ -47,6 +50,7 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
     private int maxusers;
     private long owner;
     private String created;
+    private String group_face;
     private int affiliations_count;
     private List<UserInfoBean> affiliations;
 
@@ -138,7 +142,33 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
         this.affiliations = affiliations;
     }
 
+    public String getGroup_face() {
+        return group_face;
+    }
+
+    public void setGroup_face(String group_face) {
+        this.group_face = group_face;
+    }
+
     public ChatGroupBean() {
+    }
+
+    @Override
+    public String toString() {
+        return "ChatGroupBean{" +
+                "im_group_id='" + im_group_id + '\'' +
+                ", id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", membersonly=" + membersonly +
+                ", allowinvites=" + allowinvites +
+                ", maxusers=" + maxusers +
+                ", owner=" + owner +
+                ", created='" + created + '\'' +
+                ", group_face='" + group_face + '\'' +
+                ", affiliations_count=" + affiliations_count +
+                ", affiliations=" + affiliations +
+                '}';
     }
 
     @Override
@@ -158,6 +188,7 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
         dest.writeInt(this.maxusers);
         dest.writeLong(this.owner);
         dest.writeString(this.created);
+        dest.writeString(this.group_face);
         dest.writeInt(this.affiliations_count);
         dest.writeTypedList(this.affiliations);
     }
@@ -173,6 +204,7 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
         this.maxusers = in.readInt();
         this.owner = in.readLong();
         this.created = in.readString();
+        this.group_face = in.readString();
         this.affiliations_count = in.readInt();
         this.affiliations = in.createTypedArrayList(UserInfoBean.CREATOR);
     }
@@ -188,21 +220,4 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
             return new ChatGroupBean[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "ChatGroupBean{" +
-                "im_group_id='" + im_group_id + '\'' +
-                ", id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", membersonly=" + membersonly +
-                ", allowinvites=" + allowinvites +
-                ", maxusers=" + maxusers +
-                ", owner=" + owner +
-                ", created='" + created + '\'' +
-                ", affiliations_count=" + affiliations_count +
-                ", affiliations=" + affiliations +
-                '}';
-    }
 }

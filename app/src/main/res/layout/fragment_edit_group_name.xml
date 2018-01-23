@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/chat_edit_group_name_alert"
+            android:textSize="@dimen/size_icon_assist"
+            android:textColor="@color/general_for_loading_more"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_marginBottom="@dimen/spacing_normal"
+            android:layout_marginLeft="@dimen/spacing_mid"/>
+
+    <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/edit_input"
+            style="@style/style_edit"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:layout_marginLeft="0dp"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid"
+            android:minHeight="@dimen/chat_info_header_view_width"
+            android:maxLength="15"
+            tools:text="xxxxxx"/>
+
+</LinearLayout>
