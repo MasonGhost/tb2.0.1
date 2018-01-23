@@ -5,7 +5,7 @@ import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.base.InjectComponent;
 import com.zhiyicx.thinksnsplus.modules.circle.publish.PublishPostActivity;
 import com.zhiyicx.thinksnsplus.modules.information.publish.detail.EditeInfoDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.answer.news.EditeAnswerDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.EditeAnswerDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.EditeQuestionDetailActivity;
 
 import dagger.Component;

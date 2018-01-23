@@ -59,7 +59,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<MarkdownContract.Presenter> implements
         SimpleRichEditor.OnEditorClickListener, PhotoSelectorImpl.IPhotoBackListener,
         MarkdownContract.View, RichEditor.OnMarkdownWordResultListener, RichEditor.OnImageDeleteListener,
-        BottomMenu.BottomMenuVisibleChangeListener {
+        BottomMenu.BottomMenuVisibleChangeListener, SimpleRichEditor.BottomMenuItemConfig {
 
     public static final String BUNDLE_SOURCE_DATA = "sourceId";
 
@@ -248,6 +248,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
         return getString(R.string.circle_post_default_title);
     }
 
+
     /**
      * 点击 来自 xxx ，可以跳转到相应圈子
      *
@@ -269,6 +270,16 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
         if (getArguments() != null) {
             initBundleDataWhenOnCreate();
         }
+    }
+
+    /**
+     * 控制是否显示 设置（底部菜单）
+     *
+     * @return
+     */
+    @Override
+    public boolean needSetting() {
+        return true;
     }
 
     @Override

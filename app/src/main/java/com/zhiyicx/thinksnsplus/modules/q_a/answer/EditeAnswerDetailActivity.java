@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.q_a.answer.news;
+package com.zhiyicx.thinksnsplus.modules.q_a.answer;
 
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.DaggerMarkdownComponent;

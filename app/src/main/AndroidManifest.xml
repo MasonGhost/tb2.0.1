@@ -651,7 +651,7 @@
                   android:screenOrientation="portrait"/>
         <activity android:name=".modules.information.publish.detail.EditeInfoDetailActivity"/>
         <activity android:name=".modules.q_a.publish.detail.EditeQuestionDetailActivity"/>
-        <activity android:name=".modules.q_a.answer.news.EditeAnswerDetailActivity"/>
+        <activity android:name=".modules.q_a.answer.EditeAnswerDetailActivity"/>
     </application>
 
 </manifest>

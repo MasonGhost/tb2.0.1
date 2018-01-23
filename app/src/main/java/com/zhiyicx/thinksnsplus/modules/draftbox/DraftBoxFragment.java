@@ -18,7 +18,7 @@ import com.zhiyicx.thinksnsplus.modules.draftbox.adapter.PostDraftItem;
 import com.zhiyicx.thinksnsplus.modules.draftbox.adapter.QuestionDraftItem;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
-import com.zhiyicx.thinksnsplus.modules.q_a.answer.news.EditeAnswerDetailFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.EditeAnswerDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 

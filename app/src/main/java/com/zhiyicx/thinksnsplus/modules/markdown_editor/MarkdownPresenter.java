@@ -37,8 +37,8 @@ import rx.schedulers.Schedulers;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MarkdownPresenter extends AppBasePresenter<
-        MarkdownContract.View> implements MarkdownContract.Presenter {
+public class MarkdownPresenter extends AppBasePresenter<MarkdownContract.View> implements MarkdownContract.Presenter {
+
     @Inject
     BaseCircleRepository mBaseCircleRepository;
     @Inject

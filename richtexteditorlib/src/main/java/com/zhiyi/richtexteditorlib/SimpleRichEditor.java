@@ -71,6 +71,10 @@ public class SimpleRichEditor extends RichEditor {
         void onSettingImageButtionClick();
     }
 
+    public interface BottomMenuItemConfig {
+        boolean needSetting();
+    }
+
     @SuppressWarnings("unused")
     public abstract static class BaseOnEditorClickListenerImp implements OnEditorClickListener {
         @Override
@@ -94,9 +98,17 @@ public class SimpleRichEditor extends RichEditor {
         }
     }
 
+    private static class BaseBottomMenuItemConfig implements BottomMenuItemConfig {
+        @Override
+        public boolean needSetting() {
+            return false;
+        }
+    }
+
     private BottomMenu mBottomMenu;
     private SelectController mSelectController;
     private OnEditorClickListener mOnEditorClickListener;
+    private BottomMenuItemConfig mBottomMenuItemConfig;
     private ArrayList<Long> mFreeItems;//不受其他items点击事件影响的items
     private ItemIndex.Register mRegister;
     private OnStateChangeListener mOnStateChangeListener;
@@ -124,11 +136,18 @@ public class SimpleRichEditor extends RichEditor {
         this.mOnEditorClickListener = mOnEditorClickListener;
     }
 
+    public void setBottomMenuItemConfig(BottomMenuItemConfig bottomMenuItemConfig) {
+        mBottomMenuItemConfig = bottomMenuItemConfig;
+    }
+
     private void init() {
         mSelectController = SelectController.createController();
         mRegister = ItemIndex.getInstance().getRegister();
         mFreeItems = new ArrayList<>();
 
+        if (mBottomMenuItemConfig == null) {
+            mBottomMenuItemConfig = new BaseBottomMenuItemConfig();
+        }
         addArrow();
         addLink();
         addHalvingLine();
@@ -365,7 +384,6 @@ public class SimpleRichEditor extends RichEditor {
                         (item, isSelected) -> {
                             setBold();
                             LogUtils.d("onItemClick", item.getId() + "");
-
                             //不拦截不在选择控制器中的元素让Menu自己控制选择显示效果
                             return isInSelectController(item.getId());
                         }) : null)
@@ -459,13 +477,13 @@ public class SimpleRichEditor extends RichEditor {
      * @return
      */
     public SimpleRichEditor addSetting() {
-        addRootCustomItem(ItemIndex.SETTING, getBaseItemFactory().generateItem(
+        addRootCustomItem(ItemIndex.SETTING, mBottomMenuItemConfig.needSetting() ? getBaseItemFactory().generateItem(
                 getContext(),
                 ItemIndex.SETTING,
                 (item, isSelected) -> {
                     mOnEditorClickListener.onSettingImageButtionClick();
                     return true;
-                }));
+                }) : null);
         return this;
     }
 
