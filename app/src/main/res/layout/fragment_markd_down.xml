@@ -62,7 +62,8 @@
         android:paddingLeft="@dimen/spacing_small"
         android:text="@string/syn_to_dynamic"
         android:textColor="@color/important_for_content"
-        android:textSize="@dimen/size_content"/>
+        android:textSize="@dimen/size_content"
+        android:visibility="gone"/>
 
     <com.zhiyi.richtexteditorlib.view.BottomMenu
         android:id="@+id/lu_bottom_menu"

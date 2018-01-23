@@ -27,6 +27,7 @@ public class PublishPostFragment extends MarkdownFragment<PostDraftBean> {
     protected CircleInfo mCircleInfo;
     protected boolean isOutCirclePublish;
     protected PostPublishBean mPostPublishBean;
+    protected boolean isBttomMenuVisible = true;
 
     public static PublishPostFragment newInstance(Bundle bundle) {
         PublishPostFragment markdownFragment = new PublishPostFragment();
@@ -146,11 +147,13 @@ public class PublishPostFragment extends MarkdownFragment<PostDraftBean> {
         super.onActivityResultForChooseCircle(circleInfo);
         mCircleInfo = circleInfo;
         mCircleName.setText(mCircleInfo.getName());
+        setSynToDynamicCbVisiable(isBttomMenuVisible);
     }
 
     @Override
-    public void onVisibleChange(boolean visible) {
-        super.onVisibleChange(visible);
+    public void onBottomMenuVisibleChange(boolean visible) {
+        super.onBottomMenuVisibleChange(visible);
+        isBttomMenuVisible = visible;
         setSynToDynamicCbVisiable(visible);
     }
 

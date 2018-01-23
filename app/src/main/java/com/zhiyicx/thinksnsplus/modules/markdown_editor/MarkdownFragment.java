@@ -73,7 +73,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
     protected TextView mCircleName;
 
     /**
-     * 记录上传成功的照片 键值对：时间戳(唯一) -- 图片地址
+     * 记录上传成功的照片 键值对：时间戳(唯一) <key-value> 图片地址
      */
     protected HashMap<Long, String> mInsertedImages;
 
@@ -152,7 +152,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
      * @param visible
      */
     @Override
-    public void onVisibleChange(boolean visible) {
+    public void onBottomMenuVisibleChange(boolean visible) {
 
     }
 

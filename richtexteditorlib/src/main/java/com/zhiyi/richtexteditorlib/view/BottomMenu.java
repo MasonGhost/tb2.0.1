@@ -622,12 +622,12 @@ public class BottomMenu extends ViewGroup {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void show(long d) {
         AnimatorUtil.show(this, d);
-        mBottomMenuVisibleChangeListener.onVisibleChange(true);
+        mBottomMenuVisibleChangeListener.onBottomMenuVisibleChange(true);
     }
 
     public void hide(long d) {
         AnimatorUtil.hide(this, d);
-        mBottomMenuVisibleChangeListener.onVisibleChange(false);
+        mBottomMenuVisibleChangeListener.onBottomMenuVisibleChange(false);
     }
 
     public int isItemSelected2(MenuItem item) {
@@ -856,7 +856,7 @@ public class BottomMenu extends ViewGroup {
     }
 
     public interface BottomMenuVisibleChangeListener{
-        void onVisibleChange(boolean visible);
+        void onBottomMenuVisibleChange(boolean visible);
     }
 
     public void setBottomMenuVisibleChangeListener(BottomMenuVisibleChangeListener bottomMenuVisibleChangeListener) {
