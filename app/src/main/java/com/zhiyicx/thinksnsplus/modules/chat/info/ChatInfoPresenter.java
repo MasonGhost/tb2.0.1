@@ -7,6 +7,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 
@@ -21,6 +22,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_CHANGE_OWNER;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_DATA_CHANGED;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_EDIT_NAME;
 
 /**
@@ -48,9 +51,9 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Reposit
     }
 
     @Override
-    public void updateGroup(ChatGroupBean chatGroupBean) {
-        Subscription subscription = mRepository.updateGroup(chatGroupBean.getIm_group_id(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0, 200, true,
-                0, chatGroupBean.getGroup_face())
+    public void updateGroup(ChatGroupBean chatGroupBean, boolean isEditGroupFace) {
+        Subscription subscription = mRepository.updateGroup(chatGroupBean.getIm_group_id(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0, 200, chatGroupBean.isMembersonly(),
+                0, chatGroupBean.getGroup_face(), isEditGroupFace)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage("修改中..."))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<ChatGroupBean>() {
@@ -85,6 +88,7 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Reposit
                     protected void onSuccess(List<ChatGroupBean> data) {
                         mRootView.getGroupInfoSuccess(data.get(0));
                         mRootView.isShowEmptyView(false, true);
+                        mRootView.dismissSnackBar();
                     }
 
                     @Override
@@ -113,6 +117,11 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Reposit
     public void onGroupNameChanged(String newName){
         mRootView.getGroupBean().setName(newName);
         ChatGroupBean chatGroupBean = mRootView.getGroupBean();
-        updateGroup(chatGroupBean);
+        updateGroup(chatGroupBean, false);
+    }
+
+    @Subscriber(tag = EVENT_IM_GROUP_DATA_CHANGED)
+    public void onGroupOwnerChanged(ChatGroupBean chatGroupBean){
+        mRootView.updateGroup(chatGroupBean);
     }
 }

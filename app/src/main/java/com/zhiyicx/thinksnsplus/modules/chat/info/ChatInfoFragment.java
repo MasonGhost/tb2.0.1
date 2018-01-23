@@ -19,6 +19,7 @@ import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.exceptions.HyphenateException;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
@@ -30,7 +31,9 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.modules.chat.adapter.ChatMemberAdapter;
+import com.zhiyicx.thinksnsplus.modules.chat.edit.manager.GroupManagerActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.edit.name.EditGroupNameActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.edit.owner.EditGroupOwnerActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -40,11 +43,14 @@ import org.simple.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_DELETE_QUIT;
 import static com.zhiyicx.thinksnsplus.modules.chat.edit.name.EditGroupNameFragment.GROUP_ORIGINAL_NAME;
+import static com.zhiyicx.thinksnsplus.modules.chat.edit.owner.EditGroupOwnerFragment.BUNDLE_GROUP_DATA;
 
 /**
  * @author Catherine
@@ -123,7 +129,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             // 屏蔽单聊的布局
             mLlSingle.setVisibility(View.GONE);
             // 非群主屏蔽群管理
-            if (!mPresenter.isGroupOwner()){
+            if (!mPresenter.isGroupOwner()) {
                 mLlManager.setVisibility(View.GONE);
                 mTvDeleteGroup.setText(getString(R.string.chat_quit_group));
             }
@@ -134,68 +140,6 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
 
     @Override
     protected void initData() {
-        if (mChatType == EaseConstant.CHATTYPE_SINGLE) {
-            // 单聊处理布局
-            ImageUtils.loadUserHead(mUserInfoBeans.get(1), mIvUserPortrait, false);
-            mTvUserName.setText(mUserInfoBeans.get(1).getName());
-        } else {
-            // 群聊
-            EMGroup group = EMClient.getInstance().groupManager().getGroup(mChatId);
-            mScBlockMessage.setChecked(group.isMsgBlocked());
-            mTvGroupName.setText(group.getGroupName());
-            RecyclerView.LayoutManager manager = new GridLayoutManager(getContext(), 5);
-            mRvMemberList.setLayoutManager(manager);
-            List<ChatUserInfoBean> list = new ArrayList<>();
-            list.addAll(mUserInfoBeans);
-            if (!mPresenter.isGroupOwner()){
-                // 添加按钮
-                ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
-                chatUserInfoBean.setUser_id(-1L);
-                // 删除按钮
-                ChatUserInfoBean chatUserInfoBean1 = new ChatUserInfoBean();
-                chatUserInfoBean1.setUser_id(-2L);
-                list.add(chatUserInfoBean);
-                list.add(chatUserInfoBean1);
-            }
-            ChatMemberAdapter memberAdapter = new ChatMemberAdapter(getContext(), list);
-            mRvMemberList.setAdapter(memberAdapter);
-            memberAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                    if (list.get(position).getUser_id() == -1L){
-                        // 添加
-                    } else if (list.get(position).getUser_id() == -2L){
-                        // 移除
-                    }
-                }
-
-                @Override
-                public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
-                    return false;
-                }
-            });
-        }
-
-        // 切换是否屏蔽消息
-        mScBlockMessage.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (mChatType == EaseConstant.CHATTYPE_SINGLE) {
-                if (isChecked){
-
-                }
-            } else {
-                try {
-                    if (isChecked){
-                        EMClient.getInstance().groupManager().blockGroupMessage(mChatId);
-                    } else {
-                        EMClient.getInstance().groupManager().unblockGroupMessage(mChatId);
-                    }
-                } catch (HyphenateException e) {
-                    e.printStackTrace();
-                    showSnackErrorMessage("操作失败");
-                }
-            }
-        });
-
     }
 
     @Override
@@ -219,6 +163,11 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                 break;
             case R.id.ll_manager:
                 // 跳转群管理
+                Intent intent = new Intent(getContext(), GroupManagerActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(BUNDLE_GROUP_DATA, mChatGroupBean);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             case R.id.tv_clear_message:
                 // 清空消息记录
@@ -234,18 +183,18 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                 break;
             case R.id.ll_group_name:
                 // 修改群名称
-                Intent intent = new Intent(getContext(), EditGroupNameActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(GROUP_ORIGINAL_NAME, mChatGroupBean.getName());
-                intent.putExtras(bundle);
-                startActivity(intent);
+                Intent intentName = new Intent(getContext(), EditGroupNameActivity.class);
+                Bundle bundleName = new Bundle();
+                bundleName.putString(GROUP_ORIGINAL_NAME, mChatGroupBean.getName());
+                intentName.putExtras(bundleName);
+                startActivity(intentName);
                 break;
             default:
         }
     }
 
-    private void initDeletePopupWindow(){
-        if (mDeleteGroupPopupWindow == null){
+    private void initDeletePopupWindow() {
+        if (mDeleteGroupPopupWindow == null) {
             mDeleteGroupPopupWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.prompt))
                     .item2Str(mPresenter.isGroupOwner() ? getString(R.string.chat_delete) : getString(R.string.chat_quit))
@@ -257,7 +206,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                     .with(getActivity())
                     .item2ClickListener(() -> {
                         try {
-                            if (mPresenter.isGroupOwner()){
+                            if (mPresenter.isGroupOwner()) {
                                 // 解散群组
                                 EMClient.getInstance().groupManager().destroyGroup(mChatId);
                             } else {
@@ -322,21 +271,40 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
 
     @Override
     public void updateGroup(ChatGroupBean chatGroupBean) {
-        mChatGroupBean = chatGroupBean;
-        EMGroup group = EMClient.getInstance().groupManager().getGroup(mChatId);
-        mTvGroupName.setText(group.getGroupName());
-        Glide.with(getContext())
-                .load(chatGroupBean.getGroup_face() +"")
-                .error(R.mipmap.ico_ts_assistant)
-                .placeholder(R.mipmap.ico_ts_assistant)
-                .into(mIvGroupPortrait);
-
+        // emm 由于没有完全返回所有信息 再加上字段也不同 所以手动改一下
+        mChatGroupBean.setGroup_face(chatGroupBean.getGroup_face());
+        mChatGroupBean.setPublic(chatGroupBean.isPublic());
+        mChatGroupBean.setName(chatGroupBean.getGroupname());
+        mChatGroupBean.setDescription(chatGroupBean.getDesc());
+        mChatGroupBean.setMembersonly(chatGroupBean.isMembers_only());
+        mChatGroupBean.setAllowinvites(chatGroupBean.isAllowinvites());
+        setGroupData();
     }
 
     @Override
     public void getGroupInfoSuccess(ChatGroupBean chatGroupBean) {
         mChatGroupBean = chatGroupBean;
         mChatGroupBean.setIm_group_id(mChatId);
+        setGroupData();
+        // 切换是否屏蔽消息
+        mScBlockMessage.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (mChatType == EaseConstant.CHATTYPE_SINGLE) {
+                if (isChecked) {
+
+                }
+            } else {
+                try {
+                    if (isChecked) {
+                        EMClient.getInstance().groupManager().blockGroupMessage(mChatId);
+                    } else {
+                        EMClient.getInstance().groupManager().unblockGroupMessage(mChatId);
+                    }
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                    showSnackErrorMessage("操作失败");
+                }
+            }
+        });
     }
 
     @Override
@@ -348,7 +316,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     public void isShowEmptyView(boolean isShow, boolean isSuccess) {
         mLlContainer.setVisibility(isShow ? View.GONE : View.VISIBLE);
         mEmptyView.setErrorType(isShow ? EmptyView.STATE_NETWORK_LOADING : EmptyView.STATE_HIDE_LAYOUT);
-        if (!isSuccess){
+        if (!isSuccess) {
             mEmptyView.setErrorType(EmptyView.STATE_NETWORK_ERROR);
         }
     }
@@ -362,11 +330,65 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
         mChatGroupBean.setGroup_face(photoList.get(0).getImgUrl());
-        mPresenter.updateGroup(mChatGroupBean);
+        mPresenter.updateGroup(mChatGroupBean, true);
     }
 
     @Override
     public void getPhotoFailure(String errorMsg) {
         showSnackErrorMessage(errorMsg);
+    }
+
+    private void setGroupData(){
+        if (mChatType == EaseConstant.CHATTYPE_SINGLE) {
+            // 单聊处理布局
+            ImageUtils.loadUserHead(mUserInfoBeans.get(1), mIvUserPortrait, false);
+            mTvUserName.setText(mUserInfoBeans.get(1).getName());
+        } else {
+            // 群聊的信息展示
+            EMGroup group = EMClient.getInstance().groupManager().getGroup(mChatId);
+            // 屏蔽按钮
+            mScBlockMessage.setChecked(group.isMsgBlocked());
+            // 群名称
+            mTvGroupName.setText(mChatGroupBean.getName());
+            // 群头像
+            Glide.with(getContext())
+                    .load(mChatGroupBean.getGroup_face() + "")
+                    .override(25, 25)
+                    .error(R.mipmap.ico_ts_assistant)
+                    .placeholder(R.mipmap.ico_ts_assistant)
+                    .into(mIvGroupPortrait);
+            // 成员列表
+            RecyclerView.LayoutManager manager = new GridLayoutManager(getContext(), 5);
+            mRvMemberList.setLayoutManager(manager);
+            List<ChatUserInfoBean> list = new ArrayList<>();
+            list.addAll(mUserInfoBeans);
+            // 添加按钮，都可以拉人
+            ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
+            chatUserInfoBean.setUser_id(-1L);
+            if (!mPresenter.isGroupOwner()) {
+                // 删除按钮，仅群主
+                ChatUserInfoBean chatUserInfoBean1 = new ChatUserInfoBean();
+                chatUserInfoBean1.setUser_id(-2L);
+                list.add(chatUserInfoBean);
+                list.add(chatUserInfoBean1);
+            }
+            ChatMemberAdapter memberAdapter = new ChatMemberAdapter(getContext(), list);
+            mRvMemberList.setAdapter(memberAdapter);
+            memberAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                    if (list.get(position).getUser_id() == -1L) {
+                        // 添加
+                    } else if (list.get(position).getUser_id() == -2L) {
+                        // 移除
+                    }
+                }
+
+                @Override
+                public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+                    return false;
+                }
+            });
+        }
     }
 }

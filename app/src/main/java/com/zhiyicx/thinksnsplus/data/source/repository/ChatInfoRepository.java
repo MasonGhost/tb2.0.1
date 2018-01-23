@@ -21,7 +21,7 @@ import rx.schedulers.Schedulers;
  * @contact email:648129313@qq.com
  */
 
-public class ChatInfoRepository extends BaseFriendsRepository implements ChatInfoContract.Repository{
+public class ChatInfoRepository extends BaseFriendsRepository implements ChatInfoContract.Repository {
 
     @Inject
     UpLoadRepository mUpLoadRepository;
@@ -29,17 +29,6 @@ public class ChatInfoRepository extends BaseFriendsRepository implements ChatInf
     @Inject
     public ChatInfoRepository(ServiceManager manager) {
         super(manager);
-    }
-
-    @Override
-    public Observable<ChatGroupBean> updateGroup(String im_group_id, String groupName, String groupIntro, int isPublic,
-                                                 int maxUser, boolean isMemberOnly, int isAllowInvites, String groupFace) {
-
-        return mUpLoadRepository.upLoadSingleFileV2(groupFace, "", true, 0,0)
-                .flatMap(integerBaseJson -> mEasemobClient.updateGroup(im_group_id, groupName, groupIntro, isPublic, maxUser, isMemberOnly, isAllowInvites,String.valueOf(integerBaseJson.getData()))
-                        .flatMap(chatGroupBean -> Observable.just(chatGroupBean)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())));
     }
 
     @Override

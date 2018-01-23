@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.chat.edit.owner;
 
+import com.zhiyicx.thinksnsplus.data.source.repository.EditGroupOwnerRepository;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -21,8 +23,7 @@ public class EditGroupOwnerPresenterModule {
     }
 
     @Provides
-    public EditGroupOwnerContract.Repository provideEditGroupOwnerContractRepository(){
-        return new EditGroupOwnerContract.Repository() {
-        };
+    public EditGroupOwnerContract.Repository provideEditGroupOwnerContractRepository(EditGroupOwnerRepository repository){
+        return repository;
     }
 }

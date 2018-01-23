@@ -57,7 +57,7 @@ public class EditGroupOwnerFragment extends TSListFragment<EditGroupOwnerContrac
         super.initView(rootView);
         RxTextView.textChanges(mEditSearchFriends)
                 .subscribe(charSequence -> {
-                    if (!TextUtils.isEmpty(charSequence)){
+                    if (!TextUtils.isEmpty(charSequence)) {
                         mPresenter.getSearchResult(charSequence.toString());
                     } else {
                         mPresenter.requestNetData(0L, false);
@@ -124,8 +124,8 @@ public class EditGroupOwnerFragment extends TSListFragment<EditGroupOwnerContrac
                     .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .with(getActivity())
                     .item2ClickListener(() -> {
-                        EventBus.getDefault().post(mNewOwner, EventBusTagConfig.EVENT_IM_GROUP_CHANGE_OWNER);
-                        getActivity().finish();
+                        mChatGroupBean.setOwner(mNewOwner.getUser_id());
+                        mPresenter.updateGroup(mChatGroupBean);
                     })
                     .bottomClickListener(() -> mAlertChangeOwnerPopupWindow.hide())
                     .build();
@@ -136,5 +136,12 @@ public class EditGroupOwnerFragment extends TSListFragment<EditGroupOwnerContrac
     public ChatGroupBean getGroupData() {
         mChatGroupBean = getArguments().getParcelable(BUNDLE_GROUP_DATA);
         return mChatGroupBean;
+    }
+
+    @Override
+    public void updateGroup(ChatGroupBean chatGroupBean) {
+        EventBus.getDefault().post(mChatGroupBean, EventBusTagConfig.EVENT_IM_GROUP_DATA_CHANGED);
+        EventBus.getDefault().post(mNewOwner, EventBusTagConfig.EVENT_IM_GROUP_CHANGE_OWNER);
+        getActivity().finish();
     }
 }

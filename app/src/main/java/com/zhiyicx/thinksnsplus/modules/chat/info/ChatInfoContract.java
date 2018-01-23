@@ -30,13 +30,11 @@ public interface ChatInfoContract {
 
     interface Presenter extends IBasePresenter{
         boolean isGroupOwner();
-        void updateGroup(ChatGroupBean chatGroupBean);
+        void updateGroup(ChatGroupBean chatGroupBean, boolean isEditGroupFace);
         void getGroupChatInfo(String groupId);
     }
 
     interface Repository extends IBaseFriendsRepository{
-        Observable<ChatGroupBean> updateGroup(String im_group_id, String groupName, String groupIntro, int isPublic,
-                                              int maxUser, boolean isMemberOnly,  int isAllowInvites, String groupFace);
         Observable<List<ChatGroupBean>> getGroupChatInfo(String groupId);
     }
 }

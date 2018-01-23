@@ -23,6 +23,7 @@
             android:layout_below="@+id/iv_user_portrait"
             android:textSize="@dimen/size_icon_assist"
             android:textColor="@color/normal_for_assist_text"
+            android:layout_marginTop="@dimen/spacing_normal"
             tools:text="xxxx"/>
 
 

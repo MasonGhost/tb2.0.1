@@ -91,6 +91,7 @@
                             android:layout_width="@dimen/margin_25"
                             android:layout_height="@dimen/margin_25"
                             android:src="@mipmap/ico_ts_assistant"
+                            android:scaleType="centerCrop"
                             android:layout_marginRight="@dimen/spacing_normal"/>
 
                     <ImageView

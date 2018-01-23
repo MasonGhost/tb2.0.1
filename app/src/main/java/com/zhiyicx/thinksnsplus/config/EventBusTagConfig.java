@@ -127,6 +127,7 @@ public class EventBusTagConfig {
     public static final String EVENT_IM_GROUP_EDIT_NAME = "group_edit_name";
     public static final String EVENT_IM_DELETE_QUIT = "group_quit";
     public static final String EVENT_IM_GROUP_CHANGE_OWNER = "group_change_owner";
+    public static final String EVENT_IM_GROUP_DATA_CHANGED = "group_data_changed";
 
     /**
      * 消息底部提示信息相关
