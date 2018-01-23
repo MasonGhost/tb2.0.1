@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/select_friends_item_height"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+    <com.zhiyicx.baseproject.widget.UserAvatarView
+            android:id="@+id/iv_user_portrait"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_mid"/>
+
+
+    <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_rank_number"
+            android:layout_marginLeft="@dimen/spacing_mid"/>
+
+</LinearLayout>
