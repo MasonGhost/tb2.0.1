@@ -29,6 +29,7 @@ import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.TAG_SHOWRULE_POP
 import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity
+import com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.IntegrationDetailActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge.IntegrationRechargeActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge.IntegrationRechargeFragment
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity
@@ -148,7 +149,7 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
 
     override fun setRightClick() {
         super.setRightClick()
-        startActivity(Intent(activity, BillActivity::class.java))
+        startActivity(Intent(activity, IntegrationDetailActivity::class.java))
     }
 
     private fun initListener() {

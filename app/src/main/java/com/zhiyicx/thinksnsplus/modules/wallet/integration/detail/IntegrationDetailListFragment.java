@@ -34,7 +34,7 @@ import butterknife.BindView;
  * @Email Jliuer@aliyun.com
  * @Description 账单
  */
-public class IntegrationDetailListFragment extends TSListFragment<BillContract.Presenter, RechargeSuccessBean> implements BillContract.View {
+public class IntegrationDetailListFragment extends TSListFragment<IntegrationDetailContract.Presenter, RechargeSuccessBean> implements IntegrationDetailContract.View {
 
     public static final String BILL_INFO = "bill_info";
 
