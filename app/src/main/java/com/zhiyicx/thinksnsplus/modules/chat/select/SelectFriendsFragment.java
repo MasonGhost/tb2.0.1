@@ -20,6 +20,7 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivityV2;
 import com.zhiyicx.thinksnsplus.modules.chat.adapter.SelectFriendsAllAdapter;
@@ -45,6 +46,8 @@ import static com.zhiyicx.thinksnsplus.modules.chat.ChatActivityV2.BUNDLE_CHAT_D
 public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.Presenter, UserInfoBean>
         implements SelectFriendsContract.View, SelectFriendsAllAdapter.OnUserSelectedListener {
 
+    public static final String BUNDLE_GROUP_EDIT_DATA = "bundle_group_edit_data";
+
     @BindView(R.id.iv_search_icon)
     ImageView mIvSearchIcon;
     @BindView(R.id.rv_select_result)
@@ -60,6 +63,15 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     private List<UserInfoBean> mSearchResultList;
     private SelectFriendsAllAdapter mSearchResultAdapter;
     private SelectedFriendsAdapter mSelectedFriendsAdapter;
+
+    /**群信息*/
+    private ChatGroupBean mChatGroupBean;
+    /**是否是修改群资料*/
+    private boolean mIsFromEdit;
+    /**是否是删除用户  如果是删除 那么则不用去请求好友列表*/
+    private boolean mIsDeleteMember;
+    /**群组的用户*/
+    private List<UserInfoBean> mGroupUserList;
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
@@ -93,6 +105,10 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
                     mEditSearchFriends.clearFocus();
                     mSearchResultList.clear();
                 });
+    }
+
+    private void getIntentData(){
+        mChatGroupBean = getArguments().getParcelable(BUNDLE_GROUP_EDIT_DATA);
     }
 
     @Override
@@ -219,6 +235,16 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
         to.putExtra(BUNDLE_CHAT_DATA, bundle);
         startActivity(to);
         getActivity().finish();
+    }
+
+    @Override
+    public boolean getIsDeleteMember() {
+        return mIsDeleteMember;
+    }
+
+    @Override
+    public ChatGroupBean getGroupData() {
+        return mChatGroupBean;
     }
 
     @Override

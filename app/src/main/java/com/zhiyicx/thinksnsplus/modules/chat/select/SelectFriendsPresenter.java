@@ -1,10 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.chat.select;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Parcelable;
 
-import com.hyphenate.chat.EMClient;
+import android.text.TextUtils;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
@@ -16,20 +13,13 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.modules.chat.ChatActivityV2;
-import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
-import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
-
+import rx.Observable;
 import rx.Subscription;
 
-import static com.zhiyicx.thinksnsplus.modules.chat.ChatActivityV2.BUNDLE_CHAT_DATA;
 
 /**
  * @author Catherine
@@ -39,7 +29,7 @@ import static com.zhiyicx.thinksnsplus.modules.chat.ChatActivityV2.BUNDLE_CHAT_D
  */
 
 public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContract.Repository, SelectFriendsContract.View>
-        implements SelectFriendsContract.Presenter{
+        implements SelectFriendsContract.Presenter {
 
     @Inject
     protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
@@ -51,37 +41,43 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscription = mRepository.getUserFriendsList(maxId, "")
-                .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
-                    @Override
-                    protected void onSuccess(List<UserInfoBean> data) {
-                        if (!data.isEmpty()){
-                            for (UserInfoBean userInfoBean : data){
-                                userInfoBean.setSelected(false);
+        // 删除用户不需要获取网络数据
+        if (!mRootView.getIsDeleteMember()) {
+            Subscription subscription = mRepository.getUserFriendsList(maxId, "")
+                    .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
+                        @Override
+                        protected void onSuccess(List<UserInfoBean> data) {
+                            if (!data.isEmpty()) {
+                                for (UserInfoBean userInfoBean : data) {
+                                    userInfoBean.setSelected(false);
+                                }
                             }
+                            mRootView.onNetResponseSuccess(data, isLoadMore);
                         }
-                        mRootView.onNetResponseSuccess(data, isLoadMore);
-                    }
 
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        Throwable throwable = new Throwable(message);
-                        mRootView.onResponseError(throwable, isLoadMore);
-                    }
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            Throwable throwable = new Throwable(message);
+                            mRootView.onResponseError(throwable, isLoadMore);
+                        }
 
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        LogUtils.e(throwable, throwable.getMessage());
-                        mRootView.onResponseError(throwable, isLoadMore);
-                    }
-                });
-        addSubscrebe(subscription);
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            LogUtils.e(throwable, throwable.getMessage());
+                            mRootView.onResponseError(throwable, isLoadMore);
+                        }
+                    });
+            addSubscrebe(subscription);
+        } else {
+            getLocalUser("");
+        }
+
     }
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
         List<UserInfoBean> followFansBeanList = mUserInfoBeanGreenDao.getUserFriendsList(maxId);
-        for (UserInfoBean userInfoBean : followFansBeanList){
+        for (UserInfoBean userInfoBean : followFansBeanList) {
             userInfoBean.setSelected(false);
         }
         mRootView.onCacheResponseSuccess(followFansBeanList, isLoadMore);
@@ -94,37 +90,42 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
 
     @Override
     public void getFriendsListByKey(Long maxId, String key) {
-        Subscription subscription = mRepository.getUserFriendsList(maxId, key)
-                .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
-                    @Override
-                    protected void onSuccess(List<UserInfoBean> data) {
-                        for (UserInfoBean userInfoBean : data){
-                            userInfoBean.setSelected(false);
+        if (!mRootView.getIsDeleteMember()) {
+            Subscription subscription = mRepository.getUserFriendsList(maxId, key)
+                    .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
+                        @Override
+                        protected void onSuccess(List<UserInfoBean> data) {
+                            for (UserInfoBean userInfoBean : data) {
+                                userInfoBean.setSelected(false);
+                            }
+                            mRootView.getFriendsListByKeyResult(data);
                         }
-                        mRootView.getFriendsListByKeyResult(data);
-                    }
 
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        mRootView.showSnackErrorMessage(message);
-                    }
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            mRootView.showSnackErrorMessage(message);
+                        }
 
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        LogUtils.e(throwable, throwable.getMessage());
-                        mRootView.showSnackErrorMessage(throwable.getMessage());
-                    }
-                });
-        addSubscrebe(subscription);
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            LogUtils.e(throwable, throwable.getMessage());
+                            mRootView.showSnackErrorMessage(throwable.getMessage());
+                        }
+                    });
+            addSubscrebe(subscription);
+        } else {
+            getLocalUser(key);
+        }
+
     }
 
     @Override
     public void createConversation(List<UserInfoBean> list) {
         // 没有添加当前用户的情况下 添加在第一个
-        if (list.get(0).getUser_id() != AppApplication.getMyUserIdWithdefault()){
+        if (list.get(0).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
             list.add(0, mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
         }
-        if (list.size() == 2){
+        if (list.size() == 2) {
             String id = String.valueOf(list.get(0).getUser_id());
             // 创建单聊，判断当前是否与该用户的会话，没有创建会话
             mRootView.createConversionResult(getChatUser(list), EMConversation.EMConversationType.Chat, EaseConstant.CHATTYPE_SINGLE, id);
@@ -133,7 +134,7 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
             String groupName = list.get(0).getName() + "、" + list.get(1).getName();
             String groupIntro = "暂无";
             StringBuilder members = new StringBuilder();
-            for (UserInfoBean userInfoBean : list){
+            for (UserInfoBean userInfoBean : list) {
                 members.append(String.valueOf(userInfoBean.getUser_id())).append(",");
             }
             Subscription subscription = mRepository.createGroup(groupName, groupIntro, false,
@@ -162,15 +163,20 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
         }
     }
 
-    private List<ChatUserInfoBean> getChatUser(List<UserInfoBean> userInfoBeanList){
+    @Override
+    public void dealGroupMember() {
+
+    }
+
+    private List<ChatUserInfoBean> getChatUser(List<UserInfoBean> userInfoBeanList) {
         List<ChatUserInfoBean> list = new ArrayList<>();
-        for (UserInfoBean userInfoBean : userInfoBeanList){
+        for (UserInfoBean userInfoBean : userInfoBeanList) {
             ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
             chatUserInfoBean.setUser_id(userInfoBean.getUser_id());
             chatUserInfoBean.setAvatar(userInfoBean.getAvatar());
             chatUserInfoBean.setName(userInfoBean.getName());
             chatUserInfoBean.setSex(userInfoBean.getSex());
-            if (userInfoBean.getVerified() != null){
+            if (userInfoBean.getVerified() != null) {
                 ChatVerifiedBean verifiedBean = new ChatVerifiedBean();
                 verifiedBean.setDescription(userInfoBean.getVerified().getDescription());
                 verifiedBean.setIcon(userInfoBean.getVerified().getIcon());
@@ -181,5 +187,46 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
             list.add(chatUserInfoBean);
         }
         return list;
+    }
+
+    /**
+     * 如果是删除用户 那么则不需要获取网络数据
+     */
+    private void getLocalUser(String key) {
+        if (mRootView.getGroupData() == null) {
+            return;
+        }
+        List<UserInfoBean> list = mRootView.getGroupData().getAffiliations();
+        // 移除自己
+        Observable.just(list)
+                .map(list1 -> {
+                    int position = -1;
+                    for (int i = 0; i < list1.size(); i++) {
+                        list1.get(i).setSelected(false);
+                        if (list1.get(i).getUser_id().equals(AppApplication.getMyUserIdWithdefault())) {
+                            position = i;
+                        }
+                    }
+                    if (position != -1) {
+                        list1.remove(position);
+                    }
+                    return list1;
+                })
+                .subscribe(list12 -> {
+                    // 有key表示是搜素，没有就是全部 直接获取就好了
+                    if (TextUtils.isEmpty(key)) {
+                        mRootView.onNetResponseSuccess(list12, false);
+                    } else {
+                        List<UserInfoBean> searchResult = new ArrayList<>();
+                        for (UserInfoBean userInfoBean : mRootView.getGroupData().getAffiliations()) {
+                            if (userInfoBean.getName().contains(key)) {
+                                searchResult.add(userInfoBean);
+                            }
+                        }
+                        if (!searchResult.isEmpty()) {
+                            mRootView.onNetResponseSuccess(searchResult, false);
+                        }
+                    }
+                });
     }
 }

@@ -6,6 +6,7 @@ import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.home.mine.friends.IBaseFriendsRepository;
 
@@ -29,6 +30,10 @@ public interface SelectFriendsContract {
         void getFriendsListByKeyResult(List<UserInfoBean> userInfoBeans);
 
         void createConversionResult(List<ChatUserInfoBean> list, EMConversation.EMConversationType type, int chatType, String id);
+
+        boolean getIsDeleteMember();
+
+        ChatGroupBean getGroupData();
     }
 
     interface Presenter extends ITSListPresenter<UserInfoBean> {
@@ -46,6 +51,11 @@ public interface SelectFriendsContract {
          * @param list 用户列表
          */
         void createConversation(List<UserInfoBean> list);
+
+        /**
+         * 处理群成员变化
+         */
+        void dealGroupMember();
     }
 
     interface Repository extends IBaseFriendsRepository {

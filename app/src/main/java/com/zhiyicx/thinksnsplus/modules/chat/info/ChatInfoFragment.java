@@ -30,11 +30,13 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.chat.adapter.ChatMemberAdapter;
 import com.zhiyicx.thinksnsplus.modules.chat.edit.manager.GroupManagerActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.edit.name.EditGroupNameActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.edit.owner.EditGroupOwnerActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
+import com.zhiyicx.thinksnsplus.modules.chat.member.GroupMemberListActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -51,6 +53,7 @@ import butterknife.OnClick;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_DELETE_QUIT;
 import static com.zhiyicx.thinksnsplus.modules.chat.edit.name.EditGroupNameFragment.GROUP_ORIGINAL_NAME;
 import static com.zhiyicx.thinksnsplus.modules.chat.edit.owner.EditGroupOwnerFragment.BUNDLE_GROUP_DATA;
+import static com.zhiyicx.thinksnsplus.modules.chat.member.GroupMemberListFragment.BUNDLE_GROUP_MEMBER;
 
 /**
  * @author Catherine
@@ -160,6 +163,11 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                 break;
             case R.id.tv_to_all_members:
                 // 查看所有成员
+                Intent intentAllMember = new Intent(getContext(), GroupMemberListActivity.class);
+                Bundle bundleAllMember = new Bundle();
+                bundleAllMember.putParcelable(BUNDLE_GROUP_MEMBER, mChatGroupBean);
+                intentAllMember.putExtras(bundleAllMember);
+                startActivity(intentAllMember);
                 break;
             case R.id.ll_manager:
                 // 跳转群管理
@@ -360,16 +368,16 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             // 成员列表
             RecyclerView.LayoutManager manager = new GridLayoutManager(getContext(), 5);
             mRvMemberList.setLayoutManager(manager);
-            List<ChatUserInfoBean> list = new ArrayList<>();
-            list.addAll(mUserInfoBeans);
+            List<UserInfoBean> list = new ArrayList<>();
+            list.addAll(mChatGroupBean.getAffiliations());
             // 添加按钮，都可以拉人
-            ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
+            UserInfoBean chatUserInfoBean = new UserInfoBean();
             chatUserInfoBean.setUser_id(-1L);
-            if (!mPresenter.isGroupOwner()) {
+            list.add(chatUserInfoBean);
+            if (mPresenter.isGroupOwner()) {
                 // 删除按钮，仅群主
-                ChatUserInfoBean chatUserInfoBean1 = new ChatUserInfoBean();
+                UserInfoBean chatUserInfoBean1 = new UserInfoBean();
                 chatUserInfoBean1.setUser_id(-2L);
-                list.add(chatUserInfoBean);
                 list.add(chatUserInfoBean1);
             }
             ChatMemberAdapter memberAdapter = new ChatMemberAdapter(getContext(), list);
