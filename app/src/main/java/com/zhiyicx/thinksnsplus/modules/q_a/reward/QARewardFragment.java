@@ -29,6 +29,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity;
 import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 
@@ -564,6 +565,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     private void goToQuestionDetail() {
         if (mQaListInfoBean != null) {
             EventBus.getDefault().post(new Bundle(), EventBusTagConfig.EVENT_PUBLISH_QUESTION);
+            PublishQuestionFragment.mDraftQuestion = null;
             Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putSerializable(BUNDLE_QUESTION_BEAN, mQaListInfoBean);

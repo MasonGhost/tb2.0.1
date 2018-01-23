@@ -31,6 +31,12 @@ public class DefaultItemFactory extends BaseItemFactory<ImageViewButtonItem>{
         return item;
     }
 
+    protected  ImageViewButtonItem generateSettingImageItem(Context context, IBottomMenuItem.OnBottomItemClickListener listener) {
+        ImageViewButtonItem item = generateItem(context, ItemIndex.SETTING, R.drawable.setting);
+        item.setOnItemClickListener(listener);
+        return item;
+    }
+
     protected  ImageViewButtonItem generateAItem(Context context) {
         return generateAutoSetItem(context, ItemIndex.A, R.drawable.a);
     }
@@ -142,6 +148,8 @@ public class DefaultItemFactory extends BaseItemFactory<ImageViewButtonItem>{
                 return generateInsertImageItem(context,listener);
             case (int) ItemIndex.ARROW:
                 return generateArrowImageItem(context,listener);
+            case (int) ItemIndex.SETTING:
+                return generateSettingImageItem(context,listener);
             default:
                 return null;
         }

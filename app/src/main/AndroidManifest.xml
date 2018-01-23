@@ -669,6 +669,9 @@
         <!--搜索好友-->
         <activity android:name=".modules.home.mine.friends.search.SearchFriendsActivity"
                   android:screenOrientation="portrait"/>
+        <activity android:name=".modules.information.publish.detail.EditeInfoDetailActivity"/>
+        <activity android:name=".modules.q_a.publish.detail.EditeQuestionDetailActivity"/>
+        <activity android:name=".modules.q_a.answer.news.EditeAnswerDetailActivity"/>
     </application>
 
 </manifest>

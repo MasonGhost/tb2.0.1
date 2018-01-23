@@ -29,6 +29,7 @@ public class ItemIndex {
 
     /*------------------自定义 item---------------------------------------*/
     public static final long ARROW = 0x11;
+    public static final long SETTING = 0x12;
     /*---------------------------------------------------------*/
 
     private long[] defaultItems = {INSERT_IMAGE, A, MORE, UNDO,
