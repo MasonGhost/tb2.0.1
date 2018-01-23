@@ -5,6 +5,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.List;
 
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -40,5 +41,23 @@ public interface IBaseFriendsRepository {
                                           long owner, String members);
 
     Observable<ChatGroupBean> updateGroup(String im_group_id, String groupName, String groupIntro, int isPublic,
-                                          int maxUser, boolean isMemberOnly,  int isAllowInvites, String groupFace, boolean isEditGroupFace);
+                                          int maxUser, boolean isMemberOnly,  int isAllowInvites, String groupFace,
+                                          boolean isEditGroupFace, String newOwner);
+
+
+    /**
+     * 添加成员
+     * @param id
+     * @param member
+     * @return
+     */
+    Observable<ChatGroupBean> addGroupMember(String id, String member);
+
+    /**
+     * 移除成员
+     * @param id
+     * @param member
+     * @return
+     */
+    Observable<ChatGroupBean> removeGroupMember(String id, String member);
 }

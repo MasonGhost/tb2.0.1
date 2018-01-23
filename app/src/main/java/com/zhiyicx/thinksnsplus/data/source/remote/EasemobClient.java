@@ -5,6 +5,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 
 import java.util.List;
 
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
@@ -50,7 +51,7 @@ public interface EasemobClient {
     @PATCH(ApiConfig.APP_PATH_CREATE_CHAT_GROUP)
     Observable<ChatGroupBean> updateGroup(@Query("im_group_id") String im_group_id, @Query("groupname") String groupName, @Query("desc") String groupIntro, @Query("public") int isPublic,
                                           @Query("maxusers") int maxUser, @Query("members_only") boolean isMemberOnly, @Query("allowinvites") int isAllowInvites,
-                                          @Query("group_face") String groupFace);
+                                          @Query("group_face") String groupFace, @Query("new_owner_user") String newOwner);
 
     /**
      * 批量获取群信息
@@ -59,4 +60,22 @@ public interface EasemobClient {
      */
     @GET(ApiConfig.APP_PATH_GET_GROUP_INFO_S)
     Observable<List<ChatGroupBean>> getGroupInfo(@Query("im_group_id") String ids);
+
+    /**
+     * 添加群组成员
+     *
+     * @param id     群Id
+     * @param member 群成员 1,2,3 这种样式的
+     */
+    @POST(ApiConfig.APP_PATH_GET_GROUP_ADD_MEMBER)
+    Observable<ChatGroupBean> addGroupMember(@Query("im_group_id") String id, @Query("members") String member);
+
+    /**
+     * 添加群组成员
+     *
+     * @param id     群Id
+     * @param member 群成员 1,2,3 这种样式的
+     */
+    @DELETE(ApiConfig.APP_PATH_GET_GROUP_ADD_MEMBER)
+    Observable<ChatGroupBean> removeGroupMember(@Query("im_group_id") String id, @Query("members") String member);
 }

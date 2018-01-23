@@ -34,7 +34,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_E
  */
 
 public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Repository, ChatInfoContract.View>
-        implements ChatInfoContract.Presenter{
+        implements ChatInfoContract.Presenter {
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
@@ -53,7 +53,7 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Reposit
     @Override
     public void updateGroup(ChatGroupBean chatGroupBean, boolean isEditGroupFace) {
         Subscription subscription = mRepository.updateGroup(chatGroupBean.getIm_group_id(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0, 200, chatGroupBean.isMembersonly(),
-                0, chatGroupBean.getGroup_face(), isEditGroupFace)
+                0, chatGroupBean.getGroup_face(), isEditGroupFace, chatGroupBean.getOwner() + "")
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage("修改中..."))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<ChatGroupBean>() {
@@ -114,14 +114,14 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Reposit
     }
 
     @Subscriber(tag = EVENT_IM_GROUP_EDIT_NAME)
-    public void onGroupNameChanged(String newName){
+    public void onGroupNameChanged(String newName) {
         mRootView.getGroupBean().setName(newName);
         ChatGroupBean chatGroupBean = mRootView.getGroupBean();
         updateGroup(chatGroupBean, false);
     }
 
     @Subscriber(tag = EVENT_IM_GROUP_DATA_CHANGED)
-    public void onGroupOwnerChanged(ChatGroupBean chatGroupBean){
+    public void onGroupOwnerChanged(ChatGroupBean chatGroupBean) {
         mRootView.updateGroup(chatGroupBean);
     }
 }

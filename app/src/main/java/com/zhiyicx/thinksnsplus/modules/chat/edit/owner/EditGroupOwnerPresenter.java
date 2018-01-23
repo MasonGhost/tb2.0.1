@@ -69,7 +69,7 @@ public class EditGroupOwnerPresenter extends AppBasePresenter<EditGroupOwnerCont
     @Override
     public void updateGroup(ChatGroupBean chatGroupBean) {
         Subscription subscription = mRepository.updateGroup(chatGroupBean.getIm_group_id(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0, 200, chatGroupBean.isMembersonly(),
-                0, chatGroupBean.getGroup_face(), false)
+                0, chatGroupBean.getGroup_face(), false, chatGroupBean.getOwner() + "")
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage("修改中..."))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<ChatGroupBean>() {
@@ -96,9 +96,9 @@ public class EditGroupOwnerPresenter extends AppBasePresenter<EditGroupOwnerCont
         addSubscrebe(subscription);
     }
 
-    private void getResult(String key){
+    private void getResult(String key) {
         ChatGroupBean groupBean = mRootView.getGroupData();
-        if (groupBean == null){
+        if (groupBean == null) {
             return;
         }
         List<UserInfoBean> list = groupBean.getAffiliations();
@@ -119,7 +119,7 @@ public class EditGroupOwnerPresenter extends AppBasePresenter<EditGroupOwnerCont
                 })
                 .subscribe(list12 -> {
                     // 有key表示是搜素，没有就是全部 直接获取就好了
-                    if (TextUtils.isEmpty(key)){
+                    if (TextUtils.isEmpty(key)) {
                         mRootView.onNetResponseSuccess(list12, false);
                     } else {
                         List<UserInfoBean> searchResult = new ArrayList<>();

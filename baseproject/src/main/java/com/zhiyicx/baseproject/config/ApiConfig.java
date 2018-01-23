@@ -120,6 +120,7 @@ public class ApiConfig {
     public static final String APP_PATH_CREATE_CHAT_GROUP = "api/" + API_VERSION_2 + "/easemob/group";// 创建群聊
     public static final String APP_PATH_GET_GROUP_INFO = "api/" + API_VERSION_2 + "/easemob/group?im_group_id=%s";// 获取群信息
     public static final String APP_PATH_GET_GROUP_INFO_S = "api/" + API_VERSION_2 + "/easemob/group";// 获取群信息
+    public static final String APP_PATH_GET_GROUP_ADD_MEMBER = "api/" + API_VERSION_2 + "/easemob/group/member";// 修改成员 添加POST 移除delete
 
     /**
      * 关注粉丝 FollowFansClient

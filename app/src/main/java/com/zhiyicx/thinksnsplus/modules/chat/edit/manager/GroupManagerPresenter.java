@@ -24,7 +24,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_C
  */
 
 public class GroupManagerPresenter extends AppBasePresenter<GroupManagerContract.Repository, GroupManagerContract.View>
-        implements GroupManagerContract.Presenter{
+        implements GroupManagerContract.Presenter {
 
     @Inject
     public GroupManagerPresenter(GroupManagerContract.Repository repository, GroupManagerContract.View rootView) {
@@ -37,14 +37,14 @@ public class GroupManagerPresenter extends AppBasePresenter<GroupManagerContract
     }
 
     @Subscriber(tag = EVENT_IM_GROUP_CHANGE_OWNER)
-    public void onGroupOwnerChanged(UserInfoBean userInfoBean){
+    public void onGroupOwnerChanged(UserInfoBean userInfoBean) {
         mRootView.closeCurrentActivity();
     }
 
     @Override
     public void updateGroup(ChatGroupBean chatGroupBean) {
         Subscription subscription = mRepository.updateGroup(chatGroupBean.getIm_group_id(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0, 200, chatGroupBean.isMembersonly(),
-                0, chatGroupBean.getGroup_face(), false)
+                0, chatGroupBean.getGroup_face(), false, chatGroupBean.getOwner() + "")
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage("修改中..."))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<ChatGroupBean>() {

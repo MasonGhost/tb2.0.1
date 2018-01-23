@@ -24,7 +24,7 @@ import rx.schedulers.Schedulers;
  * @contact email:648129313@qq.com
  */
 
-public class BaseFriendsRepository implements IBaseFriendsRepository{
+public class BaseFriendsRepository implements IBaseFriendsRepository {
 
     FollowFansClient mClient;
     EasemobClient mEasemobClient;
@@ -63,19 +63,34 @@ public class BaseFriendsRepository implements IBaseFriendsRepository{
 
     @Override
     public Observable<ChatGroupBean> updateGroup(String imGroupId, String groupName, String groupIntro, int isPublic,
-                                                 int maxUser, boolean isMemberOnly, int isAllowInvites, String groupFace, boolean isEditGroupFace) {
+                                                 int maxUser, boolean isMemberOnly, int isAllowInvites, String groupFace,
+                                                 boolean isEditGroupFace, String newOwner) {
         // 如果是修改头像才去上传图片
         if (isEditGroupFace) {
             return mUpLoadRepository.upLoadSingleFileV2(groupFace, "", true, 0, 0)
-                    .flatMap(integerBaseJson -> mEasemobClient.updateGroup(imGroupId, groupName, groupIntro, isPublic, maxUser, isMemberOnly, isAllowInvites, String.valueOf(integerBaseJson.getData()))
+                    .flatMap(integerBaseJson -> mEasemobClient.updateGroup(imGroupId, groupName, groupIntro, isPublic, maxUser, isMemberOnly, isAllowInvites, String.valueOf(integerBaseJson.getData()), newOwner)
                             .flatMap(chatGroupBean -> Observable.just(chatGroupBean)
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())));
         } else {
-            return mEasemobClient.updateGroup(imGroupId, groupName, groupIntro, isPublic, maxUser, isMemberOnly, isAllowInvites, "")
+            return mEasemobClient.updateGroup(imGroupId, groupName, groupIntro, isPublic, maxUser, isMemberOnly, isAllowInvites, "", newOwner)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
         }
 
+    }
+
+    @Override
+    public Observable<ChatGroupBean> addGroupMember(String id, String member) {
+        return mEasemobClient.addGroupMember(id, member)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<ChatGroupBean> removeGroupMember(String id, String member) {
+        return mEasemobClient.removeGroupMember(id, member)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }
