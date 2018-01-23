@@ -59,6 +59,7 @@
         android:layout_above="@+id/lu_bottom_menu"
         android:paddingLeft="@dimen/spacing_mid"
         android:background="@color/white"
+        android:button="@drawable/selector_circle_post_synchro"
         android:text="@string/syn_to_dynamic"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content"/>
