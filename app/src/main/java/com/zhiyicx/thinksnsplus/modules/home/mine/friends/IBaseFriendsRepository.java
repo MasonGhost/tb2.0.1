@@ -38,4 +38,7 @@ public interface IBaseFriendsRepository {
     Observable<ChatGroupBean> createGroup(String groupName, String groupIntro, boolean isPublic,
                                           int maxUser, boolean isMemberOnly, boolean isAllowInvites,
                                           long owner, String members);
+
+    Observable<ChatGroupBean> updateGroup(String im_group_id, String groupName, String groupIntro, int isPublic,
+                                          int maxUser, boolean isMemberOnly,  int isAllowInvites, String groupFace, boolean isEditGroupFace);
 }

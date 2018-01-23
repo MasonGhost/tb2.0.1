@@ -29,6 +29,8 @@ public class BaseFriendsRepository implements IBaseFriendsRepository{
     FollowFansClient mClient;
     EasemobClient mEasemobClient;
     @Inject
+    UpLoadRepository mUpLoadRepository;
+    @Inject
     protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
@@ -57,5 +59,23 @@ public class BaseFriendsRepository implements IBaseFriendsRepository{
         return mEasemobClient.createGroup(groupName, groupIntro, isPublic ? 1 : 0, maxUser, isMemberOnly, isAllowInvites ? 1 : 0, owner, members)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<ChatGroupBean> updateGroup(String imGroupId, String groupName, String groupIntro, int isPublic,
+                                                 int maxUser, boolean isMemberOnly, int isAllowInvites, String groupFace, boolean isEditGroupFace) {
+        // 如果是修改头像才去上传图片
+        if (isEditGroupFace) {
+            return mUpLoadRepository.upLoadSingleFileV2(groupFace, "", true, 0, 0)
+                    .flatMap(integerBaseJson -> mEasemobClient.updateGroup(imGroupId, groupName, groupIntro, isPublic, maxUser, isMemberOnly, isAllowInvites, String.valueOf(integerBaseJson.getData()))
+                            .flatMap(chatGroupBean -> Observable.just(chatGroupBean)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())));
+        } else {
+            return mEasemobClient.updateGroup(imGroupId, groupName, groupIntro, isPublic, maxUser, isMemberOnly, isAllowInvites, "")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread());
+        }
+
     }
 }

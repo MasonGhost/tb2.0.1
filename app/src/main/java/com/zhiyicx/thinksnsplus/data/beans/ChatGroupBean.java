@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
+import com.google.gson.annotations.SerializedName;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -35,8 +37,22 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
      "group_face":
      */
 
+
     /**
-     * 创建群组用的
+     * 更新群信息返回的内容
+     "groupname": "呱呱",
+     "desc": "暂无",
+     "public": false,
+     "maxusers": "200",
+     "members_only": true,
+     "allowinvites": false,
+     "group_face": "",
+     "im_group_id": "39098857357316"
+     *
+     * */
+
+    /**
+     * 创建群组用的，更新群信息返回的也是这个
      */
     private String im_group_id;
     /**
@@ -44,8 +60,20 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
      */
     private String id;
     private String name;
+    /**
+     * 更新群信息返回的群名称
+     */
+    private String groupname;
     private String description;
+    /**
+     * 更新群信息返回的群简介
+     */
+    private String desc;
     private boolean membersonly;
+    /**
+     * 更新群信息返回的权限
+     */
+    private boolean members_only;
     private boolean allowinvites;
     private int maxusers;
     private long owner;
@@ -53,6 +81,8 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
     private String group_face;
     private int affiliations_count;
     private List<UserInfoBean> affiliations;
+    @SerializedName("public")
+    private boolean isPublic;
 
     public String getIm_group_id() {
         return im_group_id;
@@ -150,6 +180,38 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
         this.group_face = group_face;
     }
 
+    public String getGroupname() {
+        return groupname;
+    }
+
+    public void setGroupname(String groupname) {
+        this.groupname = groupname;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public boolean isMembers_only() {
+        return members_only;
+    }
+
+    public void setMembers_only(boolean members_only) {
+        this.members_only = members_only;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
+    }
+
     public ChatGroupBean() {
     }
 
@@ -159,8 +221,11 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
                 "im_group_id='" + im_group_id + '\'' +
                 ", id='" + id + '\'' +
                 ", name='" + name + '\'' +
+                ", groupname='" + groupname + '\'' +
                 ", description='" + description + '\'' +
+                ", desc='" + desc + '\'' +
                 ", membersonly=" + membersonly +
+                ", members_only=" + members_only +
                 ", allowinvites=" + allowinvites +
                 ", maxusers=" + maxusers +
                 ", owner=" + owner +
@@ -168,6 +233,7 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
                 ", group_face='" + group_face + '\'' +
                 ", affiliations_count=" + affiliations_count +
                 ", affiliations=" + affiliations +
+                ", isPublic=" + isPublic +
                 '}';
     }
 
@@ -182,8 +248,11 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
         dest.writeString(this.im_group_id);
         dest.writeString(this.id);
         dest.writeString(this.name);
+        dest.writeString(this.groupname);
         dest.writeString(this.description);
+        dest.writeString(this.desc);
         dest.writeByte(this.membersonly ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.members_only ? (byte) 1 : (byte) 0);
         dest.writeByte(this.allowinvites ? (byte) 1 : (byte) 0);
         dest.writeInt(this.maxusers);
         dest.writeLong(this.owner);
@@ -191,6 +260,7 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
         dest.writeString(this.group_face);
         dest.writeInt(this.affiliations_count);
         dest.writeTypedList(this.affiliations);
+        dest.writeByte(this.isPublic ? (byte) 1 : (byte) 0);
     }
 
     protected ChatGroupBean(Parcel in) {
@@ -198,8 +268,11 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
         this.im_group_id = in.readString();
         this.id = in.readString();
         this.name = in.readString();
+        this.groupname = in.readString();
         this.description = in.readString();
+        this.desc = in.readString();
         this.membersonly = in.readByte() != 0;
+        this.members_only = in.readByte() != 0;
         this.allowinvites = in.readByte() != 0;
         this.maxusers = in.readInt();
         this.owner = in.readLong();
@@ -207,6 +280,7 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
         this.group_face = in.readString();
         this.affiliations_count = in.readInt();
         this.affiliations = in.createTypedArrayList(UserInfoBean.CREATOR);
+        this.isPublic = in.readByte() != 0;
     }
 
     public static final Creator<ChatGroupBean> CREATOR = new Creator<ChatGroupBean>() {
