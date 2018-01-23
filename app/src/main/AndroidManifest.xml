@@ -637,6 +637,9 @@
         <!--群管理页面-->
         <activity android:name=".modules.chat.edit.manager.GroupManagerActivity"
                 android:screenOrientation="portrait"/>
+        <!--群成员列表页面-->
+        <activity android:name=".modules.chat.member.GroupMemberListActivity"
+                android:screenOrientation="portrait"/>
         <!-- 开机自启动服务 -->
         <receiver android:name=".modules.chat.receiver.StartServiceReceiver">
             <intent-filter android:priority="1000">
