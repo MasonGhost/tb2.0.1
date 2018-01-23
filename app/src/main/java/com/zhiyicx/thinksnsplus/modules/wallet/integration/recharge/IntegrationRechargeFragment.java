@@ -25,6 +25,7 @@ import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -369,6 +370,7 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
     @Override
     public void payCredentialsResult(@NotNull PayStrV2Bean payStrBean) {
         mPayChargeId = payStrBean.getOrder().getId() + "";
+        LogUtils.json(ConvertUtils.object2JsonStr(payStrBean.getPingpp_order()));
         TSPayClient.pay(ConvertUtils.object2JsonStr(payStrBean.getPingpp_order()), getActivity());
     }
 
