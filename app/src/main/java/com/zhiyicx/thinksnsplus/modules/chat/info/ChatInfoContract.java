@@ -5,6 +5,8 @@ import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.modules.home.mine.friends.IBaseFriendsRepository;
 
+import java.util.List;
+
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -21,16 +23,20 @@ public interface ChatInfoContract {
     interface View extends IBaseView<Presenter>{
         String getChatId();
         void updateGroup(ChatGroupBean chatGroupBean);
+        void getGroupInfoSuccess(ChatGroupBean chatGroupBean);
+        ChatGroupBean getGroupBean();
+        void isShowEmptyView(boolean isShow, boolean isSuccess);
     }
 
     interface Presenter extends IBasePresenter{
         boolean isGroupOwner();
-        void updateGroup(String im_group_id, String groupName, String groupIntro, int isPublic,
-                         int maxUser, boolean isMemberOnly,  int isAllowInvites, String groupFace);
+        void updateGroup(ChatGroupBean chatGroupBean);
+        void getGroupChatInfo(String groupId);
     }
 
     interface Repository extends IBaseFriendsRepository{
         Observable<ChatGroupBean> updateGroup(String im_group_id, String groupName, String groupIntro, int isPublic,
                                               int maxUser, boolean isMemberOnly,  int isAllowInvites, String groupFace);
+        Observable<List<ChatGroupBean>> getGroupChatInfo(String groupId);
     }
 }

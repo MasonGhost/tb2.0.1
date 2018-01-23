@@ -5,6 +5,8 @@ import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.chat.info.ChatInfoContract;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -38,5 +40,12 @@ public class ChatInfoRepository extends BaseFriendsRepository implements ChatInf
                         .flatMap(chatGroupBean -> Observable.just(chatGroupBean)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())));
+    }
+
+    @Override
+    public Observable<List<ChatGroupBean>> getGroupChatInfo(String groupId) {
+        return mEasemobClient.getGroupInfo(groupId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

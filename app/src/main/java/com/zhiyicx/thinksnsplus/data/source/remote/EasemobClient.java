@@ -57,6 +57,6 @@ public interface EasemobClient {
      *
      * @param ids im_group_id 以逗号隔开
      */
-    @GET(ApiConfig.APP_PATH_CREATE_CHAT_GROUP)
+    @GET(ApiConfig.APP_PATH_GET_GROUP_INFO_S)
     Observable<List<ChatGroupBean>> getGroupInfo(@Query("im_group_id") String ids);
 }

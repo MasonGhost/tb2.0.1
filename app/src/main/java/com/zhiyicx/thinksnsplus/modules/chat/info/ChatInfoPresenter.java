@@ -10,11 +10,18 @@ import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 
+import org.simple.eventbus.Subscriber;
+
+import java.util.List;
+
 import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_EDIT_NAME;
 
 /**
  * @author Catherine
@@ -41,10 +48,10 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Reposit
     }
 
     @Override
-    public void updateGroup(String im_group_id, String groupName, String groupIntro, int isPublic, int maxUser,
-                            boolean isMemberOnly, int isAllowInvites, String groupFace) {
-        Subscription subscription = mRepository.updateGroup(im_group_id, groupName, groupIntro, isPublic, maxUser, isMemberOnly,
-                isAllowInvites, groupFace)
+    public void updateGroup(ChatGroupBean chatGroupBean) {
+        Subscription subscription = mRepository.updateGroup(chatGroupBean.getIm_group_id(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0, 200, true,
+                0, chatGroupBean.getGroup_face())
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage("修改中..."))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<ChatGroupBean>() {
                     @Override
@@ -67,5 +74,45 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Reposit
                     }
                 });
         addSubscrebe(subscription);
+    }
+
+    @Override
+    public void getGroupChatInfo(String groupId) {
+        Subscription subscription = mRepository.getGroupChatInfo(groupId)
+                .doOnSubscribe(() -> mRootView.isShowEmptyView(true, true))
+                .subscribe(new BaseSubscribeForV2<List<ChatGroupBean>>() {
+                    @Override
+                    protected void onSuccess(List<ChatGroupBean> data) {
+                        mRootView.getGroupInfoSuccess(data.get(0));
+                        mRootView.isShowEmptyView(false, true);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                        mRootView.isShowEmptyView(false, false);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                        mRootView.isShowEmptyView(false, false);
+                    }
+                });
+        addSubscrebe(subscription);
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Subscriber(tag = EVENT_IM_GROUP_EDIT_NAME)
+    public void onGroupNameChanged(String newName){
+        mRootView.getGroupBean().setName(newName);
+        ChatGroupBean chatGroupBean = mRootView.getGroupBean();
+        updateGroup(chatGroupBean);
     }
 }
