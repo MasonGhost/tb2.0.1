@@ -147,12 +147,14 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
         }
     }
 
-    override fun setRightClick() {
-        super.setRightClick()
-        startActivity(Intent(activity, IntegrationDetailActivity::class.java))
-    }
-
     private fun initListener() {
+        // 明细
+        RxView.clicks(mTvToolbarRight)
+                .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe { _ ->
+                    startActivity(Intent(activity, IntegrationDetailActivity::class.java))
+                }
         // 充值积分
         RxView.clicks(mBtReCharge)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)

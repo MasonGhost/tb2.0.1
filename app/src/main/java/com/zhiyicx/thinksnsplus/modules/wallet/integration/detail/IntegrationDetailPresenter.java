@@ -42,7 +42,6 @@ public class IntegrationDetailPresenter extends AppBasePresenter<IntegrationDeta
                 .subscribe(new BaseSubscribeForV2<List<RechargeSuccessBean>>() {
                     @Override
                     protected void onSuccess(List<RechargeSuccessBean> data) {
-//                        Collections.sort(data, new TimeStringSortClass());
                         mRootView.setMaxId(data.isEmpty() ? 0 : data.get(data.size() - 1).getMaxId());
                         removeAction(data, mRootView.getBillType());
                         mRootView.onNetResponseSuccess(data, isLoadMore);
