@@ -802,4 +802,12 @@
     <string name="chat_edit_group_owner_edit_alert">是否确认转让？</string>
     <string name="chat_edit_group_open">开启进群审核</string>
     <string name="chat_edit_group_owner_manage">转让群主</string>
+    <string name="chat_edit_group_all_member">转让群主</string>
+    <string name="chat_group_owner">群主</string>
+    <string name="chat_edit_group_add_member">添加好友</string>
+    <string name="chat_edit_group_remove_member">删除成员</string>
+    <string name="chat_edit_group_add">添加</string>
+    <string name="chat_edit_group_add_d">添加(%d)</string>
+    <string name="chat_edit_group_remove">删除</string>
+    <string name="chat_edit_group_remove_d">删除(%d)</string>
 </resources>

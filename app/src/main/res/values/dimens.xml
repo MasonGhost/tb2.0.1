@@ -143,4 +143,6 @@
     <dimen name="chat_call_local_surface_view_height">143dp</dimen>
     <dimen name="chat_info_header_view_width">50dp</dimen>
     <dimen name="chat_info_group_edit_owner_alert_height">35dp</dimen>
+    <dimen name="chat_info_member_owner_height">16dp</dimen>
+    <dimen name="chat_info_member_owner_width">36dp</dimen>
 </resources>
