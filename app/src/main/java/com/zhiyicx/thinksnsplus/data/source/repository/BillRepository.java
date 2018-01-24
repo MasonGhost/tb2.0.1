@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
@@ -201,6 +202,18 @@ public class BillRepository implements IBillRepository {
     @Override
     public Observable<List<RechargeSuccessV2Bean>> integrationOrdersSuccess(int limit, int after, String action,Integer type) {
         return mWalletClient.integrationOrdersSuccess(limit,after,action,type)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+    /**
+     * 发起积分提现
+     *
+     * @param amount 提取积分，发起该操作后会根据积分兑换比例取人民币分单位整数后扣减相应积分
+     * @return
+     */
+    @Override
+    public Observable<BaseJsonV2> integrationWithdrawals(Integer amount) {
+        return mWalletClient.integrationWithdrawals(amount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

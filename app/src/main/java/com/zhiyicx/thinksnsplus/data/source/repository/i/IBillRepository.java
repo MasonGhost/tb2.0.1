@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
@@ -22,6 +23,7 @@ import rx.Observable;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_ORDERS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE_SUCCESS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_WITHDRAWALS;
 
 /**
  * @Describe
@@ -81,21 +83,28 @@ public interface IBillRepository {
 
 
     /**
-     *
-     *
      * @param order
      * @return 取回凭据
      */
     Observable<RechargeSuccessV2Bean> integrationRechargeSuccess(String order);
 
     /**
-     *
-     * @param limit 数据返回条数
-     * @param after 翻页数据id
+     * @param limit  数据返回条数
+     * @param after  翻页数据id
      * @param action 筛选类型 recharge - 充值记录 cash - 提现记录 默认为全部
      * @param type   筛选类型 1 - 收入 -1 - 支出 默认为全部
      * @return 积分流水
      */
-    Observable<List<RechargeSuccessV2Bean>> integrationOrdersSuccess( int limit,  int after , String
+    Observable<List<RechargeSuccessV2Bean>> integrationOrdersSuccess(int limit, int after, String
             action, Integer type);
+
+
+    /**
+     * 发起积分提现
+     *
+     * @param amount 提取积分，发起该操作后会根据积分兑换比例取人民币分单位整数后扣减相应积分
+     * @return
+     */
+    Observable<BaseJsonV2> integrationWithdrawals(Integer amount);
+
 }

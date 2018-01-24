@@ -30,5 +30,6 @@
     <!--圈子-->
     <color name="circle_navigation_bg">#363845</color>
     <color name="circle_navigation_txt_color">#4a4d5e</color>
+    <color name="rule_tip_color">#b3999999</color>
 
 </resources>

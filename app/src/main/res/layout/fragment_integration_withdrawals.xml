@@ -73,47 +73,49 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/full_button_height"
-            android:background="@color/white"
-            android:gravity="center"
-            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:paddingLeft="@dimen/spacing_mid"
-            android:paddingRight="@dimen/spacing_mid">
+            android:paddingRight="@dimen/spacing_mid"
+            android:paddingTop="@dimen/spacing_large">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/custom_recharge_money"
-                android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_content"
+                android:text="@string/input_withdrawals_integration"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_content_comment"
                 />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_mid_small_8dp"
+                android:text="@string/input_withdrawals_integration_tip"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_content_comment"
+                />
+
 
             <EditText
                 android:id="@+id/et_input"
-                style="@style/style_dynamic_editext"
-                android:hint="@string/et_top_input"
-                tools:hint="输入金额"/>
-
-            <TextView
-                android:id="@+id/tv_custom_money"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/yuan"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:background="@drawable/shape_rect_bg_boder_gray"
+                android:digits="0123456789."
+                android:hint="@string/et_input_withdrawals_integration_tip"
+                android:padding="@dimen/integration_withdrawals_et_padding"
                 android:textColor="@color/important_for_content"
+                android:inputType="numberDecimal"
+                android:textColorHint="@color/general_for_hint"
+                android:gravity="center"
                 android:textSize="@dimen/size_content"
-                tools:text="元"/>
+                android:maxLength="@integer/money_input_max_size"
+                />
+
         </LinearLayout>
 
-        <!--选择充值方式-->
-        <com.zhiyicx.baseproject.widget.button.CombinationButton
-            android:id="@+id/bt_recharge_style"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/full_button_height"
-            android:layout_marginTop="@dimen/spacing_mid"
-            app:leftText="@string/choose_recharge_style"
-            app:leftTextLeftPadding="@dimen/spacing_mid"
-            app:rightImage="@mipmap/ic_arrow_smallgrey"
-            app:showLine="false"/>
 
         <TextView
             android:id="@+id/bt_sure"
@@ -135,6 +137,7 @@
         android:drawableLeft="@mipmap/ico_wallet_rules"
         android:drawablePadding="@dimen/spacing_small"
         android:padding="@dimen/spacing_large"
-        android:text="@string/user_reharge_integration_rule"
+        android:textColor="@color/rule_tip_color"
+        android:text="@string/integration_withdrawals_rule"
         />
 </RelativeLayout>

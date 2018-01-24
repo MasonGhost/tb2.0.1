@@ -112,7 +112,9 @@ public class ApiConfig {
      * 聊天相关
      */
     public static final String APP_PATH_GET_IM_INFO = "api/" + API_VERSION_2 + "/im/users";// 获取 IM 帐号信息
-    /**获取环信用户密码，在这个接口中，后端会去判断是否已经有用户，没有则注册*/
+    /**
+     * 获取环信用户密码，在这个接口中，后端会去判断是否已经有用户，没有则注册
+     */
     public static final String APP_PATH_GET_IM_INFO_V2 = "api/" + API_VERSION_2 + "/easemob/password";
     public static final String APP_PATH_CREATE_CONVERSAITON = "api/" + API_VERSION_2 + "/im/conversations";// 创建对话
     public static final String APP_PATH_GET_CONVERSAITON_LIST = "api/" + API_VERSION_2 + "/im/conversations/list/all";// 获取登陆用户的对话列表
@@ -242,7 +244,8 @@ public class ApiConfig {
     public static final String APP_PATH_APPROVED_INFO_COMMENT = "/api/" + API_VERSION_2 + "/news/{news_id}/comments/{comment_id}/pinneds/{pinned_id}";
 
     // 拒绝资讯评论置顶
-    public static final String APP_PATH_REFUSE_INFO_COMMENT = "/api/" + API_VERSION_2 + "/news/{news_id}/comments/{comment_id}/pinneds/{pinned_id}/reject";
+    public static final String APP_PATH_REFUSE_INFO_COMMENT = "/api/" + API_VERSION_2 +
+            "/news/{news_id}/comments/{comment_id}/pinneds/{pinned_id}/reject";
 
 
     /**
@@ -484,7 +487,8 @@ public class ApiConfig {
 
 
     /**
-     * **************************通用 CommonClient**************************/
+     * **************************通用 CommonClient
+     **************************/
     public static final String APP_PATH_REFRESH_TOKEN = "api/" + API_VERSION_2 + "/tokens/{token}";// 刷新 token
     public static final String APP_PATH_HANDLE_BACKGROUND_TASK = "{path}";// 处理后台任务
 
@@ -685,7 +689,6 @@ public class ApiConfig {
     public static final String APP_PATH_GET_ALL_POSTLIST = "api/" + API_VERSION_2 + "/plus-group/group-posts";
     /**
      * 用户帖子收藏列表
-     *
      */
     public static final String APP_PATH_GET_USER_COLLECT_POST = "api/" + API_VERSION_2 + "/plus-group/user-post-collections";
     /**
@@ -967,6 +970,8 @@ public class ApiConfig {
     public static final String APP_PAHT_INTEGRATION_RECHARGE_SUCCESS_CALLBACK_FORMAT = "api/" + API_VERSION_2 + "/wallet/charges/%s?mode=retrieve";
     // 积分流水
     public static final String APP_PAHT_INTEGRATION_ORDERS = "api/" + API_VERSION_2 + "/currency/orders";
+    // 积分提取 POST /api/v2/currency/cash
+    public static final String APP_PAHT_INTEGRATION_WITHDRAWALS= "api/" + API_VERSION_2 + "/currency/cash";
 
 
     /*排行榜相关*/

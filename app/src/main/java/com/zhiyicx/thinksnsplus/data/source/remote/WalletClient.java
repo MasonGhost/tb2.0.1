@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
@@ -24,6 +25,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_ORDE
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE_SUCCESS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE_SUCCESS_CALLBACK;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_WITHDRAWALS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_CONFIG;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS;
@@ -109,5 +111,17 @@ public interface WalletClient {
     @GET(APP_PAHT_INTEGRATION_ORDERS)
     Observable<List<RechargeSuccessV2Bean>> integrationOrdersSuccess(@Query("limit") int limit, @Query("after") int after, @Query("action") String
             action, @Query("type") Integer type);
+
+
+    /**
+     * 发起积分提现
+     *
+     * @param amount 提取积分，发起该操作后会根据积分兑换比例取人民币分单位整数后扣减相应积分
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PAHT_INTEGRATION_WITHDRAWALS)
+    Observable<BaseJsonV2> integrationWithdrawals(@Field("amount") Integer amount);
+
 
 }

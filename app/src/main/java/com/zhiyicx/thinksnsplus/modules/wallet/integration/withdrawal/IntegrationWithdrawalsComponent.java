@@ -15,6 +15,6 @@ import dagger.Component;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-@Component(dependencies = AppComponent.class, modules = IntegrationRechargePresenterModule.class)
-public interface IntegrationWithdrawalsComponent extends InjectComponent<IntegrationRechargeActivity> {
+@Component(dependencies = AppComponent.class, modules = IntegrationWithdrawalsPresenterModule.class)
+public interface IntegrationWithdrawalsComponent extends InjectComponent<IntegrationWithdrawalsActivity> {
 }

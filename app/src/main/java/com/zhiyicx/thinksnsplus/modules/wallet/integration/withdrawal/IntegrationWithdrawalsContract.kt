@@ -16,20 +16,10 @@ import com.zhiyicx.tspay.TSPayClient
 interface IntegrationWithdrawalsContract {
 
     interface View : IBaseView<Presenter> {
-
-        val money: Double
-        fun payCredentialsResult(payStrV2Bean: PayStrV2Bean)
-        fun configSureBtn(enable: Boolean)
-        fun rechargeSuccess(rechargeSuccessBean: RechargeSuccessBean)
-        fun initmRechargeInstructionsPop()
-
-        fun useInputMonye(): Boolean
-
+        fun setSureBtEnable(enable: Boolean)
     }
 
     interface Presenter : IBaseTouristPresenter {
-        fun getPayStr(@TSPayClient.PayKey channel: String, amount: Double)
-        fun rechargeSuccess(charge: String)
-        fun rechargeSuccessCallBack(charge: String)
+        fun integrationWithdrawals(amount: Integer)
     }
 }

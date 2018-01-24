@@ -98,6 +98,7 @@
         android:drawableLeft="@mipmap/ico_wallet_rules"
         android:drawablePadding="@dimen/spacing_small"
         android:padding="@dimen/spacing_large"
+        android:textColor="@color/rule_tip_color"
         android:text="@string/integration_rule"
         />
 </RelativeLayout>
