@@ -37,6 +37,6 @@ public class AnswerDraftItem extends BaseDraftItem<AnswerDraftBean> {
 
     @Override
     protected String setTitle(AnswerDraftBean draftBean) {
-        return RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, draftBean.getBody());
+        return draftBean.getSubject();
     }
 }

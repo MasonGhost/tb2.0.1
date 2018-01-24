@@ -122,6 +122,7 @@ public class EditeAnswerDetailFragment extends EditeQuestionDetailFragment {
             mark = draftMark;
         }
         answerDraftBean.setMark(mark);
+        answerDraftBean.setSubject(noMarkdown);
         answerDraftBean.setId(getArguments().getLong(BUNDLE_SOURCE_ID));
         answerDraftBean.setBody(html);
         answerDraftBean.setAnonymity(mAnonymity);
