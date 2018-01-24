@@ -34,6 +34,8 @@ public interface SelectFriendsContract {
         boolean getIsDeleteMember();
 
         ChatGroupBean getGroupData();
+
+        void dealGroupMemberResult();
     }
 
     interface Presenter extends ITSListPresenter<UserInfoBean> {
@@ -55,7 +57,7 @@ public interface SelectFriendsContract {
         /**
          * 处理群成员变化
          */
-        void dealGroupMember();
+        void dealGroupMember(List<UserInfoBean> list);
     }
 
     interface Repository extends IBaseFriendsRepository {

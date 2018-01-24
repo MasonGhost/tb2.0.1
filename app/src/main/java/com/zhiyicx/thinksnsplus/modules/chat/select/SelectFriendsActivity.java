@@ -15,7 +15,7 @@ public class SelectFriendsActivity extends TSActivity<SelectFriendsPresenter, Se
 
     @Override
     protected SelectFriendsFragment getFragment() {
-        return new SelectFriendsFragment();
+        return new SelectFriendsFragment().instance(getIntent().getExtras());
     }
 
     @Override

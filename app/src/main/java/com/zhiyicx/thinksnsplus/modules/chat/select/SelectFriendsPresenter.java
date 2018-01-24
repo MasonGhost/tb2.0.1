@@ -1,7 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.chat.select;
 
 
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.TextUtils;
+
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
@@ -10,13 +13,20 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscription;
 
@@ -49,7 +59,7 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                         protected void onSuccess(List<UserInfoBean> data) {
                             if (!data.isEmpty()) {
                                 for (UserInfoBean userInfoBean : data) {
-                                    userInfoBean.setSelected(false);
+                                    userInfoBean.setIsSelected(0);
                                 }
                             }
                             mRootView.onNetResponseSuccess(data, isLoadMore);
@@ -76,11 +86,15 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        List<UserInfoBean> followFansBeanList = mUserInfoBeanGreenDao.getUserFriendsList(maxId);
-        for (UserInfoBean userInfoBean : followFansBeanList) {
-            userInfoBean.setSelected(false);
+        if (!mRootView.getIsDeleteMember()) {
+            List<UserInfoBean> followFansBeanList = mUserInfoBeanGreenDao.getUserFriendsList(maxId);
+            for (UserInfoBean userInfoBean : followFansBeanList) {
+                userInfoBean.setIsSelected(0);
+            }
+            mRootView.onCacheResponseSuccess(followFansBeanList, isLoadMore);
+        } else {
+            getLocalUser("");
         }
-        mRootView.onCacheResponseSuccess(followFansBeanList, isLoadMore);
     }
 
     @Override
@@ -96,7 +110,7 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                         @Override
                         protected void onSuccess(List<UserInfoBean> data) {
                             for (UserInfoBean userInfoBean : data) {
-                                userInfoBean.setSelected(false);
+                                userInfoBean.setIsSelected(0);
                             }
                             mRootView.getFriendsListByKeyResult(data);
                         }
@@ -164,8 +178,46 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
     }
 
     @Override
-    public void dealGroupMember() {
+    public void dealGroupMember(List<UserInfoBean> list) {
+        String id = "";
+        for (UserInfoBean userInfoBean : list) {
+            id += userInfoBean.getUser_id() + ",";
+        }
+        id = id.substring(0, id.length() - 1);
+        Observable<Object> observable;
+        if (mRootView.getIsDeleteMember()) {
+            // 删除
+            observable = mRepository.removeGroupMember(mRootView.getGroupData().getId(), id);
+        } else {
+            observable = mRepository.addGroupMember(mRootView.getGroupData().getId(), id);
+        }
+        Subscription subscription = observable.subscribe(new BaseSubscribeForV2<Object>() {
+            @Override
+            protected void onSuccess(Object data) {
+                Bundle bundle = new Bundle();
+                if (mRootView.getIsDeleteMember()) {
+                    bundle.putParcelableArrayList(EventBusTagConfig.EVENT_IM_GROUP_REMOVE_MEMBER, (ArrayList<? extends Parcelable>) list);
+                    EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_IM_GROUP_REMOVE_MEMBER);
+                } else {
+                    bundle.putParcelableArrayList(EventBusTagConfig.EVENT_IM_GROUP_ADD_MEMBER, (ArrayList<? extends Parcelable>) list);
+                    EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_IM_GROUP_ADD_MEMBER);
+                }
+                mRootView.dealGroupMemberResult();
+            }
 
+            @Override
+            protected void onFailure(String message, int code) {
+                super.onFailure(message, code);
+                mRootView.showSnackErrorMessage(message);
+            }
+
+            @Override
+            protected void onException(Throwable throwable) {
+                super.onException(throwable);
+                mRootView.showSnackErrorMessage(throwable.getMessage());
+            }
+        });
+        addSubscrebe(subscription);
     }
 
     private List<ChatUserInfoBean> getChatUser(List<UserInfoBean> userInfoBeanList) {
@@ -202,7 +254,7 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                 .map(list1 -> {
                     int position = -1;
                     for (int i = 0; i < list1.size(); i++) {
-                        list1.get(i).setSelected(false);
+                        list1.get(i).setIsSelected(0);
                         if (list1.get(i).getUser_id().equals(AppApplication.getMyUserIdWithdefault())) {
                             position = i;
                         }

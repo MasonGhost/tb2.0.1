@@ -47,6 +47,7 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
         implements SelectFriendsContract.View, SelectFriendsAllAdapter.OnUserSelectedListener {
 
     public static final String BUNDLE_GROUP_EDIT_DATA = "bundle_group_edit_data";
+    public static final String BUNDLE_GROUP_IS_DELETE = "bundle_group_is_delete";
 
     @BindView(R.id.iv_search_icon)
     ImageView mIvSearchIcon;
@@ -64,14 +65,28 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     private SelectFriendsAllAdapter mSearchResultAdapter;
     private SelectedFriendsAdapter mSelectedFriendsAdapter;
 
-    /**群信息*/
+    /**
+     * 群信息
+     */
     private ChatGroupBean mChatGroupBean;
-    /**是否是修改群资料*/
+    /**
+     * 是否是修改群资料
+     */
     private boolean mIsFromEdit;
-    /**是否是删除用户  如果是删除 那么则不用去请求好友列表*/
+    /**
+     * 是否是删除用户  如果是删除 那么则不用去请求好友列表
+     */
     private boolean mIsDeleteMember;
-    /**群组的用户*/
+    /**
+     * 群组的用户
+     */
     private List<UserInfoBean> mGroupUserList;
+
+    public SelectFriendsFragment instance(Bundle bundle) {
+        SelectFriendsFragment friendsFragment = new SelectFriendsFragment();
+        friendsFragment.setArguments(bundle);
+        return friendsFragment;
+    }
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
@@ -82,15 +97,8 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-
+        getIntentData();
         setLeftTextColor(R.color.themeColor);
-        // 选中结果
-        LinearLayoutManager selectManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        mRvSelectResult.setLayoutManager(selectManager);
-        // 搜索结果
-        LinearLayoutManager searchManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        mRvSearchResult.setLayoutManager(searchManager);
-
         RxView.focusChanges(mEditSearchFriends)
                 .subscribe(aBoolean -> mFlSearchResult.setVisibility(aBoolean ? View.VISIBLE : View.GONE));
         RxTextView.textChanges(mEditSearchFriends)
@@ -105,24 +113,37 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
                     mEditSearchFriends.clearFocus();
                     mSearchResultList.clear();
                 });
+        // 选中结果
+        LinearLayoutManager selectManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        mRvSelectResult.setLayoutManager(selectManager);
+        mSelectedList = new ArrayList<>();
+        mSelectedFriendsAdapter = new SelectedFriendsAdapter(getContext(), mSelectedList);
+        mRvSelectResult.setAdapter(mSelectedFriendsAdapter);
+        mRvSelectResult.addItemDecoration(new LinearDecoration(0, 0, 5, 5));
+        // 搜索结果
+        LinearLayoutManager searchManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mRvSearchResult.setLayoutManager(searchManager);
+        mSearchResultList = new ArrayList<>();
+        mSearchResultAdapter = new SelectFriendsAllAdapter(getContext(), mSearchResultList, this);
+        mRvSearchResult.setAdapter(mSearchResultAdapter);
     }
 
-    private void getIntentData(){
-        mChatGroupBean = getArguments().getParcelable(BUNDLE_GROUP_EDIT_DATA);
+    /**
+     * 获取传递过来的数据，如果是创建会话，那么则不会有传递过来的数据
+     */
+    private void getIntentData() {
+        if (getArguments() != null) {
+            mChatGroupBean = getArguments().getParcelable(BUNDLE_GROUP_EDIT_DATA);
+            mIsDeleteMember = getArguments().getBoolean(BUNDLE_GROUP_IS_DELETE);
+            if (mChatGroupBean != null) {
+                setCenterText(getString(!mIsDeleteMember ? R.string.chat_edit_group_add_member : R.string.chat_edit_group_remove_member));
+            }
+        }
     }
 
     @Override
     protected void initData() {
         super.initData();
-        // 选中的结果
-        mSelectedList = new ArrayList<>();
-        mSelectedFriendsAdapter = new SelectedFriendsAdapter(getContext(), mSelectedList);
-        mRvSelectResult.setAdapter(mSelectedFriendsAdapter);
-        mRvSelectResult.addItemDecoration(new LinearDecoration(0, 0, 5, 5));
-        // 搜索的结果
-        mSearchResultList = new ArrayList<>();
-        mSearchResultAdapter = new SelectFriendsAllAdapter(getContext(), mSearchResultList, this);
-        mRvSearchResult.setAdapter(mSearchResultAdapter);
         checkData();
     }
 
@@ -155,7 +176,12 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     protected void setRightClick() {
         // 发起聊天
         if (mSelectedList.size() > 0) {
-            mPresenter.createConversation(mSelectedList);
+            if (mChatGroupBean != null){
+                mPresenter.dealGroupMember(mSelectedList);
+            } else {
+                // 创建群
+                mPresenter.createConversation(mSelectedList);
+            }
         }
     }
 
@@ -170,10 +196,18 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     private void checkData() {
         mToolbarRight.setEnabled(mSelectedList.size() != 0);
         if (mSelectedList.size() > 0) {
-            setRightText(String.format(getString(R.string.select_friends_right_title), mSelectedList.size()));
+            if (mChatGroupBean == null) {
+                setRightText(String.format(getString(R.string.select_friends_right_title), mSelectedList.size()));
+            } else {
+                setRightText(String.format(getString(mIsDeleteMember ? R.string.chat_edit_group_remove_d : R.string.chat_edit_group_add_d), mSelectedList.size()));
+            }
             mToolbarRight.setTextColor(getColor(R.color.themeColor));
         } else {
-            setRightText(getString(R.string.select_friends_right_title_default));
+            if (mChatGroupBean == null) {
+                setRightText(getString(R.string.select_friends_right_title_default));
+            } else {
+                setRightText(String.format(getString(mIsDeleteMember ? R.string.chat_edit_group_remove : R.string.chat_edit_group_add), mSelectedList.size()));
+            }
             mToolbarRight.setTextColor(getColor(R.color.normal_for_disable_button_text));
         }
         mSelectedFriendsAdapter.notifyDataSetChanged();
@@ -182,7 +216,7 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     @Override
     public void onUserSelected(UserInfoBean userInfoBean) {
         // 选中的列表中，如果是选中 那么直接加
-        if (userInfoBean.isSelected()) {
+        if (userInfoBean.getIsSelected() == 1) {
             mSelectedList.add(userInfoBean);
         } else {
             for (UserInfoBean userInfoBean1 : mSelectedList) {
@@ -200,7 +234,7 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
             for (UserInfoBean userInfoBean1 : mListDatas) {
                 if (userInfoBean1.getUser_id().equals(userInfoBean.getUser_id())) {
                     position = mListDatas.indexOf(userInfoBean1);
-                    userInfoBean1.setSelected(userInfoBean.isSelected());
+                    userInfoBean1.setIsSelected(userInfoBean.getIsSelected());
                     newList.add(userInfoBean1);
                     break;
                 }
@@ -222,7 +256,7 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
 
     @Override
     public void createConversionResult(List<ChatUserInfoBean> list, EMConversation.EMConversationType type, int chatType, String id) {
-        if (type == EMConversation.EMConversationType.Chat){
+        if (type == EMConversation.EMConversationType.Chat) {
             EMClient.getInstance().chatManager().getConversation(id, type, true);
         } else {
             EMClient.getInstance().groupManager().getGroup(id);
@@ -248,9 +282,20 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     }
 
     @Override
+    public void dealGroupMemberResult() {
+        getActivity().finish();
+    }
+
+    @Override
     public void onNetResponseSuccess(@NotNull List<UserInfoBean> data, boolean isLoadMore) {
         checkUserIsSelected(data);
         super.onNetResponseSuccess(data, isLoadMore);
+    }
+
+    @Override
+    public void onCacheResponseSuccess(List<UserInfoBean> data, boolean isLoadMore) {
+        checkUserIsSelected(data);
+        super.onCacheResponseSuccess(data, isLoadMore);
     }
 
     @Override
@@ -269,10 +314,21 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
         }
         for (UserInfoBean userInfoBean : list) {
             // 给已经选中的用户手动设置
-            for (int i = 0; i < mSelectedList.size(); i++) {
-                if (userInfoBean.getUser_id().equals(mSelectedList.get(i).getUser_id())) {
-                    userInfoBean.setSelected(true);
-                    break;
+            if (mSelectedList.size() > 0){
+                for (int i = 0; i < mSelectedList.size(); i++) {
+                    if (userInfoBean.getUser_id().equals(mSelectedList.get(i).getUser_id())) {
+                        userInfoBean.setIsSelected(1);
+                        break;
+                    }
+                }
+            }
+            // 如果是添加群成员 那么要把已经有的成员处理为不可点击
+            if (!mIsDeleteMember && mChatGroupBean != null && mChatGroupBean.getAffiliations().size() > 0) {
+                for (int i = 0; i < mChatGroupBean.getAffiliations().size(); i++) {
+                    if (userInfoBean.getUser_id().equals(mChatGroupBean.getAffiliations().get(i).getUser_id())) {
+                        userInfoBean.setIsSelected(-1);
+                        break;
+                    }
                 }
             }
         }
