@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.chat.info;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.home.mine.friends.IBaseFriendsRepository;
 
 import java.util.List;
@@ -20,21 +21,36 @@ import rx.Observable;
 
 public interface ChatInfoContract {
 
-    interface View extends IBaseView<Presenter>{
+    interface View extends IBaseView<Presenter> {
         String getChatId();
+
         void updateGroup(ChatGroupBean chatGroupBean);
+
         void getGroupInfoSuccess(ChatGroupBean chatGroupBean);
+
         ChatGroupBean getGroupBean();
+
         void isShowEmptyView(boolean isShow, boolean isSuccess);
+
+        /**
+         * 单聊的对方的id
+         */
+        String getToUserId();
+
+        void createGroupSuccess(ChatGroupBean chatGroupBean);
     }
 
-    interface Presenter extends IBasePresenter{
+    interface Presenter extends IBasePresenter {
         boolean isGroupOwner();
+
         void updateGroup(ChatGroupBean chatGroupBean, boolean isEditGroupFace);
+
         void getGroupChatInfo(String groupId);
+
+        void createGroupFromSingleChat();
     }
 
-    interface Repository extends IBaseFriendsRepository{
+    interface Repository extends IBaseFriendsRepository {
         Observable<List<ChatGroupBean>> getGroupChatInfo(String groupId);
     }
 }

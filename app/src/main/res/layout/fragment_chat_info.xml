@@ -42,8 +42,8 @@
                             android:id="@+id/tv_user_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/iv_user_portrait"
                             android:textSize="@dimen/size_icon_assist"
+                            android:layout_marginTop="@dimen/spacing_normal"
                             android:textColor="@color/normal_for_assist_text"
                             tools:text="xxxx"/>
                 </LinearLayout>

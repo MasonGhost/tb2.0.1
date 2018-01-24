@@ -36,6 +36,7 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.modules.chat.call.VideoCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.call.VoiceCallActivity;
@@ -58,6 +59,7 @@ import org.simple.eventbus.ThreadMode;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.hyphenate.easeui.EaseConstant.EXTRA_CHAT_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig.MESSAGE_CHAT_MEMBER_LIST;
@@ -188,6 +190,11 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     @Override
     public void onSetMessageAttributes(EMMessage message) {
 
+    }
+
+    @Override
+    public void onCmdMessageReceived(List<EMMessage> messages) {
+        LogUtils.d("Cathy", messages);
     }
 
     @Override
@@ -450,6 +457,13 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_DELETE_QUIT)
     public void deleteGroup(String id){
         getActivity().finish();
+    }
+
+    @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_GROUP_CREATE_FROM_SINGLE)
+    public void closeCurrent(ChatGroupBean chatGroupBean){
+        if (!chatGroupBean.getIm_group_id().equals(toChatUsername)){
+            getActivity().finish();
+        }
     }
 
 }

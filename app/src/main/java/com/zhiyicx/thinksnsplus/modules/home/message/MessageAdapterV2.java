@@ -74,6 +74,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
         switch (messageItemBean.getConversation().getType()) {
             case Chat:
                 // 私聊
+                userAvatarView.getIvVerify().setVisibility(View.VISIBLE);
                 ImageUtils.loadCircleUserHeadPic(messageItemBean.getUserInfo(), userAvatarView);
                 // 响应事件
                 holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());
@@ -84,6 +85,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
             case GroupChat:
                 // 群组
                 ChatGroupBean chatGroupBean = messageItemBean.getChatGroupBean();
+                userAvatarView.getIvVerify().setVisibility(View.GONE);
                 Glide.with(mContext)
                         .load(chatGroupBean.getGroup_face())
                         .error(R.mipmap.ico_ts_assistant)

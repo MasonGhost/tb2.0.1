@@ -5,14 +5,17 @@ import android.os.Bundle;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMGroup;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 
+import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
@@ -51,7 +54,11 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Reposit
 
     @Override
     public boolean isGroupOwner() {
-        String owner = EMClient.getInstance().groupManager().getGroup(mRootView.getChatId()).getOwner();
+        EMGroup group = EMClient.getInstance().groupManager().getGroup(mRootView.getChatId());
+        if (group == null) {
+            return false;
+        }
+        String owner = group.getOwner();
         return owner.equals(String.valueOf(AppApplication.getMyUserIdWithdefault()));
     }
 
@@ -114,6 +121,39 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Reposit
     }
 
     @Override
+    public void createGroupFromSingleChat() {
+        String name = String.format(mContext.getString(R.string.chat_group_name_default), 2);
+        String member = AppApplication.getMyUserIdWithdefault() + "," + mRootView.getToUserId();
+        Subscription subscription = mRepository.createGroup(name, "暂无", false,
+                200, false, true, AppApplication.getMyUserIdWithdefault(), member)
+                .doOnSubscribe(() -> {
+                    // 这里的占位文字都没提供emm
+                    mRootView.showSnackLoadingMessage("创建中..");
+                })
+                .subscribe(new BaseSubscribeForV2<ChatGroupBean>() {
+                    @Override
+                    protected void onSuccess(ChatGroupBean data) {
+                        mRootView.dismissSnackBar();
+                        EventBus.getDefault().post(data, EventBusTagConfig.EVENT_IM_GROUP_CREATE_FROM_SINGLE);
+                        mRootView.createGroupSuccess(data);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+                });
+        addSubscrebe(subscription);
+    }
+
+    @Override
     protected boolean useEventBus() {
         return true;
     }
@@ -140,8 +180,8 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Reposit
         List<UserInfoBean> originalList = new ArrayList<>();
         originalList.addAll(chatGroupBean.getAffiliations());
         for (int i = 0; i < removedList.size(); i++) {
-            for (UserInfoBean userInfoBean : chatGroupBean.getAffiliations()){
-                if (removedList.get(i).getUser_id().equals(userInfoBean.getUser_id())){
+            for (UserInfoBean userInfoBean : chatGroupBean.getAffiliations()) {
+                if (removedList.get(i).getUser_id().equals(userInfoBean.getUser_id())) {
                     originalList.remove(userInfoBean);
                     break;
                 }

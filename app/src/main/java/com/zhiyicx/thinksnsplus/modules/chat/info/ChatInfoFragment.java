@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.chat.info;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,7 +32,9 @@ import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatActivityV2;
 import com.zhiyicx.thinksnsplus.modules.chat.adapter.ChatMemberAdapter;
 import com.zhiyicx.thinksnsplus.modules.chat.edit.manager.GroupManagerActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.edit.name.EditGroupNameActivity;
@@ -54,6 +57,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_DELETE_QUIT;
+import static com.zhiyicx.thinksnsplus.modules.chat.ChatActivityV2.BUNDLE_CHAT_DATA;
 import static com.zhiyicx.thinksnsplus.modules.chat.edit.name.EditGroupNameFragment.GROUP_ORIGINAL_NAME;
 import static com.zhiyicx.thinksnsplus.modules.chat.edit.owner.EditGroupOwnerFragment.BUNDLE_GROUP_DATA;
 import static com.zhiyicx.thinksnsplus.modules.chat.member.GroupMemberListFragment.BUNDLE_GROUP_MEMBER;
@@ -131,7 +135,9 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             // 屏蔽群聊的布局
             mLlGroup.setVisibility(View.GONE);
             mLlManager.setVisibility(View.GONE);
+            mTvDeleteGroup.setVisibility(View.GONE);
             isShowEmptyView(false, true);
+            setGroupData();
         } else {
             mPresenter.getGroupChatInfo(mChatId);
             // 屏蔽单聊的布局
@@ -165,6 +171,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         switch (view.getId()) {
             case R.id.iv_add_user:
                 // 添加成员
+                mPresenter.createGroupFromSingleChat();
                 break;
             case R.id.tv_to_all_members:
                 // 查看所有成员
@@ -192,15 +199,19 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                 break;
             case R.id.ll_group_portrait:
                 // 修改群头像
-                mPhotoPopupWindow.show();
+                if (mChatType == ChatConfig.CHATTYPE_GROUP) {
+                    mPhotoPopupWindow.show();
+                }
                 break;
             case R.id.ll_group_name:
                 // 修改群名称
-                Intent intentName = new Intent(getContext(), EditGroupNameActivity.class);
-                Bundle bundleName = new Bundle();
-                bundleName.putString(GROUP_ORIGINAL_NAME, mChatGroupBean.getName());
-                intentName.putExtras(bundleName);
-                startActivity(intentName);
+                if (mChatType == ChatConfig.CHATTYPE_GROUP) {
+                    Intent intentName = new Intent(getContext(), EditGroupNameActivity.class);
+                    Bundle bundleName = new Bundle();
+                    bundleName.putString(GROUP_ORIGINAL_NAME, mChatGroupBean.getName());
+                    intentName.putExtras(bundleName);
+                    startActivity(intentName);
+                }
                 break;
             default:
         }
@@ -335,6 +346,25 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     }
 
     @Override
+    public String getToUserId() {
+        return mUserInfoBeans.size() == 2 ? mUserInfoBeans.get(1).getUser_id() + "" : "";
+    }
+
+    @Override
+    public void createGroupSuccess(ChatGroupBean chatGroupBean) {
+        // 点击跳转聊天
+        Intent to = new Intent(getContext(), ChatActivityV2.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(EaseConstant.EXTRA_USER_ID, chatGroupBean.getIm_group_id());
+        bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_GROUP);
+        bundle.putParcelableArrayList(ChatConfig.MESSAGE_CHAT_MEMBER_LIST,
+                (ArrayList<? extends Parcelable>) mUserInfoBeans);
+        to.putExtra(BUNDLE_CHAT_DATA, bundle);
+        startActivity(to);
+        getActivity().finish();
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mPhotoSelector.onActivityResult(requestCode, resultCode, data);
@@ -351,7 +381,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         showSnackErrorMessage(errorMsg);
     }
 
-    private void setGroupData(){
+    private void setGroupData() {
         if (mChatType == EaseConstant.CHATTYPE_SINGLE) {
             // 单聊处理布局
             ImageUtils.loadUserHead(mUserInfoBeans.get(1), mIvUserPortrait, false);
