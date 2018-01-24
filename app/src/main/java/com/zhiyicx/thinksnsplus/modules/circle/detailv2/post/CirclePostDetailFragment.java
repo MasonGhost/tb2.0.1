@@ -540,7 +540,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
      * 设置toolBar上面的关注状态
      */
     private void setToolBarRightFollowState(UserInfoBean userInfoBean1) {
-        mTvToolbarRight.setVisibility(View.VISIBLE);
+        mTvToolbarRight.setVisibility(userInfoBean1.getUser_id() != AppApplication.getMyUserIdWithdefault() ? View.VISIBLE : View.GONE);
         if (userInfoBean1.isFollowing() && userInfoBean1.isFollower()) {
             mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother),
                     null);

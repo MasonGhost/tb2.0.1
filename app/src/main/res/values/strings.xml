@@ -672,6 +672,9 @@
 
     <string name="edit_quit">放弃编辑</string>
     <string name="edit">编辑</string>
+    <string name="edit_question">编辑问题</string>
+    <string name="edit_answer">编辑回答</string>
+    <string name="edit_post">编辑帖子</string>
     <string name="save_to_draft_box">保存至草稿箱</string>
     <string-array name="topic_detail_category">
         <item>热门</item>

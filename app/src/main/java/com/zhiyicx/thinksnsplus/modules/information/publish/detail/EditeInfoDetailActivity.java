@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.information.publish.detail;
 
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
-import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownPresenter;
 
 /**
  * @Author Jliuer
@@ -9,7 +9,7 @@ import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownPresenter;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class EditeInfoDetailActivity extends BaseMarkdownActivity<MarkdownPresenter,EditeInfoDetailFragment> {
+public class EditeInfoDetailActivity extends BaseMarkdownActivity<EditeInfoDetailPresenter, EditeInfoDetailFragment> {
 
     @Override
     protected EditeInfoDetailFragment getYourFragment() {
@@ -18,6 +18,9 @@ public class EditeInfoDetailActivity extends BaseMarkdownActivity<MarkdownPresen
 
     @Override
     protected void componentInject() {
-
+        DaggerEditeInfoDetailComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .editeInfoDetailPresenterModule(new EditeInfoDetailPresenterModule(mContanierFragment))
+                .build().inject(this);
     }
 }

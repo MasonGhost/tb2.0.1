@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.information.publish;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.base.InjectComponent;
+import com.zhiyicx.thinksnsplus.modules.information.publish.detail.EditeInfoDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.information.publish.uploadcover.UploadCoverActivity;
 
 import dagger.Component;
@@ -14,6 +15,7 @@ import dagger.Component;
  * @Description
  */
 @FragmentScoped
-@Component(dependencies = AppComponent.class,modules = PublishInfoPresenterModule.class)
+@Component(dependencies = AppComponent.class, modules = PublishInfoPresenterModule.class)
 public interface PublishInfoComponent extends InjectComponent<UploadCoverActivity> {
+
 }

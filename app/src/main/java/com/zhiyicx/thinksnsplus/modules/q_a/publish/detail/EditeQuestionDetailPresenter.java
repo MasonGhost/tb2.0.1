@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AnswerDraftBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownPresenter;
 
@@ -28,6 +29,8 @@ public class EditeQuestionDetailPresenter extends MarkdownPresenter<EditeQuestio
 
     @Inject
     BaseQARepository mBaseQARepository;
+    @Inject
+    AnswerDraftBeanGreenDaoImpl mAnswerDraftBeanGreenDao;
 
     @Inject
     public EditeQuestionDetailPresenter(EditeQuestionDetailContract.View rootView) {
@@ -118,11 +121,11 @@ public class EditeQuestionDetailPresenter extends MarkdownPresenter<EditeQuestio
 
     @Override
     public void deleteAnswer(AnswerDraftBean answer) {
-
+        mAnswerDraftBeanGreenDao.deleteSingleCache(answer);
     }
 
     @Override
     public void saveAnswer(AnswerDraftBean answerDraftBean) {
-
+        mAnswerDraftBeanGreenDao.saveSingleData(answerDraftBean);
     }
 }

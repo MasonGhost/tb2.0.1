@@ -487,6 +487,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan">
         </activity>
+
         <activity
             android:name=".modules.wallet.reward.RewardActivity"
             android:hardwareAccelerated="false"
@@ -494,6 +495,7 @@
         <activity
             android:name=".modules.wallet.reward.list.RewardListActivity"
             android:screenOrientation="portrait"/>
+
         <!-- 资讯发布 -->
         <activity
             android:name=".modules.information.publish.addinfo.AddInfoActivity"
@@ -513,6 +515,7 @@
             android:name=".modules.wallet.sticktop.StickTopActivity"
             android:hardwareAccelerated="false"
             android:screenOrientation="portrait"/>
+
         <activity
             android:name=".modules.q_a.detail.answer.AnswerDetailsActivity"
             android:screenOrientation="portrait"

@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 
@@ -30,7 +31,12 @@ public class AnswerDraftItem extends BaseDraftItem<AnswerDraftBean> {
     }
 
     @Override
+    protected String editeType() {
+        return mActivity.getString(R.string.edit_answer);
+    }
+
+    @Override
     protected String setTitle(AnswerDraftBean draftBean) {
-        return RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, draftBean.getBody());
+        return draftBean.getSubject();
     }
 }
