@@ -692,6 +692,10 @@
         <activity
             android:name=".modules.wallet.integration.detail.IntegrationDetailActivity"
             android:screenOrientation="portrait"/>
+        <!--积分充值提现记录-->
+        <activity
+            android:name=".modules.wallet.integration.detail.recharge_withdrawal.IntegrationRWDetailActivity"
+            android:screenOrientation="portrait"/>
 
 
     </application>

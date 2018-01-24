@@ -18,10 +18,6 @@ public class IntegrationDetailActivity extends TSActivity<IntegrationDetailPrese
 
     @Override
     protected void componentInject() {
-        DaggerIntegrationDetailComponent
-                .builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .integrationDetailPresenterModule(new IntegrationDetailPresenterModule(mContanierFragment))
-                .build().inject(this);
+
     }
 }

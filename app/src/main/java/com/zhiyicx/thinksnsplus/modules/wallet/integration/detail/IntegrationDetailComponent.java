@@ -14,5 +14,5 @@ import dagger.Component;
  */
 @FragmentScoped
 @Component(dependencies = AppComponent.class, modules = IntegrationDetailPresenterModule.class)
-public interface IntegrationDetailComponent extends InjectComponent<IntegrationDetailActivity> {
+public interface IntegrationDetailComponent extends InjectComponent<IntegrationDetailListFragment> {
 }

@@ -70,11 +70,6 @@ public abstract class TSViewPagerFragment<P extends IBasePresenter> extends TSFr
         return LinePagerIndicator.MODE_WRAP_CONTENT;
     }
 
-    @Override
-    protected void setLeftClick() {
-        super.setLeftClick();
-    }
-
     protected int getOffsetPage() {
         return DEFAULT_OFFSET_PAGE;
     }

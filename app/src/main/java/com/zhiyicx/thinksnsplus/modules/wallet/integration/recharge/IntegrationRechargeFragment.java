@@ -37,6 +37,7 @@ import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean;
 import com.zhiyicx.thinksnsplus.modules.develop.TSDevelopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter;
 import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.recharge_withdrawal.IntegrationRWDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity;
@@ -222,6 +223,17 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
                             startActivity(intent);
                         }
                 );
+        // 充值记录
+        RxView.clicks(mTvToolbarRight)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid ->
+                        {
+                            Intent intent = new Intent(mActivity, IntegrationRWDetailActivity.class);
+                            startActivity(intent);
+                        }
+                );
+        // 返回
         RxView.clicks(mTvToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
@@ -295,7 +307,8 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
         mPayStylePopupWindow = ActionPopupWindow.builder()
                 .item2Str(rechargeTypes.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string
                         .alipay)) : "")
-                .item3Str(rechargeTypes.contains(TSPayClient.CHANNEL_WXPAY)||rechargeTypes.contains(TSPayClient.CHANNEL_WX) ? getString(R.string.choose_pay_style_formart, getString(R.string
+                .item3Str(rechargeTypes.contains(TSPayClient.CHANNEL_WXPAY) || rechargeTypes.contains(TSPayClient.CHANNEL_WX) ? getString(R.string
+                        .choose_pay_style_formart, getString(R.string
                         .wxpay)) : "")
                 .item4Str(rechargeTypes.size() == 0 ? getString(R.string.recharge_disallow) : "")
                 .bottomStr(getString(R.string.cancel))

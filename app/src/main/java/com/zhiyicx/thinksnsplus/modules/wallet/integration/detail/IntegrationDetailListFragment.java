@@ -14,10 +14,13 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessV2Bean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 
@@ -40,6 +43,9 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
 
     private ActionPopupWindow mActionPopupWindow;
 
+    @Inject
+    IntegrationDetailPresenter mIntegrationDetailPresenter;
+
     /**
      * 0 全部，1 收入，-1 支出
      */
@@ -60,8 +66,13 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
     }
 
     @Override
-    protected boolean isNeedRefreshAnimation() {
-        return false;
+    protected boolean showToolbar() {
+        return mChooseType == null;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return mChooseType == null;
     }
 
     @Override
@@ -72,6 +83,12 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DaggerIntegrationDetailComponent
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .integrationDetailPresenterModule(new IntegrationDetailPresenterModule(IntegrationDetailListFragment.this))
+                .build()
+                .inject(IntegrationDetailListFragment.this);
         if (getArguments() != null) {
             mChooseType = getArguments().getString(BUNDLE_CHOOSE_TYPE);
         }
@@ -167,7 +184,7 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
     protected String setCenterTitle() {
         mToolbarCenter.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
 //        mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ico_detail_arrowdown, 0);
-        return getString(R.string.detail);
+        return getString(R.string.integration_detail);
     }
 
     @Override
