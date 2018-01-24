@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.wallet.integration.detail;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+
 /**
  * @Describe 积分详情
  * @Author Jungle68
@@ -12,7 +13,7 @@ public class IntegrationDetailActivity extends TSActivity<IntegrationDetailPrese
 
     @Override
     protected IntegrationDetailListFragment getFragment() {
-        return IntegrationDetailListFragment.newInstance();
+        return IntegrationDetailListFragment.newInstance(null);
     }
 
     @Override

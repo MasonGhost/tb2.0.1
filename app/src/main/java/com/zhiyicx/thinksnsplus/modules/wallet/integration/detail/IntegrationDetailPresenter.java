@@ -34,7 +34,8 @@ public class IntegrationDetailPresenter extends AppBasePresenter<IntegrationDeta
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription subscribe = mBillRepository.integrationOrdersSuccess(TSListFragment.DEFAULT_PAGE_SIZE,maxId.intValue(), null,mRootView
+        Subscription subscribe = mBillRepository.integrationOrdersSuccess(TSListFragment.DEFAULT_PAGE_SIZE,maxId.intValue(), mRootView.getChooseType(),
+                mRootView
                 .getBillType())
                 .subscribe(new BaseSubscribeForV2<List<RechargeSuccessV2Bean>>() {
                     @Override

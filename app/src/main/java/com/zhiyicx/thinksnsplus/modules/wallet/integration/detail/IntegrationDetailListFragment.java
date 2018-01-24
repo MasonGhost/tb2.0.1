@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.integration.detail;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -27,6 +29,10 @@ import butterknife.BindView;
  */
 public class IntegrationDetailListFragment extends TSListFragment<IntegrationDetailContract.Presenter, RechargeSuccessV2Bean> implements
         IntegrationDetailContract.View {
+    private static final String BUNDLE_CHOOSE_TYPE = "CHOOSE_TYPE";
+
+    public static final String CHOOSE_TYPE_RECHARGE = "recharge";
+    public static final String CHOOSE_TYPE_CASH = "cash";
 
 
     @BindView(R.id.v_shadow)
@@ -40,9 +46,17 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
     private int[] mBillTypes = new int[]{0, 1, -1};
 
     private int mBillType = mBillTypes[0];
+    /**
+     * 明细类型 	筛选类型 recharge - 充值记录 cash - 提现记录 默认为全部
+     */
+    private String mChooseType;
 
-    public static IntegrationDetailListFragment newInstance() {
-        return new IntegrationDetailListFragment();
+    public static IntegrationDetailListFragment newInstance(String chooseType) {
+        IntegrationDetailListFragment integrationDetailListFragment = new IntegrationDetailListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(BUNDLE_CHOOSE_TYPE, chooseType);
+        integrationDetailListFragment.setArguments(bundle);
+        return integrationDetailListFragment;
     }
 
     @Override
@@ -56,23 +70,55 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mChooseType = getArguments().getString(BUNDLE_CHOOSE_TYPE);
+        }
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
-        CommonAdapter adapter = new CommonAdapter<RechargeSuccessV2Bean>(getActivity(), R.layout.item_integration_withdrawals_detail, mListDatas) {
-            @Override
-            protected void convert(ViewHolder holder, RechargeSuccessV2Bean recharge, int position) {
-                TextView desc = holder.getView(R.id.withdrawals_desc);
-                TextView time = holder.getView(R.id.withdrawals_time);
-                TextView account = holder.getView(R.id.withdrawals_account);
-                boolean statusSuccess = recharge.getState() == 1;
-                int action = recharge.getType();
-                desc.setEnabled(statusSuccess);
-                String moneyStr = String.valueOf(recharge.getAmount());
-                desc.setText(statusSuccess ? (action < 0 ? "- " + moneyStr : "+ " + moneyStr) :
-                        getString(recharge.getState() == 0 ? R.string.bill_doing : R.string.transaction_fail));
-                account.setText(getDes(recharge));
-                time.setText(TimeUtils.getTimeFriendlyForDetail(recharge.getCreated_at()));
-            }
-        };
+        CommonAdapter adapter;
+        // 充值与体现
+        if (mChooseType != null) {
+            adapter = new CommonAdapter<RechargeSuccessV2Bean>(getActivity(), R.layout.item_integration_withdrawals_detail_recharge_and_cash,
+                    mListDatas) {
+                @Override
+                protected void convert(ViewHolder holder, RechargeSuccessV2Bean recharge, int position) {
+                    TextView desc = holder.getView(R.id.withdrawals_desc);
+                    TextView time = holder.getView(R.id.withdrawals_time);
+                    TextView account = holder.getView(R.id.withdrawals_account);
+                    boolean statusSuccess = recharge.getState() == 1;
+                    int action = recharge.getType();
+                    desc.setEnabled(statusSuccess);
+                    String moneyStr = String.valueOf(recharge.getAmount());
+                    desc.setText(statusSuccess ? (action < 0 ? "- " + moneyStr : "+ " + moneyStr) :
+                            getString(recharge.getState() == 0 ? R.string.bill_doing : R.string.transaction_fail));
+                    account.setText(getDes(recharge));
+                    time.setText(TimeUtils.getTimeFriendlyForDetail(recharge.getCreated_at()));
+                }
+            };
+        } else {
+            // 收入支出，全部
+            adapter = new CommonAdapter<RechargeSuccessV2Bean>(getActivity(), R.layout.item_integration_withdrawals_detail,
+                    mListDatas) {
+                @Override
+                protected void convert(ViewHolder holder, RechargeSuccessV2Bean recharge, int position) {
+                    TextView desc = holder.getView(R.id.withdrawals_desc);
+                    TextView time = holder.getView(R.id.withdrawals_time);
+                    TextView account = holder.getView(R.id.withdrawals_account);
+                    boolean statusSuccess = recharge.getState() == 1;
+                    int action = recharge.getType();
+                    desc.setEnabled(statusSuccess);
+                    String moneyStr = String.valueOf(recharge.getAmount());
+                    desc.setText(statusSuccess ? (action < 0 ? "- " + moneyStr : "+ " + moneyStr) :
+                            getString(recharge.getState() == 0 ? R.string.bill_doing : R.string.transaction_fail));
+                    account.setText(getDes(recharge));
+                    time.setText(TimeUtils.getTimeFriendlyForDetail(recharge.getCreated_at()));
+                }
+            };
+        }
         return adapter;
     }
 
@@ -148,6 +194,10 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
 
     }
 
+    @Override
+    public String getChooseType() {
+        return mChooseType;
+    }
 
     private void initTopPopWindow() {
         if (mActionPopupWindow != null) {

@@ -17,6 +17,8 @@ public interface IntegrationDetailContract {
         HeaderAndFooterWrapper getTSAdapter();
 
         Integer getBillType();
+
+        String getChooseType();
     }
 
     interface Presenter extends ITSListPresenter<RechargeSuccessV2Bean> {
