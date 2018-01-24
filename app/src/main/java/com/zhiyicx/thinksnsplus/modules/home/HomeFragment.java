@@ -221,7 +221,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             // 点击主页
             case R.id.ll_home:
                 if (mCurrenPage == PAGE_HOME) {
-                    ((MainFragment) mFragmentList.get(mCurrenPage)).refreshCurrentPage();
+//                    暂时不需要点击 home 刷新
+//                    ((MainFragment) mFragmentList.get(mCurrenPage)).refreshCurrentPage();
                 } else {
                     mVpHome.setCurrentItem(PAGE_HOME, false);
                     mCurrenPage = PAGE_HOME;
