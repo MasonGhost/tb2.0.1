@@ -170,6 +170,8 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
 
     @Override
     public void updateAnswerHeader(AnswerInfoBean answerInfoBean, boolean isLoadMore) {
+        String body = answerInfoBean.getBody();
+        answerInfoBean.setBody(body.replaceAll(MarkdownConfig.HTML_FORMAT, ""));
         mTvToolbarCenter.setText(answerInfoBean.getQuestion().getSubject());
         mAnswerInfoBean = answerInfoBean;
         mCoordinatorLayout.setEnabled(true);

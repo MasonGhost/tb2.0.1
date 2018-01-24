@@ -10,6 +10,7 @@ import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
@@ -119,20 +120,10 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                         infoListDataBean.setCommentList(dealComment(infoCommentBean, 0));
                         Observable.empty()
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new rx.Subscriber<Object>() {
+                                .subscribe(new EmptySubscribe<Object>() {
                                     @Override
                                     public void onCompleted() {
                                         mRootView.updateReWardsView(rewardsCountBean, rewardsListBeen);
-                                    }
-
-                                    @Override
-                                    public void onError(Throwable e) {
-
-                                    }
-
-                                    @Override
-                                    public void onNext(Object o) {
-
                                     }
                                 });
 
