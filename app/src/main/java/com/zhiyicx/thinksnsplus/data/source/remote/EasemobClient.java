@@ -68,7 +68,7 @@ public interface EasemobClient {
      * @param member 群成员 1,2,3 这种样式的
      */
     @POST(ApiConfig.APP_PATH_GET_GROUP_ADD_MEMBER)
-    Observable<ChatGroupBean> addGroupMember(@Query("im_group_id") String id, @Query("members") String member);
+    Observable<Object> addGroupMember(@Query("im_group_id") String id, @Query("members") String member);
 
     /**
      * 添加群组成员
@@ -77,5 +77,5 @@ public interface EasemobClient {
      * @param member 群成员 1,2,3 这种样式的
      */
     @DELETE(ApiConfig.APP_PATH_GET_GROUP_ADD_MEMBER)
-    Observable<ChatGroupBean> removeGroupMember(@Query("im_group_id") String id, @Query("members") String member);
+    Observable<Object> removeGroupMember(@Query("im_group_id") String id, @Query("members") String member);
 }

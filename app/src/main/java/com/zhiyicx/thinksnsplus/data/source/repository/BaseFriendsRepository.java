@@ -81,14 +81,14 @@ public class BaseFriendsRepository implements IBaseFriendsRepository {
     }
 
     @Override
-    public Observable<ChatGroupBean> addGroupMember(String id, String member) {
+    public Observable<Object> addGroupMember(String id, String member) {
         return mEasemobClient.addGroupMember(id, member)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
-    public Observable<ChatGroupBean> removeGroupMember(String id, String member) {
+    public Observable<Object> removeGroupMember(String id, String member) {
         return mEasemobClient.removeGroupMember(id, member)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
