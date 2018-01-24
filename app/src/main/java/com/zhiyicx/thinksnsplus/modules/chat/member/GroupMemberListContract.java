@@ -14,6 +14,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 public interface GroupMemberListContract {
     interface View extends IBaseView<Presenter> {
         ChatGroupBean getGroupData();
+        void updateGroup(ChatGroupBean chatGroupBean);
     }
 
     interface Presenter extends IBasePresenter {
