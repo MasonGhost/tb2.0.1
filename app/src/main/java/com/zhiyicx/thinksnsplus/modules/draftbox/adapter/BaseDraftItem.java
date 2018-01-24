@@ -57,7 +57,7 @@ public abstract class BaseDraftItem<D extends BaseDraftBean> implements ItemView
         mPopupWindow = ChooseBindPopupWindow.Builder()
                 .with(mActivity)
                 .alpha(0.8f)
-                .itemlStr(mActivity.getString(R.string.edit))
+                .itemlStr(editeType())
                 .item2Str(mActivity.getString(R.string.info_delete))
                 .isOutsideTouch(true)
                 .itemListener(position -> {
@@ -104,5 +104,9 @@ public abstract class BaseDraftItem<D extends BaseDraftBean> implements ItemView
         void toEditDraft(BaseDraftBean draftBean);
 
         void deleteDraft(BaseDraftBean draftBean);
+    }
+
+    protected String editeType(){
+        return mActivity.getString(R.string.edit);
     }
 }
