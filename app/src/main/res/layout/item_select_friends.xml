@@ -7,13 +7,13 @@
         android:background="@color/white"
         android:orientation="horizontal">
 
-    <android.support.v7.widget.AppCompatCheckBox
+    <!--有三种状态 1、未选中msg_box 2、选中msg_box_choose_now 3、选中不可修改msg_box_choose_before-->
+    <ImageView
             android:id="@+id/cb_friends"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:button="@drawable/selector_friends_item"
-            android:clickable="false"
+            android:src="@mipmap/msg_box_choose_now"
             android:layout_marginLeft="@dimen/spacing_mid"
             android:layout_marginRight="@dimen/spacing_mid"/>
 
