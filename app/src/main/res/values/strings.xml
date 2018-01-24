@@ -927,6 +927,7 @@
     <string name="recharge_integration">充值积分</string>
     <string name="current_integration">当前积分</string>
     <string name="withdraw_integration">提取积分</string>
+    <string name="integration_withdrawals">积分提取</string>
     <string name="integration_shop">积分商城</string>
     <string name="integration_rule">积分规则</string>
     <string name="integration_recharge">积分充值</string>
@@ -936,6 +937,8 @@
     <string name="integration_config_info_get_loading_tip">积分配置信息获取中&#8230;</string>
     <string name="integration_ratio_formart">1元=%d积分</string>
     <string name="integration_detail">积分明细</string>
+    <string name="integration_to_wallet">积分兑换余额</string>
+    <string name="withdrawals_record">提取记录</string>
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>
         <item>提取记录</item>

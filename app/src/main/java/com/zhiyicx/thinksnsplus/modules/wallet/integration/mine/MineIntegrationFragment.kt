@@ -32,6 +32,8 @@ import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.IntegrationDetailActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge.IntegrationRechargeActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge.IntegrationRechargeFragment
+import com.zhiyicx.thinksnsplus.modules.wallet.integration.withdrawal.IntegrationWithdrawalsActivity
+import com.zhiyicx.thinksnsplus.modules.wallet.integration.withdrawal.IntegrationWithdrawalsFragment
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleFragment
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsActivity
@@ -241,8 +243,8 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
                 jumpActivity(bundle, IntegrationRechargeActivity::class.java)
             }
             MineIntegrationPresenter.TAG_WITHDRAW -> {
-                bundle.putSerializable(WithdrawalsFragment.BUNDLE_DATA, configBean)
-                jumpActivity(bundle, WithdrawalsActivity::class.java)
+                bundle.putSerializable(IntegrationWithdrawalsFragment.BUNDLE_DATA, configBean)
+                jumpActivity(bundle, IntegrationWithdrawalsActivity::class.java)
             }
             MineIntegrationPresenter.TAG_SHOWRULE_POP -> showRulePopupWindow()
             MineIntegrationPresenter.TAG_SHOWRULE_JUMP -> jumpWalletRuleActivity()
