@@ -93,9 +93,6 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
     @Override
     protected void setRightClick() {
         Intent intent = new Intent(getActivity(), UploadCoverActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(BUNDLE_PUBLISH_BEAN, EditeInfoDetailFragment.mInfoPublishBean);
-        intent.putExtras(bundle);
         startActivity(intent);
     }
 
@@ -161,27 +158,19 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
         RxView.clicks(mLlTagContainer)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> {
-                    jumpToEditUserTag();
-                });
+                .subscribe(aVoid -> jumpToEditUserTag());
         // 来源
         RxTextView.afterTextChangeEvents(mTvFrom.getEditInput())
                 .compose(this.bindToLifecycle())
-                .subscribe(charSeques -> {
-                    EditeInfoDetailFragment.mInfoPublishBean.setFrom(charSeques.editable().toString().trim());
-                });
+                .subscribe(charSeques -> EditeInfoDetailFragment.mInfoPublishBean.setFrom(charSeques.editable().toString().trim()));
         // 作者
         RxTextView.afterTextChangeEvents(mTvAuthor.getEditInput())
                 .compose(this.bindToLifecycle())
-                .subscribe(charSeques -> {
-                    EditeInfoDetailFragment.mInfoPublishBean.setAuthor(charSeques.editable().toString().trim());
-                });
+                .subscribe(charSeques -> EditeInfoDetailFragment.mInfoPublishBean.setAuthor(charSeques.editable().toString().trim()));
         // 摘要
         RxTextView.afterTextChangeEvents(mEtInfoSummary.getEtContent())
                 .compose(this.bindToLifecycle())
-                .subscribe(charSeques -> {
-//                    PublishInfoFragmentV2V2.mInfoPublishBean.setSubject(charSeques.editable().toString().trim());
-                });
+                .subscribe(charSeques -> EditeInfoDetailFragment.mInfoPublishBean.setSubject(charSeques.editable().toString().trim()));
 
 
     }
