@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.trycatch.mysnackbar.Prompt;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -48,7 +49,7 @@ public class EditeAnswerDetailFragment extends EditeQuestionDetailFragment {
 
     @Override
     protected boolean leftClickNeedMarkdown() {
-        return false;
+        return openDraft();
     }
 
     @Override
@@ -73,6 +74,13 @@ public class EditeAnswerDetailFragment extends EditeQuestionDetailFragment {
 
     @Override
     protected void handlePublish(String title, String markdwon, String noMarkdown) {
+
+        if (openDraft() && isBack) {
+            noMarkdown = noMarkdown.replaceAll(MarkdownConfig.HTML_FORMAT, "");
+            initEditWarningPop(title, markdwon, noMarkdown);
+            return;
+        }
+
         if (mType == PublishType.PUBLISH_ANSWER) {
             mPresenter.publishAnswer(getArguments().getLong(BUNDLE_SOURCE_ID), markdwon
                     , mAnonymity);
@@ -83,6 +91,7 @@ public class EditeAnswerDetailFragment extends EditeQuestionDetailFragment {
             mPresenter.updateQuestion(getArguments().getLong(BUNDLE_SOURCE_ID), markdwon,
                     mAnonymity);
         }
+
     }
 
     @Override
