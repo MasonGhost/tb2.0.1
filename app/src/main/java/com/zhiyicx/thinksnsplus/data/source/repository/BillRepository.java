@@ -190,4 +190,18 @@ public class BillRepository implements IBillRepository {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    /**
+     *
+     * @param limit 数据返回条数
+     * @param after 翻页数据id
+     * @param action 筛选类型 recharge - 充值记录 cash - 提现记录 默认为全部
+     * @return 积分流水
+     */
+    @Override
+    public Observable<List<RechargeSuccessV2Bean>> integrationOrdersSuccess(int limit, int after, String action,Integer type) {
+        return mWalletClient.integrationOrdersSuccess(limit,after,action,type)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 }

@@ -965,6 +965,8 @@ public class ApiConfig {
     // 凭据回执
     public static final String APP_PAHT_INTEGRATION_RECHARGE_SUCCESS_CALLBACK = "api/" + API_VERSION_2 + "/currency/webhooks";
     public static final String APP_PAHT_INTEGRATION_RECHARGE_SUCCESS_CALLBACK_FORMAT = "api/" + API_VERSION_2 + "/wallet/charges/%s?mode=retrieve";
+    // 积分流水
+    public static final String APP_PAHT_INTEGRATION_ORDERS = "api/" + API_VERSION_2 + "/currency/orders";
 
 
     /*排行榜相关*/

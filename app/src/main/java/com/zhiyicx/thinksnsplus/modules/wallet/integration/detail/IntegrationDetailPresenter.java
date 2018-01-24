@@ -1,17 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.integration.detail;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
-import com.zhiyicx.thinksnsplus.data.source.local.RechargeSuccessBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessV2Bean;
 import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
-import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillContract;
-import com.zhiyicx.thinksnsplus.modules.wallet.bill.TimeStringSortClass;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -26,8 +23,7 @@ import rx.Subscription;
  */
 public class IntegrationDetailPresenter extends AppBasePresenter<IntegrationDetailContract.View> implements IntegrationDetailContract.Presenter {
 
-    @Inject
-    RechargeSuccessBeanGreenDaoImpl mRechargeSuccessBeanGreenDao;
+
     @Inject
     BillRepository mBillRepository;
 
@@ -38,12 +34,11 @@ public class IntegrationDetailPresenter extends AppBasePresenter<IntegrationDeta
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription subscribe = mBillRepository.getBillList(maxId.intValue(), mRootView.getBillType())
-                .subscribe(new BaseSubscribeForV2<List<RechargeSuccessBean>>() {
+        Subscription subscribe = mBillRepository.integrationOrdersSuccess(TSListFragment.DEFAULT_PAGE_SIZE,maxId.intValue(), null,mRootView
+                .getBillType())
+                .subscribe(new BaseSubscribeForV2<List<RechargeSuccessV2Bean>>() {
                     @Override
-                    protected void onSuccess(List<RechargeSuccessBean> data) {
-                        mRootView.setMaxId(data.isEmpty() ? 0 : data.get(data.size() - 1).getMaxId());
-                        removeAction(data, mRootView.getBillType());
+                    protected void onSuccess(List<RechargeSuccessV2Bean> data) {
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
@@ -64,21 +59,18 @@ public class IntegrationDetailPresenter extends AppBasePresenter<IntegrationDeta
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        List<RechargeSuccessBean> data = mRechargeSuccessBeanGreenDao.getMultiDataFromCache();
-        Collections.sort(data, new TimeStringSortClass());
-        mRootView.onCacheResponseSuccess(data, isLoadMore);
+        mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<RechargeSuccessBean> data, boolean isLoadMore) {
-        mRechargeSuccessBeanGreenDao.saveMultiData(data);
+    public boolean insertOrUpdateData(@NotNull List<RechargeSuccessV2Bean> data, boolean isLoadMore) {
         return true;
     }
 
     @Override
     public void selectBillByAction(int action) {
-        List<RechargeSuccessBean> data = mRechargeSuccessBeanGreenDao.selectBillByAction(action);
-        mRootView.onNetResponseSuccess(data, false);
+//        List<RechargeSuccessBean> data = mRechargeSuccessBeanGreenDao.selectBillByAction(action);
+//        mRootView.onNetResponseSuccess(data, false);
     }
 
     @Override
@@ -86,16 +78,5 @@ public class IntegrationDetailPresenter extends AppBasePresenter<IntegrationDeta
         requestCacheData(1L, false);
     }
 
-    private void removeAction(List<RechargeSuccessBean> list, Integer action) {
-        if (action == null) {
-            return;
-        }
-        Iterator<RechargeSuccessBean> rechargesIterator = list.iterator();
-        while (rechargesIterator.hasNext()) {
-            RechargeSuccessBean data = rechargesIterator.next();
-            if (data.getAction() != action) {
-                rechargesIterator.remove();
-            }
-        }
-    }
+
 }

@@ -20,6 +20,7 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_CONFIG;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_ORDERS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE_SUCCESS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE_SUCCESS_CALLBACK;
@@ -95,5 +96,18 @@ public interface WalletClient {
      */
     @GET(APP_PAHT_INTEGRATION_RECHARGE_SUCCESS)
     Observable<RechargeSuccessV2Bean> integrationRechargeSuccess(@Path("order") String order);
+
+    /**
+     * 积分流水
+     *
+     * @param limit  数据返回条数
+     * @param after  翻页数据id
+     * @param action 筛选类型 recharge - 充值记录 cash - 提现记录 默认为全部
+     * @param type   筛选类型 1 - 收入 -1 - 支出 默认为全部
+     * @return
+     */
+    @GET(APP_PAHT_INTEGRATION_ORDERS)
+    Observable<List<RechargeSuccessV2Bean>> integrationOrdersSuccess(@Query("limit") int limit, @Query("after") int after, @Query("action") String
+            action, @Query("type") Integer type);
 
 }

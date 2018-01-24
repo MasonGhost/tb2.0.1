@@ -16,8 +16,10 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_ORDERS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE_SUCCESS;
 
@@ -79,10 +81,21 @@ public interface IBillRepository {
 
 
     /**
-     * 取回凭据
+     *
      *
      * @param order
-     * @return
+     * @return 取回凭据
      */
     Observable<RechargeSuccessV2Bean> integrationRechargeSuccess(String order);
+
+    /**
+     *
+     * @param limit 数据返回条数
+     * @param after 翻页数据id
+     * @param action 筛选类型 recharge - 充值记录 cash - 提现记录 默认为全部
+     * @param type   筛选类型 1 - 收入 -1 - 支出 默认为全部
+     * @return 积分流水
+     */
+    Observable<List<RechargeSuccessV2Bean>> integrationOrdersSuccess( int limit,  int after , String
+            action, Integer type);
 }
