@@ -9,6 +9,7 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
+import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoContract;
 import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownContract;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
@@ -21,7 +22,8 @@ import java.util.Locale;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class EditeInfoDetailFragment extends MarkdownFragment<PostDraftBean,MarkdownContract.Presenter> {
+public class EditeInfoDetailFragment extends MarkdownFragment<PostDraftBean,EditeInfoDetailContract.Presenter>
+        implements EditeInfoDetailContract.View{
 
     public static final String INFO_REFUSE = "info_refuse";
     public static InfoPublishBean mInfoPublishBean;

@@ -69,21 +69,6 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     }
 
     @Override
-    public void addImageViewAtIndex(String iamge, int iamgeId, String markdonw, boolean isLast) {
-
-    }
-
-    @Override
-    public void addEditTextAtIndex(String text) {
-
-    }
-
-    @Override
-    public void onPareseBodyEnd(boolean hasContent) {
-
-    }
-
-    @Override
     protected boolean usePermisson() {
         return true;
     }
@@ -127,16 +112,6 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .load(path)
                 .centerCrop()
                 .into(mIvInfoCoverIamge);
-    }
-
-    @Override
-    public void publishInfoFailed() {
-
-    }
-
-    @Override
-    public void publishInfoSuccess() {
-
     }
 
     @Override
