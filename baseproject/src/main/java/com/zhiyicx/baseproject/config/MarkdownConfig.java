@@ -31,6 +31,8 @@ public class MarkdownConfig {
      */
     public static final String IMAGE_FORMAT = "@!\\[.*?]\\((\\d+)\\)";
 
+    public static final String HTML_FORMAT = "<(\"[^\"]*\"|'[^']*'|[^'\">])*>";
+
     /**
      * 用于提取 短链接
      */

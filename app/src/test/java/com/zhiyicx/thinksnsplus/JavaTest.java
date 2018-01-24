@@ -140,6 +140,26 @@ public class JavaTest {
     }
 
     @Test
+    public void testCatchGroup() {
+        String src = "三维鱼寿司我早睡早起\n" +
+                "==========\n" +
+                "\n" +
+                "<div style=\"font-family:sans-serif;\">_好好睡QQ_</div>- - - - - -\n" +
+                "\n" +
+                "<div style=\"font-family:sans-serif;\">_好好睡QQ是_</div><div style=\"font-family:sans-serif;\">_**像我这样**_</div><div style=\"font-family:sans-serif;\">_**<strike>双色球生日</strike>**_</div>";
+        String reg = "<(\"[^\"]*\"|'[^']*'|[^'\">])*>";// <(div|/div)("[^"]*"|'[^']*'|[^'">])*>
+        Matcher matcher = Pattern.compile(reg).matcher(src);
+
+
+        while (matcher.find()) {
+            int count = matcher.groupCount();
+            for (int i = 0; i < count; i++) {
+                System.out.println("reg1:::" + matcher.group(i));
+            }
+        }
+    }
+
+    @Test
     public void testFilter() {
         String source = "http://ddd/";
         String urlRege = "^http://[\\s\\S]+";
