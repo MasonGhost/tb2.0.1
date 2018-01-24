@@ -197,21 +197,14 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
 
     @Override
     public void onEnterToChatDetails() {
-        if (chatType == ChatConfig.CHATTYPE_GROUP) {
-            EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatUsername);
-            if (group == null) {
-                ToastUtils.showToast(R.string.gorup_not_found);
-                return;
-            }
-            // 跳转群组详情
-            Intent intent = new Intent(getActivity(), ChatInfoActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("id", toChatUsername);
-            bundle.putParcelableArrayList(MESSAGE_CHAT_MEMBER_LIST, (ArrayList<? extends Parcelable>) mUserInfoBeans);
-            bundle.putInt(EXTRA_CHAT_TYPE, chatType);
-            intent.putExtras(bundle);
-            startActivity(intent);
-        }
+        // 跳转群组详情
+        Intent intent = new Intent(getActivity(), ChatInfoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("id", toChatUsername);
+        bundle.putParcelableArrayList(MESSAGE_CHAT_MEMBER_LIST, (ArrayList<? extends Parcelable>) mUserInfoBeans);
+        bundle.putInt(EXTRA_CHAT_TYPE, chatType);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override

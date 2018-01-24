@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.chat.info;
 
+import android.os.Bundle;
+
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMGroup;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -13,6 +15,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 
 import org.simple.eventbus.Subscriber;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -22,9 +25,11 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_ADD_MEMBER;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_CHANGE_OWNER;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_DATA_CHANGED;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_EDIT_NAME;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_REMOVE_MEMBER;
 
 /**
  * @author Catherine
@@ -122,6 +127,38 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Reposit
 
     @Subscriber(tag = EVENT_IM_GROUP_DATA_CHANGED)
     public void onGroupOwnerChanged(ChatGroupBean chatGroupBean) {
+        mRootView.updateGroup(chatGroupBean);
+    }
+
+    @Subscriber(tag = EVENT_IM_GROUP_REMOVE_MEMBER)
+    public void onGroupMemberRemoved(Bundle bundle) {
+        List<UserInfoBean> removedList = bundle.getParcelableArrayList(EVENT_IM_GROUP_REMOVE_MEMBER);
+        if (removedList == null) {
+            return;
+        }
+        ChatGroupBean chatGroupBean = mRootView.getGroupBean();
+        List<UserInfoBean> originalList = new ArrayList<>();
+        originalList.addAll(chatGroupBean.getAffiliations());
+        for (int i = 0; i < removedList.size(); i++) {
+            for (UserInfoBean userInfoBean : chatGroupBean.getAffiliations()){
+                if (removedList.get(i).getUser_id().equals(userInfoBean.getUser_id())){
+                    originalList.remove(userInfoBean);
+                    break;
+                }
+            }
+        }
+        chatGroupBean.setAffiliations(originalList);
+        mRootView.updateGroup(chatGroupBean);
+    }
+
+    @Subscriber(tag = EVENT_IM_GROUP_ADD_MEMBER)
+    public void onGroupMemberAdded(Bundle bundle) {
+        List<UserInfoBean> addedList = bundle.getParcelableArrayList(EVENT_IM_GROUP_ADD_MEMBER);
+        if (addedList == null) {
+            return;
+        }
+        ChatGroupBean chatGroupBean = mRootView.getGroupBean();
+        chatGroupBean.getAffiliations().addAll(addedList);
         mRootView.updateGroup(chatGroupBean);
     }
 }

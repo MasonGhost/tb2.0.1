@@ -27,6 +27,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
@@ -37,6 +38,8 @@ import com.zhiyicx.thinksnsplus.modules.chat.edit.name.EditGroupNameActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.edit.owner.EditGroupOwnerActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
 import com.zhiyicx.thinksnsplus.modules.chat.member.GroupMemberListActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.select.SelectFriendsActivity;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -54,6 +57,8 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_DELETE_
 import static com.zhiyicx.thinksnsplus.modules.chat.edit.name.EditGroupNameFragment.GROUP_ORIGINAL_NAME;
 import static com.zhiyicx.thinksnsplus.modules.chat.edit.owner.EditGroupOwnerFragment.BUNDLE_GROUP_DATA;
 import static com.zhiyicx.thinksnsplus.modules.chat.member.GroupMemberListFragment.BUNDLE_GROUP_MEMBER;
+import static com.zhiyicx.thinksnsplus.modules.chat.select.SelectFriendsFragment.BUNDLE_GROUP_EDIT_DATA;
+import static com.zhiyicx.thinksnsplus.modules.chat.select.SelectFriendsFragment.BUNDLE_GROUP_IS_DELETE;
 
 /**
  * @author Catherine
@@ -368,6 +373,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             // 成员列表
             RecyclerView.LayoutManager manager = new GridLayoutManager(getContext(), 5);
             mRvMemberList.setLayoutManager(manager);
+            mRvMemberList.addItemDecoration(new GridDecoration(10, 10));
             List<UserInfoBean> list = new ArrayList<>();
             list.addAll(mChatGroupBean.getAffiliations());
             // 添加按钮，都可以拉人
@@ -380,15 +386,29 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                 chatUserInfoBean1.setUser_id(-2L);
                 list.add(chatUserInfoBean1);
             }
-            ChatMemberAdapter memberAdapter = new ChatMemberAdapter(getContext(), list);
+            ChatMemberAdapter memberAdapter = new ChatMemberAdapter(getContext(), list, mChatGroupBean.getOwner());
             mRvMemberList.setAdapter(memberAdapter);
             memberAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                     if (list.get(position).getUser_id() == -1L) {
                         // 添加
+                        Intent intent = new Intent(getContext(), SelectFriendsActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(BUNDLE_GROUP_EDIT_DATA, mChatGroupBean);
+                        bundle.putBoolean(BUNDLE_GROUP_IS_DELETE, false);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
                     } else if (list.get(position).getUser_id() == -2L) {
                         // 移除
+                        Intent intent = new Intent(getContext(), SelectFriendsActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(BUNDLE_GROUP_EDIT_DATA, mChatGroupBean);
+                        bundle.putBoolean(BUNDLE_GROUP_IS_DELETE, true);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    } else {
+                        PersonalCenterFragment.startToPersonalCenter(getContext(), list.get(position));
                     }
                 }
 
