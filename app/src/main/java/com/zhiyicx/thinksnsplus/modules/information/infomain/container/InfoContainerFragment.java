@@ -27,6 +27,8 @@ import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragme
 import com.zhiyicx.thinksnsplus.modules.information.infosearch.SearchActivity;
 import com.zhiyicx.thinksnsplus.modules.information.publish.detail.EditeInfoDetailActivity;
 
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -99,11 +101,6 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
     }
 
     @Override
-    protected void musicWindowsStatus(boolean isShow) {
-        super.musicWindowsStatus(isShow);
-    }
-
-    @Override
     protected void initData() {
         mPresenter.getInfoType();
         initPopWindow();
@@ -136,13 +133,14 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
         mTsvToolbar.setDefaultTabRightMargin(com.zhiyicx.baseproject.R.integer.tab_margin_10);
         mTsvToolbar.showDivider(false);
         mTsvToolbar.setIndicatorMatchWidth(true);
+        mTsvToolbar.setIndicatorMode(LinePagerIndicator.MODE_MATCH_EDGE);
         mVpFragment = (ViewPager) rootView.findViewById(com.zhiyicx.baseproject.R.id.vp_fragment);
         tsViewPagerAdapter = new TSViewPagerAdapter(getChildFragmentManager());
         tsViewPagerAdapter.bindData(initFragments());
         mVpFragment.setAdapter(tsViewPagerAdapter);
         mTsvToolbar.setAdjustMode(isAdjustMode());
         mTsvToolbar.initTabView(mVpFragment, initTitles());
-        mTsvToolbar.setLeftClickListener(this, () -> setLeftClick());
+        mTsvToolbar.setLeftClickListener(this, this::setLeftClick);
         mTsvToolbar.setRightClickListener(this, () -> {
             if (mPresenter.handleTouristControl()) {
                 return;
