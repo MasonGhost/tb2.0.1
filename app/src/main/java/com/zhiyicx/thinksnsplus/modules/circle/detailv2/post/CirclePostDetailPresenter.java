@@ -378,7 +378,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
         mRootView.getCurrentePost().setCollected(isUnCollected);
         mCirclePostListBeanGreenDao.updateSingleData(mRootView.getCurrentePost());
         EventBus.getDefault().post(mRootView.getCurrentePost(), POST_LIST_COLLECT_UPDATE);
-        mBaseCircleRepository.dealCollect(isUnCollected, id);
+        mBaseCircleRepository.dealCollect(!isUnCollected, id);
     }
 
     @Override

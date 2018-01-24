@@ -33,8 +33,8 @@ import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
-import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.EditeAnswerDetailFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerListItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerListItem.OnGoToWatchClickListener;
@@ -221,6 +221,8 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     @Override
     public void setQuestionDetail(QAListInfoBean questionDetail, boolean isLoadMore) {
         this.mQaListInfoBean = questionDetail;
+        String body = questionDetail.getBody();
+        questionDetail.setBody(body.replaceAll(MarkdownConfig.HTML_FORMAT, ""));
         onNetResponseSuccess(mQaListInfoBean.getAnswerInfoBeanList(), isLoadMore);
         mQuestionDetailHeader.setDetail(questionDetail, mPresenter.getSystemConfig().getOnlookQuestion(), mPresenter.getRatio());
     }
