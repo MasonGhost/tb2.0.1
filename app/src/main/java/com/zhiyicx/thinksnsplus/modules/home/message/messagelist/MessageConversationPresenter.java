@@ -256,12 +256,12 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                 // 如果列表已经有  那么就不再追加
                 boolean canAdded = true;
                 for (MessageItemBeanV2 exitItem : mRootView.getRealMessageList()) {
-                    if (exitItem.getConversation().conversationId().equals(chatGroupBean.getId())){
+                    if (exitItem.getConversation().conversationId().equals(chatGroupBean.getId())) {
                         canAdded = false;
                         break;
                     }
                 }
-                if (canAdded){
+                if (canAdded) {
                     MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
                     itemBeanV2.setEmKey(chatGroupBean.getId());
                     itemBeanV2.setList(chatGroupBean.getAffiliations());
@@ -360,6 +360,9 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
         addSubscrebe(subscribe);
     }
 
+    /**
+     * 删除群
+     */
     @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_DELETE_QUIT)
     public void deleteGroup(String id) {
         if (!TextUtils.isEmpty(id)) {
@@ -376,5 +379,18 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
             mRootView.getRealMessageList().remove(deleteItem);
             mRootView.refreshData();
         }
+    }
+
+    /**
+     * 更新群信息
+     */
+    @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_GROUP_UPDATE_GROUP_INFO)
+    public void updateGroup(ChatGroupBean chatGroupBean) {
+        for (MessageItemBeanV2 itemBeanV2 : mRootView.getRealMessageList()) {
+            if (itemBeanV2.getEmKey().equals(chatGroupBean.getId())) {
+                itemBeanV2.setChatGroupBean(chatGroupBean);
+            }
+        }
+        mRootView.refreshData();
     }
 }

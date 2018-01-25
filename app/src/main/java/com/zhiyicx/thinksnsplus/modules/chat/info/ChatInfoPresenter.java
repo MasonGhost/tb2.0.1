@@ -76,6 +76,7 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Reposit
                         LogUtils.d("updateGroup", data);
                         mRootView.updateGroup(data);
                         mRootView.dismissSnackBar();
+                        EventBus.getDefault().post(mRootView.getGroupBean(), EventBusTagConfig.EVENT_IM_GROUP_UPDATE_GROUP_INFO);
                     }
 
                     @Override
@@ -103,7 +104,6 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Reposit
                         mRootView.getGroupInfoSuccess(data.get(0));
                         mRootView.isShowEmptyView(false, true);
                         mRootView.dismissSnackBar();
-                        EventBus.getDefault().post(mRootView.getGroupBean(), EventBusTagConfig.EVENT_IM_GROUP_UPDATE_GROUP_INFO);
                     }
 
                     @Override

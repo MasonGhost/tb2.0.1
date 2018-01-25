@@ -475,6 +475,13 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
         }
     }
 
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_GROUP_UPDATE_GROUP_INFO)
+    public void updateCurrent(ChatGroupBean chatGroupBean) {
+        if (chatGroupBean.getIm_group_id().equals(toChatUsername)) {
+            titleBar.setTitle(chatGroupBean.getName());
+        }
+    }
+
     /**
      * listen the group event
      *
