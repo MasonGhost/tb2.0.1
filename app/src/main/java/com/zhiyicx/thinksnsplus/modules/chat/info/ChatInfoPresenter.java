@@ -54,11 +54,11 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Reposit
 
     @Override
     public boolean isGroupOwner() {
-        EMGroup group = EMClient.getInstance().groupManager().getGroup(mRootView.getChatId());
-        if (group == null) {
+        ChatGroupBean chatGroupBean = mRootView.getGroupBean();
+        if (chatGroupBean == null) {
             return false;
         }
-        String owner = group.getOwner();
+        String owner = String.valueOf(chatGroupBean.getOwner());
         return owner.equals(String.valueOf(AppApplication.getMyUserIdWithdefault()));
     }
 

@@ -144,11 +144,6 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             mPresenter.getGroupChatInfo(mChatId);
             // 屏蔽单聊的布局
             mLlSingle.setVisibility(View.GONE);
-            // 非群主屏蔽群管理
-            if (!mPresenter.isGroupOwner()) {
-                mLlManager.setVisibility(View.GONE);
-                mTvDeleteGroup.setText(getString(R.string.chat_quit_group));
-            }
         }
         initDeletePopupWindow();
         initPhotoPopupWindow();
@@ -408,6 +403,11 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                 PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
             });
         } else {
+            // 非群主屏蔽群管理
+            if (!mPresenter.isGroupOwner()) {
+                mLlManager.setVisibility(View.GONE);
+                mTvDeleteGroup.setText(getString(R.string.chat_quit_group));
+            }
             // 群聊的信息展示
             EMGroup group = EMClient.getInstance().groupManager().getGroup(mChatId);
             // 屏蔽按钮
