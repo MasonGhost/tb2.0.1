@@ -172,6 +172,7 @@ constructor(rootView: MineIntegrationContract.View) : AppBasePresenter<MineInteg
         /**
          * action tag
          */
+        val TAG_DETAIL = 0 // detail
         val TAG_RECHARGE = 1 // recharge
         val TAG_WITHDRAW = 2 // withdraw
         val TAG_SHOWRULE_POP = 3 // show rulepop

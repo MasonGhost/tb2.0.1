@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.integration.detail;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -16,13 +18,20 @@ import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessV2Bean;
+import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean;
+import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Author Jliuer
@@ -32,8 +41,9 @@ import butterknife.BindView;
  */
 public class IntegrationDetailListFragment extends TSListFragment<IntegrationDetailContract.Presenter, RechargeSuccessV2Bean> implements
         IntegrationDetailContract.View {
-    private static final String BUNDLE_CHOOSE_TYPE = "CHOOSE_TYPE";
+    public static final String BUNDLE_INTEGRATION_CONFIG = "config";
 
+    private static final String BUNDLE_CHOOSE_TYPE = "CHOOSE_TYPE";
     public static final String CHOOSE_TYPE_RECHARGE = "recharge";
     public static final String CHOOSE_TYPE_CASH = "cash";
 
@@ -41,10 +51,14 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
     @BindView(R.id.v_shadow)
     View mVshadow;
 
+    @BindView(R.id.tv_rule)
+    View mTvRule;
+
     private ActionPopupWindow mActionPopupWindow;
 
     @Inject
     IntegrationDetailPresenter mIntegrationDetailPresenter;
+
 
     /**
      * 0 全部，1 收入，-1 支出
@@ -57,6 +71,33 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
      */
     private String mChooseType;
 
+    /**
+     * 积分配置
+     */
+    private IntegrationConfigBean mIntegrationConfigBean;
+
+    /**
+     * 构造方法
+     *
+     * @param chooseType
+     * @param configBean
+     * @return
+     */
+    public static IntegrationDetailListFragment newInstance(String chooseType, IntegrationConfigBean configBean) {
+        IntegrationDetailListFragment integrationDetailListFragment = new IntegrationDetailListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(BUNDLE_CHOOSE_TYPE, chooseType);
+        bundle.putSerializable(BUNDLE_INTEGRATION_CONFIG, configBean);
+        integrationDetailListFragment.setArguments(bundle);
+        return integrationDetailListFragment;
+    }
+
+    /**
+     * 构造方法
+     *
+     * @param chooseType
+     * @return
+     */
     public static IntegrationDetailListFragment newInstance(String chooseType) {
         IntegrationDetailListFragment integrationDetailListFragment = new IntegrationDetailListFragment();
         Bundle bundle = new Bundle();
@@ -91,6 +132,7 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
                 .inject(IntegrationDetailListFragment.this);
         if (getArguments() != null) {
             mChooseType = getArguments().getString(BUNDLE_CHOOSE_TYPE);
+            mIntegrationConfigBean = (IntegrationConfigBean) getArguments().getSerializable(BUNDLE_INTEGRATION_CONFIG);
         }
     }
 
@@ -135,6 +177,20 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
                     time.setText(TimeUtils.getTimeFriendlyForDetail(recharge.getCreated_at()));
                 }
             };
+            mTvRule.setVisibility(View.VISIBLE);
+            RxView.clicks(mTvRule)
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                    .compose(bindToLifecycle())
+                    .subscribe(aVoid -> {
+                        Intent intent = new Intent(mActivity, WalletRuleActivity.class);
+                        if (mIntegrationConfigBean != null) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString(WalletRuleFragment.BUNDLE_RULE, mIntegrationConfigBean.getRechargerule());
+                            intent.putExtras(bundle);
+                        }
+                        startActivity(intent);
+                    });
+
         }
         return adapter;
     }

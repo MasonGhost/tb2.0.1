@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--  圆角  -->
+    <dimen name="button_corner_huge">100dp</dimen>
     <dimen name="button_corner_big">6dp</dimen>
     <dimen name="button_corner_large">10dp</dimen>
     <dimen name="advert_corner_large">14dp</dimen>

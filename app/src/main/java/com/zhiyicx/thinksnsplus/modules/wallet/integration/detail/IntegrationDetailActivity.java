@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.wallet.integration.detail;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean;
 
 /**
  * @Describe 积分详情
@@ -13,7 +14,8 @@ public class IntegrationDetailActivity extends TSActivity<IntegrationDetailPrese
 
     @Override
     protected IntegrationDetailListFragment getFragment() {
-        return IntegrationDetailListFragment.newInstance(null);
+        return IntegrationDetailListFragment.newInstance(null, (IntegrationConfigBean) getIntent().getExtras().getSerializable
+                (IntegrationDetailListFragment.BUNDLE_INTEGRATION_CONFIG));
     }
 
     @Override

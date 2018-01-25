@@ -30,6 +30,7 @@ import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.TAG_SHOWRULE_POP
 import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.IntegrationDetailActivity
+import com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.IntegrationDetailListFragment
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge.IntegrationRechargeActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge.IntegrationRechargeFragment
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.withdrawal.IntegrationWithdrawalsActivity
@@ -155,20 +156,20 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe { _ ->
-                    startActivity(Intent(activity, IntegrationDetailActivity::class.java))
+                    mPresenter.checkIntegrationConfig(MineIntegrationPresenter.TAG_DETAIL, true)
                 }
         // 充值积分
         RxView.clicks(mBtReCharge)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe { _ ->
-                    mPresenter.checkIntegrationConfig(WalletPresenter.TAG_RECHARGE, true)
+                    mPresenter.checkIntegrationConfig(MineIntegrationPresenter.TAG_RECHARGE, true)
                 }
         // 提取积分
         RxView.clicks(mBtWithdraw)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe { _ -> mPresenter.checkIntegrationConfig(WalletPresenter.TAG_WITHDRAW, true) }     // 提现
+                .subscribe { _ -> mPresenter.checkIntegrationConfig(MineIntegrationPresenter.TAG_WITHDRAW, true) }     // 提现
         // 积分商城
         RxView.clicks(btMineIntegration)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
@@ -178,7 +179,7 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
         RxView.clicks(mTvReChargeAndWithdrawRule)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe { _ -> mPresenter.checkIntegrationConfig(WalletPresenter.TAG_SHOWRULE_JUMP, true) }
+                .subscribe { _ -> mPresenter.checkIntegrationConfig(MineIntegrationPresenter.TAG_SHOWRULE_JUMP, true) }
         RxView.clicks(mTvToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
@@ -238,6 +239,10 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
     override fun integrationConfigCallBack(configBean: IntegrationConfigBean, tag: Int) {
         val bundle = Bundle()
         when (tag) {
+            MineIntegrationPresenter.TAG_DETAIL -> {
+                bundle.putSerializable(IntegrationDetailListFragment.BUNDLE_INTEGRATION_CONFIG, configBean)
+                jumpActivity(bundle, IntegrationDetailActivity::class.java)
+            }
             MineIntegrationPresenter.TAG_RECHARGE -> {
                 bundle.putSerializable(IntegrationRechargeFragment.BUNDLE_DATA, configBean)
                 jumpActivity(bundle, IntegrationRechargeActivity::class.java)
