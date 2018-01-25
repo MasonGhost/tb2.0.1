@@ -95,27 +95,6 @@ public class AddInfoCategoryFragment extends TSFragment<AddInfoContract.Presente
                                    int position) {
                 holder.setText(R.id.item_info_channel, data.getName());
             }
-
-//            @Override
-//            protected void setListener(ViewGroup parent, final ViewHolder viewHolder, int viewType) {
-//                RxView.clicks(viewHolder.itemView)
-//                        .throttleFirst(ConstantConfig.JITTER_SPACING_TIME, TimeUnit.SECONDS)
-//                        .compose(bindToLifecycle())
-//                        .subscribe(o -> {
-//                            if (mOnItemClickListener != null) {
-//                                int position = viewHolder.getAdapterPosition();
-//                                mOnItemClickListener.onCommentTextClick(viewHolder.itemView, viewHolder, position);
-//                            }
-//                        });
-//
-//                viewHolder.itemView.setOnLongClickListener(v -> {
-//                    if (mOnItemClickListener != null) {
-//                        int position = viewHolder.getAdapterPosition();
-//                        return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
-//                    }
-//                    return true;
-//                });
-//            }
         };
 
         mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
@@ -140,6 +119,12 @@ public class AddInfoCategoryFragment extends TSFragment<AddInfoContract.Presente
         return mAdapter;
     }
 
+    @Override
+    public void setInfoType(List<InfoTypeCatesBean> infoType) {
+        mMoreCatesBeen.clear();
+        mMoreCatesBeen.addAll(infoType);
+        mAdapter.notifyDataSetChanged();
+    }
 
     @Override
     protected void initData() {

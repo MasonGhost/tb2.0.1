@@ -108,6 +108,7 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.In
 
                 });
         addSubscrebe(subscription);
+        addSubscrebe(subscribe);
     }
 
     @Override

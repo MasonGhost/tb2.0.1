@@ -209,4 +209,9 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
             mToolbarRight.setEnabled(false);
         }
     }
+
+    @Override
+    public void setInfoType(List<InfoTypeCatesBean> infoType) {
+
+    }
 }
