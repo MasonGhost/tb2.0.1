@@ -783,6 +783,7 @@
     <string name="switch_camera">切换摄像头</string>
     <string name="capture_image">抓取图片</string>
     <string name="chat_info_title">群聊信息</string>
+    <string name="chat_info_title_single">聊天信息</string>
     <string name="chat_info_shielded_message">屏蔽消息</string>
     <string name="chat_info_shielded_message_alert">开启后将不再接受ta的消息</string>
     <string name="chat_info_clear_message">清空聊天记录</string>

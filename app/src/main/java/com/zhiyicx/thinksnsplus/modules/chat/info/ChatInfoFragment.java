@@ -139,6 +139,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             mTvDeleteGroup.setVisibility(View.GONE);
             isShowEmptyView(false, true);
             setGroupData();
+            setCenterText(getString(R.string.chat_info_title_single));
         } else {
             mPresenter.getGroupChatInfo(mChatId);
             // 屏蔽单聊的布局
@@ -167,7 +168,8 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         return R.layout.fragment_chat_info;
     }
 
-    @OnClick({R.id.iv_add_user, R.id.tv_to_all_members, R.id.ll_manager, R.id.tv_clear_message, R.id.tv_delete_group, R.id.ll_group_portrait, R.id.ll_group_name})
+    @OnClick({R.id.iv_add_user, R.id.tv_to_all_members, R.id.ll_manager, R.id.tv_clear_message, R.id.tv_delete_group,
+            R.id.ll_group_portrait, R.id.ll_group_name, R.id.iv_user_portrait})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_add_user:
@@ -213,6 +215,11 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                     intentName.putExtras(bundleName);
                     startActivity(intentName);
                 }
+                break;
+            case R.id.iv_user_portrait:
+                UserInfoBean userInfoBean = new UserInfoBean();
+                userInfoBean.setUser_id(mUserInfoBeans.get(1).getUser_id());
+                PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
                 break;
             default:
         }
@@ -395,6 +402,11 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             // 单聊处理布局
             ImageUtils.loadUserHead(mUserInfoBeans.get(1), mIvUserPortrait, false);
             mTvUserName.setText(mUserInfoBeans.get(1).getName());
+            mIvUserPortrait.setOnClickListener(v -> {
+                UserInfoBean userInfoBean = new UserInfoBean();
+                userInfoBean.setUser_id(mUserInfoBeans.get(1).getUser_id());
+                PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+            });
         } else {
             // 群聊的信息展示
             EMGroup group = EMClient.getInstance().groupManager().getGroup(mChatId);
