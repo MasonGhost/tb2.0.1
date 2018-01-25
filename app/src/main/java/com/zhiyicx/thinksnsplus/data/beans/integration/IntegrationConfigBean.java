@@ -34,6 +34,13 @@ public class IntegrationConfigBean implements Serializable {
     @SerializedName("recharge-min")
     private int rechargemin;
     private String rule;
+    @SerializedName("cash-rule")
+    private String cashrule;
+    @SerializedName("recharge-rule")
+    private String rechargerule;
+
+
+
     @Convert(converter = StringArrayConvert.class, columnType = String.class)
     private String[] cash;
 
@@ -97,6 +104,22 @@ public class IntegrationConfigBean implements Serializable {
         this.recharge_type = recharge_type;
     }
 
+    public String getCashrule() {
+        return cashrule;
+    }
+
+    public void setCashrule(String cashrule) {
+        this.cashrule = cashrule;
+    }
+
+    public String getRechargerule() {
+        return rechargerule;
+    }
+
+    public void setRechargerule(String rechargerule) {
+        this.rechargerule = rechargerule;
+    }
+
     @Override
     public String toString() {
         return "IntegrationConfigBean{" +
@@ -105,6 +128,8 @@ public class IntegrationConfigBean implements Serializable {
                 ", rechargemax=" + rechargemax +
                 ", rechargemin=" + rechargemin +
                 ", rule='" + rule + '\'' +
+                ", cashrule='" + cashrule + '\'' +
+                ", rechargerule='" + rechargerule + '\'' +
                 ", cash=" + Arrays.toString(cash) +
                 ", recharge_type=" + Arrays.toString(recharge_type) +
                 '}';

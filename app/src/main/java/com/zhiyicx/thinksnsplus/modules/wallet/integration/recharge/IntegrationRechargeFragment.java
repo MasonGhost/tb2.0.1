@@ -218,7 +218,7 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
                         {
                             Intent intent = new Intent(mActivity, WalletRuleActivity.class);
                             Bundle bundle = new Bundle();
-                            bundle.putString(WalletRuleFragment.BUNDLE_RULE, mIntegrationConfigBean.getRule());
+                            bundle.putString(WalletRuleFragment.BUNDLE_RULE, mIntegrationConfigBean.getRechargerule());
                             intent.putExtras(bundle);
                             startActivity(intent);
                         }
