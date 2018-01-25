@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -104,6 +105,8 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     LinearLayout mLlContainer;
     @BindView(R.id.emptyView)
     EmptyView mEmptyView;
+    @BindView(R.id.rl_block_message)
+    RelativeLayout mRlBlockMessage;
 
     private int mChatType;
     public List<ChatUserInfoBean> mUserInfoBeans;
@@ -140,6 +143,8 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             isShowEmptyView(false, true);
             setGroupData();
             setCenterText(getString(R.string.chat_info_title_single));
+            // 单聊没有屏蔽消息
+            mRlBlockMessage.setVisibility(View.GONE);
         } else {
             mPresenter.getGroupChatInfo(mChatId);
             // 屏蔽单聊的布局
@@ -407,6 +412,9 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             if (!mPresenter.isGroupOwner()) {
                 mLlManager.setVisibility(View.GONE);
                 mTvDeleteGroup.setText(getString(R.string.chat_quit_group));
+            } else {
+                // 群主无法屏蔽消息
+                mRlBlockMessage.setVisibility(View.GONE);
             }
             // 群聊的信息展示
             EMGroup group = EMClient.getInstance().groupManager().getGroup(mChatId);

@@ -195,6 +195,7 @@
 
             <!--单聊群聊公共的模块-->
             <RelativeLayout
+                    android:id="@+id/rl_block_message"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
