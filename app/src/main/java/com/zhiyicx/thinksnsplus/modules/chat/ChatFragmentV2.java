@@ -36,10 +36,12 @@ import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.modules.chat.call.VideoCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.call.VoiceCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.info.ChatInfoActivity;
@@ -100,6 +102,8 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
 
     protected View mDriver;
     protected View mStatusPlaceholderView;
+    private TSGroupListener mTsGroupListener;
+    private UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     public ChatFragmentV2 instance(Bundle bundle) {
         ChatFragmentV2 fragmentV2 = new ChatFragmentV2();
@@ -113,6 +117,7 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     }
 
     private View getContentView(LayoutInflater inflater) {
+        mUserInfoBeanGreenDao = new UserInfoBeanGreenDaoImpl(getActivity().getApplication());
         EventBus.getDefault().register(this);
         LinearLayout linearLayout = new LinearLayout(getActivity());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -174,8 +179,8 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
         } else if (chatType == EaseConstant.CHATTYPE_GROUP) {
             EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatUsername);
             titleBar.setTitle(group.getGroupName());
-            groupListener = new GroupListener();
-            EMClient.getInstance().groupManager().addGroupChangeListener(groupListener);
+            mTsGroupListener = new TSGroupListener();
+            EMClient.getInstance().groupManager().addGroupChangeListener(mTsGroupListener);
         }
         titleBar.setLeftLayoutClickListener(v -> onBackPressed());
         titleBar.setRightLayoutClickListener(v -> toGroupDetails());
@@ -470,47 +475,77 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
         }
     }
 
-    @Subscriber(tag = EVENT_IM_GROUP_REMOVE_MEMBER)
-    public void onGroupMemberRemoved(Bundle bundle) {
-        List<UserInfoBean> removedList = bundle.getParcelableArrayList(EVENT_IM_GROUP_REMOVE_MEMBER);
-        if (removedList == null) {
-            return;
-        }
-        List<ChatUserInfoBean> originalList = new ArrayList<>();
-        originalList.addAll(mUserInfoBeans);
-        for (int i = 0; i < removedList.size(); i++) {
-            for (ChatUserInfoBean userInfoBean : mUserInfoBeans) {
-                if (removedList.get(i).getUser_id().equals(userInfoBean.getUser_id())) {
-                    originalList.remove(userInfoBean);
-                    break;
-                }
-            }
-        }
-        messageList.refreshUserList(originalList);
-    }
+    /**
+     * listen the group event
+     *
+     */
+    public class TSGroupListener extends EaseGroupListener {
 
-    @Subscriber(tag = EVENT_IM_GROUP_ADD_MEMBER)
-    public void onGroupMemberAdded(Bundle bundle) {
-        List<UserInfoBean> addedList = bundle.getParcelableArrayList(EVENT_IM_GROUP_ADD_MEMBER);
-        if (addedList == null) {
-            return;
+        @Override
+        public void onUserRemoved(final String groupId, String groupName) {
+            getActivity().runOnUiThread(() -> {
+                if (toChatUsername.equals(groupId)) {
+                    ToastUtils.showToast(getActivity(), R.string.you_are_group);
+                    Activity activity = getActivity();
+                    if (activity != null && !activity.isFinishing()) {
+                        activity.finish();
+                    }
+                }
+            });
         }
-        for (UserInfoBean userInfoBean : addedList) {
-            ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
-            chatUserInfoBean.setUser_id(userInfoBean.getUser_id());
-            chatUserInfoBean.setSex(userInfoBean.getSex());
-            chatUserInfoBean.setName(userInfoBean.getName());
-            chatUserInfoBean.setAvatar(userInfoBean.getAvatar());
-            if (userInfoBean.getVerified() != null){
-                ChatVerifiedBean chatVerifiedBean = new ChatVerifiedBean();
-                chatVerifiedBean.setType(userInfoBean.getVerified().getType());
-                chatVerifiedBean.setStatus(userInfoBean.getVerified().getStatus());
-                chatVerifiedBean.setIcon(userInfoBean.getVerified().getIcon());
-                chatVerifiedBean.setDescription(userInfoBean.getVerified().getDescription());
-                chatUserInfoBean.setVerified(chatVerifiedBean);
+
+        @Override
+        public void onMemberExited(String groupId, String member) {
+           for (ChatUserInfoBean chatUserInfoBean : mUserInfoBeans){
+               if (member.equals(chatUserInfoBean.getUser_id()+"")){
+                   mUserInfoBeans.remove(chatUserInfoBean);
+                   messageList.refreshUserList(mUserInfoBeans);
+                   break;
+               }
+           }
+        }
+
+        @Override
+        public void onMemberJoined(String groupId, String member) {
+            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(member));
+            if (userInfoBean != null){
+                ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
+                chatUserInfoBean.setUser_id(userInfoBean.getUser_id());
+                chatUserInfoBean.setSex(userInfoBean.getSex());
+                chatUserInfoBean.setName(userInfoBean.getName());
+                chatUserInfoBean.setAvatar(userInfoBean.getAvatar());
+                if (userInfoBean.getVerified() != null){
+                    ChatVerifiedBean chatVerifiedBean = new ChatVerifiedBean();
+                    chatVerifiedBean.setType(userInfoBean.getVerified().getType());
+                    chatVerifiedBean.setStatus(userInfoBean.getVerified().getStatus());
+                    chatVerifiedBean.setIcon(userInfoBean.getVerified().getIcon());
+                    chatVerifiedBean.setDescription(userInfoBean.getVerified().getDescription());
+                    chatUserInfoBean.setVerified(chatVerifiedBean);
+                }
+                mUserInfoBeans.add(chatUserInfoBean);
+                messageList.refreshUserList(mUserInfoBeans);
             }
-            mUserInfoBeans.add(chatUserInfoBean);
         }
-        messageList.refreshUserList(mUserInfoBeans);
+
+        @Override
+        public void onOwnerChanged(String groupId, String newOwner, String oldOwner) {
+
+        }
+
+
+
+        @Override
+        public void onGroupDestroyed(final String groupId, String groupName) {
+            // prompt group is dismissed and finish this activity
+            getActivity().runOnUiThread(() -> {
+                if (toChatUsername.equals(groupId)) {
+                    ToastUtils.showToast(getActivity(), R.string.the_current_group_destroyed);
+                    Activity activity = getActivity();
+                    if (activity != null && !activity.isFinishing()) {
+                        activity.finish();
+                    }
+                }
+            });
+        }
     }
 }
