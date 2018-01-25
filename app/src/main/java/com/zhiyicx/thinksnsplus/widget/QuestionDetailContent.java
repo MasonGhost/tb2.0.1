@@ -129,7 +129,19 @@ public class QuestionDetailContent extends FrameLayout {
             mMdvQuestionContent.setVisibility(GONE);
             mLlContentPreview.setVisibility(VISIBLE);
         }
+        mTvQuestionContent.setExpandListener(new ExpandableTextView.OnExpandListener() {
+            @Override
+            public void onExpand(ExpandableTextView view) {
+                // 展开后 隐藏内容，显示图文混排内容
+                mLlContentPreview.setVisibility(GONE);
+                mMdvQuestionContent.setVisibility(VISIBLE);
+            }
 
+            @Override
+            public void onShrink(ExpandableTextView view) {
+
+            }
+        });
         dealContent(content, list);
         if (list.size() > 0) {
             // 如果有图片 那么显示封面
@@ -152,19 +164,7 @@ public class QuestionDetailContent extends FrameLayout {
             mTvQuestionContent.setMaxLinesOnShrink(1);
             mTvQuestionContent.setText(preContent);
             dealPreContent(mTvQuestionContent);
-            mTvQuestionContent.setExpandListener(new ExpandableTextView.OnExpandListener() {
-                @Override
-                public void onExpand(ExpandableTextView view) {
-                    // 展开后 隐藏内容，显示图文混排内容
-                    mLlContentPreview.setVisibility(GONE);
-                    mMdvQuestionContent.setVisibility(VISIBLE);
-                }
 
-                @Override
-                public void onShrink(ExpandableTextView view) {
-
-                }
-            });
 
 //            if (mTvQuestionContent.getCurrState() == ExpandableTextView.STATE_EXPAND) {
 //                // 展开后 隐藏内容，显示图文混排内容
@@ -189,6 +189,7 @@ public class QuestionDetailContent extends FrameLayout {
      */
     private void dealContent(String content, List<ImageBean> list) {
         mMdvQuestionContent.addStyleSheet(MarkDownRule.generateStandardStyle());
+        content=content.replaceAll(MarkdownConfig.HTML_FORMAT,"");
         mMdvQuestionContent.loadMarkdown(content);
         mMdvQuestionContent.setWebViewClient(new WebViewClient() {
             @Override
