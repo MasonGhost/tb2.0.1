@@ -131,6 +131,7 @@ public class EventBusTagConfig {
     public static final String EVENT_IM_GROUP_ADD_MEMBER = "group_add_member";
     public static final String EVENT_IM_GROUP_REMOVE_MEMBER = "group_remove_member";
     public static final String EVENT_IM_GROUP_CREATE_FROM_SINGLE = "group_create_from_single";
+    public static final String EVENT_IM_GROUP_UPDATE_GROUP_INFO = "group_update_group_info";
 
     /**
      * 消息底部提示信息相关

@@ -64,8 +64,9 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Reposit
 
     @Override
     public void updateGroup(ChatGroupBean chatGroupBean, boolean isEditGroupFace) {
+        // 这里不是修改群主，所以newOwner直接传空
         Subscription subscription = mRepository.updateGroup(chatGroupBean.getIm_group_id(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0, 200, chatGroupBean.isMembersonly(),
-                0, chatGroupBean.getGroup_face(), isEditGroupFace, chatGroupBean.getOwner() + "")
+                0, chatGroupBean.getGroup_face(), isEditGroupFace, "")
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage("修改中..."))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<ChatGroupBean>() {
@@ -74,6 +75,7 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Reposit
                         // 成功后重置页面
                         LogUtils.d("updateGroup", data);
                         mRootView.updateGroup(data);
+                        mRootView.dismissSnackBar();
                     }
 
                     @Override
@@ -101,6 +103,7 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Reposit
                         mRootView.getGroupInfoSuccess(data.get(0));
                         mRootView.isShowEmptyView(false, true);
                         mRootView.dismissSnackBar();
+                        EventBus.getDefault().post(mRootView.getGroupBean(), EventBusTagConfig.EVENT_IM_GROUP_UPDATE_GROUP_INFO);
                     }
 
                     @Override
