@@ -48,12 +48,14 @@ import rx.schedulers.Schedulers;
  */
 @FragmentScoped
 public class MessageConversationPresenter extends AppBasePresenter<MessageConversationContract.Repository, MessageConversationContract.View>
-        implements MessageConversationContract.Presenter{
+        implements MessageConversationContract.Presenter {
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
-    /**复制的所有原数据*/
+    /**
+     * 复制的所有原数据
+     */
     private List<MessageItemBeanV2> mCopyConversationList;
 
     @Inject
@@ -120,11 +122,11 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
     public List<ChatUserInfoBean> getChatUserList(int position) {
         List<ChatUserInfoBean> chatUserInfoBeans = new ArrayList<>();
         // 当前用户
-        if (mRootView.getRealMessageList().get(position).getConversation().getType() == EMConversation.EMConversationType.Chat){
+        if (mRootView.getRealMessageList().get(position).getConversation().getType() == EMConversation.EMConversationType.Chat) {
             chatUserInfoBeans.add(getChatUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault())));
             chatUserInfoBeans.add(getChatUser(mRootView.getRealMessageList().get(position).getUserInfo()));
         } else {
-            for (UserInfoBean userInfoBean : mRootView.getRealMessageList().get(position).getList()){
+            for (UserInfoBean userInfoBean : mRootView.getRealMessageList().get(position).getList()) {
                 chatUserInfoBeans.add(getChatUser(userInfoBean));
             }
         }
@@ -138,19 +140,19 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                 .observeOn(Schedulers.io())
                 .map(s -> {
                     List<MessageItemBeanV2> newList = new ArrayList<>();
-                    for (MessageItemBeanV2 itemBeanV2 : mCopyConversationList){
+                    for (MessageItemBeanV2 itemBeanV2 : mCopyConversationList) {
                         String name = "";
-                        if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.Chat){
-                            if (itemBeanV2.getUserInfo() != null){
+                        if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.Chat) {
+                            if (itemBeanV2.getUserInfo() != null) {
                                 name = itemBeanV2.getUserInfo().getName();
                             }
                         } else {
                             EMGroup group = EMClient.getInstance().groupManager().getGroup(itemBeanV2.getEmKey());
-                            if (group != null){
+                            if (group != null) {
                                 name = group.getGroupName();
                             }
                         }
-                        if (name.contains(s)){
+                        if (name.contains(s)) {
                             newList.add(itemBeanV2);
                         }
                     }
@@ -160,13 +162,13 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                 .subscribe(list -> mRootView.getMessageListSuccess(list));
     }
 
-    private ChatUserInfoBean getChatUser(UserInfoBean userInfoBean){
+    private ChatUserInfoBean getChatUser(UserInfoBean userInfoBean) {
         ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
         chatUserInfoBean.setUser_id(userInfoBean.getUser_id());
         chatUserInfoBean.setAvatar(userInfoBean.getAvatar());
         chatUserInfoBean.setName(userInfoBean.getName());
         chatUserInfoBean.setSex(userInfoBean.getSex());
-        if (userInfoBean.getVerified() != null){
+        if (userInfoBean.getVerified() != null) {
             ChatVerifiedBean verifiedBean = new ChatVerifiedBean();
             verifiedBean.setDescription(userInfoBean.getVerified().getDescription());
             verifiedBean.setIcon(userInfoBean.getVerified().getIcon());
@@ -179,6 +181,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
 
     /**
      * 获取环信的所有会话列表
+     *
      * @param isLoadMore 是否加载更多
      */
     private void getAllConversationV2(boolean isLoadMore) {
@@ -188,12 +191,12 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(messageItemBeanV2s -> {
                         List<MessageItemBeanV2> singleList = new ArrayList<>();
-                        for (MessageItemBeanV2 itemBeanV2 : messageItemBeanV2s){
-                            if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.Chat){
+                        for (MessageItemBeanV2 itemBeanV2 : messageItemBeanV2s) {
+                            if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.Chat) {
                                 singleList.add(itemBeanV2);
                             }
                         }
-                        if (mCopyConversationList == null){
+                        if (mCopyConversationList == null) {
                             mCopyConversationList = new ArrayList<>();
                         }
                         mCopyConversationList = singleList;
@@ -242,24 +245,34 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_GET_GROUP_INFO)
-    public void getGroupList(Bundle bundle){
-        if (bundle != null && bundle.containsKey(EventBusTagConfig.EVENT_IM_GET_GROUP_INFO)){
+    public void getGroupList(Bundle bundle) {
+        if (bundle != null && bundle.containsKey(EventBusTagConfig.EVENT_IM_GET_GROUP_INFO)) {
             List<ChatGroupBean> list = bundle.getParcelableArrayList(EventBusTagConfig.EVENT_IM_GET_GROUP_INFO);
-            if (list == null){
+            if (list == null) {
                 return;
             }
             List<MessageItemBeanV2> messageItemBeanList = new ArrayList<>();
-            for (ChatGroupBean chatGroupBean : list){
-                MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
-                itemBeanV2.setEmKey(chatGroupBean.getId());
-                itemBeanV2.setList(chatGroupBean.getAffiliations());
-                itemBeanV2.setConversation(EMClient.getInstance().chatManager().getConversation(chatGroupBean.getId()));
-                itemBeanV2.setChatGroupBean(chatGroupBean);
-                messageItemBeanList.add(itemBeanV2);
+            for (ChatGroupBean chatGroupBean : list) {
+                // 如果列表已经有  那么就不再追加
+                boolean canAdded = true;
+                for (MessageItemBeanV2 exitItem : mRootView.getRealMessageList()) {
+                    if (exitItem.getConversation().conversationId().equals(chatGroupBean.getId())){
+                        canAdded = false;
+                        break;
+                    }
+                }
+                if (canAdded){
+                    MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
+                    itemBeanV2.setEmKey(chatGroupBean.getId());
+                    itemBeanV2.setList(chatGroupBean.getAffiliations());
+                    itemBeanV2.setConversation(EMClient.getInstance().chatManager().getConversation(chatGroupBean.getId()));
+                    itemBeanV2.setChatGroupBean(chatGroupBean);
+                    messageItemBeanList.add(itemBeanV2);
+                }
             }
-            if (!messageItemBeanList.isEmpty()){
+            if (!messageItemBeanList.isEmpty()) {
                 mRootView.getRealMessageList().addAll(messageItemBeanList);
-                if (mCopyConversationList == null){
+                if (mCopyConversationList == null) {
                     mCopyConversationList = new ArrayList<>();
                 }
                 mCopyConversationList = mRootView.getRealMessageList();
@@ -348,18 +361,18 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
     }
 
     @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_DELETE_QUIT)
-    public void deleteGroup(String id){
-        if (!TextUtils.isEmpty(id)){
+    public void deleteGroup(String id) {
+        if (!TextUtils.isEmpty(id)) {
             return;
         }
         MessageItemBeanV2 deleteItem = null;
-        for (MessageItemBeanV2 messageItemBeanV2 : mRootView.getRealMessageList()){
-            if (messageItemBeanV2.getConversation().conversationId().equals(id)){
+        for (MessageItemBeanV2 messageItemBeanV2 : mRootView.getRealMessageList()) {
+            if (messageItemBeanV2.getConversation().conversationId().equals(id)) {
                 deleteItem = messageItemBeanV2;
                 break;
             }
         }
-        if (deleteItem != null){
+        if (deleteItem != null) {
             mRootView.getRealMessageList().remove(deleteItem);
             mRootView.refreshData();
         }
