@@ -50,11 +50,6 @@ public class ChatRowPicture extends ChatBaseRow {
     }
 
     @Override
-    protected void onViewUpdate(EMMessage msg) {
-
-    }
-
-    @Override
     protected void onSetUpView() {
         super.onSetUpView();
         EMImageMessageBody imageMessageBody = (EMImageMessageBody) message.getBody();

@@ -65,6 +65,7 @@ public class ChatBaseRow extends EaseChatRow {
 
     @Override
     protected void onViewUpdate(EMMessage msg) {
+        mTvMessageStatus.setText(context.getString(msg.isAcked() ? R.string.chat_send_message_read:R.string.chat_send_message_unread));
         switch (msg.status()) {
             case CREATE:
                 onMessageCreate();
@@ -85,6 +86,7 @@ public class ChatBaseRow extends EaseChatRow {
     @Override
     protected void onSetUpView() {
         // 头像
+        mTvMessageStatus.setText(context.getString(R.string.chat_send_message_unread));
         ImageUtils.loadUserHead(mUserInfoBean, mIvChatHeadpic, false);
         // 时间
         if (position == 0){
@@ -108,6 +110,13 @@ public class ChatBaseRow extends EaseChatRow {
                     userInfoBean.setUser_id(mUserInfoBean.getUser_id());
                     PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
                 });
+        if (mMsgStatus != null){
+            mMsgStatus.setOnClickListener(v -> {
+                if (itemActionCallback != null) {
+                    itemActionCallback.onResendClick(message);
+                }
+            });
+        }
     }
 
     private void onMessageCreate() {

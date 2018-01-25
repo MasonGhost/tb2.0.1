@@ -39,11 +39,6 @@ public class ChatRowText extends ChatBaseRow {
     }
 
     @Override
-    protected void onViewUpdate(EMMessage msg) {
-
-    }
-
-    @Override
     protected void onSetUpView() {
         super.onSetUpView();
         EMTextMessageBody txtBody = (EMTextMessageBody) message.getBody();

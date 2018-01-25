@@ -29,16 +29,18 @@ public abstract class EaseChatRowPresenter implements EaseChatRow.EaseChatRowAct
 
     @Override
     public void onResendClick(final EMMessage message) {
-        new EaseAlertDialog(getContext(), R.string.resend, R.string.confirm_resend, null, new EaseAlertDialog.AlertDialogUser() {
-            @Override
-            public void onResult(boolean confirmed, Bundle bundle) {
-                if (!confirmed) {
-                    return;
-                }
-                message.setStatus(EMMessage.Status.CREATE);
-                handleSendMessage(message);
-            }
-        }, true).show();
+//        new EaseAlertDialog(getContext(), R.string.resend, R.string.confirm_resend, null, new EaseAlertDialog.AlertDialogUser() {
+//            @Override
+//            public void onResult(boolean confirmed, Bundle bundle) {
+//                if (!confirmed) {
+//                    return;
+//                }
+//                message.setStatus(EMMessage.Status.CREATE);
+//                handleSendMessage(message);
+//            }
+//        }, true).show();
+        message.setStatus(EMMessage.Status.CREATE);
+        handleSendMessage(message);
     }
 
     @Override

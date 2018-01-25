@@ -59,7 +59,7 @@ public abstract class EaseChatRow extends LinearLayout {
     protected MessageListItemClickListener itemClickListener;
     protected EaseMessageListItemStyle itemStyle;
 
-    private EaseChatRowActionCallback itemActionCallback;
+    protected EaseChatRowActionCallback itemActionCallback;
 
     public EaseChatRow(Context context, EMMessage message, int position, BaseAdapter adapter) {
         super(context);
