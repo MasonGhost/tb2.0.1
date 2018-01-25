@@ -76,6 +76,14 @@ public class EaseChatMessageList extends RelativeLayout{
         
         refreshSelectLast();
     }
+
+    /**
+     * 更新用户信息
+     */
+    public void refreshUserList(List<ChatUserInfoBean> userInfoBeans){
+        mUserInfoBeans = userInfoBeans;
+        messageAdapter.refreshUserList(mUserInfoBeans);
+    }
     
     protected void parseStyle(Context context, AttributeSet attrs) {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.EaseChatMessageList);

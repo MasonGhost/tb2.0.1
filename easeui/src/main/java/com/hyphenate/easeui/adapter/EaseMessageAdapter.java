@@ -100,6 +100,15 @@ public class EaseMessageAdapter extends BaseAdapter{
 		this.conversation = EMClient.getInstance().chatManager().getConversation(username, EaseCommonUtils.getConversationType(chatType), true);
 	}
 
+	/**
+	 * 更新用户信息
+	 */
+	public void refreshUserList(List<ChatUserInfoBean> userInfoBeans){
+		for (ChatUserInfoBean chatUserInfoBean : userInfoBeans){
+			mUserInfoBeanSparseArray.put(chatUserInfoBean.getUser_id().intValue(), chatUserInfoBean);
+		}
+	}
+
 	Handler handler = new Handler() {
 		private void refreshList() {
 			// you should not call getAllMessages() in UI thread

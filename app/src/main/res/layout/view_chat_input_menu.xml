@@ -71,6 +71,7 @@
                     android:id="@+id/et_sendmessage"
                     style="@style/style_edit_bg_line"
                     android:hint="@string/default_input_hint"
+                    android:maxLength="255"
                     android:imeOptions="actionSend"/>
 
             <RelativeLayout

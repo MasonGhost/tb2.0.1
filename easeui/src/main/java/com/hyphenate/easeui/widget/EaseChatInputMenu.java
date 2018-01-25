@@ -7,6 +7,7 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -190,8 +191,10 @@ public class EaseChatInputMenu extends LinearLayout {
 
             @Override
             public void onSendBtnClicked(String content) {
-                if (listener != null)
+                // 不能发送空内容
+                if (listener != null && !TextUtils.isEmpty(content.trim())){
                     listener.onSendMessage(content);
+                }
             }
 
             @Override

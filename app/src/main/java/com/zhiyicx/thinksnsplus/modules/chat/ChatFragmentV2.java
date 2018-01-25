@@ -24,6 +24,7 @@ import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
+import com.hyphenate.easeui.bean.ChatVerifiedBean;
 import com.hyphenate.easeui.ui.EaseChatFragment;
 import com.hyphenate.easeui.ui.EaseGroupListener;
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
@@ -38,6 +39,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.chat.call.VideoCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.call.VoiceCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.info.ChatInfoActivity;
@@ -62,6 +64,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.hyphenate.easeui.EaseConstant.EXTRA_CHAT_TYPE;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_ADD_MEMBER;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_REMOVE_MEMBER;
 import static com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig.MESSAGE_CHAT_MEMBER_LIST;
 
 /**
@@ -455,15 +459,58 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     }
 
     @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_DELETE_QUIT)
-    public void deleteGroup(String id){
+    public void deleteGroup(String id) {
         getActivity().finish();
     }
 
     @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_GROUP_CREATE_FROM_SINGLE)
-    public void closeCurrent(ChatGroupBean chatGroupBean){
-        if (!chatGroupBean.getIm_group_id().equals(toChatUsername)){
+    public void closeCurrent(ChatGroupBean chatGroupBean) {
+        if (!chatGroupBean.getIm_group_id().equals(toChatUsername)) {
             getActivity().finish();
         }
     }
 
+    @Subscriber(tag = EVENT_IM_GROUP_REMOVE_MEMBER)
+    public void onGroupMemberRemoved(Bundle bundle) {
+        List<UserInfoBean> removedList = bundle.getParcelableArrayList(EVENT_IM_GROUP_REMOVE_MEMBER);
+        if (removedList == null) {
+            return;
+        }
+        List<ChatUserInfoBean> originalList = new ArrayList<>();
+        originalList.addAll(mUserInfoBeans);
+        for (int i = 0; i < removedList.size(); i++) {
+            for (ChatUserInfoBean userInfoBean : mUserInfoBeans) {
+                if (removedList.get(i).getUser_id().equals(userInfoBean.getUser_id())) {
+                    originalList.remove(userInfoBean);
+                    break;
+                }
+            }
+        }
+        messageList.refreshUserList(originalList);
+    }
+
+    @Subscriber(tag = EVENT_IM_GROUP_ADD_MEMBER)
+    public void onGroupMemberAdded(Bundle bundle) {
+        List<UserInfoBean> addedList = bundle.getParcelableArrayList(EVENT_IM_GROUP_ADD_MEMBER);
+        if (addedList == null) {
+            return;
+        }
+        for (UserInfoBean userInfoBean : addedList) {
+            ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
+            chatUserInfoBean.setUser_id(userInfoBean.getUser_id());
+            chatUserInfoBean.setSex(userInfoBean.getSex());
+            chatUserInfoBean.setName(userInfoBean.getName());
+            chatUserInfoBean.setAvatar(userInfoBean.getAvatar());
+            if (userInfoBean.getVerified() != null){
+                ChatVerifiedBean chatVerifiedBean = new ChatVerifiedBean();
+                chatVerifiedBean.setType(userInfoBean.getVerified().getType());
+                chatVerifiedBean.setStatus(userInfoBean.getVerified().getStatus());
+                chatVerifiedBean.setIcon(userInfoBean.getVerified().getIcon());
+                chatVerifiedBean.setDescription(userInfoBean.getVerified().getDescription());
+                chatUserInfoBean.setVerified(chatVerifiedBean);
+            }
+            mUserInfoBeans.add(chatUserInfoBean);
+        }
+        messageList.refreshUserList(mUserInfoBeans);
+    }
 }

@@ -202,13 +202,13 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                 break;
             case R.id.ll_group_portrait:
                 // 修改群头像
-                if (mChatType == ChatConfig.CHATTYPE_GROUP) {
+                if (mChatType == ChatConfig.CHATTYPE_GROUP && mPresenter.isGroupOwner()) {
                     mPhotoPopupWindow.show();
                 }
                 break;
             case R.id.ll_group_name:
                 // 修改群名称
-                if (mChatType == ChatConfig.CHATTYPE_GROUP) {
+                if (mChatType == ChatConfig.CHATTYPE_GROUP && mPresenter.isGroupOwner()) {
                     Intent intentName = new Intent(getContext(), EditGroupNameActivity.class);
                     Bundle bundleName = new Bundle();
                     bundleName.putString(GROUP_ORIGINAL_NAME, mChatGroupBean.getName());
