@@ -60,8 +60,10 @@ public class EditGroupNameFragment extends TSFragment<EditGroupNameContract.Pres
     private void checkButtonClickable(){
         if (TextUtils.isEmpty(mNewName) || mNewName.length() < GROUP_NAME_MIN_LENGTH ){
             mToolbarRight.setClickable(false);
+            mToolbarRight.setTextColor(getColor(R.color.normal_for_disable_button_text));
         } else {
             mToolbarRight.setClickable(true);
+            mToolbarRight.setTextColor(getColor(R.color.themeColor));
         }
     }
 
