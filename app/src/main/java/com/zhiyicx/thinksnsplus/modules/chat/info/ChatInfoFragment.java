@@ -7,6 +7,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -352,16 +353,24 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
 
     @Override
     public void createGroupSuccess(ChatGroupBean chatGroupBean) {
-        // 点击跳转聊天
-        Intent to = new Intent(getContext(), ChatActivityV2.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(EaseConstant.EXTRA_USER_ID, chatGroupBean.getIm_group_id());
-        bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_GROUP);
-        bundle.putParcelableArrayList(ChatConfig.MESSAGE_CHAT_MEMBER_LIST,
-                (ArrayList<? extends Parcelable>) mUserInfoBeans);
-        to.putExtra(BUNDLE_CHAT_DATA, bundle);
-        startActivity(to);
-        getActivity().finish();
+        String id = !TextUtils.isEmpty(chatGroupBean.getIm_group_id()) ?
+                chatGroupBean.getIm_group_id() : chatGroupBean.getId();
+        if (EMClient.getInstance().groupManager().getGroup(id) == null){
+            // 不知道为啥 有时候获取不到群组对象
+            showSnackErrorMessage("创建失败");
+        } else {
+            // 点击跳转聊天
+            Intent to = new Intent(getContext(), ChatActivityV2.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(EaseConstant.EXTRA_USER_ID, id);
+            bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_GROUP);
+            bundle.putParcelableArrayList(ChatConfig.MESSAGE_CHAT_MEMBER_LIST,
+                    (ArrayList<? extends Parcelable>) mUserInfoBeans);
+            to.putExtra(BUNDLE_CHAT_DATA, bundle);
+            startActivity(to);
+            getActivity().finish();
+        }
+
     }
 
     @Override

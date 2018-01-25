@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMGroup;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.jakewharton.rxbinding.view.RxView;
@@ -259,7 +260,11 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
         if (type == EMConversation.EMConversationType.Chat) {
             EMClient.getInstance().chatManager().getConversation(id, type, true);
         } else {
-            EMClient.getInstance().groupManager().getGroup(id);
+            EMGroup group = EMClient.getInstance().groupManager().getGroup(id);
+            if (group == null){
+                showSnackErrorMessage("创建失败");
+            }
+            return;
         }
         Intent to = new Intent(getActivity(), ChatActivityV2.class);
         Bundle bundle = new Bundle();

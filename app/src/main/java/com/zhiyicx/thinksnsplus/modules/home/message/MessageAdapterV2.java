@@ -164,7 +164,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                 holder.setText(R.id.tv_content, content);
             }
         }
-        if (messageItemBean.getConversation().getLastMessage().getMsgTime() == 0) {
+        if (messageItemBean.getConversation().getLastMessage() == null || messageItemBean.getConversation().getLastMessage().getMsgTime() == 0) {
             holder.setText(R.id.tv_time, "");
         } else {
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(messageItemBean.getConversation().getLastMessage().getMsgTime()));

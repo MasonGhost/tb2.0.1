@@ -10,6 +10,7 @@ import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.bean.ChatVerifiedBean;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -145,7 +146,8 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
             mRootView.createConversionResult(getChatUser(list), EMConversation.EMConversationType.Chat, EaseConstant.CHATTYPE_SINGLE, id);
         } else {
             // 创建群组会话
-            String groupName = list.get(0).getName() + "、" + list.get(1).getName();
+            String groupName = String.format(mContext.getString(R.string.chat_group_name_default), list.size());
+            // 群简介并没有地方展示 随便写写啦
             String groupIntro = "暂无";
             StringBuilder members = new StringBuilder();
             for (UserInfoBean userInfoBean : list) {
