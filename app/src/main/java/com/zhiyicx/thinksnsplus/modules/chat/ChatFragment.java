@@ -149,7 +149,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                     LogUtils.i(TAG + "---RxView   " + aBoolean);
                     if (aBoolean) {
                         if (!mKeyboradIsOpen && mMessageItemBean.getConversation() != null) {// 如果对话没有创建，不做处理
-                            mMessageList.scrollToBottom();
+                            scrollToBottom();
                         }
                         mKeyboradIsOpen = true;
                     } else {
@@ -265,7 +265,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
             mDatas.remove(chatItemBean);
         }
         mDatas.add(chatItemBean);
-        mMessageList.scrollToBottom();
+        scrollToBottom();
     }
 
     @Override
@@ -323,7 +323,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
             mMessageList.post(new Runnable() {
                 @Override
                 public void run() {
-                    mMessageList.scrollToBottom();
+                    scrollToBottom();
 
                 }
             });
@@ -363,6 +363,10 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         mMessageList.init(mMessageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat ? mMessageItemBean.getUserInfo()
                         .getName() : getString(R.string.default_message_group)
                 , mMessageItemBean.getConversation().getType(), mDatas);
+        scrollToBottom();
+    }
+    @Override
+    public void scrollToBottom() {
         mMessageList.scrollToBottom();
     }
 
