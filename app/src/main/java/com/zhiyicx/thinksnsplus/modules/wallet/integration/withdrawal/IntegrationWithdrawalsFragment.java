@@ -173,6 +173,8 @@ public class IntegrationWithdrawalsFragment extends TSFragment<IntegrationWithdr
                             Intent intent = new Intent(mActivity, WalletRuleActivity.class);
                             Bundle bundle = new Bundle();
                             bundle.putString(WalletRuleFragment.BUNDLE_RULE, mIntegrationConfigBean.getCashrule());
+                            bundle.putString(WalletRuleFragment.BUNDLE_TITLE, getResources().getString(R.string.integration_withdrawals_rule));
+
                             intent.putExtras(bundle);
                             startActivity(intent);
                         }

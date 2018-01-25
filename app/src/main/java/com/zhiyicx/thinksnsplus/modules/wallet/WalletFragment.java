@@ -158,6 +158,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         Intent intent = new Intent(getActivity(), WalletRuleActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(WalletRuleFragment.BUNDLE_RULE, mPresenter.getTipPopRule());
+        bundle.putString(WalletRuleFragment.BUNDLE_TITLE, getString(R.string.recharge_and_withdraw_rule));
         intent.putExtras(bundle);
         startActivity(intent);
     }

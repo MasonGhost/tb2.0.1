@@ -190,6 +190,7 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
         val intent = Intent(activity, WalletRuleActivity::class.java)
         val bundle = Bundle()
         bundle.putString(WalletRuleFragment.BUNDLE_RULE, mPresenter.tipPopRule)
+        bundle.putString(WalletRuleFragment.BUNDLE_TITLE,getString(R.string.integration_rule) )
         intent.putExtras(bundle)
         startActivity(intent)
     }

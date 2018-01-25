@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.rule;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,12 +19,14 @@ import butterknife.BindView;
  */
 public class WalletRuleFragment extends TSFragment {
     public static final String BUNDLE_RULE = "RULE";
+    public static final String BUNDLE_TITLE = "TITLE";
 
 
     @BindView(R.id.tv_content)
     TextView mTvContent;
 
     private String mRule = "";
+    private String mTitle = "";
 
     private CenterInfoPopWindow mRulePop;// 充值提示规则选择弹框
 
@@ -55,8 +58,12 @@ public class WalletRuleFragment extends TSFragment {
     protected void initView(View rootView) {
         if (getArguments() != null) {
             mRule = getArguments().getString(BUNDLE_RULE);
+            mTitle = getArguments().getString(BUNDLE_TITLE);
         }
         mTvContent.setText(mRule);
+        if (!TextUtils.isEmpty(mTitle)) {
+            setCenterText(mTitle);
+        }
     }
 
     @Override

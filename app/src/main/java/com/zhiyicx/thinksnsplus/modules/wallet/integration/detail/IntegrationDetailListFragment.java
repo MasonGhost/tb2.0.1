@@ -186,6 +186,7 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
                         if (mIntegrationConfigBean != null) {
                             Bundle bundle = new Bundle();
                             bundle.putString(WalletRuleFragment.BUNDLE_RULE, mIntegrationConfigBean.getRechargerule());
+                            bundle.putString(WalletRuleFragment.BUNDLE_TITLE, getResources().getString(R.string.integration_rule));
                             intent.putExtras(bundle);
                         }
                         startActivity(intent);
