@@ -103,6 +103,7 @@ public class QuestionDetailContent extends FrameLayout {
         mTvQuestionContent.setStateShrink();
         String content = questionDetail.getBody();
         String preContent = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, questionDetail.getBody()); // 预览的文字
+        preContent = preContent.replaceAll("[^u4e00-u9fa5]", "");// 去掉所有 非汉字内容
         List<ImageBean> list = new ArrayList<>();
         Pattern pattern = Pattern.compile(IMAGE_FORMAT);
         Matcher matcher = pattern.matcher(content);
@@ -129,7 +130,19 @@ public class QuestionDetailContent extends FrameLayout {
             mMdvQuestionContent.setVisibility(GONE);
             mLlContentPreview.setVisibility(VISIBLE);
         }
+        mTvQuestionContent.setExpandListener(new ExpandableTextView.OnExpandListener() {
+            @Override
+            public void onExpand(ExpandableTextView view) {
+                // 展开后 隐藏内容，显示图文混排内容
+                mLlContentPreview.setVisibility(GONE);
+                mMdvQuestionContent.setVisibility(VISIBLE);
+            }
 
+            @Override
+            public void onShrink(ExpandableTextView view) {
+
+            }
+        });
         dealContent(content, list);
         if (list.size() > 0) {
             // 如果有图片 那么显示封面
@@ -152,19 +165,7 @@ public class QuestionDetailContent extends FrameLayout {
             mTvQuestionContent.setMaxLinesOnShrink(1);
             mTvQuestionContent.setText(preContent);
             dealPreContent(mTvQuestionContent);
-            mTvQuestionContent.setExpandListener(new ExpandableTextView.OnExpandListener() {
-                @Override
-                public void onExpand(ExpandableTextView view) {
-                    // 展开后 隐藏内容，显示图文混排内容
-                    mLlContentPreview.setVisibility(GONE);
-                    mMdvQuestionContent.setVisibility(VISIBLE);
-                }
 
-                @Override
-                public void onShrink(ExpandableTextView view) {
-
-                }
-            });
 
 //            if (mTvQuestionContent.getCurrState() == ExpandableTextView.STATE_EXPAND) {
 //                // 展开后 隐藏内容，显示图文混排内容
@@ -173,7 +174,7 @@ public class QuestionDetailContent extends FrameLayout {
 //            }
         } else {
             mItemInfoImage.setVisibility(GONE);
-            mTvQuestionContent.setText(content);
+            mTvQuestionContent.setText(preContent);
             // 此时如果正文不超过3排，那么，直接显示markdown内容就行了。
             int lineCount = mTvQuestionContent.getTextLineCount();
             mTvQuestionContent.setVisibility(lineCount < 4 ? GONE : VISIBLE);
@@ -189,6 +190,7 @@ public class QuestionDetailContent extends FrameLayout {
      */
     private void dealContent(String content, List<ImageBean> list) {
         mMdvQuestionContent.addStyleSheet(MarkDownRule.generateStandardStyle());
+        content = content.replaceAll(MarkdownConfig.HTML_FORMAT, "");
         mMdvQuestionContent.loadMarkdown(content);
         mMdvQuestionContent.setWebViewClient(new WebViewClient() {
             @Override
