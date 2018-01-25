@@ -2,9 +2,11 @@
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/chat_detail_input_menu_height"
+        android:layout_height="wrap_content"
         android:paddingBottom="@dimen/spacing_mid_small"
         android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:minHeight="@dimen/chat_detail_input_menu_height"
         android:background="@color/input_view_bg_color">
 
     <View
