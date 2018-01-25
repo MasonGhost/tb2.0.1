@@ -112,8 +112,9 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                     }
                 }
             }
+            EMMessage message = messageItemBean.getConversation().getLastMessage();
+            // 根据发送状态设置是否有失败icon
             if (messageItemBean.getConversation().getLastMessage().status() == EMMessage.Status.FAIL) {
-                holder.setText(R.id.tv_content, holder.getConvertView().getResources().getString(R.string.send_fail));
                 holder.getTextView(R.id.tv_content).setCompoundDrawablePadding(mContext.getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.spacing_small));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     holder.getTextView(R.id.tv_content).setCompoundDrawablesRelative(UIUtils.getCompoundDrawables(mContext, R.mipmap.msg_box_remind), null, null, null);
@@ -126,43 +127,42 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                 } else {
                     holder.getTextView(R.id.tv_content).setCompoundDrawables(null, null, null, null);
                 }
-                EMMessage message = messageItemBean.getConversation().getLastMessage();
-                String content = "";
-                switch (message.getType()){
-                    case TXT:
-                        // 文字聊天展示聊天内容
-                        content = messageItemBean.getConversation().isGroup() ? lastUserName + ": "
-                                + ((EMTextMessageBody) message.getBody()).getMessage() : ((EMTextMessageBody) message.getBody()).getMessage();
-                        break;
-                    case IMAGE:
-                        // 图片聊天 展示[图片]
-                        content = messageItemBean.getConversation().isGroup() ? lastUserName + ": "
-                                + mContext.getString(R.string.chat_type_image) :mContext.getString(R.string.chat_type_image);
-                        break;
-                    case VOICE:
-                        // 语音聊天 展示[语音]
-                        content = messageItemBean.getConversation().isGroup() ? lastUserName + ": "
-                                + mContext.getString(R.string.chat_type_voice) :mContext.getString(R.string.chat_type_voice);
-                        break;
-                    case VIDEO:
-                        // 视频聊天 展示[视频]
-                        content = messageItemBean.getConversation().isGroup() ? lastUserName + ": "
-                                + mContext.getString(R.string.chat_type_video) :mContext.getString(R.string.chat_type_video);
-                        break;
-                    case LOCATION:
-                        // 位置消息 展示[位置]
-                        content = messageItemBean.getConversation().isGroup() ? lastUserName + ": "
-                                + mContext.getString(R.string.chat_type_location) :mContext.getString(R.string.chat_type_location);
-                        break;
-                    case FILE:
-                        // 文件消息 展示[文件]
-                        content = messageItemBean.getConversation().isGroup() ? lastUserName + ": "
-                                + mContext.getString(R.string.chat_type_file) :mContext.getString(R.string.chat_type_file);
-                        break;
-                    default:
-                }
-                holder.setText(R.id.tv_content, content);
             }
+            String content = "";
+            switch (message.getType()){
+                case TXT:
+                    // 文字聊天展示聊天内容
+                    content = messageItemBean.getConversation().isGroup() ? lastUserName + ": "
+                            + ((EMTextMessageBody) message.getBody()).getMessage() : ((EMTextMessageBody) message.getBody()).getMessage();
+                    break;
+                case IMAGE:
+                    // 图片聊天 展示[图片]
+                    content = messageItemBean.getConversation().isGroup() ? lastUserName + ": "
+                            + mContext.getString(R.string.chat_type_image) :mContext.getString(R.string.chat_type_image);
+                    break;
+                case VOICE:
+                    // 语音聊天 展示[语音]
+                    content = messageItemBean.getConversation().isGroup() ? lastUserName + ": "
+                            + mContext.getString(R.string.chat_type_voice) :mContext.getString(R.string.chat_type_voice);
+                    break;
+                case VIDEO:
+                    // 视频聊天 展示[视频]
+                    content = messageItemBean.getConversation().isGroup() ? lastUserName + ": "
+                            + mContext.getString(R.string.chat_type_video) :mContext.getString(R.string.chat_type_video);
+                    break;
+                case LOCATION:
+                    // 位置消息 展示[位置]
+                    content = messageItemBean.getConversation().isGroup() ? lastUserName + ": "
+                            + mContext.getString(R.string.chat_type_location) :mContext.getString(R.string.chat_type_location);
+                    break;
+                case FILE:
+                    // 文件消息 展示[文件]
+                    content = messageItemBean.getConversation().isGroup() ? lastUserName + ": "
+                            + mContext.getString(R.string.chat_type_file) :mContext.getString(R.string.chat_type_file);
+                    break;
+                default:
+            }
+            holder.setText(R.id.tv_content, content);
         }
         if (messageItemBean.getConversation().getLastMessage() == null || messageItemBean.getConversation().getLastMessage().getMsgTime() == 0) {
             holder.setText(R.id.tv_time, "");
