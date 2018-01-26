@@ -23,6 +23,8 @@ public class IntegrationConfigBean implements Serializable {
      * recharge-max	int	单笔最高充值额度
      * recharge-min	int	单笔最小充值额度
      * rule	string	积分规则
+     * cash-min
+     * cash-max
      */
 
     @SerializedName("recharge-ratio")
@@ -33,12 +35,16 @@ public class IntegrationConfigBean implements Serializable {
     private long rechargemax;
     @SerializedName("recharge-min")
     private int rechargemin;
+    @SerializedName("cash-max")
+    private long cashmax;
+    @SerializedName("cash-min")
+    private int cashmin;
+
     private String rule;
     @SerializedName("cash-rule")
     private String cashrule;
     @SerializedName("recharge-rule")
     private String rechargerule;
-
 
 
     @Convert(converter = StringArrayConvert.class, columnType = String.class)
@@ -120,6 +126,22 @@ public class IntegrationConfigBean implements Serializable {
         this.rechargerule = rechargerule;
     }
 
+    public long getCashmax() {
+        return cashmax;
+    }
+
+    public void setCashmax(long cashmax) {
+        this.cashmax = cashmax;
+    }
+
+    public int getCashmin() {
+        return cashmin;
+    }
+
+    public void setCashmin(int cashmin) {
+        this.cashmin = cashmin;
+    }
+
     @Override
     public String toString() {
         return "IntegrationConfigBean{" +
@@ -127,6 +149,8 @@ public class IntegrationConfigBean implements Serializable {
                 ", rechargeoptions='" + rechargeoptions + '\'' +
                 ", rechargemax=" + rechargemax +
                 ", rechargemin=" + rechargemin +
+                ", cashmax=" + cashmax +
+                ", cashmin=" + cashmin +
                 ", rule='" + rule + '\'' +
                 ", cashrule='" + cashrule + '\'' +
                 ", rechargerule='" + rechargerule + '\'' +

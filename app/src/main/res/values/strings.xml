@@ -942,11 +942,14 @@
     <string name="input_withdrawals_integration">输入需提取的积分</string>
     <string name="input_withdrawals_integration_tip">提取积分须提交官方审核，审核反馈请关注系统消息！</string>
     <string name="et_input_withdrawals_integration_tip">请至少提取100积分</string>
+    <string name="et_input_withdrawals_integration_tip_format">请至少提取%d积分</string>
     <string name="integration_withdrawals_rule">积分提取规则</string>
-    <string name="integration_2_money_ratio_formart">%1$d积分=%2$d元</string>
+    <string name="integration_2_money_ratio_formart">%1$d积分=%2$.2f元</string>
     <string name="integration_withdrawals_report_success">积分提取请求已提交，待审核！</string>
     <string name="please_more_than_min_recharge_formart">最少充值%.2f元</string>
     <string name="please_less_min_recharge_formart">最多充值%.2f元</string>
+    <string name="please_more_than_min_withdrawals_formart">最低每次提取%d积分</string>
+    <string name="please_less_max_withdrawals_formart">单笔最高积分为%d</string>
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>
         <item>提取记录</item>

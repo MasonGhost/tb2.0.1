@@ -58,7 +58,7 @@ public class IntegrationWithdrawalsFragment extends TSFragment<IntegrationWithdr
 
     public static final String BUNDLE_DATA = "data";
 
-    @BindView(R.id.tv_recharge_ratio)
+    @BindView(R.id.tv_ratio)
     TextView mTvMineIntegration;
     @BindView(R.id.tv_recharge_rule)
     TextView mTvRechargeRule;
@@ -140,7 +140,6 @@ public class IntegrationWithdrawalsFragment extends TSFragment<IntegrationWithdr
         mTvToolbarCenter.setText(getString(R.string.integration_withdrawals));
         mTvToolbarRight.setText(getString(R.string.withdrawals_record));
         mTvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.topbar_back_white), null, null, null);
-
         initListener();
     }
 
@@ -152,9 +151,21 @@ public class IntegrationWithdrawalsFragment extends TSFragment<IntegrationWithdr
         if (mIntegrationConfigBean == null) {
             return;
         }
+        mEtInput.setHint(getString(R.string.et_input_withdrawals_integration_tip_format, mIntegrationConfigBean.getCashmin()));
+
         // 元对应的积分比例，服务器返回的是以分为单位的比例
-        mTvMineIntegration.setText(getString(R.string.integration_2_money_ratio_formart, mBaseRatioNum, (int)PayConfig.realCurrencyFen2Yuan(mBaseRatioNum /
-                mIntegrationConfigBean.getRechargeratio())));
+        setDynamicRatio(mBaseRatioNum);
+    }
+
+    /**
+     * 动态显示提取金额
+     *
+     * @param currentIntegration
+     */
+    private void setDynamicRatio(int currentIntegration) {
+        mTvMineIntegration.setText(getString(R.string.integration_2_money_ratio_formart, currentIntegration, PayConfig.realCurrencyFen2Yuan
+                ((float) currentIntegration /
+                        mIntegrationConfigBean.getRechargeratio())));
     }
 
     @Override
@@ -203,6 +214,14 @@ public class IntegrationWithdrawalsFragment extends TSFragment<IntegrationWithdr
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
+                    if (mRechargeMoney < mIntegrationConfigBean.getCashmin()) {
+                        showSnackErrorMessage(getString(R.string.please_more_than_min_withdrawals_formart, mIntegrationConfigBean.getCashmin()));
+                        return;
+                    }
+                    if (mRechargeMoney > mIntegrationConfigBean.getCashmax()) {
+                        showSnackErrorMessage(getString(R.string.please_less_max_withdrawals_formart, mIntegrationConfigBean.getCashmax()));
+                        return;
+                    }
                     setSureBtEnable(false);
                     mPresenter.integrationWithdrawals((int) mRechargeMoney);
                 });// 传入的是真实货币分单位
