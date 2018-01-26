@@ -25,7 +25,9 @@ import com.zhiyicx.thinksnsplus.modules.information.infochannel.ChannelActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.infosearch.SearchActivity;
-import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.information.publish.detail.EditeInfoDetailActivity;
+
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
 
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
 
@@ -116,7 +118,7 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
                     && publishInfoConfig.hasPay())) {
                 mPayAlertPopWindow.show();
             } else {
-                startActivity(new Intent(getActivity(), PublishInfoActivity.class));
+                startActivity(new Intent(getActivity(), EditeInfoDetailActivity.class));
             }
         } else {
             mCertificationAlertPopWindow.show();
@@ -285,7 +287,7 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
                     .item6ClickListener(() -> {
                         mPayAlertPopWindow.hide();
                         mPresenter.savePayTip(false);
-                        startActivity(new Intent(getActivity(), PublishInfoActivity.class));
+                        startActivity(new Intent(getActivity(), EditeInfoDetailActivity.class));
                     })
                     .build();
         }

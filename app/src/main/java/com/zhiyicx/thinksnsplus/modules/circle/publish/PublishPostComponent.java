@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail;
+package com.zhiyicx.thinksnsplus.modules.circle.publish;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
@@ -8,11 +8,11 @@ import dagger.Component;
 
 /**
  * @Author Jliuer
- * @Date 2017/07/26/16:08
+ * @Date 2018/01/23/16:14
  * @Email Jliuer@aliyun.com
  * @Description
  */
 @FragmentScoped
-@Component(dependencies = AppComponent.class,modules = PublishContentPresenterModule.class)
-public interface PublishContentComponent extends InjectComponent<PublishContentActivity>{
+@Component(modules = PublishPostPresenterModule.class, dependencies = AppComponent.class)
+public interface PublishPostComponent extends InjectComponent<PublishPostActivity> {
 }

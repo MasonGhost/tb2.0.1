@@ -112,33 +112,4 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.V
                 });
     }
 
-    @Override
-    public void pareseBody(String body) {
-        Observable.just(body)
-                .flatMap(new Func1<String, Observable<String>>() {
-                    @Override
-                    public Observable<String> call(String s) {
-                        return Observable.from(RegexUtils.cutStringByImgTag(s));
-                    }
-                })
-                .onBackpressureBuffer()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doAfterTerminate(() -> mRootView.onPareseBodyEnd(true))
-                .subscribe(text -> {
-                    boolean isLast = text.contains("tym_last");
-                    text = text.replaceAll("tym_last", "");
-                    if (text.matches("[\\s\\S]*@!\\[\\S*][\\s\\S]*")) {
-                        int id = RegexUtils.getImageId(text);
-                        String imagePath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
-                        if (id > 0) {
-                            mRootView.addImageViewAtIndex(imagePath, id, text, isLast);
-                        } else {
-                            mRootView.showSnackErrorMessage("图片" + 1 + "已丢失，请重新插入！");
-                        }
-                    } else {
-                        mRootView.addEditTextAtIndex(text);
-                    }
-                });
-    }
 }

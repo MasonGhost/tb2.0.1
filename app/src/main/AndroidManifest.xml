@@ -274,20 +274,6 @@
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
 
-        <!-- 圈子相关页面 -->
-        <activity
-            android:name=".modules.circle.group_dynamic.GroupDynamicDetailActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name=".modules.circle.group_dynamic.dig_list.GroupDigListActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name=".modules.circle.mine.MyGroupActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-
         <!-- 问答相关 -->
         <activity
             android:name=".modules.q_a.qa_main.qa_container.QA_InfoContainerActivity"
@@ -451,15 +437,6 @@
             android:screenOrientation="behind">
         </activity>
 
-        <!-- 频道 -->
-        <activity
-            android:name=".modules.circle.list.ChannelListActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity
-            android:name=".modules.circle.detail.ChannelDetailActivity"
-            android:screenOrientation="portrait">
-        </activity>
         <activity
             android:name=".modules.collect.CollectListActivity"
             android:screenOrientation="portrait"/>
@@ -509,12 +486,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan">
         </activity>
-        <activity
-            android:name=".modules.q_a.publish.detail.PublishContentActivity"
-            android:hardwareAccelerated="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden">
-        </activity>
+
         <activity
             android:name=".modules.wallet.reward.RewardActivity"
             android:hardwareAccelerated="false"
@@ -522,12 +494,7 @@
         <activity
             android:name=".modules.wallet.reward.list.RewardListActivity"
             android:screenOrientation="portrait"/>
-        <!-- 资讯发布 -->
-        <activity
-            android:name=".modules.information.publish.PublishInfoActivity"
-            android:hardwareAccelerated="false"
-            android:screenOrientation="portrait">
-        </activity>
+
         <activity
             android:name=".modules.information.publish.addinfo.AddInfoActivity"
             android:screenOrientation="portrait"
@@ -546,11 +513,7 @@
             android:name=".modules.wallet.sticktop.StickTopActivity"
             android:hardwareAccelerated="false"
             android:screenOrientation="portrait"/>
-        <activity
-            android:name=".modules.q_a.answer.PublishAnswerActivity"
-            android:hardwareAccelerated="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
+
         <activity
             android:name=".modules.q_a.detail.answer.AnswerDetailsActivity"
             android:screenOrientation="portrait"
@@ -654,6 +617,13 @@
         <activity
             android:name=".modules.circle.publish.PublishPostActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".modules.circle.create.rule.RuleForCreateCircleActivity"
+                  android:screenOrientation="portrait"/>
+        <activity android:name=".modules.circle.manager.members.blacklist.BlackListActivity"
+                  android:screenOrientation="portrait"/>
+        <activity android:name=".modules.information.publish.detail.EditeInfoDetailActivity"/>
+        <activity android:name=".modules.q_a.publish.detail.EditeQuestionDetailActivity"/>
+        <activity android:name=".modules.q_a.answer.EditeAnswerDetailActivity"/>
         <activity
             android:name=".modules.circle.create.rule.RuleForCreateCircleActivity"
             android:screenOrientation="portrait"/>

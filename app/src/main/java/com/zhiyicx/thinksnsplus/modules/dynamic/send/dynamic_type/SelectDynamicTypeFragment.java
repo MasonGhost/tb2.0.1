@@ -27,7 +27,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
-import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.information.publish.detail.EditeInfoDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhiyicx.thinksnsplus.widget.IconTextView;
@@ -154,7 +154,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                     && mPublishInfoConfig.hasPay())) {
                 mPayAlertPopWindow.show();
             } else {
-                startActivity(new Intent(getActivity(), PublishInfoActivity.class));
+                startActivity(new Intent(getActivity(), EditeInfoDetailActivity.class));
             }
         } else {
             mCertificationAlertPopWindow.show();
@@ -342,7 +342,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                     .item6ClickListener(() -> {
                         mPayAlertPopWindow.hide();
                         mPresenter.savePayTip(false);
-                        startActivity(new Intent(getActivity(), PublishInfoActivity.class));
+                        startActivity(new Intent(getActivity(), EditeInfoDetailActivity.class));
                     })
                     .build();
         }

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus;
 
 import android.annotation.SuppressLint;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -140,6 +141,40 @@ public class JavaTest {
     }
 
     @Test
+    public void testCatchGroup() {
+        String src = "<span style=\"font-family: sans-serif;\">好刚刚给</span><div style=\"font-family: sans-serif;\">黄河鬼棺给</div><h1 style=\"font-family: sans-serif;\">好好奋斗是</h1><div style=\"font-family: sans-serif;\"><b><i>v刚发的的</i></b></div><div style=\"font-family: sans-serif;\"><b><i><strike>广告费多大的</strike></i></b></div><hr style=\"color: rgb(0, 0, 0);\"><div style=\"font-family: sans-serif;\"><br></div><h1 style=\"font-family: sans-serif;\">复方丹参</h1><div><br></div><div class=\"block\" contenteditable=\"false\">\n" +
+                "                                                                  \t\t\t\t<div class=\"img-block\">\n" +
+                "                                                                  \t\t\t\t\n" +
+                "                                                                  \t\t\t\t\n" +
+                "                                                                  \t\t\t\t<div class=\"delete\">\n" +
+                "                                                                  \t\t\t\t\t\n" +
+                "                                                                  \t\t\t\t\t<div class=\"tips\">图片上传失败，请点击重试</div>\n" +
+                "                                                                  \t\t\t\t\t<div class=\"markdown\">@![image](6104)</div>\n" +
+                "                                                                  \t\t\t\t</div></div>\n" +
+                "                                                                  \t\t\t\t\n" +
+                "                                                                  \t\t\t</div><h1><br></h1></div>";
+        String reg = MarkdownConfig.TEST_HTML_FORMAT;
+        Matcher matcher = Pattern.compile(reg).matcher(src);
+        String result = "";
+
+        while (matcher.find()) {
+            int count = matcher.groupCount();
+            for (int i = 0; i < count; i++) {
+                System.out.println("reg::" + i + ":::" + matcher.group(i));
+            }
+            String group2 = matcher.group(2);
+            String group3 = matcher.group(3);
+            if (TextUtils.isEmpty(group2)) {
+                result = src.replace(group2, "p");
+            }
+            if (TextUtils.isEmpty(group3)) {
+                result = result.replace(group3, "p");
+            }
+        }
+        System.out.println("result::" + result);
+    }
+
+    @Test
     public void testFilter() {
         String source = "http://ddd/";
         String urlRege = "^http://[\\s\\S]+";
@@ -215,19 +250,32 @@ public class JavaTest {
     @Test
     public void testContain() {
 
-        String str = "1号线@![image]号漕宝路";
-        String reg = "[\\s\\S]*@!\\[\\S*][\\s\\S]*";
-        if (str.matches(reg)) {
-            System.out.println("result1::" + str);
+//        String str = "1号线@![image]号漕宝路";
+//        String reg = "[\\s\\S]*@!\\[\\S*][\\s\\S]*";
+//        if (str.matches(reg)) {
+//            System.out.println("result1::" + str);
+//        }
+
+        String text = "ggfdd@![image](2537)dddd@![tym](2538)";
+
+        String reg1 = "@!(\\[(.*?)])\\(((\\d+))\\)";
+        Matcher matcher = Pattern.compile(reg1).matcher(text);
+
+
+        while (matcher.find()) {
+            int count = matcher.groupCount();
+            for (int i = 0; i < count; i++) {
+                System.out.println("reg1:::" + matcher.group(i));
+            }
         }
 
-        String text = "ggfdd@![image](2537)dddd@![image](2538)";
-        if (text.matches("\\.*@!\\[.*?]\\((\\d+)\\)\\.*")) {
-            int id = RegexUtils.getImageId(text);
-            String imagePath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
-            System.out.println("result1:id:" + id);
-            System.out.println("result2:imagePath:" + imagePath);
-        }
+
+//        if (text.matches("\\.*@!\\[.*?]\\((\\d+)\\)\\.*")) {
+//            int id = RegexUtils.getImageId(text);
+//            String imagePath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
+//            System.out.println("result1:id:" + id);
+//            System.out.println("result2:imagePath:" + imagePath);
+//        }
     }
 
     @Test

@@ -1,11 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.circle.publish;
 
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.modules.information.publish.DaggerPublishInfoComponent;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
-import com.zhiyicx.thinksnsplus.modules.markdown_editor.DaggerMarkdownComponent;
-import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownPresenterModule;
 
-public class PublishPostActivity extends BaseMarkdownActivity<PublishPostFragment> {
+public class PublishPostActivity extends BaseMarkdownActivity<PublishPostPresenter,PublishPostFragment> {
 
     @Override
     protected PublishPostFragment getYourFragment() {
@@ -14,10 +13,9 @@ public class PublishPostActivity extends BaseMarkdownActivity<PublishPostFragmen
 
     @Override
     protected void componentInject() {
-        DaggerMarkdownComponent
-                .builder()
+        DaggerPublishPostComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .markdownPresenterModule(new MarkdownPresenterModule(mContanierFragment))
+                .publishPostPresenterModule(new PublishPostPresenterModule(mContanierFragment))
                 .build().inject(this);
     }
 }

@@ -31,21 +31,21 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
-import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
-import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.publish.choose_circle.ChooseCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.publish.choose_circle.ChooseCircleFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 
 /**
  * @author Jliuer
@@ -53,9 +53,10 @@ import butterknife.BindView;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<MarkdownContract.Presenter> implements
+public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownContract.Presenter> extends TSFragment<P> implements
         SimpleRichEditor.OnEditorClickListener, PhotoSelectorImpl.IPhotoBackListener,
-        MarkdownContract.View, RichEditor.OnMarkdownWordResultListener, BottomMenu.BottomMenuVisibleChangeListener {
+        MarkdownContract.View<P>, RichEditor.OnMarkdownWordResultListener, RichEditor.OnImageDeleteListener,
+        BottomMenu.BottomMenuVisibleChangeListener, SimpleRichEditor.BottomMenuItemConfig {
 
     public static final String BUNDLE_SOURCE_DATA = "sourceId";
 
@@ -73,7 +74,13 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
     protected TextView mCircleName;
 
     /**
-     * 记录上传成功的照片 键值对：时间戳(唯一) -- 图片地址
+     * 编辑器加载完成后 再 装载 草稿，不然 js 调不起来
+     * 防止重复加载草稿
+     */
+    private boolean canLoadDraft = true;
+
+    /**
+     * 记录上传成功的照片 键值对：时间戳(唯一) <key-value> 图片地址
      */
     protected HashMap<Long, String> mInsertedImages;
 
@@ -152,7 +159,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
      * @param visible
      */
     @Override
-    public void onVisibleChange(boolean visible) {
+    public void onBottomMenuVisibleChange(boolean visible) {
 
     }
 
@@ -160,12 +167,9 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
      * 在这里初始化 编辑器
      */
     protected void editorPreLoad() {
-        Draft draft = getDraftData();
-        if (draft == null) {
+        mDraftBean = getDraftData();
+        if (mDraftBean == null) {
             mRichTextView.load();
-        } else {
-            loadDraft(draft);
-            restoreImageData();
         }
     }
 
@@ -187,6 +191,18 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
     }
 
     /**
+     * 返回 时 触发
+     *
+     * @param title
+     * @param markdwon
+     * @param noMarkdown
+     * @return 内容是否未空，触发保存草稿的条件之一
+     */
+    protected boolean contentIsNull(String title, String markdwon, String noMarkdown) {
+        return TextUtils.isEmpty(title + noMarkdown);
+    }
+
+    /**
      * 草稿内容
      *
      * @return
@@ -194,6 +210,41 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
     protected Draft getDraftData() {
         return null;
     }
+
+    /**
+     * 右上角 点击事件
+     *
+     * @return true：提取 markdown 内容，做发布准备，false：提取整个网页内容
+     */
+    protected boolean rightClickkNeedMarkdown() {
+        return true;
+    }
+
+    /**
+     * 左上角 点击事件
+     *
+     * @return true, 提取 markdown 内容，做发布准备
+     */
+    protected boolean leftClickNeedMarkdown() {
+        return false;
+    }
+
+    /**
+     * 解析 markdown 为 html
+     */
+    protected void pareseBodyResult() {
+
+    }
+
+    /**
+     * 设置内容的默认文字，仅支持问答部分修改，待完善中
+     *
+     * @return
+     */
+    protected String setInputInitText() {
+        return getString(R.string.circle_post_default_title);
+    }
+
 
     /**
      * 点击 来自 xxx ，可以跳转到相应圈子
@@ -218,6 +269,16 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
         }
     }
 
+    /**
+     * 控制是否显示 设置（底部菜单）
+     *
+     * @return
+     */
+    @Override
+    public boolean needSetting() {
+        return true;
+    }
+
     @Override
     protected String setRightTitle() {
         return getString(R.string.publish);
@@ -239,7 +300,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
         if (!preHandlePublish()) {
             return;
         }
-        mRichTextView.getResultWords(true);
+        mRichTextView.getResultWords(rightClickkNeedMarkdown());
     }
 
     /**
@@ -259,7 +320,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
             }
             handlePublish(title, markdwon, noMarkdown);
         } else {
-            boolean canSaveDraft = !TextUtils.isEmpty(title + noMarkdown);
+            boolean canSaveDraft = !contentIsNull(title, markdwon, noMarkdown);
             if (!canSaveDraft || !openDraft()) {
                 mActivity.finish();
                 return;
@@ -267,6 +328,12 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
             initEditWarningPop(title, markdwon, noMarkdown);
             DeviceUtils.hideSoftKeyboard(mActivity.getApplication(), mRichTextView);
         }
+    }
+
+    @Override
+    public void onImageDelete(long tagId) {
+        mInsertedImages.remove(tagId);
+        mFailedImages.remove(tagId);
     }
 
     protected String getImageIds() {
@@ -292,8 +359,6 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
         mFailedImages = new HashMap<>();
         mImages = new ArrayList<>();
 
-        editorPreLoad();
-
         initListener();
     }
 
@@ -304,15 +369,19 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
+
+        editorPreLoad();
     }
 
     @Override
     public void onBackPressed() {
-        mRichTextView.getResultWords(false);
+        mRichTextView.getResultWords(leftClickNeedMarkdown());
     }
+
 
     protected void initListener() {
         mRichTextView.setOnEditorClickListener(this);
+        mRichTextView.setOnImageDeleteListener(this);
         mRichTextView.setOnTextLengthChangeListener(length -> {
 
         });
@@ -349,6 +418,11 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
     }
 
     @Override
+    public void onSettingImageButtionClick() {
+
+    }
+
+    @Override
     public void onLinkClick(String name, String url) {
         showLinkDialog(LinkDialog.createLinkDialog(name, url), true);
     }
@@ -369,10 +443,24 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
         setSynToDynamicCbVisiable(!isSelect);
     }
 
+    /**
+     * 编辑器加载完成
+     *
+     * @param ready
+     */
     @Override
-    public void onInputListener(int length) {
-        mContentLength = length;
-        setRightClickable(length > 0);
+    public void onAfterInitialLoad(boolean ready) {
+        if (mDraftBean != null && ready && canLoadDraft) {
+            loadDraft(mDraftBean);
+            restoreImageData();
+            canLoadDraft = false;
+        }
+    }
+
+    @Override
+    public void onInputListener(int titleLength, int contentLength) {
+        mContentLength = titleLength * contentLength;
+        setRightClickable(mContentLength > 0);
     }
 
     protected void setRightClickable(boolean clickable) {
@@ -425,13 +513,6 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
     }
 
     @Override
-    public void sendPostSuccess(CirclePostListBean data) {
-        CirclePostDetailActivity.startActivity(getActivity(), data.getGroup_id(), data.getId(),
-                false, canGotoCircle());
-        getActivity().finish();
-    }
-
-    @Override
     public void onFailed(String filePath, long id) {
         getActivity().runOnUiThread(() -> {
             mRichTextView.setImageFailed(id);
@@ -450,7 +531,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
     /**
      * 初始化图片选择弹框
      */
-    private void initPhotoPopupWindow() {
+    protected void initPhotoPopupWindow() {
 
         if (mPhotoPopupWindow != null) {
             mPhotoPopupWindow.show();
@@ -568,6 +649,73 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
         } else if (mFailedImages.containsKey(id)) {
             mFailedImages.remove(id);
         }
+    }
+
+    protected String pareseBody(String body) {
+        String result;
+        String reg = "@!(\\[(.*?)])\\(((\\d+))\\)";
+        String replace = "-星星-tym-星星-";
+        Matcher matcher = Pattern.compile(reg).matcher(body);
+        result = body.replaceAll(MarkdownConfig.IMAGE_FORMAT, replace);
+        while (matcher.find()) {
+            String name = matcher.group(2);
+            int id = Integer.parseInt(matcher.group(3));
+            mImages.add(id);
+            long tagId = SystemClock.currentThreadTimeMillis();
+            String imagePath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
+            mInsertedImages.put(tagId, imagePath);
+            result = result.replaceFirst(replace, getImageHtml(tagId, id, name, imagePath));
+        }
+        pareseBodyResult();
+        return result;
+    }
+
+    protected String getImageHtml(long tagId, int id, String name, String imagePath) {
+        String markdown = "@![" + name + "](" + id + ")";
+        return "<div><br></div>" +
+                "<div class=\"block\" contenteditable=\"false\">" +
+                "   <div class=\"img-block\">" +
+                "       <div style=\"width: 100% \" class=\"process\">" +
+                "           <div class=\"fill\"></div>" +
+                "       </div>" +
+                "       <img class=\"images\" data-id=\"" + tagId + "\" style=\"width: 100% ; height: auto\"" +
+                "           src=\"" + imagePath + "\">" +
+                "       <div class=\"cover\" style=\"width: 100% ; height: auto\"></div>" +
+                "       <div class=\"delete\">" +
+                "           <img class=\"error\" src=\"./reload.png\">" +
+                "           <div class=\"tips\">图片上传失败，请点击重试</div>" +
+                "           <div class=\"markdown\">" + markdown + "</div>" +
+                "       </div>" +
+                "   </div>" +
+                "   <input class=\"dec\" type=\"text\" placeholder=\"请输入图片名字\">" +
+                "</div>" +
+                "<div><br></div>";
+
+    }
+
+    protected String getHtml(String title, String content) {
+        onInputListener(title.length(), content.length());
+        return "<!DOCTYPE html>\n" +
+                "<html lang=\"en\">\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "    <meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\">\n" +
+                "    <title>Zhiyicx</title>\n" +
+                "    <link rel=\"stylesheet\" href=\"./index.css\">\n" +
+                "</head>\n" +
+                "<body contenteditable=\"false\">\n" +
+                "    <div class=\"content\" contenteditable=\"false\" id=\"content\">\n" +
+                "        <header>\n" +
+                "            <div class=\"title\" title-placeholder=\"请输入标题\" id=\"title\" contenteditable=\"true\">" + title + "</div>\n" +
+                "            <span id=\"stay\" style=\"display: none;text-align:right\"><span id=\"txtCount\"></span>/20</span>\n" +
+                "        </header>\n" +
+                "        <div class=\"line\"></div>\n" +
+                "        <div id=\"editor\" contenteditable=\"true\" editor-placeholder=\"" + setInputInitText() + "\">" + content + "</div>\n" +
+                "    </div>\n" +
+                "    <script src=\"./richeditor.js\" id=\"script\"></script>\n" +
+                "</body>\n" +
+                "</html>";
     }
 
     @Override

@@ -64,11 +64,19 @@ public class SimpleRichEditor extends RichEditor {
 
         void onTextStypeClick(boolean isSelect);
 
-        void onInputListener(int length);
+        void onInputListener(int titleLength, int contentLength);
+
+        void onAfterInitialLoad(boolean ready);
+
+        void onSettingImageButtionClick();
+    }
+
+    public interface BottomMenuItemConfig {
+        boolean needSetting();
     }
 
     @SuppressWarnings("unused")
-    public abstract static class OnEditorClickListenerImp implements OnEditorClickListener {
+    public abstract static class BaseOnEditorClickListenerImp implements OnEditorClickListener {
         @Override
         public void onImageClick(Long id) {
 
@@ -90,9 +98,17 @@ public class SimpleRichEditor extends RichEditor {
         }
     }
 
+    private static class BaseBottomMenuItemConfig implements BottomMenuItemConfig {
+        @Override
+        public boolean needSetting() {
+            return false;
+        }
+    }
+
     private BottomMenu mBottomMenu;
     private SelectController mSelectController;
     private OnEditorClickListener mOnEditorClickListener;
+    private BottomMenuItemConfig mBottomMenuItemConfig;
     private ArrayList<Long> mFreeItems;//不受其他items点击事件影响的items
     private ItemIndex.Register mRegister;
     private OnStateChangeListener mOnStateChangeListener;
@@ -120,11 +136,18 @@ public class SimpleRichEditor extends RichEditor {
         this.mOnEditorClickListener = mOnEditorClickListener;
     }
 
+    public void setBottomMenuItemConfig(BottomMenuItemConfig bottomMenuItemConfig) {
+        mBottomMenuItemConfig = bottomMenuItemConfig;
+    }
+
     private void init() {
         mSelectController = SelectController.createController();
         mRegister = ItemIndex.getInstance().getRegister();
         mFreeItems = new ArrayList<>();
 
+        if (mBottomMenuItemConfig == null) {
+            mBottomMenuItemConfig = new BaseBottomMenuItemConfig();
+        }
         addArrow();
         addLink();
         addHalvingLine();
@@ -133,6 +156,7 @@ public class SimpleRichEditor extends RichEditor {
         addUndo();
         addRedo();
         addImageInsert();
+        addSetting();
 
 //        等效与以下
 //       mLuBottomMenu.
@@ -208,7 +232,7 @@ public class SimpleRichEditor extends RichEditor {
             }
 
         });
-        setOnTextChangeListener(text -> mOnEditorClickListener.onInputListener(text));
+        setOnTextChangeListener((tittle, content) -> mOnEditorClickListener.onInputListener(tittle, content));
         setOnFocusChangeListener(isFocus -> {
             if (!isFocus) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -219,13 +243,14 @@ public class SimpleRichEditor extends RichEditor {
             }
 
         });
-        setOnLinkClickListener((linkName, url) -> showChangeLinkDialog(linkName, url));
-        setOnImageClickListener(id -> showImageClick(id));
+        setOnLinkClickListener(this::showChangeLinkDialog);
+        setOnImageClickListener(this::showImageClick);
 
         setOnInitialLoadListener(isReady -> {
             if (isReady) {
                 focusEditor();
             }
+            mOnEditorClickListener.onAfterInitialLoad(isReady);
         });
 
         mBottomMenu.setOnItemClickListener(new AbstractBottomMenuItem.OnItemClickListener() {
@@ -359,7 +384,6 @@ public class SimpleRichEditor extends RichEditor {
                         (item, isSelected) -> {
                             setBold();
                             LogUtils.d("onItemClick", item.getId() + "");
-
                             //不拦截不在选择控制器中的元素让Menu自己控制选择显示效果
                             return isInSelectController(item.getId());
                         }) : null)
@@ -444,6 +468,22 @@ public class SimpleRichEditor extends RichEditor {
                     imm.hideSoftInputFromWindow(SimpleRichEditor.this.getWindowToken(), 0);
                     return true;
                 }));
+        return this;
+    }
+
+    /**
+     * 自定义的 设置选项
+     *
+     * @return
+     */
+    public SimpleRichEditor addSetting() {
+        addRootCustomItem(ItemIndex.SETTING, mBottomMenuItemConfig.needSetting() ? getBaseItemFactory().generateItem(
+                getContext(),
+                ItemIndex.SETTING,
+                (item, isSelected) -> {
+                    mOnEditorClickListener.onSettingImageButtionClick();
+                    return true;
+                }) : null);
         return this;
     }
 
@@ -565,6 +605,9 @@ public class SimpleRichEditor extends RichEditor {
 
     public SimpleRichEditor addRootCustomItem(long id, AbstractBottomMenuItem item) {
         checkNull(mBottomMenu);
+        if (item == null) {
+            return this;
+        }
 
         if (mRegister.isDefaultId(id)) {
             throw new RuntimeException(id + ":" + ItemIndex.HAS_REGISTER_EXCEPTION);

@@ -29,7 +29,16 @@ public class MarkdownConfig {
     /**
      * 用于 提取 markdown 格式 图片id
      */
-    public static final String IMAGE_FORMAT = "@!\\[.*?]\\((\\d+)\\)";
+    public static final String IMAGE_FORMAT = "@!\\[.*?]\\((\\d+)\\)";// <div([^<>]*)>([^"]*|'[^']*'|[^'">])<\/div>
+
+    // <(span|/span)("[^"]*"|'[^']*'|[^'">])*>    <("[^"]*"|'[^']*'|[^'">])*>
+    public static final String HTML_FORMAT = "<(\"[^\"]*\"|'[^']*'|[^'\">])*>";
+    public static final String TEST_HTML_FORMAT = "<((div)|/(div))(\"[^\"]*\"|'[^']*'|[^'\">])*>";
+
+    /**
+     * 匹配 匹配中文，英文字母和数字
+     */
+    public static final String NORMAL_FORMAT = "[^\\u4e00-\\u9fa5a-zA-Z0-9]+$";
 
     /**
      * 用于提取 短链接

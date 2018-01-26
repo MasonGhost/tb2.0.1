@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <LinearLayout
         android:id="@+id/ll_circle_container"
@@ -52,16 +52,18 @@
         android:layout_below="@+id/ll_circle_container"/>
 
     <CheckBox
-        android:visibility="gone"
         android:id="@+id/cb_syn_to_dynamic"
         android:layout_width="match_parent"
         android:layout_height="@dimen/create_circle_button_height"
         android:layout_above="@+id/lu_bottom_menu"
-        android:paddingLeft="@dimen/spacing_mid"
+        android:layout_marginLeft="@dimen/spacing_normal"
         android:background="@color/white"
+        android:button="@drawable/selector_circle_post_synchro"
+        android:paddingLeft="@dimen/spacing_small"
         android:text="@string/syn_to_dynamic"
         android:textColor="@color/important_for_content"
-        android:textSize="@dimen/size_content"/>
+        android:textSize="@dimen/size_content"
+        android:visibility="gone"/>
 
     <com.zhiyi.richtexteditorlib.view.BottomMenu
         android:id="@+id/lu_bottom_menu"

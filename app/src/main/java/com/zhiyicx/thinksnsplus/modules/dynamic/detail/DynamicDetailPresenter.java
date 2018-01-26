@@ -105,8 +105,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<
 
 
     @Inject
-    public DynamicDetailPresenter(
-                                  DynamicDetailContract.View rootView) {
+    public DynamicDetailPresenter(DynamicDetailContract.View rootView) {
         super( rootView);
     }
 

@@ -3,8 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.information.publish.addinfo;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.base.InjectComponent;
-import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoActivity;
-import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoPresenterModule;
 
 import dagger.Component;
 

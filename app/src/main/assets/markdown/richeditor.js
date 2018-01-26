@@ -164,7 +164,7 @@ var RE = {
 		}, false);
 
 		_self.cache.editor.addEventListener('input', function () {
-			AndroidInterface.setHtmlContent(_self.cache.title.innerHTML.length * _self.markdownWords().length);
+			AndroidInterface.setHtmlContent(_self.cache.title.innerHTML.length , _self.markdownWords().length);
 		}, false);
 
 		_self.titleLimit.txtNote.addEventListener('input', function () {
@@ -173,7 +173,7 @@ var RE = {
 
 		_self.cache.title.addEventListener('input', function () {
 			var content=_self.markdownWords();
-			AndroidInterface.setHtmlContent(_self.cache.title.innerHTML.length * content.length);
+			AndroidInterface.setHtmlContent(_self.cache.title.innerHTML.length , content.length);
 		}, false);
 	},
 	initCache: function initCache() {
@@ -215,13 +215,13 @@ var RE = {
 	},
 	markdownWords: function markdownWords() {
         var _self = this;
-        var content = _self.cache.editor.innerHTML.replace(/<div\\s+\\S+>\\s+\\S+<\/div>|<[divimginput]+ class=".*">|\u56FE\u7247\u4E0A\u4F20\u5931\u8D25\uFF0C\u8BF7\u70B9\u51FB\u91CD\u8BD5/g, '').replace(/\n|\t/g,'').replace(/<\/div>|<div>[u4e00-u9fa5]+<\/div>/g,"").trim();
+        var content = _self.cache.editor.innerHTML.replace(/<div\\s+\\S+>\\s+\\S+<\/div>|<[divimginput]+ class=".*">|\u56FE\u7247\u4E0A\u4F20\u5931\u8D25\uFF0C\u8BF7\u70B9\u51FB\u91CD\u8BD5/g, '').replace(/\n|\t/g,'').replace(/<div>[u4e00-u9fa5]+<\/div>/g,"").replace(/div|span/g,'p').trim();
         AndroidInterface.markdownWords(content);
         return content;
     },
     getTitle: function getTitle() {
         var _self = this;
-        var title = _self.cache.title.innerHTML;
+        var title = _self.cache.title.innerHTML.replace(/<br>/g,'');
         return title;
     },
 
@@ -327,6 +327,12 @@ var RE = {
 		var _self = this;
 		document.execCommand('insertHtml', false, html);
 	},
+
+	insertHtmlDIV: function insertHtmlDIV(html) {
+	    console.log("insertHtmlDIV:::" + html);
+        document.getElementById('editor').innerHTML=html;
+    },
+
 	setBackgroundColor: function setBackgroundColor(color) {
 	    var _self = this;
 	    document.body.style.backgroundColor = color;
@@ -374,6 +380,13 @@ var RE = {
 		selection.addRange(range);
 	},
 
+	pareseHtml: function pareseHtml(title,content){
+	    var _self = this;
+        _self.cache.title.innerHTML = title;
+	    var image = '<div><br></div><div class="block">\n\t\t\t\t<div class="img-block"><div style="width: 100% " class="process">\n\t\t\t\t\t<div class="fill">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<img class="images" data-id="' + id + '" style="width: 100% ; height: auto ;" src="' + url + '"/>\n\t\t\t\t<div class="cover" style="width: 100% ; height: auto "></div>\n\t\t\t\t<div class="delete">\n\t\t\t\t\t<img class="error" src="./reload.png">\n\t\t\t\t\t<div class="tips">\u56FE\u7247\u4E0A\u4F20\u5931\u8D25\uFF0C\u8BF7\u70B9\u51FB\u91CD\u8BD5</div>\n\t\t\t\t\t<div class="markdown"></div>\n\t\t\t\t</div></div>\n\t\t\t\t<input class="dec" type="text" placeholder="\u8BF7\u8F93\u5165\u56FE\u7247\u540D\u5B57">\n\t\t\t</div><div><br></div>';
+
+	},
+
 	// 插入图片
 	insertImage: function insertImage(url, id, width, height) {
 		var _self = this;
@@ -389,6 +402,9 @@ var RE = {
 			newHeight = height;
 		}
 		var image = '<div><br></div><div class="block">\n\t\t\t\t<div class="img-block"><div style="width: ' + newWidth + 'px" class="process">\n\t\t\t\t\t<div class="fill">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<img class="images" data-id="' + id + '" style="width: ' + newWidth + 'px; height: ' + newHeight + 'px;" src="' + url + '"/>\n\t\t\t\t<div class="cover" style="width: ' + newWidth + 'px; height: ' + newHeight + 'px"></div>\n\t\t\t\t<div class="delete">\n\t\t\t\t\t<img class="error" src="./reload.png">\n\t\t\t\t\t<div class="tips">\u56FE\u7247\u4E0A\u4F20\u5931\u8D25\uFF0C\u8BF7\u70B9\u51FB\u91CD\u8BD5</div>\n\t\t\t\t\t<div class="markdown"></div>\n\t\t\t\t</div></div>\n\t\t\t\t<input class="dec" type="text" placeholder="\u8BF7\u8F93\u5165\u56FE\u7247\u540D\u5B57">\n\t\t\t</div><div><br></div>';
+		if( width * height <= 0 ){
+		    image = '<div><br></div><div class="block">\n\t\t\t\t<div class="img-block"><div style="width: 100% " class="process">\n\t\t\t\t\t<div class="fill">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<img class="images" data-id="' + id + '" style="width: 100% ; height: auto ;" src="' + url + '"/>\n\t\t\t\t<div class="cover" style="width: 100% ; height: auto "></div>\n\t\t\t\t<div class="delete">\n\t\t\t\t\t<img class="error" src="./reload.png">\n\t\t\t\t\t<div class="tips">\u56FE\u7247\u4E0A\u4F20\u5931\u8D25\uFF0C\u8BF7\u70B9\u51FB\u91CD\u8BD5</div>\n\t\t\t\t\t<div class="markdown"></div>\n\t\t\t\t</div></div>\n\t\t\t\t<input class="dec" type="text" placeholder="\u8BF7\u8F93\u5165\u56FE\u7247\u540D\u5B57">\n\t\t\t</div><div><br></div>';
+		}
 		_self.insertHtml(image);
 		var img = document.querySelector('img[data-id="' + id + '"]');
 		var imgBlock = img.parentNode;
@@ -400,6 +416,13 @@ var RE = {
 			var id = img.getAttribute('data-id');
 			window.location.href = _self.schemeCache.IMAGE_SCHEME + encodeURI(id);
 		}, false);
+        imgBlock.parentNode.addEventListener('DOMNodeRemovedFromDocument', function (evt) {
+            evt.stopPropagation();
+            var current = evt.currentTarget;
+            var img = current.querySelector('.images');
+            var id = img.getAttribute('data-id');
+            AndroidInterface.deleteImage(id);
+        }, false);
 		_self.imageCache.put(id, imgBlock.parentNode);
 		window.scrollTo(0,document.body.scrollHeight);
 	},
@@ -421,6 +444,13 @@ var RE = {
                     var img = current.querySelector('.images');
                     var id = img.getAttribute('data-id');
                     window.location.href = _self.schemeCache.IMAGE_SCHEME + encodeURI(id);
+                }, false);
+                imgBlock.parentNode.addEventListener('DOMNodeRemovedFromDocument', function (evt) {
+                    evt.stopPropagation();
+                    var current = evt.currentTarget;
+                    var img = current.querySelector('.images');
+                    var id = img.getAttribute('data-id');
+                    AndroidInterface.deleteImage(id);
                 }, false);
                 _self.imageCache.put(array[item], imgBlock.parentNode);
             }
@@ -449,6 +479,14 @@ var RE = {
 			imgBlock.removeChild(cover);
 			imgBlock.removeChild(process);
 		}
+	},
+
+	hideTitle: function hideTitle(){
+	    var _self = this;
+	    console.log("hideTitle:::");
+	    _self.cache.title.style.display="none";
+	    _self.cache.line.style.display="none";
+	    document.getElementById("content").style.paddingTop="0px";
 	},
 
 	// 限制标题输入字数
@@ -497,7 +535,16 @@ var RE = {
 		var block = _self.imageCache.get(id);
 		var del = block.querySelector('.delete');
 		del.style.display = 'none';
-	}
+	},
+
+	stopBubble: function stopBubble(e) {
+        //如果提供了事件对象，则这是一个非IE浏览器
+        if ( e && e.stopPropagation ){
+            e.stopPropagation(); //因此它支持W3C的stopPropagation()方法
+        }else{
+            window.event.cancelBubble = true; //否则，我们需要使用IE的方式来取消事件冒泡
+        }
+     },
 };
 
 RE.init();
