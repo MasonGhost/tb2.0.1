@@ -83,7 +83,7 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
      */
     private List<UserInfoBean> mGroupUserList;
 
-    public SelectFriendsFragment instance(Bundle bundle) {
+    public static SelectFriendsFragment instance(Bundle bundle) {
         SelectFriendsFragment friendsFragment = new SelectFriendsFragment();
         friendsFragment.setArguments(bundle);
         return friendsFragment;

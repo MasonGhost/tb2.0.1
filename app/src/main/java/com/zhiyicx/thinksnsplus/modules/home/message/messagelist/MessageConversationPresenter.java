@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import com.hyphenate.chat.EMChatManager;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMGroup;
@@ -75,7 +76,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<MessageItemBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(@NotNull List<MessageItemBeanV2> data, boolean isLoadMore) {
         return false;
     }
 
@@ -96,12 +97,12 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
     @Override
     public void deleteConversation(int position) {
         // 改为环信的删除
-        MessageItemBeanV2 messageItemBeanV2 = mRootView.getRealMessageList().get(position);
+        MessageItemBeanV2 messageItemBeanV2 = mRootView.getListDatas().get(position);
         Subscription subscription = Observable.just(messageItemBeanV2)
                 .observeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(itemBeanV2 -> {
-                    mRootView.getRealMessageList().remove(itemBeanV2);
+                    mRootView.getListDatas().remove(itemBeanV2);
                     mRootView.refreshData();
                     checkBottomMessageTip();
                     EMClient.getInstance().chatManager().deleteConversation(itemBeanV2.getEmKey(), true);
@@ -123,11 +124,11 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
     public List<ChatUserInfoBean> getChatUserList(int position) {
         List<ChatUserInfoBean> chatUserInfoBeans = new ArrayList<>();
         // 当前用户
-        if (mRootView.getRealMessageList().get(position).getConversation().getType() == EMConversation.EMConversationType.Chat) {
+        if (mRootView.getListDatas().get(position).getConversation().getType() == EMConversation.EMConversationType.Chat) {
             chatUserInfoBeans.add(getChatUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault())));
-            chatUserInfoBeans.add(getChatUser(mRootView.getRealMessageList().get(position).getUserInfo()));
+            chatUserInfoBeans.add(getChatUser(mRootView.getListDatas().get(position).getUserInfo()));
         } else {
-            for (UserInfoBean userInfoBean : mRootView.getRealMessageList().get(position).getList()) {
+            for (UserInfoBean userInfoBean : mRootView.getListDatas().get(position).getList()) {
                 chatUserInfoBeans.add(getChatUser(userInfoBean));
             }
         }
@@ -160,7 +161,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                     return newList;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(list -> mRootView.getMessageListSuccess(list));
+                .subscribe(list -> mRootView.onNetResponseSuccess(list,false));
     }
 
     private ChatUserInfoBean getChatUser(UserInfoBean userInfoBean) {
@@ -201,7 +202,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                             mCopyConversationList = new ArrayList<>();
                         }
                         mCopyConversationList = singleList;
-                        mRootView.getMessageListSuccess(singleList);
+                        mRootView.onNetResponseSuccess(singleList,isLoadMore);
                         mRootView.hideStickyMessage();
                         checkBottomMessageTip();
                     });
@@ -223,7 +224,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                 .map(aBoolean -> {
                     // 是否显示底部红点
                     boolean isShowMessageTip = false;
-                    for (MessageItemBeanV2 messageItemBean : mRootView.getRealMessageList()) {
+                    for (MessageItemBeanV2 messageItemBean : mRootView.getListDatas()) {
                         if (messageItemBean.getConversation().getUnreadMsgCount() > 0) {
                             isShowMessageTip = true;
                             break;
@@ -256,7 +257,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
             for (ChatGroupBean chatGroupBean : list) {
                 // 如果列表已经有  那么就不再追加
                 boolean canAdded = true;
-                for (MessageItemBeanV2 exitItem : mRootView.getRealMessageList()) {
+                for (MessageItemBeanV2 exitItem : mRootView.getListDatas()) {
                     if (exitItem.getConversation().conversationId().equals(chatGroupBean.getId())) {
                         canAdded = false;
                         break;
@@ -272,11 +273,11 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                 }
             }
             if (!messageItemBeanList.isEmpty()) {
-                mRootView.getRealMessageList().addAll(messageItemBeanList);
+                mRootView.getListDatas().addAll(messageItemBeanList);
                 if (mCopyConversationList == null) {
                     mCopyConversationList = new ArrayList<>();
                 }
-                mCopyConversationList = mRootView.getRealMessageList();
+                mCopyConversationList = mRootView.getListDatas();
             }
         }
         mRootView.refreshData();
@@ -303,7 +304,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                 .observeOn(Schedulers.io())
                 .flatMap(messageList -> {
                     LogUtils.d("Cathy", "MessagePresenter onMessageReceived -----");
-                    int size = mRootView.getRealMessageList().size();
+                    int size = mRootView.getListDatas().size();
                     // 对话是否存在
                     // 用来装新的会话item
                     List<MessageItemBeanV2> messageItemBeanV2List = new ArrayList<>();
@@ -314,10 +315,10 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                             // 会话已经存在
                             for (int i = 0; i < size; i++) {
                                 // 检测列表中是否已经存在了
-                                EMConversation conversationOld = mRootView.getRealMessageList().get(i).getConversation();
+                                EMConversation conversationOld = mRootView.getListDatas().get(i).getConversation();
                                 if (conversationOld.conversationId().equals(conversationNew.conversationId())) {
                                     // 直接替换会话
-                                    MessageItemBeanV2 itemBeanV2 = mRootView.getRealMessageList().get(i);
+                                    MessageItemBeanV2 itemBeanV2 = mRootView.getListDatas().get(i);
                                     itemBeanV2.setConversation(conversationNew);
                                     messageItemBeanV2List.add(itemBeanV2);
                                     break;
@@ -348,12 +349,12 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                 .subscribe(list1 -> {
                     for (MessageItemBeanV2 messageItemBeanV2 : list1) {
                         // 移除原来的
-                        if (mRootView.getRealMessageList().indexOf(messageItemBeanV2) != -1) {
-                            mRootView.getRealMessageList().remove(messageItemBeanV2);
+                        if (mRootView.getListDatas().indexOf(messageItemBeanV2) != -1) {
+                            mRootView.getListDatas().remove(messageItemBeanV2);
                         }
                     }
                     // 加载到第一条
-                    mRootView.getRealMessageList().addAll(0, list1);
+                    mRootView.getListDatas().addAll(0, list1);
                     mRootView.refreshData();
                     // 小红点是否要显示
                     checkBottomMessageTip();
@@ -370,14 +371,14 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
             return;
         }
         MessageItemBeanV2 deleteItem = null;
-        for (MessageItemBeanV2 messageItemBeanV2 : mRootView.getRealMessageList()) {
+        for (MessageItemBeanV2 messageItemBeanV2 : mRootView.getListDatas()) {
             if (messageItemBeanV2.getConversation().conversationId().equals(id)) {
                 deleteItem = messageItemBeanV2;
                 break;
             }
         }
         if (deleteItem != null) {
-            mRootView.getRealMessageList().remove(deleteItem);
+            mRootView.getListDatas().remove(deleteItem);
             mRootView.refreshData();
         }
     }
@@ -387,7 +388,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
      */
     @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_GROUP_UPDATE_GROUP_INFO)
     public void updateGroup(ChatGroupBean chatGroupBean) {
-        for (MessageItemBeanV2 itemBeanV2 : mRootView.getRealMessageList()) {
+        for (MessageItemBeanV2 itemBeanV2 : mRootView.getListDatas()) {
             if (itemBeanV2.getEmKey().equals(chatGroupBean.getId())) {
                 itemBeanV2.setChatGroupBean(chatGroupBean);
             }

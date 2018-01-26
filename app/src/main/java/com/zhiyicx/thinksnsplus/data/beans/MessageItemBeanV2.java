@@ -15,7 +15,7 @@ import java.util.List;
  * @contact email:648129313@qq.com
  */
 
-public class MessageItemBeanV2 extends CacheBean implements Serializable {
+public class MessageItemBeanV2 extends BaseListBean implements Serializable {
 
     private static final long serialVersionUID = 4454853132357124036L;
 

@@ -3,26 +3,19 @@ package com.zhiyicx.thinksnsplus.modules.home.message.messagelist;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.easeui.EaseConstant;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.recycleview.BlankClickRecycleView;
 import com.zhiyicx.common.base.BaseFragment;
+import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
@@ -34,13 +27,10 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.TSSearchView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 import static com.zhiyicx.thinksnsplus.modules.chat.ChatActivityV2.BUNDLE_CHAT_DATA;
 
@@ -51,7 +41,7 @@ import static com.zhiyicx.thinksnsplus.modules.chat.ChatActivityV2.BUNDLE_CHAT_D
  * @contact email:648129313@qq.com
  */
 
-public class MessageConversationFragment extends TSListFragment<MessageConversationContract.Presenter, MessageItemBean>
+public class MessageConversationFragment extends TSListFragment<MessageConversationContract.Presenter, MessageItemBeanV2>
         implements MessageConversationContract.View, MessageAdapterV2.OnSwipeItemClickListener,
         OnUserInfoClickListener, BlankClickRecycleView.BlankClickListener {
 
@@ -59,8 +49,6 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
     MessageConversationPresenter mConversationPresenter;
     @BindView(R.id.searchView)
     TSSearchView mSearchView;
-
-    private List<MessageItemBeanV2> mMessageItemBeanList;
 
     @Override
     protected void initView(View rootView) {
@@ -81,6 +69,18 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
     @Override
     protected boolean isNeedRefreshAnimation() {
         return true;
+    }
+
+    @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
+    }
+
+    @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen
+                .divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable
+                .shape_recyclerview_grey_divider));
     }
 
     @Override
@@ -107,7 +107,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && mPresenter != null && mMessageItemBeanList.isEmpty()) {
+        if (isVisibleToUser && mPresenter != null && mListDatas.isEmpty()) {
             mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         }
         if (mAdapter != null && ((MessageAdapterV2) mAdapter).hasItemOpend()) {
@@ -117,36 +117,15 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        mMessageItemBeanList = new ArrayList<>();
-        MessageAdapterV2 commonAdapter = new MessageAdapterV2(getActivity(), mMessageItemBeanList);
+        MessageAdapterV2 commonAdapter = new MessageAdapterV2(getActivity(), mListDatas);
         commonAdapter.setOnSwipItemClickListener(this);
         commonAdapter.setOnUserInfoClickListener(this);
         return commonAdapter;
     }
 
     @Override
-    public void getMessageListSuccess(List<MessageItemBeanV2> list) {
-        mMessageItemBeanList.clear();
-        mMessageItemBeanList.addAll(list);
-        mAdapter.notifyDataSetChanged();
-        hideLoading();
-        setEmptyViewVisiable(mMessageItemBeanList.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0);
-    }
-
-    @Override
-    public List<MessageItemBeanV2> getRealMessageList() {
-        return mMessageItemBeanList;
-    }
-
-    @Override
     public BaseFragment getCurrentFragment() {
         return this;
-    }
-
-    @Override
-    public void hideLoading() {
-        mRefreshlayout.finishRefresh();
-        mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
     @Override
@@ -189,7 +168,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
         Bundle bundle = new Bundle();
         bundle.putSerializable(ChatFragment.BUNDLE_CHAT_USER, messageItemBean.getUserInfo());
         bundle.putString(EaseConstant.EXTRA_USER_ID, messageItemBean.getEmKey());
-        if (messageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat){
+        if (messageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat) {
             bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_SINGLE);
         } else {
             bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_GROUP);
@@ -213,7 +192,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
 
     @Override
     public void onLeftClick(int position) {
-        toChatV2(mMessageItemBeanList.get(position), position);
+        toChatV2(mListDatas.get(position), position);
     }
 
     @Override
@@ -222,13 +201,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
         refreshData();
     }
 
-    @Override
-    public void refreshData() {
-        setEmptyViewVisiable(mMessageItemBeanList.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0);
-        mHeaderAndFooterWrapper.notifyDataSetChanged();
-    }
-
-    private void initListener(){
+    private void initListener() {
         mSearchView.setOnSearchClickListener(new TSSearchView.OnSearchClickListener() {
             @Override
             public void onSearchClick(View view) {
@@ -237,7 +210,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (TextUtils.isEmpty(s)){
+                if (TextUtils.isEmpty(s)) {
                     // 展示原数据
                     mPresenter.requestNetData(0L, false);
                 } else {
