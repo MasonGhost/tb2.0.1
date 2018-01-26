@@ -495,6 +495,7 @@
             android:name=".modules.wallet.reward.list.RewardListActivity"
             android:screenOrientation="portrait"/>
 
+        <!-- 资讯发布 -->
         <activity
             android:name=".modules.information.publish.addinfo.AddInfoActivity"
             android:screenOrientation="portrait"
@@ -621,30 +622,20 @@
                   android:screenOrientation="portrait"/>
         <activity android:name=".modules.circle.manager.members.blacklist.BlackListActivity"
                   android:screenOrientation="portrait"/>
+        <!--扫码相关页面-->
+        <activity android:name=".modules.home.mine.scan.ScanCodeActivity"
+                android:screenOrientation="portrait"/>
+        <activity android:name=".modules.home.mine.mycode.MyCodeActivity"
+                android:screenOrientation="portrait"/>
+        <!--我的好友列表-->
+        <activity android:name=".modules.home.mine.friends.MyFriendsListActivity"
+                  android:screenOrientation="portrait"/>
+        <!--搜索好友-->
+        <activity android:name=".modules.home.mine.friends.search.SearchFriendsActivity"
+                  android:screenOrientation="portrait"/>
         <activity android:name=".modules.information.publish.detail.EditeInfoDetailActivity"/>
         <activity android:name=".modules.q_a.publish.detail.EditeQuestionDetailActivity"/>
         <activity android:name=".modules.q_a.answer.EditeAnswerDetailActivity"/>
-        <activity
-            android:name=".modules.circle.create.rule.RuleForCreateCircleActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".modules.circle.manager.members.blacklist.BlackListActivity"
-            android:screenOrientation="portrait"/>
-        <!--扫码相关页面-->
-        <activity
-            android:name=".modules.home.mine.scan.ScanCodeActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".modules.home.mine.mycode.MyCodeActivity"
-            android:screenOrientation="portrait"/>
-        <!--我的好友列表-->
-        <activity
-            android:name=".modules.home.mine.friends.MyFriendsListActivity"
-            android:screenOrientation="portrait"/>
-        <!--搜索好友-->
-        <activity
-            android:name=".modules.home.mine.friends.search.SearchFriendsActivity"
-            android:screenOrientation="portrait"/>
         <!--我的积分-->
         <activity
             android:name=".modules.wallet.integration.mine.MineIntegrationActivity"
@@ -670,7 +661,6 @@
         <activity
             android:name=".modules.wallet.integration.withdrawal.IntegrationWithdrawalsActivity"
             android:screenOrientation="portrait"/>
-
 
     </application>
 

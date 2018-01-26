@@ -54,7 +54,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_ONCONVE
  * @Contact master.jungle68@gmail.com
  */
 
-public class ChatPresenter extends BasePresenter< ChatContract.View> implements ChatContract.Presenter {
+public class ChatPresenter extends BasePresenter<ChatContract.View> implements ChatContract.Presenter {
 
     private SparseArray<UserInfoBean> mUserInfoBeanSparseArray = new SparseArray<>();// 把用户信息存入内存，方便下次使用
     @Inject
@@ -65,8 +65,8 @@ public class ChatPresenter extends BasePresenter< ChatContract.View> implements 
     ChatRepository mChatRepository;
 
     @Inject
-    public ChatPresenter( ChatContract.View rootView) {
-        super( rootView);
+    public ChatPresenter(ChatContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -106,17 +106,17 @@ public class ChatPresenter extends BasePresenter< ChatContract.View> implements 
                 .observeOn(Schedulers.io())
                 .map(list -> {
                     // 未读的消息发送已读回执
-                     for (ChatItemBean chatItemBean : list){
-                         EMMessage message = chatItemBean.getMessage();
-                         // 收到的消息，自己发送的消息不处理
-                         if (!String.valueOf(AppApplication.getMyUserIdWithdefault()).equals(message.getFrom()) && !message.isUnread()){
-                             try {
-                                 EMClient.getInstance().chatManager().ackMessageRead(message.getFrom(), message.getMsgId());
-                             } catch (HyphenateException e) {
-                                 e.printStackTrace();
-                             }
-                         }
-                     }
+                    for (ChatItemBean chatItemBean : list) {
+                        EMMessage message = chatItemBean.getMessage();
+                        // 收到的消息，自己发送的消息不处理
+                        if (!String.valueOf(AppApplication.getMyUserIdWithdefault()).equals(message.getFrom()) && !message.isUnread()) {
+                            try {
+                                EMClient.getInstance().chatManager().ackMessageRead(message.getFrom(), message.getMsgId());
+                            } catch (HyphenateException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
                     return list;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -170,11 +170,13 @@ public class ChatPresenter extends BasePresenter< ChatContract.View> implements 
             public void onSuccess() {
                 // 发送成功 需要刷新页面
                 LogUtils.d("Cathy", "发送成功" + message.getBody().toString());
-//                Observable.just("")
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .subscribe(s -> {
-//                            mRootView.refreshData() ;
-//                        });
+                if (mRootView.getListDatas().isEmpty()||mRootView.getListDatas().size()==1) {
+                    Observable.just("")
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(s -> {
+                                mRootView.scrollToBottom();
+                            });
+                }
             }
 
             @Override

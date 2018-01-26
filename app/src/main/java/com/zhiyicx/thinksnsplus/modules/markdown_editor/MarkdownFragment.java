@@ -276,7 +276,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
      */
     @Override
     public boolean needSetting() {
-        return true;
+        return false;
     }
 
     @Override
@@ -385,6 +385,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         mRichTextView.setOnTextLengthChangeListener(length -> {
 
         });
+        mRichTextView.setBottomMenuItemConfig(this);
         mRichTextView.setOnMarkdownWordResultListener(this);
         mRichTextView.setBottomMenu(mBottomMenu);
 

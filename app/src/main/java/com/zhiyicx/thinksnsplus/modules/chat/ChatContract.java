@@ -96,6 +96,8 @@ public interface ChatContract {
          */
         List<ChatItemBean> getListDatas();
 
+        void scrollToBottom();
+
     }
 
     interface Repository {
