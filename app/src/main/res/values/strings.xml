@@ -411,7 +411,7 @@
     <string name="comment_top_success">申请评论置顶成功</string>
     <string name="post_top_success">帖子置顶成功</string>
     <string name="post_top_failed">帖子置顶失败</string>
-    <string name="to_top_description">当前平均置顶金额%1$.2f / 天，钱包余额%2$.2f</string>
+    <string name="to_top_description">当前平均置顶金额%1$.2f / 天，%2s余额%3$.2f</string>
 
     <!--设置评论收费-->
     <string name="apply_doing">申请中&#8230;</string>
@@ -950,6 +950,7 @@
     <string name="please_less_min_recharge_formart">最多充值%.2f元</string>
     <string name="please_more_than_min_withdrawals_formart">最低每次提取%d积分</string>
     <string name="please_less_max_withdrawals_formart">单笔最高积分为%d</string>
+    <string name="current_money_not_enouph">当前余额不足！</string>
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>
         <item>提取记录</item>

@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.sticktop;
 
 
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -9,20 +8,15 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.StickTopRepsotory;
-import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.integration.mine.MineIntegrationActivity;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Func1;
 
 import static com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment.TYPE_DYNAMIC;
 import static com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment.TYPE_INFO;
@@ -33,25 +27,14 @@ import static com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment.
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class StickTopPresenter extends AppBasePresenter< StickTopContract.View>
+public class StickTopPresenter extends AppBasePresenter<StickTopContract.View>
         implements StickTopContract.Presenter {
 
     @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
-
-    @Inject
-    SystemRepository mSystemRepository;
-
-    @Inject
     UserInfoRepository mUserInfoRepository;
-
     @Inject
     StickTopRepsotory mStickTopRepsotory;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
-    @Inject
-    CommentRepository mCommentRepository;
 
     @Override
     protected boolean useEventBus() {
@@ -59,17 +42,17 @@ public class StickTopPresenter extends AppBasePresenter< StickTopContract.View>
     }
 
     @Inject
-    public StickTopPresenter( StickTopContract.View rootView) {
-        super( rootView);
+    public StickTopPresenter(StickTopContract.View rootView) {
+        super(rootView);
     }
 
     /**
      * 内容置顶
      *
-     * @param parent_id
+     * @param parentId
      */
     @Override
-    public void stickTop(long parent_id) {
+    public void stickTop(long parentId) {
         if (mRootView.getInputMoney() <= 0) {
             mRootView.initStickTopInstructionsPop();
             return;
@@ -78,25 +61,24 @@ public class StickTopPresenter extends AppBasePresenter< StickTopContract.View>
             mRootView.gotoRecharge();
             return;
         }
-        if (parent_id < 0) {
+        if (parentId < 0) {
             return;
         }
 
-        double amount = PayConfig.gameCurrency2RealCurrency(mRootView.getInputMoney() * mRootView.getTopDyas(), getRatio());
+        double amount = mRootView.getInputMoney() * mRootView.getTopDyas();
 
         Subscription subscription = mCommentRepository.getCurrentLoginUserInfo()
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.apply_doing)))
                 .flatMap(userInfoBean -> {
                     mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
-                    if (userInfoBean.getWallet() != null) {
-                        mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
-                        if (userInfoBean.getWallet().getBalance() < amount) {
-                            mRootView.goRecharge(WalletActivity.class);
+                    if (userInfoBean.getCurrency() != null) {
+                        if (userInfoBean.getCurrency().getSum() < amount) {
+                            mRootView.goRecharge(MineIntegrationActivity.class);
                             return Observable.error(new RuntimeException(""));
                         }
                     }
-                    return mStickTopRepsotory.stickTop(mRootView.getType(), parent_id, amount, mRootView.getTopDyas());
+                    return mStickTopRepsotory.stickTop(mRootView.getType(), parentId, amount, mRootView.getTopDyas());
                 }, throwable -> {
                     mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
                     return null;
@@ -104,9 +86,6 @@ public class StickTopPresenter extends AppBasePresenter< StickTopContract.View>
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Integer>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Integer> data) {
-                        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
-                        walletBean.setBalance(walletBean.getBalance() - amount);
-                        mWalletBeanGreenDao.insertOrReplace(walletBean);
                         switch (mRootView.getType()) {
                             case TYPE_DYNAMIC:
                                 mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_list_top_dynamic_success));
@@ -142,11 +121,11 @@ public class StickTopPresenter extends AppBasePresenter< StickTopContract.View>
     /**
      * 内容所属的评论置顶
      *
-     * @param parent_id
-     * @param child_id
+     * @param parentId
+     * @param childId
      */
     @Override
-    public void stickTop(long parent_id, long child_id) {
+    public void stickTop(long parentId, long childId) {
         if (mRootView.getInputMoney() != (int) mRootView.getInputMoney()) {
             mRootView.initStickTopInstructionsPop();
             return;
@@ -155,11 +134,11 @@ public class StickTopPresenter extends AppBasePresenter< StickTopContract.View>
             mRootView.gotoRecharge();
             return;
         }
-        if (parent_id < 0) {
+        if (parentId < 0) {
             return;
         }
-        Subscription subscription = mStickTopRepsotory.stickTop(mRootView.getType(), parent_id, child_id,
-                PayConfig.gameCurrency2RealCurrency(mRootView.getInputMoney() * mRootView.getTopDyas(), getRatio()),
+        Subscription subscription = mStickTopRepsotory.stickTop(mRootView.getType(), parentId, childId,
+                mRootView.getInputMoney() * mRootView.getTopDyas(),
                 mRootView.getTopDyas())
                 .doOnSubscribe(() ->
                         mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing))
@@ -195,11 +174,7 @@ public class StickTopPresenter extends AppBasePresenter< StickTopContract.View>
                     @Override
                     protected void onSuccess(UserInfoBean data) {
                         mUserInfoBeanGreenDao.insertOrReplace(data);
-                        if (data.getWallet() != null) {
-                            mWalletBeanGreenDao.insertOrReplace(data.getWallet());
-                        }
-                        int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
-                        mRootView.updateBalance(data.getWallet() != null ? PayConfig.realCurrency2GameCurrency(data.getWallet().getBalance(), getRatio()) : 0);
+                        mRootView.updateBalance(data.getCurrency() != null ? data.getCurrency().getSum() : 0);
                     }
 
                     @Override
@@ -216,12 +191,11 @@ public class StickTopPresenter extends AppBasePresenter< StickTopContract.View>
 
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
         if (authBean != null) {
-            WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id());
-            if (walletBean == null) {
+            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(authBean.getUser_id());
+            if (userInfoBean == null || userInfoBean.getCurrency() == null) {
                 return 0;
             }
-            int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
-            return PayConfig.realCurrency2GameCurrency(walletBean.getBalance(), getRatio());
+            return userInfoBean.getCurrency().getSum();
         }
         return 0;
     }
