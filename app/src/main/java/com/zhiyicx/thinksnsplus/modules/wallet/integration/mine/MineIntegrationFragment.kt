@@ -26,9 +26,7 @@ import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean
 import com.zhiyicx.thinksnsplus.modules.develop.TSDevelopActivity
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.TAG_SHOWRULE_POP
-import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.IntegrationDetailActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.IntegrationDetailListFragment
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge.IntegrationRechargeActivity
@@ -37,8 +35,6 @@ import com.zhiyicx.thinksnsplus.modules.wallet.integration.withdrawal.Integratio
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.withdrawal.IntegrationWithdrawalsFragment
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleFragment
-import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsActivity
-import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsFragment
 import org.simple.eventbus.Subscriber
 import org.simple.eventbus.ThreadMode
 import java.util.concurrent.TimeUnit
@@ -51,6 +47,8 @@ import java.util.concurrent.TimeUnit
  */
 class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(), MineIntegrationContract.View {
 
+    @BindView(R.id.tv_account_unit)
+    lateinit var mTvUnit: TextView
     @BindView(R.id.tv_mine_money)
     lateinit var mTvMineMoney: TextView
 
@@ -60,8 +58,8 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
     @BindView(R.id.bt_withdraw)
     lateinit var mBtWithdraw: CombinationButton
 
-    @BindView(R.id.bt_mine_integration)
-    lateinit var btMineIntegration: CombinationButton
+    @BindView(R.id.bt_integration_shop)
+    lateinit var mBtIntegrationShop: CombinationButton
 
     @BindView(R.id.tv_recharge_and_withdraw_rule)
     lateinit var mTvReChargeAndWithdrawRule: TextView
@@ -84,6 +82,8 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
      */
     private var mRulePop: CenterInfoPopWindow? = null
     private lateinit var mDynamicDetailAdvertHeader: DynamicDetailAdvertHeader
+
+    private var mGoldName: String = ""
 
     override fun showToolBarDivider(): Boolean {
         return false
@@ -115,8 +115,10 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
         mToolbar.setBackgroundResource(android.R.color.transparent)
         (mToolbar.layoutParams as LinearLayout.LayoutParams).setMargins(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0)
         mTvToolbarCenter.setTextColor(ContextCompat.getColor(mActivity, R.color.white))
-        mTvToolbarCenter.text = getString(R.string.mine_integration)
+        mGoldName = mPresenter.goldName
+        mTvToolbarCenter.text = getString(R.string.my_integration_name, mGoldName)
         mTvToolbarRight.text = getString(R.string.detail)
+        mTvUnit.text = getString(R.string.current_integraiton_format, mGoldName)
         mTvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(context, R.mipmap.topbar_back_white), null, null, null)
         initListener()
         initAdvert(mActivity, mPresenter.integrationAdvert)
@@ -131,6 +133,11 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
         } else {
             mBtWithdraw.visibility = View.VISIBLE
         }
+
+        mBtReCharge.setLeftText(getString(R.string.recharge_integration_foramt,mGoldName))
+        mBtWithdraw.setLeftText(getString(R.string.withdraw_integration_foramt,mGoldName))
+        mBtIntegrationShop.setLeftText(getString(R.string.integration_shop_foramt,mGoldName))
+        mTvReChargeAndWithdrawRule.text = getString(R.string.integration_rule_format,mGoldName)
     }
 
     override fun onResume() {
@@ -150,7 +157,7 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
         }
         mDynamicDetailAdvertHeader = DynamicDetailAdvertHeader(context, mRootView.findViewById(R.id.ll_advert))
         mDynamicDetailAdvertHeader.setAdverts(adverts)
-        mDynamicDetailAdvertHeader.setOnItemClickListener { v, position1, url -> toAdvert(context, adverts[position1].advertFormat!!.image.link, adverts[position1].title) }
+        mDynamicDetailAdvertHeader.setOnItemClickListener { _, position1, _ -> toAdvert(context, adverts[position1].advertFormat!!.image.link, adverts[position1].title) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -181,10 +188,10 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
                 .compose(this.bindToLifecycle())
                 .subscribe { _ -> mPresenter.checkIntegrationConfig(MineIntegrationPresenter.TAG_WITHDRAW, true) }     // 提现
         // 积分商城
-        RxView.clicks(btMineIntegration)
+        RxView.clicks(mBtIntegrationShop)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe { _ -> TSDevelopActivity.startDeveloperAcitvity(mActivity, getString(R.string.integration_shop), R.mipmap.pic_default_mall) }
+                .subscribe { _ -> TSDevelopActivity.startDeveloperAcitvity(mActivity, getString(R.string.integration_shop_foramt,mGoldName), R.mipmap.pic_default_mall) }
         // 积分规则
         RxView.clicks(mTvReChargeAndWithdrawRule)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
@@ -200,7 +207,7 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
         val intent = Intent(activity, WalletRuleActivity::class.java)
         val bundle = Bundle()
         bundle.putString(WalletRuleFragment.BUNDLE_RULE, mPresenter.tipPopRule)
-        bundle.putString(WalletRuleFragment.BUNDLE_TITLE, getString(R.string.integration_rule))
+        bundle.putString(WalletRuleFragment.BUNDLE_TITLE, getString(R.string.integration_rule_format,mGoldName))
         intent.putExtras(bundle)
         startActivity(intent)
     }
@@ -214,7 +221,7 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
             return
         }
         mRulePop = CenterInfoPopWindow.builder()
-                .titleStr(getString(R.string.integration_rule))
+                .titleStr(getString(R.string.integration_rule_format,mGoldName))
                 .desStr(mPresenter.tipPopRule)
                 .item1Str(getString(R.string.get_it))
                 .item1Color(R.color.themeColor)

@@ -313,6 +313,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     public void setUserInfo(UserInfoBean userInfoBean) {
+        btMineIntegration.setLeftText(getString(R.string.my_integration_name,mPresenter.getGoldName()));
         if (userInfoBean == null) {
             return;
         }

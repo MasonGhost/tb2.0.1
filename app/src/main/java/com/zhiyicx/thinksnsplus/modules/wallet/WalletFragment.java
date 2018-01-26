@@ -15,6 +15,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.mine.MineIntegrationActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge.IntegrationRechargeActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity;
@@ -121,6 +122,13 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
 
     @Override
     protected void initData() {
+        mSystemConfigBean=mPresenter.getSystemConfigBean();
+        if(mSystemConfigBean.getCurrencyRecharge()!=null&&mSystemConfigBean.getCurrencyRecharge().isOpen()){
+            btMineIntegration.setVisibility(View.VISIBLE);
+            btMineIntegration.setLeftText(getString(R.string.integration_recharge_format,mPresenter.getGoldName()));
+        }else {
+            btMineIntegration.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -148,12 +156,12 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_WITHDRAW,true));     // 提现
-        // 我的积分
+        // 积分充值
         RxView.clicks(btMineIntegration)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid ->{
-                    Intent intent = new Intent(mActivity, MineIntegrationActivity.class);
+                    Intent intent = new Intent(mActivity, IntegrationRechargeActivity.class);
                     startActivity(intent);
                 } );
         // 充值提现规则

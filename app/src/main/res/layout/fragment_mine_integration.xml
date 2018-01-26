@@ -70,9 +70,9 @@
             app:leftTextLeftPadding="@dimen/spacing_mid"
             app:rightImage="@mipmap/ic_arrow_smallgrey"
             app:showLine="false"/>
-        <!--我的积分-->
+        <!--积分商城-->
         <com.zhiyicx.baseproject.widget.button.CombinationButton
-            android:id="@+id/bt_mine_integration"
+            android:id="@+id/bt_integration_shop"
             android:layout_width="match_parent"
             android:layout_height="@dimen/full_button_height"
             android:layout_marginTop="@dimen/spacing_normal"

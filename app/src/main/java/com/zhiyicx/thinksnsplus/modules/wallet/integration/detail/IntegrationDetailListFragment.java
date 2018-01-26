@@ -52,7 +52,7 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
     View mVshadow;
 
     @BindView(R.id.tv_rule)
-    View mTvRule;
+    TextView mTvRule;
 
     private ActionPopupWindow mActionPopupWindow;
 
@@ -75,6 +75,8 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
      * 积分配置
      */
     private IntegrationConfigBean mIntegrationConfigBean;
+
+    private String mGoldName;
 
     /**
      * 构造方法
@@ -134,6 +136,7 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
             mChooseType = getArguments().getString(BUNDLE_CHOOSE_TYPE);
             mIntegrationConfigBean = (IntegrationConfigBean) getArguments().getSerializable(BUNDLE_INTEGRATION_CONFIG);
         }
+        mGoldName=mPresenter.getGoldName();
     }
 
     @Override
@@ -177,6 +180,8 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
                     time.setText(TimeUtils.getTimeFriendlyForDetail(recharge.getCreated_at()));
                 }
             };
+            mToolbarCenter.setText(getString(R.string.integration_detail_format,mGoldName));
+            mTvRule.setText(getString(R.string.integration_rule_format,mGoldName));
             mTvRule.setVisibility(View.VISIBLE);
             RxView.clicks(mTvRule)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -186,7 +191,7 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
                         if (mIntegrationConfigBean != null) {
                             Bundle bundle = new Bundle();
                             bundle.putString(WalletRuleFragment.BUNDLE_RULE, mIntegrationConfigBean.getRechargerule());
-                            bundle.putString(WalletRuleFragment.BUNDLE_TITLE, getResources().getString(R.string.integration_rule));
+                            bundle.putString(WalletRuleFragment.BUNDLE_TITLE, getResources().getString(R.string.integration_rule_format,mGoldName));
                             intent.putExtras(bundle);
                         }
                         startActivity(intent);

@@ -89,6 +89,7 @@ public class IntegrationRechargePresenter extends AppBasePresenter<IntegrationRe
 
     @Override
     public void rechargeSuccessCallBack(String charge) {
+        mRootView.rechargeSuccess(null);
 //        不需要获取详细信息
 //        BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
 //        backgroundRequestTaskBean.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());

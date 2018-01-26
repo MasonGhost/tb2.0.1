@@ -113,6 +113,8 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
 
     private double mRechargeMoney; // money choosed for recharge
 
+    private String mGoldName;
+
 
     public static IntegrationRechargeFragment newInstance(Bundle bundle) {
         IntegrationRechargeFragment integrationRechargeFragment = new IntegrationRechargeFragment();
@@ -163,7 +165,8 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
         mToolbar.setBackgroundResource(android.R.color.transparent);
         ((LinearLayout.LayoutParams) mToolbar.getLayoutParams()).setMargins(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0);
         mTvToolbarCenter.setTextColor(ContextCompat.getColor(mActivity, R.color.white));
-        mTvToolbarCenter.setText(getString(R.string.recharge_integration));
+        mGoldName=mPresenter.getGoldName();
+        mTvToolbarCenter.setText(getString(R.string.recharge_integration_foramt,mGoldName));
         mTvToolbarRight.setText(getString(R.string.recharge_record));
         mTvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.topbar_back_white), null, null, null);
 
@@ -180,7 +183,7 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
             return;
         }
         // 元对应的积分比例，服务器返回的是以分为单位的比例
-        mTvMineIntegration.setText(getString(R.string.integration_ratio_formart, mIntegrationConfigBean.getRechargeratio() * 100));
+        mTvMineIntegration.setText(getString(R.string.integration_ratio_formart, 1,mIntegrationConfigBean.getRechargeratio() * 100,mGoldName));
         if (!TextUtils.isEmpty(mIntegrationConfigBean.getRechargeoptions())) {
             List<ChooseDataBean> datas = new ArrayList<>();
             String[] rechargeoptions = mIntegrationConfigBean.getRechargeoptions().split(ConstantConfig.SPLIT_SMBOL);
@@ -210,7 +213,7 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
     }
 
     private void initListener() {
-        // 积分规则
+        // 充值协议
         RxView.clicks(mTvRechargeRule)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())

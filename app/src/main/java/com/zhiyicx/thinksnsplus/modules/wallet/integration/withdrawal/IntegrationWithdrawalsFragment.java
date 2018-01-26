@@ -74,6 +74,10 @@ public class IntegrationWithdrawalsFragment extends TSFragment<IntegrationWithdr
     EditText mEtInput;
     @BindView(R.id.bt_sure)
     TextView mBtSure;
+    @BindView(R.id.tv_input_tip1)
+    TextView mTvInputTip1;
+    @BindView(R.id.tv_input_tip2)
+    TextView mTvInputTip2;
 
     private int mBaseRatioNum = 100;
 
@@ -86,6 +90,8 @@ public class IntegrationWithdrawalsFragment extends TSFragment<IntegrationWithdr
 
 
     private double mRechargeMoney; // money choosed for recharge
+
+    private String mGoldName;
 
 
     public static IntegrationWithdrawalsFragment newInstance(Bundle bundle) {
@@ -136,8 +142,9 @@ public class IntegrationWithdrawalsFragment extends TSFragment<IntegrationWithdr
         mIvRefresh = (ImageView) mRootView.findViewById(R.id.iv_refresh);
         mToolbar.setBackgroundResource(android.R.color.transparent);
         ((LinearLayout.LayoutParams) mToolbar.getLayoutParams()).setMargins(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0);
+        mGoldName = mPresenter.getGoldName();
         mTvToolbarCenter.setTextColor(ContextCompat.getColor(mActivity, R.color.white));
-        mTvToolbarCenter.setText(getString(R.string.integration_withdrawals));
+        mTvToolbarCenter.setText(getString(R.string.integration_withdrawals_format, mGoldName));
         mTvToolbarRight.setText(getString(R.string.withdrawals_record));
         mTvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.topbar_back_white), null, null, null);
         initListener();
@@ -151,10 +158,13 @@ public class IntegrationWithdrawalsFragment extends TSFragment<IntegrationWithdr
         if (mIntegrationConfigBean == null) {
             return;
         }
-        mEtInput.setHint(getString(R.string.et_input_withdrawals_integration_tip_format, mIntegrationConfigBean.getCashmin()));
+        mEtInput.setHint(getString(R.string.et_input_withdrawals_integration_tip_format, mIntegrationConfigBean.getCashmin(), mGoldName));
 
         // 元对应的积分比例，服务器返回的是以分为单位的比例
         setDynamicRatio(mBaseRatioNum);
+        mTvRechargeRule.setText(getResources().getString(R.string.integration_withdrawals_rule_format, mGoldName));
+        mTvInputTip1.setText(getString(R.string.input_withdrawals_integration_format,mGoldName));
+        mTvInputTip2.setText(getString(R.string.input_withdrawals_integration_tip_format,mGoldName));
     }
 
     /**
@@ -163,7 +173,7 @@ public class IntegrationWithdrawalsFragment extends TSFragment<IntegrationWithdr
      * @param currentIntegration
      */
     private void setDynamicRatio(int currentIntegration) {
-        mTvMineIntegration.setText(getString(R.string.integration_2_money_ratio_formart, currentIntegration, PayConfig.realCurrencyFen2Yuan
+        mTvMineIntegration.setText(getString(R.string.integration_2_money_ratio_formart, currentIntegration, mGoldName, PayConfig.realCurrencyFen2Yuan
                 ((float) currentIntegration /
                         mIntegrationConfigBean.getRechargeratio())));
     }
@@ -184,7 +194,8 @@ public class IntegrationWithdrawalsFragment extends TSFragment<IntegrationWithdr
                             Intent intent = new Intent(mActivity, WalletRuleActivity.class);
                             Bundle bundle = new Bundle();
                             bundle.putString(WalletRuleFragment.BUNDLE_RULE, mIntegrationConfigBean.getCashrule());
-                            bundle.putString(WalletRuleFragment.BUNDLE_TITLE, getResources().getString(R.string.integration_withdrawals_rule));
+                            bundle.putString(WalletRuleFragment.BUNDLE_TITLE, getResources().getString(R.string
+                                    .integration_withdrawals_rule_format, mGoldName));
 
                             intent.putExtras(bundle);
                             startActivity(intent);
