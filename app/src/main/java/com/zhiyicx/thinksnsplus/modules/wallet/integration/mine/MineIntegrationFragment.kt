@@ -120,7 +120,16 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
         mTvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(context, R.mipmap.topbar_back_white), null, null, null)
         initListener()
         initAdvert(mActivity, mPresenter.integrationAdvert)
-
+        if (mSystemConfigBean.currencyRecharge == null || !mSystemConfigBean.currencyRecharge.isOpen) {
+            mBtReCharge.visibility = View.GONE
+        } else {
+            mBtReCharge.visibility = View.VISIBLE
+        }
+        if (mSystemConfigBean.currencyCash == null || !mSystemConfigBean.currencyCash.isOpen) {
+            mBtWithdraw.visibility = View.GONE
+        } else {
+            mBtWithdraw.visibility = View.VISIBLE
+        }
     }
 
     override fun onResume() {
@@ -190,7 +199,7 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
         val intent = Intent(activity, WalletRuleActivity::class.java)
         val bundle = Bundle()
         bundle.putString(WalletRuleFragment.BUNDLE_RULE, mPresenter.tipPopRule)
-        bundle.putString(WalletRuleFragment.BUNDLE_TITLE,getString(R.string.integration_rule) )
+        bundle.putString(WalletRuleFragment.BUNDLE_TITLE, getString(R.string.integration_rule))
         intent.putExtras(bundle)
         startActivity(intent)
     }

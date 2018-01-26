@@ -36,6 +36,7 @@ public class IntegrationRechargePresenter extends AppBasePresenter<IntegrationRe
             mRootView.initmRechargeInstructionsPop();
             return;
         }
+
         mBillRepository.getIntegrationPayStr(channel, (long) amount,null).doOnSubscribe(() -> {
             mRootView.configSureBtn(false);
             mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing));

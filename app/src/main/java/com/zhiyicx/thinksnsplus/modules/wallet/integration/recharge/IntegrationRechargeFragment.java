@@ -256,6 +256,16 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
+                    if (mRechargeMoney < mIntegrationConfigBean.getRechargemin()) {
+                        showSnackErrorMessage(getString(R.string.please_more_than_min_recharge_formart, PayConfig.realCurrencyYuan2Fen
+                                (mIntegrationConfigBean.getRechargemin())));
+                        return;
+                    }
+                    if (mRechargeMoney > mIntegrationConfigBean.getRechargemax()) {
+                        showSnackErrorMessage(getString(R.string.please_less_min_recharge_formart, PayConfig.realCurrencyYuan2Fen
+                                (mIntegrationConfigBean.getRechargemax())));
+                        return;
+                    }
                     mBtSure.setEnabled(false);
                     mPresenter.getPayStr(mPayType, PayConfig.realCurrencyYuan2Fen(mRechargeMoney));
                 });// 传入的是真实货币分单位
