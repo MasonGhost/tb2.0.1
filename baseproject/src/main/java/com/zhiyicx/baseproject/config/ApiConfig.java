@@ -222,7 +222,7 @@ public class ApiConfig {
 
 
     //置顶资讯、评论
-    public static final String APP_PATH_TOP_INFO = "/api/" + API_VERSION_2 + "/news/{news_id}/pinneds";
+    public static final String APP_PATH_TOP_INFO = "/api/" + API_VERSION_2 + "/news/{news_id}/currency-pinneds";
     public static final String APP_PATH_TOP_INFO_COMMENT = "/api/" + API_VERSION_2 + "/news/{news_id}/comments/{comment_id}/pinneds";
 
     // 咨询打赏
