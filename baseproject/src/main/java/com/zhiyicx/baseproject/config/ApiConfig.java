@@ -174,7 +174,7 @@ public class ApiConfig {
     public static final String APP_PATH_TOP_DYNAMIC = "api/" + API_VERSION_2 + "/feeds/{feed_id}/currency-pinneds";
 
     // 置顶动态评论 V2
-    public static final String APP_PATH_TOP_DYNAMIC_COMMENT = "api/" + API_VERSION_2 + "/feeds/{feed_id}/comments/{comment_id}/pinneds";
+    public static final String APP_PATH_TOP_DYNAMIC_COMMENT = "api/" + API_VERSION_2 + "/feeds/{feed_id}/comments/{comment_id}/currency-pinneds";
 
     // 动态评论置顶审核列表 V2
     public static final String APP_PATH_REVIEW_DYNAMIC_COMMENT = "api/" + API_VERSION_2 +

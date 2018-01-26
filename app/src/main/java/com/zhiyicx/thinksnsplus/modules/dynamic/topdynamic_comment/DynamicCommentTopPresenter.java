@@ -7,6 +7,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
@@ -24,7 +25,7 @@ import static com.zhiyicx.baseproject.config.PayConfig.MONEY_UNIT;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class DynamicCommentTopPresenter extends AppBasePresenter< DynamicCommentTopContract.View>
+public class DynamicCommentTopPresenter extends AppBasePresenter<DynamicCommentTopContract.View>
         implements DynamicCommentTopContract.Presenter {
 
     @Inject
@@ -32,11 +33,11 @@ public class DynamicCommentTopPresenter extends AppBasePresenter< DynamicComment
 
     @Inject
     public DynamicCommentTopPresenter(DynamicCommentTopContract.View rootView) {
-        super( rootView);
+        super(rootView);
     }
 
     @Override
-    public void topDynamicComment(long feed_id, long comment_id, double amount, int day) {
+    public void topDynamicComment(long feedId, long commentId, double amount, int day) {
 
         if (mRootView.getInputMoney() != (int) mRootView.getInputMoney()) {
             mRootView.initStickTopInstructionsPop();
@@ -46,11 +47,11 @@ public class DynamicCommentTopPresenter extends AppBasePresenter< DynamicComment
             mRootView.gotoRecharge();
             return;
         }
-        if (feed_id * comment_id < 0) {
+        if (feedId * commentId < 0) {
             return;
         }
-        
-        Subscription subscription = mBaseDynamicRepository.commentStickTop(feed_id, comment_id, PayConfig.gameCurrency2RealCurrency(amount*day,getRatio()), day)
+
+        Subscription subscription = mBaseDynamicRepository.commentStickTop(feedId, commentId, amount * day, day)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Integer>>() {
                     @Override
@@ -79,13 +80,11 @@ public class DynamicCommentTopPresenter extends AppBasePresenter< DynamicComment
     public double getBalance() {
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
         if (authBean != null) {
-            WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id());
-            int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
-            try {
-                return PayConfig.realCurrencyFen2Yuan(walletBean.getBalance());
-            } catch (Exception e) {
+            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(authBean.getUser_id());
+            if (userInfoBean == null || userInfoBean.getCurrency() == null) {
                 return 0;
             }
+            return userInfoBean.getCurrency().getSum();
         }
         return 0;
     }
