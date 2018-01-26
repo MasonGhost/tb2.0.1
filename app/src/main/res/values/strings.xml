@@ -876,7 +876,7 @@
     <string name="domain_dev">开发服</string>
     <string name="domain_swith">服务器切换</string>
     <string name="no_new_version">当前已经是最新版</string>
-    <string name="defualt_golde_name">豆子</string>
+    <string name="defualt_golde_name">积分</string>
     <string name="today_with_split">今,天</string>
     <string name="yestorday_with_split">昨,天</string>
     <string name="can_not_use_protected_name">不能使用站点预留昵称</string>

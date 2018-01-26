@@ -99,7 +99,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         setCenterTextColor(R.color.white);
         setRightText(getString(R.string.detail));
         initListener();
-        getTvMineMoney.setText(String.format(Locale.getDefault(),getString(R.string.account_balance),mPresenter.getGoldName()));
+        getTvMineMoney.setText(String.format(Locale.getDefault(),getString(R.string.account_balance),getString(R.string.yuan)));
         mSystemConfigBean=mPresenter.getSystemConfigBean();
         if(mSystemConfigBean==null||mSystemConfigBean.getWalletRecharge()==null||!mSystemConfigBean.getWalletRecharge().isOpen()){
             mBtReCharge.setVisibility(View.GONE);
