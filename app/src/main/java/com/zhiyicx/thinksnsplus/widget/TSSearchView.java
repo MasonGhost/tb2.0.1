@@ -74,7 +74,7 @@ public class TSSearchView extends AppCompatEditText implements View.OnKeyListene
 
     @Override
     protected void onDraw(Canvas canvas) {
-
+        drawableLeft = drawables[0];
         if (isShowNormal) { // 如果是默认样式，直接绘制
             if (length() < 1) {
                 drawableDel = null;
@@ -82,7 +82,6 @@ public class TSSearchView extends AppCompatEditText implements View.OnKeyListene
             this.setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, drawableDel, null);
             super.onDraw(canvas);
         } else { // 如果不是默认样式，需要将图标绘制在中间
-            drawableLeft = drawables[0];
             float textWidth = getPaint().measureText(getHint().toString());
             int drawablePadding = getCompoundDrawablePadding();
             int drawableWidth = drawableLeft.getIntrinsicWidth();

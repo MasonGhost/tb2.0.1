@@ -2,10 +2,14 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:descendantFocusability="beforeDescendants"
         android:background="@color/white">
 
     <com.zhiyicx.thinksnsplus.widget.TSSearchView
             android:id="@+id/searchView"
+            android:focusable="true"
             android:layout_width="match_parent"
             android:layout_height="@dimen/conversation_search_height"
             android:background="@drawable/info_search_bg"
