@@ -124,8 +124,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     @Override
     protected void initData() {
         initRechargeLables();
-        String moneyName = mPresenter.getGoldName();
-        mCustomMoney.setText(moneyName);
+        mCustomMoney.setText(getString(R.string.yuan));
     }
 
     @Override
