@@ -48,7 +48,8 @@ public abstract class BaseFragment<P extends IBasePresenter> extends RxFragment 
         mRootView = getContentView();
         // 绑定到 butterknife
         mUnbinder = ButterKnife.bind(this, mRootView);
-        if (usePermisson()) { //是否需要权限验证，需要防止 initview 之前，防止 rxbinding初始化空
+        //是否需要权限验证，需要防止 initview 之前，防止 rxbinding初始化空
+        if (usePermisson()) {
             mRxPermissions = new RxPermissions(getActivity());
             mRxPermissions.setLogging(true);
         }
@@ -59,9 +60,10 @@ public abstract class BaseFragment<P extends IBasePresenter> extends RxFragment 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
-        {
-            EventBus.getDefault().register(this);// 注册到事件主线
+        // 如果要使用 eventbus 请将此方法返回 true
+        if (useEventBus()){
+            // 注册到事件主线
+            EventBus.getDefault().register(this);
         }
         initData();
     }

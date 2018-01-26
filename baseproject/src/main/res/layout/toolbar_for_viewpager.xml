@@ -30,7 +30,6 @@
                 android:id="@+id/mg_indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_toLeftOf="@+id/tv_toolbar_right"
                 android:layout_centerInParent="true"
                 android:background="@android:color/transparent"/>
 

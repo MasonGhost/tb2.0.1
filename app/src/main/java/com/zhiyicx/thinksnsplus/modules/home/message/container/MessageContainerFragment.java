@@ -16,9 +16,9 @@ import android.widget.TextView;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.easeui.ui.EaseConversationListFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
-import com.zhiyicx.baseproject.widget.TabSelectView;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.chat.select.SelectFriendsActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
@@ -120,7 +120,7 @@ public class MessageContainerFragment extends TSViewPagerFragment implements Eas
     protected void initViewPager(View rootView) {
         super.initViewPager(rootView);
         mTsvToolbar.setLeftImg(0);
-        mTsvToolbar.setRightImg(R.mipmap.ico_spchat, 0);
+        mTsvToolbar.setRightImg(R.mipmap.ico_spchat, R.color.white);
         mTsvToolbar.setRightClickListener(this, () -> {
             Intent intent = new Intent(getContext(), SelectFriendsActivity.class);
             startActivity(intent);
@@ -167,15 +167,20 @@ public class MessageContainerFragment extends TSViewPagerFragment implements Eas
                 break;
             default:
         }
-        BadgePagerTitleView badgePagerTitleView = mBadgePagerTitleViews.get(position);
-        if (isShow) {
-            ImageView badgeImageView = (ImageView) LayoutInflater.from(getContext()).inflate(R.layout.simple_count_badge_layout, null);
-            badgePagerTitleView.setBadgeView(badgeImageView);
-            badgePagerTitleView.setXBadgeRule(new BadgeRule(BadgeAnchor.CONTENT_RIGHT, UIUtil.dip2px(getContext(), 10)));
-            badgePagerTitleView.setYBadgeRule(new BadgeRule(BadgeAnchor.CONTENT_TOP, -UIUtil.dip2px(getContext(), 3)));
-        }
-        if (!isShow) {
-            badgePagerTitleView.setBadgeView(null);
+        BadgePagerTitleView badgePagerTitleView;
+        try {
+            badgePagerTitleView = mBadgePagerTitleViews.get(position);
+            if (isShow) {
+                ImageView badgeImageView = (ImageView) LayoutInflater.from(getContext()).inflate(R.layout.simple_count_badge_layout, null);
+                badgePagerTitleView.setBadgeView(badgeImageView);
+                badgePagerTitleView.setXBadgeRule(new BadgeRule(BadgeAnchor.CONTENT_RIGHT, UIUtil.dip2px(getContext(), 10)));
+                badgePagerTitleView.setYBadgeRule(new BadgeRule(BadgeAnchor.CONTENT_TOP, -UIUtil.dip2px(getContext(), 3)));
+            }
+            if (!isShow) {
+                badgePagerTitleView.setBadgeView(null);
+            }
+        } catch (Exception ignore) {
+            LogUtils.d("can not find badgeView");
         }
     }
 
@@ -237,18 +242,9 @@ public class MessageContainerFragment extends TSViewPagerFragment implements Eas
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-
-        if (!isVisibleToUser) {
-            try {
-                ((MessageFragment) mFragmentList.get(0)).setUserVisibleHint(isVisibleToUser);
-            } catch (Exception ignored) {
-            }
+        if (!isVisibleToUser&&mFragmentList!=null&&mFragmentList.size()>0&&mFragmentList.get(0)!=null){
+            ((MessageFragment) mFragmentList.get(0)).setUserVisibleHint(false);
         }
-    }
-
-    @Override
-    public void setPresenter(Object presenter) {
-
     }
 
     @Override

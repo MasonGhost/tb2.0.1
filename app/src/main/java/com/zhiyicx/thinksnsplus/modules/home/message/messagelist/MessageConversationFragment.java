@@ -146,7 +146,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
         mMessageItemBeanList.addAll(list);
         mAdapter.notifyDataSetChanged();
         hideLoading();
-        setEmptyView();
+        setEmptyViewVisiable(mMessageItemBeanList.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0);
     }
 
     @Override
@@ -240,15 +240,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
 
     @Override
     public void refreshData() {
-        setEmptyView();
+        setEmptyViewVisiable(mMessageItemBeanList.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
-    }
-
-    private void setEmptyView() {
-        if (mMessageItemBeanList.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0) {
-            mEmptyView.setVisibility(View.VISIBLE);
-        } else {
-            mEmptyView.setVisibility(View.GONE);
-        }
     }
 }

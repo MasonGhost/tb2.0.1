@@ -19,8 +19,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hyphenate.easeui.EaseConstant;
-import com.hyphenate.easeui.bean.ChatUserInfoBean;
-import com.hyphenate.easeui.bean.ChatVerifiedBean;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.base.TSFragment;
