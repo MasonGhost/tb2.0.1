@@ -245,7 +245,7 @@ public class ApiConfig {
 
     // 拒绝资讯评论置顶
     public static final String APP_PATH_REFUSE_INFO_COMMENT = "/api/" + API_VERSION_2 +
-            "/news/{news_id}/comments/{comment_id}/pinneds/{pinned_id}/reject";
+            "/news/{news_id}/comments/{comment_id}/currency-pinneds/{pinned_id}/reject";
 
 
     /**
