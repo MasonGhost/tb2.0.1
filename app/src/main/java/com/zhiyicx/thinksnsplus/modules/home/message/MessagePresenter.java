@@ -77,6 +77,11 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
     MessageRepository mMessageRepository;
 
     /**
+     * 系统消息
+     */
+    private MessageItemBean mItemBeanSystemMessage;
+
+    /**
      * 评论的
      */
     private MessageItemBean mItemBeanComment;
@@ -247,6 +252,11 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
     @Override
     public MessageItemBean updateReviewItemData() {
         return mItemBeanReview;
+    }
+
+    @Override
+    public MessageItemBean updateSystemMsgItemData() {
+        return mItemBeanSystemMessage;
     }
 
     /**
@@ -505,11 +515,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
                      * 设置时间
                      */
                     mItemBeanComment.getConversation().setLast_message_time(data.getComments() == null || data.getComments().isEmpty() ? 0 :
-                            TimeUtils
-                                    .utc2LocalLong(data.getComments().get(0).getTime()));
+                            TimeUtils.utc2LocalLong(data.getComments().get(0).getTime()));
                     mItemBeanDigg.getConversation().setLast_message_time(data.getLikes() == null || data.getLikes().isEmpty() ? 0 :
-                            TimeUtils
-                                    .utc2LocalLong(data.getLikes().get(0).getTime()));
+                            TimeUtils.utc2LocalLong(data.getLikes().get(0).getTime()));
 
                     String feedTime = data.getPinneds() != null && data.getPinneds().getFeeds() != null ? data.getPinneds().getFeeds().getTime() :
                             null;
@@ -620,6 +628,14 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
      * 初始化 header 数据
      */
     private void initHeaderItemData() {
+
+        mItemBeanSystemMessage = new MessageItemBean();
+        Conversation systemMessage = new Conversation();
+        Message systemMsg = new Message();
+        systemMessage.setLast_message(systemMsg);
+        mItemBeanSystemMessage.setConversation(systemMessage);
+        mItemBeanSystemMessage.getConversation().getLast_message().setTxt(mContext.getString(R.string.system_notification_null));
+
         mItemBeanComment = new MessageItemBean();
         Conversation commentMessage = new Conversation();
         Message message = new Message();

@@ -30,6 +30,12 @@ public interface MessageContract {
      * 对于经常使用的关于 UI 的方法可以定义到 BaseView 中,如显示隐藏进度条,和显示文字消息
      */
     interface View extends ITSListView<MessageItemBean, Presenter> {
+
+        /**
+         * 更新系统消息
+         */
+        void updateSystemMsgItemData(MessageItemBean messageItemBean);
+
         /**
          * 更新评论的
          */
@@ -78,6 +84,8 @@ public interface MessageContract {
         MessageItemBean updateLikeItemData();
 
         MessageItemBean updateReviewItemData();
+
+        MessageItemBean updateSystemMsgItemData();
 
         /**
          * 刷新是否显示底部红点

@@ -177,12 +177,16 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      *
      * @param headerview
      */
-    private void updateHeaderViewData(View headerview, MessageItemBean commentItemData,
+    private void updateHeaderViewData(View headerview,MessageItemBean systemMsgItemData, MessageItemBean commentItemData,
                                       MessageItemBean likedItemData, MessageItemBean
                                               reviewItemBean) {
         View rlCritical = null;
         View liked;
         View review;
+
+        TextView tvHeaderSystemMsgContent = null;
+        TextView tvHeaderSystemMsgTime = null;
+        BadgeView tvHeaderSystemMsgTip = null;
 
         TextView tvHeaderCommentContent = null;
         TextView tvHeaderCommentTime = null;
@@ -243,6 +247,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                     updateReviewItemData(mPresenter.updateReviewItemData());
                 });
 
+        tvHeaderSystemMsgContent = (TextView) headerview.findViewById(R.id
+                .tv_header_notification_content);
+        tvHeaderSystemMsgTime = (TextView) headerview.findViewById(R.id.tv_header_notification_time);
+        tvHeaderSystemMsgTip = (BadgeView) headerview.findViewById(R.id.tv_header_notification_tip);
+
         tvHeaderCommentContent = (TextView) headerview.findViewById(R.id
                 .tv_header_comment_content);
         tvHeaderCommentTime = (TextView) headerview.findViewById(R.id.tv_header_comment_time);
@@ -257,8 +266,21 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         tvHeaderReviewTime = (TextView) headerview.findViewById(R.id.tv_header_review_time);
         tvHeaderReviewTip = (BadgeView) headerview.findViewById(R.id.tv_header_review_tip);
 
-        tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message().getTxt
-                ());
+        tvHeaderSystemMsgContent.setText(systemMsgItemData.getConversation().getLast_message().getTxt());
+        if (systemMsgItemData.getConversation().getLast_message_time() == 0 || systemMsgItemData
+                .getConversation().getLast_message().getTxt().contains(getString(R.string
+                        .has_no_body))) {
+            tvHeaderSystemMsgTime.setVisibility(View.INVISIBLE);
+        } else {
+            tvHeaderSystemMsgTime.setVisibility(View.VISIBLE);
+            tvHeaderSystemMsgTime.setText(TimeUtils.getTimeFriendlyNormal(systemMsgItemData
+                    .getConversation().getLast_message_time()));
+        }
+        tvHeaderSystemMsgTip.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert
+                (systemMsgItemData.getUnReadMessageNums())));
+
+
+        tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message().getTxt());
 
         if (commentItemData.getConversation().getLast_message_time() == 0 || commentItemData
                 .getConversation().getLast_message().getTxt().contains(getString(R.string
@@ -285,7 +307,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         tvHeaderLikeTip.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert
                 (likedItemData.getUnReadMessageNums())));
 
-// 审核
+        // 审核
         tvHeaderReviewContent.setText(reviewItemBean.getConversation().getLast_message().getTxt());
         if (reviewItemBean.getConversation().getLast_message_time() == 0 || reviewItemBean
                 .getConversation().getLast_message().getTxt().contains(getString(R.string
@@ -335,25 +357,35 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
+    public void updateSystemMsgItemData(MessageItemBean messageItemBean) {
+        if (messageItemBean == null) {
+            return;
+        }
+        updateHeaderViewData(mHeaderView, mPresenter.updateSystemMsgItemData(),mPresenter.updateCommnetItemData(), mPresenter
+                .updateLikeItemData(), mPresenter.updateReviewItemData());
+        refreshData();
+    }
+
+    @Override
     public void updateCommnetItemData(MessageItemBean messageItemBean) {
         if (messageItemBean == null) {
             return;
         }
-        updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter
+        updateHeaderViewData(mHeaderView,mPresenter.updateSystemMsgItemData(), mPresenter.updateCommnetItemData(), mPresenter
                 .updateLikeItemData(), mPresenter.updateReviewItemData());
         refreshData();
     }
 
     @Override
     public void updateLikeItemData(MessageItemBean messageItemBean) {
-        updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter
+        updateHeaderViewData(mHeaderView,mPresenter.updateSystemMsgItemData(), mPresenter.updateCommnetItemData(), mPresenter
                 .updateLikeItemData(), mPresenter.updateReviewItemData());
         refreshData();
     }
 
     @Override
     public void updateReviewItemData(MessageItemBean messageItemBean) {
-        updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter
+        updateHeaderViewData(mHeaderView,mPresenter.updateSystemMsgItemData(), mPresenter.updateCommnetItemData(), mPresenter
                 .updateLikeItemData(), mPresenter.updateReviewItemData());
         refreshData();
     }
