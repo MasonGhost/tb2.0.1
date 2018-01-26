@@ -212,7 +212,7 @@ public class ApiConfig {
     public static final String INFO_TYPE_COLLECTIONS = "-1000";// 资讯收藏列表
 
     // 资讯投稿
-    public static final String APP_PATH_PUBLISH_INFO = "api/" + API_VERSION_2 + "/news/categories/{category}/news";
+    public static final String APP_PATH_PUBLISH_INFO = "api/" + API_VERSION_2 + "/news/categories/{category}/currency-news";
 
     // 修改资讯投稿
     public static final String APP_PATH_UPDATE_INFO = "api/" + API_VERSION_2 + "/news/categories/{category_id}/news/{news_id}";
