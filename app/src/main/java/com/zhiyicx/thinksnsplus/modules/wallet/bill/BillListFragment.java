@@ -46,13 +46,12 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
     private ActionPopupWindow mActionPopupWindow;
 
     /**
-     * 0 支出，1 收入
+     * income - 收入 expenses - 支出 默认全部
      */
-    private int[] mBillTypes = new int[]{0, 1, 2};
+    private String[] mBillTypes = new String[]{"","income" , "expenses"};
 
-    private int mBillType = mBillTypes[2];
+    private String mBillType = mBillTypes[0];
 
-    private long maxId = 0;
 
     public static BillListFragment newInstance() {
         return new BillListFragment();
@@ -172,19 +171,9 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
     }
 
     @Override
-    public Integer getBillType() {
-        return mBillType == mBillTypes[2] ? null : mBillType;
+    public String getBillType() {
+        return mBillType == mBillTypes[0] ? null : mBillType;
     }
-
-    @Override
-    public void setMaxId(long maxId) {
-        this.maxId = maxId;
-    }
-
-//    @Override
-//    protected Long getMaxId(@NotNull List<RechargeSuccessBean> data) {
-//        return maxId;
-//    }
 
     private void initTopPopWindow() {
         if (mActionPopupWindow != null) {
@@ -202,13 +191,13 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                 .item1ClickListener(() -> {
                     mToolbarCenter.setText(getString(R.string.withdraw_all));
                     mPresenter.selectAll();
-                    mBillType = mBillTypes[2];
+                    mBillType = mBillTypes[0];
                     mActionPopupWindow.hide();
                 })
                 .item2ClickListener(() -> {
                     mToolbarCenter.setText(getString(R.string.withdraw_out));
                     mPresenter.selectBillByAction(0);
-                    mBillType = mBillTypes[0];
+                    mBillType = mBillTypes[2];
                     mActionPopupWindow.hide();
                 })
                 .item3ClickListener(() -> {

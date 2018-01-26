@@ -34,7 +34,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_WITH
 public interface IBillRepository {
 
 
-    Observable<List<RechargeSuccessBean>> getBillList(int after, Integer action);
+    Observable<List<RechargeSuccessBean>> getBillList(int after, String action);
 
     Observable<List<RechargeSuccessBean>> dealRechargeList(Observable<List<RechargeSuccessBean>> data);
 

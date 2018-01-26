@@ -54,7 +54,7 @@ public class BillRepository implements IBillRepository {
     }
 
     @Override
-    public Observable<List<RechargeSuccessBean>> getBillList(int after, Integer action) {
+    public Observable<List<RechargeSuccessBean>> getBillList(int after, String action) {
         return dealRechargeList(mWalletClient.getRechargeSuccessList(TSListFragment.DEFAULT_PAGE_SIZE, after, action));
     }
 

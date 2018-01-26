@@ -55,8 +55,15 @@ public interface WalletClient {
     @GET(APP_PAHT_WALLET_RECHARGE_SUCCESS)
     Observable<RechargeSuccessBean> rechargeSuccess(@Path("charge") String charge);
 
+    /**
+     *
+     * @param limit
+     * @param after
+     * @param action income - 收入 expenses - 支出
+     * @return
+     */
     @GET(APP_PAHT_WALLET_RECHARGE_SUCCESS_LIST)
-    Observable<List<RechargeSuccessBean>> getRechargeSuccessList(@Query("limit") int limit, @Query("after") int after, @Query("action") Integer
+    Observable<List<RechargeSuccessBean>> getRechargeSuccessList(@Query("limit") int limit, @Query("after") int after, @Query("action") String
             action);
 
     @GET(APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK)

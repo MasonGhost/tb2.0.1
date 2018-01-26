@@ -40,9 +40,6 @@ public class BillPresenter extends AppBasePresenter<BillContract.View> implement
                 .subscribe(new BaseSubscribeForV2<List<RechargeSuccessBean>>() {
                     @Override
                     protected void onSuccess(List<RechargeSuccessBean> data) {
-//                        Collections.sort(data, new TimeStringSortClass());
-                        mRootView.setMaxId(data.isEmpty() ? 0 : data.get(data.size() - 1).getMaxId());
-                        removeAction(data, mRootView.getBillType());
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
@@ -85,16 +82,5 @@ public class BillPresenter extends AppBasePresenter<BillContract.View> implement
         requestCacheData(1L, false);
     }
 
-    private void removeAction(List<RechargeSuccessBean> list, Integer action) {
-        if (action == null) {
-            return;
-        }
-        Iterator<RechargeSuccessBean> rechargesIterator = list.iterator();
-        while (rechargesIterator.hasNext()) {
-            RechargeSuccessBean data = rechargesIterator.next();
-            if (data.getAction() != action) {
-                rechargesIterator.remove();
-            }
-        }
-    }
+
 }
