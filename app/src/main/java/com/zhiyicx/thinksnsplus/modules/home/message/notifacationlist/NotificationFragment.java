@@ -70,7 +70,6 @@ public class NotificationFragment extends TSListFragment<NotificationContract.Pr
         if (mPresenter != null && isVisibleToUser) {
             mRefreshlayout.autoRefresh();
         }
-
     }
 
     @Override

@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:showDividers="middle"
+    android:divider="@drawable/light_linear_driver"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
@@ -71,8 +73,6 @@
                     tools:text="99"/>
         </FrameLayout>
 
-
-
         <TextView
                 android:id="@+id/tv_header_notification_content"
                 android:layout_width="match_parent"
@@ -90,9 +90,7 @@
                 android:layout_marginTop="@dimen/textview_spacing_offset_height"
                 android:textColor="@color/normal_for_assist_text"
                 android:textSize="@dimen/size_content_assist"
-                tools:text="@string/system_notification_null "/>
-
-
+                tools:text="@string/system_notification_null"/>
     </RelativeLayout>
     <!--评论-->
     <RelativeLayout
@@ -182,6 +180,7 @@
 
 
     </RelativeLayout>
+    <!--赞过的-->
     <RelativeLayout
         android:id="@+id/rl_liked"
         android:layout_width="match_parent"
@@ -269,7 +268,7 @@
 
 
     </RelativeLayout>
-
+    <!--审核-->
     <RelativeLayout
         android:id="@+id/rl_review"
         android:layout_width="match_parent"
