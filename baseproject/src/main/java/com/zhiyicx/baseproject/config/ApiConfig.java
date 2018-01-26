@@ -182,7 +182,7 @@ public class ApiConfig {
 
     // 同意动态评论置顶 V2
     public static final String APP_PATH_APPROVED_DYNAMIC_COMMENT = "api/" + API_VERSION_2 +
-            "/feeds/{feed_id}/comments/{comment_id}/pinneds/{pinned_id}";
+            "/feeds/{feed_id}/comments/{comment_id}/currency-pinneds/{pinned_id}";
 
     // 拒绝动态评论置顶 V2
     public static final String APP_PATH_REFUSE_DYNAMIC_COMMENT = "api/" + API_VERSION_2 +
