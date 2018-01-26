@@ -186,7 +186,7 @@ public class ApiConfig {
 
     // 拒绝动态评论置顶 V2
     public static final String APP_PATH_REFUSE_DYNAMIC_COMMENT = "api/" + API_VERSION_2 +
-            "/user/feed-comment-pinneds/{pinned_id}";
+            "/user/feed-comment-currency-pinneds/{pinned_id}";
 
     // 删除动态评论置顶 V2
     public static final String APP_PATH_DELETE_DYNAMIC_COMMENT = "api/" + API_VERSION_2 +
