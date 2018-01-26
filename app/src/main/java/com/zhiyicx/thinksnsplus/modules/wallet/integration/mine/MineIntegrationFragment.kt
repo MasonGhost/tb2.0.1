@@ -120,12 +120,13 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
         mTvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(context, R.mipmap.topbar_back_white), null, null, null)
         initListener()
         initAdvert(mActivity, mPresenter.integrationAdvert)
-        if (mSystemConfigBean.currencyRecharge == null || !mSystemConfigBean.currencyRecharge.isOpen) {
+        mSystemConfigBean = mPresenter.systemConfigBean
+        if (mSystemConfigBean == null || mSystemConfigBean.currencyRecharge == null || !mSystemConfigBean.currencyRecharge.isOpen) {
             mBtReCharge.visibility = View.GONE
         } else {
             mBtReCharge.visibility = View.VISIBLE
         }
-        if (mSystemConfigBean.currencyCash == null || !mSystemConfigBean.currencyCash.isOpen) {
+        if (mSystemConfigBean == null || mSystemConfigBean.currencyCash == null || !mSystemConfigBean.currencyCash.isOpen) {
             mBtWithdraw.visibility = View.GONE
         } else {
             mBtWithdraw.visibility = View.VISIBLE

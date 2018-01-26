@@ -100,6 +100,17 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         setRightText(getString(R.string.detail));
         initListener();
         getTvMineMoney.setText(String.format(Locale.getDefault(),getString(R.string.account_balance),mPresenter.getGoldName()));
+        mSystemConfigBean=mPresenter.getSystemConfigBean();
+        if(mSystemConfigBean==null||mSystemConfigBean.getWalletRecharge()==null||!mSystemConfigBean.getWalletRecharge().isOpen()){
+            mBtReCharge.setVisibility(View.GONE);
+        }else {
+            mBtReCharge.setVisibility(View.VISIBLE);
+        }
+        if(mSystemConfigBean==null||mSystemConfigBean.getWalletCash()==null||!mSystemConfigBean.getWalletCash().isOpen()){
+            mBtWithdraw.setVisibility(View.GONE);
+        }else {
+            mBtWithdraw.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
