@@ -103,7 +103,7 @@ public class QuestionDetailContent extends FrameLayout {
         mTvQuestionContent.setStateShrink();
         String content = questionDetail.getBody();
         String preContent = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, questionDetail.getBody()); // 预览的文字
-        preContent = preContent.replaceAll("[^u4e00-u9fa5]", "");// 去掉所有 非汉字内容
+        preContent = preContent.replaceAll(MarkdownConfig.NORMAL_FORMAT, "");// 去掉所有 非(中文，英文字母和数字)内容
         List<ImageBean> list = new ArrayList<>();
         Pattern pattern = Pattern.compile(IMAGE_FORMAT);
         Matcher matcher = pattern.matcher(content);
