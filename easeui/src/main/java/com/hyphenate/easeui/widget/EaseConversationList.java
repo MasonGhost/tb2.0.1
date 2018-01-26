@@ -1,5 +1,6 @@
 package com.hyphenate.easeui.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Handler;
@@ -28,7 +29,7 @@ public class EaseConversationList extends ListView{
     
     protected Context context;
     protected EaseConversationAdapter adapter;
-    protected List<EMConversation> conversations = new ArrayList<EMConversation>();
+    protected List<EMConversation> conversations = new ArrayList<>();
     protected List<EMConversation> passedListRef = null;
     
     
@@ -77,6 +78,7 @@ public class EaseConversationList extends ListView{
         setAdapter(adapter);
     }
     
+    @SuppressLint("HandlerLeak")
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
@@ -93,7 +95,7 @@ public class EaseConversationList extends ListView{
     };
 
     public EMConversation getItem(int position) {
-        return (EMConversation)adapter.getItem(position);
+        return adapter.getItem(position);
     }
     
     public void refresh() {

@@ -91,23 +91,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
                 .build()
                 .inject(this);
         super.initData();
-        mSearchView.setOnSearchClickListener(new TSSearchView.OnSearchClickListener() {
-            @Override
-            public void onSearchClick(View view) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (TextUtils.isEmpty(s)){
-                    // 展示原数据
-                    mPresenter.requestNetData(0L, false);
-                } else {
-                    // 显示搜索结果
-                    mPresenter.searchList(s.toString());
-                }
-            }
-        });
+        initListener();
     }
 
     @Override
@@ -242,5 +226,25 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
     public void refreshData() {
         setEmptyViewVisiable(mMessageItemBeanList.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
+    }
+
+    private void initListener(){
+        mSearchView.setOnSearchClickListener(new TSSearchView.OnSearchClickListener() {
+            @Override
+            public void onSearchClick(View view) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (TextUtils.isEmpty(s)){
+                    // 展示原数据
+                    mPresenter.requestNetData(0L, false);
+                } else {
+                    // 显示搜索结果
+                    mPresenter.searchList(s.toString());
+                }
+            }
+        });
     }
 }

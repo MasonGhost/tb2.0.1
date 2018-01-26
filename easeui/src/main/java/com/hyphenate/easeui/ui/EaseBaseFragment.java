@@ -39,9 +39,10 @@ public abstract class EaseBaseFragment extends Fragment{
     
     protected void hideSoftKeyboard() {
         if (getActivity().getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
-            if (getActivity().getCurrentFocus() != null)
+            if (getActivity().getCurrentFocus() != null) {
                 inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
+            }
         }
     }
     

@@ -1,5 +1,6 @@
 package com.hyphenate.easeui.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,16 +35,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-/**
- * conversation list fragment
- *
- */
+
 public class EaseConversationListFragment extends EaseBaseFragment{
 	private final static int MSG_REFRESH = 2;
     protected EditText query;
     protected ImageButton clearSearch;
     protected boolean hidden;
-    protected List<EMConversation> conversationList = new ArrayList<EMConversation>();
+    protected List<EMConversation> conversationList = new ArrayList<>();
     protected EaseConversationList conversationListView;
     protected FrameLayout errorItemContainer;
 
@@ -65,8 +63,9 @@ public class EaseConversationListFragment extends EaseBaseFragment{
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        if(savedInstanceState != null && savedInstanceState.getBoolean("isConflict", false))
+        if(savedInstanceState != null && savedInstanceState.getBoolean("isConflict", false)) {
             return;
+        }
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -99,6 +98,7 @@ public class EaseConversationListFragment extends EaseBaseFragment{
         EMClient.getInstance().addConnectionListener(connectionListener);
         
         query.addTextChangedListener(new TextWatcher() {
+            @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 conversationListView.filter(s);
                 if (s.length() > 0) {
@@ -108,9 +108,11 @@ public class EaseConversationListFragment extends EaseBaseFragment{
                 }
             }
 
+            @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
+            @Override
             public void afterTextChanged(Editable s) {
             }
         });
@@ -152,7 +154,9 @@ public class EaseConversationListFragment extends EaseBaseFragment{
     };
     private EaseConversationListItemClickListener listItemClickListener;
     
+    @SuppressLint("HandlerLeak")
     protected Handler handler = new Handler(){
+        @Override
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
             case 0:
@@ -215,7 +219,7 @@ public class EaseConversationListFragment extends EaseBaseFragment{
         synchronized (conversations) {
             for (EMConversation conversation : conversations.values()) {
                 if (conversation.getAllMessages().size() != 0) {
-                    sortList.add(new Pair<Long, EMConversation>(conversation.getLastMessage().getMsgTime(), conversation));
+                    sortList.add(new Pair<>(conversation.getLastMessage().getMsgTime(), conversation));
                 }
             }
         }
@@ -225,7 +229,7 @@ public class EaseConversationListFragment extends EaseBaseFragment{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        List<EMConversation> list = new ArrayList<EMConversation>();
+        List<EMConversation> list = new ArrayList<>();
         for (Pair<Long, EMConversation> sortItem : sortList) {
             list.add(sortItem.second);
         }
@@ -244,7 +248,7 @@ public class EaseConversationListFragment extends EaseBaseFragment{
 
                 if (con1.first.equals(con2.first)) {
                     return 0;
-                } else if (con2.first.longValue() > con1.first.longValue()) {
+                } else if (con2.first > con1.first) {
                     return 1;
                 } else {
                     return -1;
@@ -254,11 +258,13 @@ public class EaseConversationListFragment extends EaseBaseFragment{
         });
     }
     
+   @Override
    protected void hideSoftKeyboard() {
         if (getActivity().getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
-            if (getActivity().getCurrentFocus() != null)
+            if (getActivity().getCurrentFocus() != null) {
                 inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
+            }
         }
     }
 

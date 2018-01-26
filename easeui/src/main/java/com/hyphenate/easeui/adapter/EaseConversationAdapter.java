@@ -57,7 +57,7 @@ public class EaseConversationAdapter extends ArrayAdapter<EMConversation> {
                                    List<EMConversation> objects) {
         super(context, resource, objects);
         conversationList = objects;
-        copyConversationList = new ArrayList<EMConversation>();
+        copyConversationList = new ArrayList<>();
         copyConversationList.addAll(objects);
     }
 
@@ -129,14 +129,18 @@ public class EaseConversationAdapter extends ArrayAdapter<EMConversation> {
         EaseAvatarOptions avatarOptions = EaseUI.getInstance().getAvatarOptions();
         if(avatarOptions != null && holder.avatar instanceof EaseImageView) {
             EaseImageView avatarView = ((EaseImageView) holder.avatar);
-            if (avatarOptions.getAvatarShape() != 0)
+            if (avatarOptions.getAvatarShape() != 0) {
                 avatarView.setShapeType(avatarOptions.getAvatarShape());
-            if (avatarOptions.getAvatarBorderWidth() != 0)
+            }
+            if (avatarOptions.getAvatarBorderWidth() != 0) {
                 avatarView.setBorderWidth(avatarOptions.getAvatarBorderWidth());
-            if (avatarOptions.getAvatarBorderColor() != 0)
+            }
+            if (avatarOptions.getAvatarBorderColor() != 0) {
                 avatarView.setBorderColor(avatarOptions.getAvatarBorderColor());
-            if (avatarOptions.getAvatarRadius() != 0)
+            }
+            if (avatarOptions.getAvatarRadius() != 0) {
                 avatarView.setRadius(avatarOptions.getAvatarRadius());
+            }
         }
         if (conversation.getUnreadMsgCount() > 0) {
             // show unread message count
@@ -170,12 +174,15 @@ public class EaseConversationAdapter extends ArrayAdapter<EMConversation> {
         holder.name.setTextColor(primaryColor);
         holder.message.setTextColor(secondaryColor);
         holder.time.setTextColor(timeColor);
-        if(primarySize != 0)
+        if(primarySize != 0) {
             holder.name.setTextSize(TypedValue.COMPLEX_UNIT_PX, primarySize);
-        if(secondarySize != 0)
+        }
+        if(secondarySize != 0) {
             holder.message.setTextSize(TypedValue.COMPLEX_UNIT_PX, secondarySize);
-        if(timeSize != 0)
+        }
+        if(timeSize != 0) {
             holder.time.setTextSize(TypedValue.COMPLEX_UNIT_PX, timeSize);
+        }
 
         return convertView;
     }
