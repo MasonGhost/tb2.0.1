@@ -30,6 +30,4 @@ public interface SearchFriendsContract {
         List<ChatUserInfoBean> getChatUserList(UserInfoBean userInfoBean);
     }
 
-    interface Repository extends IBaseFriendsRepository {
-    }
 }

@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.system_conversation;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.SystemConversationRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,8 +22,4 @@ public class SystemConversationPresenterModule {
         return mView;
     }
 
-    @Provides
-    SystemConversationContract.Repository provideSystemConversationContractRepository(SystemConversationRepository systemConversationRepository){
-        return systemConversationRepository;
-    }
 }

@@ -250,6 +250,18 @@
                     android:visibility="visible"
                     app:showLine="false"
                     app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+            <!--我的好友-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                    android:id="@+id/bt_my_friends"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/full_button_height"
+                    app:dividerLeftMargin="@dimen/spacing_normal"
+                    app:dividerRightMargin="@dimen/spacing_normal"
+                    app:leftImage="@mipmap/ico_me_circle"
+                    app:leftText="@string/chat_my_friends"
+                    android:visibility="gone"
+                    app:showLine="false"
+                    app:rightImage="@mipmap/ic_arrow_smallgrey"/>
             <!--钱包-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/bt_wallet"

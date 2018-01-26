@@ -2,20 +2,16 @@ package com.zhiyicx.thinksnsplus.modules.home.find;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
-import com.zhiyicx.baseproject.widget.button.CombinationButton;
-import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
-import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
-import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.main.CircleMainActivity;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
@@ -25,8 +21,9 @@ import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 /**
  * @Describe 发现页面
@@ -36,13 +33,23 @@ import butterknife.OnClick;
  */
 public class FindFragment extends TSFragment {
 
-
-    private ActionPopupWindow mActionPopupWindow;
-
     @Inject
     AuthRepository mAuthRepository;
 
     public FindFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Observable.create(subscriber -> {
+            AppApplication.AppComponentHolder.getAppComponent().inject(FindFragment.this);
+            subscriber.onCompleted();
+        })
+                .subscribeOn(Schedulers.io())
+                .subscribe(o -> {
+                }, Throwable::printStackTrace);
     }
 
     public static FindFragment newInstance() {
@@ -54,7 +61,7 @@ public class FindFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
-        AppApplication.AppComponentHolder.getAppComponent().inject(this);
+
     }
 
     @Override
@@ -121,7 +128,7 @@ public class FindFragment extends TSFragment {
                  */
             case R.id.find_chanel:
                 if (TouristConfig.CHENNEL_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
-                    startActivity(new Intent(getActivity(), ChannelListActivity.class));
+                    startActivity(new Intent(getActivity(), CircleMainActivity.class));
                 } else {
                     showLoginPop();
                 }
@@ -187,39 +194,4 @@ public class FindFragment extends TSFragment {
         }
     }
 
-    private void initPermissionPopUpWindow() {
-        if (mActionPopupWindow != null) {
-            return;
-        }
-        String model = android.os.Build.MODEL;
-        final boolean isOppoR9s = model.equalsIgnoreCase("oppo r9s");
-        mActionPopupWindow = PermissionPopupWindow.builder()
-                .permissionName(getString(com.zhiyicx.baseproject.R.string.windows_permission))
-                .with(getActivity())
-                .bottomStr(getString(com.zhiyicx.baseproject.R.string.cancel))
-
-                .item1Str(getString(isOppoR9s ? com.zhiyicx.baseproject.R.string
-                        .oppo_setting_windows_permission_hint :
-                        com.zhiyicx.baseproject.R.string.setting_windows_permission_hint))
-
-                .item2Str(getString(com.zhiyicx.baseproject.R.string.setting_permission))
-                .item2ClickListener(() -> {
-                    mActionPopupWindow.hide();
-                    if (isOppoR9s) {
-                        DeviceUtils.startAppByPackageName(getActivity(), "com.coloros.safecenter");
-                    } else {
-                        DeviceUtils.openAppDetail(getActivity());
-                    }
-                })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mActionPopupWindow.hide();
-                    }
-                })
-                .isFocus(true)
-                .isOutsideTouch(true)
-                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
-                .build();
-    }
 }

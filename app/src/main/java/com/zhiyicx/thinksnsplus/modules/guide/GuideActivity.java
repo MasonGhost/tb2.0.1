@@ -4,7 +4,12 @@ import android.content.Intent;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-
+/**
+ * @Describe
+ * @Author Jungle68
+ * @Date 2017/1/13
+ * @Contact master.jungle68@gmail.com
+ */
 public class GuideActivity extends TSActivity<GuidePresenter, GuideFragment_v2> {
 
     @Override

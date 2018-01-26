@@ -21,11 +21,4 @@ public class FindSomeOneNearbyListPresenterModule {
     FindSomeOneNearbyListContract.View provideView() {
         return mView;
     }
-
-    @Provides
-    FindSomeOneNearbyListContract.Repository provideRepository() {
-        return new FindSomeOneNearbyListContract.Repository() {
-        };
-    }
-
 }

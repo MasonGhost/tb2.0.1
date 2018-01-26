@@ -2,15 +2,11 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
-import com.zhiyicx.thinksnsplus.data.beans.AnswerDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.List;
-
-import rx.Observable;
 
 /**
  * @author LiuChao
@@ -30,11 +26,6 @@ public interface DigListContract {
          * @return
          */
         DynamicDetailBeanV2 getDynamicBean();
-    }
-
-    //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
-    interface Repository extends IDynamicReppsitory {
-
     }
 
     interface Presenter extends ITSListPresenter<DynamicDigListBean> {

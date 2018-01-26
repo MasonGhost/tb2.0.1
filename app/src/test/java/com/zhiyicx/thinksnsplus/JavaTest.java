@@ -1,10 +1,12 @@
 package com.zhiyicx.thinksnsplus;
 
 import android.annotation.SuppressLint;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.klinker.android.link_builder.Link;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.config.ConstantConfig;
@@ -17,8 +19,9 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -33,6 +36,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -94,12 +98,100 @@ public class JavaTest {
     }
 
     @Test
+    public void testLongImage() {
+        float netHeight, netWidth;
+        int sw, sh;
+        sw = 720;
+        sh = 1080;
+        netWidth = 900;
+        netHeight = 800;
+        isLongImage(netHeight, netWidth, sw, sh);
+
+    }
+
+    public void isLongImage(float netHeight, float netWidth, int sw, int sh) {
+        float net = netHeight / netWidth;
+        float result = 0;
+        if (net >= 3 || net <= .3f) {
+
+            result = sw / netWidth;
+
+            if (result <= .3f) {
+
+            } else {
+                result = result * netHeight / sh;
+            }
+        }
+        boolean isLong = (result >= 3 || result <= .3f) && result > 0;
+        System.out.println("result:::" + result + "");
+        System.out.println("isLongImage:::" + isLong + "");
+        if (!isLong) {
+            netWidth += 20;
+            isLongImage(netHeight, netWidth, sw, sh);
+        }
+    }
+
+    @Test
     public void testList() {
         List<Long> userids = new ArrayList<>();
         String test = "12,14";
         String[] testarry = test.split(",");
         userids.addAll(Arrays.asList(testarry));
         LogUtils.d(TAG, "testarry = " + userids.toString());
+    }
+
+    @Test
+    public void testCatchGroup() {
+        String src = "<span style=\"font-family: sans-serif;\">好刚刚给</span><div style=\"font-family: sans-serif;\">黄河鬼棺给</div><h1 style=\"font-family: sans-serif;\">好好奋斗是</h1><div style=\"font-family: sans-serif;\"><b><i>v刚发的的</i></b></div><div style=\"font-family: sans-serif;\"><b><i><strike>广告费多大的</strike></i></b></div><hr style=\"color: rgb(0, 0, 0);\"><div style=\"font-family: sans-serif;\"><br></div><h1 style=\"font-family: sans-serif;\">复方丹参</h1><div><br></div><div class=\"block\" contenteditable=\"false\">\n" +
+                "                                                                  \t\t\t\t<div class=\"img-block\">\n" +
+                "                                                                  \t\t\t\t\n" +
+                "                                                                  \t\t\t\t\n" +
+                "                                                                  \t\t\t\t<div class=\"delete\">\n" +
+                "                                                                  \t\t\t\t\t\n" +
+                "                                                                  \t\t\t\t\t<div class=\"tips\">图片上传失败，请点击重试</div>\n" +
+                "                                                                  \t\t\t\t\t<div class=\"markdown\">@![image](6104)</div>\n" +
+                "                                                                  \t\t\t\t</div></div>\n" +
+                "                                                                  \t\t\t\t\n" +
+                "                                                                  \t\t\t</div><h1><br></h1></div>";
+        String reg = MarkdownConfig.TEST_HTML_FORMAT;
+        Matcher matcher = Pattern.compile(reg).matcher(src);
+        String result = "";
+
+        while (matcher.find()) {
+            int count = matcher.groupCount();
+            for (int i = 0; i < count; i++) {
+                System.out.println("reg::" + i + ":::" + matcher.group(i));
+            }
+            String group2 = matcher.group(2);
+            String group3 = matcher.group(3);
+            if (TextUtils.isEmpty(group2)) {
+                result = src.replace(group2, "p");
+            }
+            if (TextUtils.isEmpty(group3)) {
+                result = result.replace(group3, "p");
+            }
+        }
+        System.out.println("result::" + result);
+    }
+
+    @Test
+    public void testFilter() {
+        String source = "http://ddd/";
+        String urlRege = "^http://[\\s\\S]+";
+        System.out.print("testFilter = " + source.matches(urlRege));
+    }
+
+    @Test
+    public void testList2Map() {
+        CreateCircleBean createCircleBean = new CreateCircleBean();
+        CreateCircleBean.TagId tagId = new CreateCircleBean.TagId(2);
+        CreateCircleBean.TagId tag = new CreateCircleBean.TagId(3);
+        List<CreateCircleBean.TagId> tags = new ArrayList<>();
+        tags.add(tag);
+        tags.add(tagId);
+        createCircleBean.setNotice("notice");
+        createCircleBean.setTags(tags);
+        System.out.print(DataDealUitls.transBean2MapWithArray(createCircleBean).toString());
     }
 
     @Test
@@ -113,7 +205,6 @@ public class JavaTest {
     @Test
     public void testInt() {
         String test = "<https://www.baidu.com> 我来测试一下哟";
-        System.out.println(test.matches(MarkdownConfig.NETSITE_FORMAT_));
 //        Matcher matcher=
         System.out.println(test.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE));
 
@@ -159,19 +250,32 @@ public class JavaTest {
     @Test
     public void testContain() {
 
-        String str = "1号线@![image]号漕宝路";
-        String reg = "[\\s\\S]*@!\\[\\S*][\\s\\S]*";
-        if (str.matches(reg)) {
-            System.out.println("result1::" + str);
+//        String str = "1号线@![image]号漕宝路";
+//        String reg = "[\\s\\S]*@!\\[\\S*][\\s\\S]*";
+//        if (str.matches(reg)) {
+//            System.out.println("result1::" + str);
+//        }
+
+        String text = "ggfdd@![image](2537)dddd@![tym](2538)";
+
+        String reg1 = "@!(\\[(.*?)])\\(((\\d+))\\)";
+        Matcher matcher = Pattern.compile(reg1).matcher(text);
+
+
+        while (matcher.find()) {
+            int count = matcher.groupCount();
+            for (int i = 0; i < count; i++) {
+                System.out.println("reg1:::" + matcher.group(i));
+            }
         }
 
-        String text = "ggfdd@![image](2537)dddd@![image](2538)";
-        if (text.matches("\\.*@!\\[.*?]\\((\\d+)\\)\\.*")) {
-            int id = RegexUtils.getImageId(text);
-            String imagePath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
-            System.out.println("result1:id:" + id);
-            System.out.println("result2:imagePath:" + imagePath);
-        }
+
+//        if (text.matches("\\.*@!\\[.*?]\\((\\d+)\\)\\.*")) {
+//            int id = RegexUtils.getImageId(text);
+//            String imagePath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
+//            System.out.println("result1:id:" + id);
+//            System.out.println("result2:imagePath:" + imagePath);
+//        }
     }
 
     @Test
@@ -248,9 +352,9 @@ public class JavaTest {
 
     @Test
     public void singleImageTest() {
-        String input = "@![image](2580)";
+        String input = "@![image](2580),,,@![image](1520)";
 
-        System.out.println("result::" + RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, input));
+        System.out.println("result::" + RegexUtils.getImageId(input));
     }
 
     @Test
@@ -1536,5 +1640,13 @@ public class JavaTest {
 //                datas.remove(data);
 //            }
 //        }
+    }
+
+    @Test
+    public void testRomand() {
+        Random random = new Random();
+        for (int i = 0; i < 100; i++) {
+            System.out.println("random = " + random.nextInt(5) % (5));
+        }
     }
 }

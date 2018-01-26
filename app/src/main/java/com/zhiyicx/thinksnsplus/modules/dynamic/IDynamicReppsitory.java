@@ -112,4 +112,13 @@ public interface IDynamicReppsitory {
      */
     Observable<DynamicCommentToll> setDynamicCommentToll(Long feed_id, int amout);
 
+    Observable<BaseJsonV2<Integer>> stickTop(long feed_id, double amount, int day);
+    Observable<BaseJsonV2<Integer>> commentStickTop(long feed_id,long comment_id, double amount, int day);
+    Observable<DynamicCommentToll> tollDynamicComment(Long feed_id, int amount);
+
+    /**
+     * 获取某个人的动态列表
+     */
+    Observable<List<DynamicDetailBeanV2>> getDynamicListForSomeone(Long user_id, Long max_id, String screen);
+
 }

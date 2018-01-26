@@ -20,6 +20,4 @@ public interface ManuscriptListContract {
     interface Presenter extends ITSListPresenter<InfoListDataBean> {
     }
 
-    interface Repository extends IBaseInfoRepository {
-    }
 }

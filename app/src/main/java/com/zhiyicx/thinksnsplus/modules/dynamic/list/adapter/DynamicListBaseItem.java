@@ -70,15 +70,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     protected final String TAG = this.getClass().getSimpleName();
     private static final int CURREN_CLOUMS = 0;
     public static final int DEFALT_IMAGE_HEIGHT = 300;
-    protected final int mWidthPixels; // 屏幕宽度
     protected final int mHightPixels; // 屏幕高度
-    private final int mMargin; // 图片容器的边距
     protected final int mDiverwith; // 分割先的宽高
     protected final int mImageContainerWith; // 图片容器最大宽度
     protected final int mImageMaxHeight; // 单张图片最大高度
-    protected ImageLoader mImageLoader;
     protected Context mContext;
-    protected AuthBean mAuthBean;
 
     protected boolean showToolMenu = true;// 是否显示工具栏:默认显示
     protected boolean showCommentList = true;// 是否显示评论内容:默认显示
@@ -141,21 +137,13 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         mOnMoreCommentClickListener = onMoreCommentClickListener;
     }
 
-    private int mTitleMaxShowNum;
-
-
     public DynamicListBaseItem(Context context) {
-        mAuthBean = AppApplication.getmCurrentLoginAuth();
         mContext = context;
-        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        mTitleMaxShowNum = mContext.getResources().getInteger(R.integer
-                .dynamic_list_title_max_show_size);
-        mWidthPixels = DeviceUtils.getScreenWidth(context);
         mHightPixels = DeviceUtils.getScreenHeight(context);
-        mMargin = 2 * context.getResources().getDimensionPixelSize(R.dimen
+        int margin = 2 * context.getResources().getDimensionPixelSize(R.dimen
                 .dynamic_list_image_marginright);
         mDiverwith = context.getResources().getDimensionPixelSize(R.dimen.spacing_small);
-        mImageContainerWith = mWidthPixels - mMargin;
+        mImageContainerWith = DeviceUtils.getScreenWidth(context) - margin;
         // 最大高度是最大宽度的4/3 保持 宽高比 3：4
         mImageMaxHeight = mImageContainerWith * 4 / 3;
     }
@@ -190,7 +178,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     @Override
     public void convert(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2
             lastT, final int position, int itemCounts) {
-        long timeS = System.currentTimeMillis();
         try {
             // 防止个人中心没后头像错误
             try {
@@ -328,8 +315,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-        long timeE = System.currentTimeMillis();
-        LogUtils.d(getClass().getSimpleName() + ":::" + (timeE - timeS));
     }
 
     private void setUserInfoClick(View view, final DynamicDetailBeanV2 dynamicBean) {
@@ -387,34 +372,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                     }
                 });
 
-    }
-
-
-    /**
-     * 计算压缩比例
-     *
-     * @param view
-     * @param dynamicBean
-     * @param positon
-     * @param part        比例，总大小的份数  @return
-     */
-    protected int getProportion(ImageView view, DynamicDetailBeanV2 dynamicBean, int positon, int part) {
-        /**
-         * 一张图时候，需要对宽高做限制
-         */
-        int with;
-        int proportion; // 压缩比例
-        int currentWith = getCurrenItemWith(part);
-        DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(positon);
-        if (imageBean.getSize() == null || imageBean.getSize().isEmpty()) {
-            return 70;
-        }
-        with = imageBean.getWidth() > currentWith ? currentWith : imageBean.getWidth();
-        int imageW = imageBean.getWidth();
-        float quality = (float) with / (float) imageW;
-        proportion = (int) (quality * 100);
-        proportion = proportion > 100 ? 100 : proportion;
-        return proportion;
     }
 
     /**
@@ -541,66 +498,5 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         return links;
     }
 
-    protected abstract class BaseRegionResourceDecoder<T> implements ResourceDecoder<T, Bitmap> {
-        private final BitmapPool bitmapPool;
-        private final Rect region;
-
-        public BaseRegionResourceDecoder(Context context, Rect region) {
-            this(Glide.get(context).getBitmapPool(), region);
-        }
-
-        public BaseRegionResourceDecoder(BitmapPool bitmapPool, Rect region) {
-            this.bitmapPool = bitmapPool;
-            this.region = region;
-        }
-
-        @Override
-        public Resource<Bitmap> decode(T source, int width, int height) throws IOException {
-            BitmapFactory.Options opts = new BitmapFactory.Options();
-
-            int sampleSize = (int) Math.ceil((double) region.width() / (double) width);
-            sampleSize = sampleSize == 0 ? 0 : Integer.highestOneBit(sampleSize);
-            sampleSize = Math.max(1, sampleSize);
-            opts.inSampleSize = sampleSize;
-
-            BitmapRegionDecoder decoder = createDecoder(source, width, height);
-            Bitmap bitmap = decoder.decodeRegion(region, opts);
-
-            return BitmapResource.obtain(bitmap, bitmapPool);
-        }
-
-        protected abstract BitmapRegionDecoder createDecoder(T source, int width, int height) throws IOException;
-
-        @Override
-        public String getId() {
-            return getClass().getName() + region; // + region is important for RESULT caching
-        }
-    }
-
-    protected class RegionImageVideoDecoder extends BaseRegionResourceDecoder<ImageVideoWrapper> {
-        public RegionImageVideoDecoder(Context context, Rect region) {
-            super(context, region);
-        }
-
-        @Override
-        protected BitmapRegionDecoder createDecoder(ImageVideoWrapper source, int width, int height) throws IOException {
-            try {
-                return BitmapRegionDecoder.newInstance(source.getStream(), false);
-            } catch (Exception ignore) {
-                return BitmapRegionDecoder.newInstance(source.getFileDescriptor().getFileDescriptor(), false);
-            }
-        }
-    }
-
-    protected class RegionFileDecoder extends BaseRegionResourceDecoder<File> {
-        public RegionFileDecoder(Context context, Rect region) {
-            super(context, region);
-        }
-
-        @Override
-        protected BitmapRegionDecoder createDecoder(File source, int width, int height) throws IOException {
-            return BitmapRegionDecoder.newInstance(source.getAbsolutePath(), false);
-        }
-    }
 }
 

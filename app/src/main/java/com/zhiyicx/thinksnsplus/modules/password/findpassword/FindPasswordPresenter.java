@@ -7,8 +7,8 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.source.repository.PasswordRepository;
 
 import javax.inject.Inject;
 
@@ -21,11 +21,14 @@ import rx.Subscription;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Repository, FindPasswordContract.View> implements FindPasswordContract.Presenter {
+public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.View> implements FindPasswordContract.Presenter {
     public static final int S_TO_MS_SPACING = 1000; // s 和 ms 的比例
     public static final int SNS_TIME = 60 * S_TO_MS_SPACING; // 发送短信间隔时间，单位 ms
 
     private int mTimeOut = SNS_TIME;
+
+    @Inject
+    PasswordRepository mPasswordRepository;
 
     CountDownTimer timer = new CountDownTimer(mTimeOut, S_TO_MS_SPACING) {
 
@@ -43,8 +46,8 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
 
 
     @Inject
-    public FindPasswordPresenter(FindPasswordContract.Repository repository, FindPasswordContract.View rootView) {
-        super(repository, rootView);
+    public FindPasswordPresenter( FindPasswordContract.View rootView) {
+        super( rootView);
     }
 
 
@@ -81,7 +84,7 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
             return;
         }
         mRootView.setSureBtEnabled(false);
-        Subscription findPasswordSub = mRepository.findPasswordV2(phone, vertifyCode, newPassword)
+        Subscription findPasswordSub = mPasswordRepository.findPasswordV2(phone, vertifyCode, newPassword)
                 .subscribe(new BaseSubscribeForV2<CacheBean>() {
                     @Override
                     protected void onSuccess(CacheBean data) {
@@ -119,7 +122,7 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
             return;
         }
         mRootView.setSureBtEnabled(false);
-        Subscription findPasswordSub = mRepository.findPasswordByEmail(email, vertifyCode, newPassword)
+        Subscription findPasswordSub = mPasswordRepository.findPasswordByEmail(email, vertifyCode, newPassword)
                 .subscribe(new BaseSubscribeForV2<CacheBean>() {
                     @Override
                     protected void onSuccess(CacheBean data) {
@@ -158,7 +161,7 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
         }
         mRootView.setVertifyCodeBtEnabled(false);
         mRootView.setVertifyCodeLoading(true);
-        Subscription getVertifySub = mRepository.getMemberVertifyCode(phone)
+        Subscription getVertifySub = mPasswordRepository.getMemberVertifyCode(phone)
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
@@ -195,7 +198,7 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
         }
         mRootView.setVertifyCodeBtEnabled(false);
         mRootView.setVertifyCodeLoading(true);
-        Subscription getVerifySub = mRepository.getMemberVerifyCodeByEmail(email)
+        Subscription getVerifySub = mPasswordRepository.getMemberVerifyCodeByEmail(email)
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {

@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.settings.account;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.AccountManagementRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class AccountManagementPresenterModule {
         return mView;
     }
 
-    @Provides
-    public AccountManagementContract.Repository provideAccountManagementContractRepository(AccountManagementRepository repository){
-        return repository;
-    }
 }

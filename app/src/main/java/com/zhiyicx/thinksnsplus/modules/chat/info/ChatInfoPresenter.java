@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.ChatInfoRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 
 import org.simple.eventbus.EventBus;
@@ -41,15 +42,15 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_R
  * @contact email:648129313@qq.com
  */
 
-public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.Repository, ChatInfoContract.View>
+public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
         implements ChatInfoContract.Presenter {
 
     @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    ChatInfoRepository mRepository;
 
     @Inject
-    public ChatInfoPresenter(ChatInfoContract.Repository repository, ChatInfoContract.View rootView) {
-        super(repository, rootView);
+    public ChatInfoPresenter(ChatInfoContract.View rootView) {
+        super(rootView);
     }
 
     @Override

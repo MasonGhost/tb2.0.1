@@ -135,8 +135,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_10dp"
-                        android:layout_marginRight="@dimen/margin_10dp"
+                        android:layout_marginLeft="@dimen/spacing_normal"
+                        android:layout_marginRight="@dimen/spacing_normal"
                         android:text="@string/login_by_third_platform"
                         android:textColor="@color/general_for_hint"
                         android:textSize="@dimen/size_icon_assist"/>

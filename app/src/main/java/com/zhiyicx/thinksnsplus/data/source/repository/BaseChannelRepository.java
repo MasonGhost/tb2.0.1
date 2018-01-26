@@ -46,18 +46,6 @@ import rx.schedulers.Schedulers;
 public class BaseChannelRepository extends BaseDynamicRepository implements IBaseChannelRepository {
 
     protected ChannelClient mChannelClient;
-    @Inject
-    protected UserInfoRepository mUserInfoRepository;
-    @Inject
-    protected ChannelSubscripBeanGreenDaoImpl mChannelSubscripBeanGreenDao;
-    @Inject
-    protected ChannelInfoBeanGreenDaoImpl mChannelInfoBeanGreenDao;
-
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-
-//    @Inject
-//    private GroupInfoBeanGreenDaoImpl mGroupInfoBeanGreenDao;
 
     @Inject
     public BaseChannelRepository(ServiceManager serviceManager) {
@@ -93,47 +81,45 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
         }
         return observable.subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<List<GroupInfoBean>, Observable<List<GroupInfoBean>>>() {
-                    @Override
-                    public Observable<List<GroupInfoBean>> call(List<GroupInfoBean> groupInfoBeen) {
-                        if (groupInfoBeen.isEmpty()) {
-                            return Observable.just(groupInfoBeen);
+                .flatMap(groupInfoBeen -> {
+                    if (groupInfoBeen.isEmpty()) {
+                        return Observable.just(groupInfoBeen);
+                    }
+                    List<Object> user_ids = new ArrayList<>();
+                    for (GroupInfoBean groupInfoBean : groupInfoBeen) {
+                        for (GroupManagerBean groupManagerBean : groupInfoBean.getManagers()) {
+                            user_ids.add(groupManagerBean.getUser_id());
                         }
-                        List<Object> user_ids = new ArrayList<>();
-                        for (GroupInfoBean groupInfoBean : groupInfoBeen) {
-                            for (GroupManagerBean groupManagerBean : groupInfoBean.getManagers()) {
-                                user_ids.add(groupManagerBean.getUser_id());
-                            }
-                            for (GroupManagerBean groupManagerBean : groupInfoBean.getMembers()) {
-                                user_ids.add(groupManagerBean.getUser_id());
-                            }
+                        for (GroupManagerBean groupManagerBean : groupInfoBean.getMembers()) {
+                            user_ids.add(groupManagerBean.getUser_id());
                         }
-                        return mUserInfoRepository.getUserInfo(user_ids)
-                                .map(listBaseJson -> {
-                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                    for (UserInfoBean userInfoBean : listBaseJson) {
-                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                    }
-                                    mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
-                                    for (int i = 0; i < groupInfoBeen.size(); i++) {
-                                        if (groupInfoBeen.get(i).getManagers() != null) {
-                                            for (int j = 0; j < groupInfoBeen.get(i).getManagers().size(); j++) {
-                                                UserInfoBean userInfoBean = userInfoBeanSparseArray.get((int) groupInfoBeen.get(i).getManagers()
-                                                        .get(j).getUser_id());
-                                                if (userInfoBean != null)
-                                                    groupInfoBeen.get(i).getManagers().get(j).setUserInfoBean(userInfoBean);
+                    }
+                    return mUserInfoRepository.getUserInfo(user_ids)
+                            .map(listBaseJson -> {
+                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                for (UserInfoBean userInfoBean : listBaseJson) {
+                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                }
+                                for (int i = 0; i < groupInfoBeen.size(); i++) {
+                                    if (groupInfoBeen.get(i).getManagers() != null) {
+                                        for (int j = 0; j < groupInfoBeen.get(i).getManagers().size(); j++) {
+                                            UserInfoBean userInfoBean = userInfoBeanSparseArray.get((int) groupInfoBeen.get(i).getManagers()
+                                                    .get(j).getUser_id());
+                                            if (userInfoBean != null) {
+                                                groupInfoBeen.get(i).getManagers().get(j).setUserInfoBean(userInfoBean);
                                             }
-                                            for (int m = 0; m < groupInfoBeen.get(i).getMembers().size(); m++) {
-                                                UserInfoBean userInfoBean = userInfoBeanSparseArray.get((int) groupInfoBeen.get(i).getMembers().get
-                                                        (m).getUser_id());
-                                                if (userInfoBean != null)
-                                                    groupInfoBeen.get(i).getMembers().get(m).setUserInfoBean(userInfoBean);
+                                        }
+                                        for (int m = 0; m < groupInfoBeen.get(i).getMembers().size(); m++) {
+                                            UserInfoBean userInfoBean = userInfoBeanSparseArray.get((int) groupInfoBeen.get(i).getMembers().get
+                                                    (m).getUser_id());
+                                            if (userInfoBean != null) {
+                                                groupInfoBeen.get(i).getMembers().get(m).setUserInfoBean(userInfoBean);
                                             }
                                         }
                                     }
-                                    return groupInfoBeen;
-                                });
-                    }
+                                }
+                                return groupInfoBeen;
+                            });
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 ;
@@ -204,41 +190,37 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
         return mChannelClient.getGroupDynamicCommentList(group_id, dynamic_id, TSListFragment.DEFAULT_PAGE_SIZE, max_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<List<GroupDynamicCommentListBean>, Observable<List<GroupDynamicCommentListBean>>>() {
-                    @Override
-                    public Observable<List<GroupDynamicCommentListBean>> call(List<GroupDynamicCommentListBean> groupDynamicCommentListBeen) {
-                        List<Object> user_ids = new ArrayList<>();
-                        if (!groupDynamicCommentListBeen.isEmpty()) {
-                            for (GroupDynamicCommentListBean groupDynamicCommentListBean : groupDynamicCommentListBeen) {
-                                user_ids.add(groupDynamicCommentListBean.getUser_id());
-                                user_ids.add(groupDynamicCommentListBean.getReply_to_user_id());
-                            }
-                            return mUserInfoRepository.getUserInfo(user_ids)
-                                    .map(listBaseJson -> {
-                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : listBaseJson) {
-                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                        }
-                                        for (int i = 0; i < groupDynamicCommentListBeen.size(); i++) {
-                                            // 发布评论用户
-                                            groupDynamicCommentListBeen.get(i).setCommentUser(
-                                                    userInfoBeanSparseArray.get((int) groupDynamicCommentListBeen.get(i).getUser_id()));
-                                            // 回复用户
-                                            if (groupDynamicCommentListBeen.get(i).getReply_to_user_id() != 0) {
-                                                groupDynamicCommentListBeen.get(i).setReplyUser(
-                                                        userInfoBeanSparseArray.get((int) groupDynamicCommentListBeen.get(i).getReply_to_user_id()));
-                                            } else {
-                                                UserInfoBean userInfoBean = new UserInfoBean();
-                                                userInfoBean.setUser_id(0L);
-                                                groupDynamicCommentListBeen.get(i).setReplyUser(userInfoBean);
-                                            }
-                                        }
-                                        mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
-                                        return groupDynamicCommentListBeen;
-                                    });
-                        } else {
-                            return Observable.just(groupDynamicCommentListBeen);
+                .flatMap(groupDynamicCommentListBeen -> {
+                    List<Object> user_ids = new ArrayList<>();
+                    if (!groupDynamicCommentListBeen.isEmpty()) {
+                        for (GroupDynamicCommentListBean groupDynamicCommentListBean : groupDynamicCommentListBeen) {
+                            user_ids.add(groupDynamicCommentListBean.getUser_id());
+                            user_ids.add(groupDynamicCommentListBean.getReply_to_user_id());
                         }
+                        return mUserInfoRepository.getUserInfo(user_ids)
+                                .map(listBaseJson -> {
+                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                    for (UserInfoBean userInfoBean : listBaseJson) {
+                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    }
+                                    for (int i = 0; i < groupDynamicCommentListBeen.size(); i++) {
+                                        // 发布评论用户
+                                        groupDynamicCommentListBeen.get(i).setCommentUser(
+                                                userInfoBeanSparseArray.get((int) groupDynamicCommentListBeen.get(i).getUser_id()));
+                                        // 回复用户
+                                        if (groupDynamicCommentListBeen.get(i).getReply_to_user_id() != 0) {
+                                            groupDynamicCommentListBeen.get(i).setReplyUser(
+                                                    userInfoBeanSparseArray.get((int) groupDynamicCommentListBeen.get(i).getReply_to_user_id()));
+                                        } else {
+                                            UserInfoBean userInfoBean = new UserInfoBean();
+                                            userInfoBean.setUser_id(0L);
+                                            groupDynamicCommentListBeen.get(i).setReplyUser(userInfoBean);
+                                        }
+                                    }
+                                    return groupDynamicCommentListBeen;
+                                });
+                    } else {
+                        return Observable.just(groupDynamicCommentListBeen);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread());
@@ -249,43 +231,39 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
     public Observable<List<DynamicDigListBean>> getGroupDynamicDigList(long group_id, long dynamic_id, long max_id) {
         return mChannelClient.getDigList(group_id, dynamic_id, TSListFragment.DEFAULT_PAGE_SIZE, max_id)
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<List<DynamicDigListBean>, Observable<List<DynamicDigListBean>>>() {
-                    @Override
-                    public Observable<List<DynamicDigListBean>> call(List<DynamicDigListBean> groupDynamicLikeListBeen) {
-                        List<Object> user_ids = new ArrayList<>();
-                        if (!groupDynamicLikeListBeen.isEmpty()) {
-                            for (int i = 0; i < groupDynamicLikeListBeen.size(); i++) {
-                                DynamicDigListBean likeListBean = groupDynamicLikeListBeen.get(i);
-                                if (likeListBean.getUser_id() != null && likeListBean.getUser_id() != 0) {
-                                    user_ids.add(likeListBean.getUser_id());
-                                }
-                                if (likeListBean.getTarget_user() != null && likeListBean.getTarget_user() != 0) {
-                                    user_ids.add(likeListBean.getTarget_user());
-                                }
+                .flatMap((Func1<List<DynamicDigListBean>, Observable<List<DynamicDigListBean>>>) groupDynamicLikeListBeen -> {
+                    List<Object> user_ids = new ArrayList<>();
+                    if (!groupDynamicLikeListBeen.isEmpty()) {
+                        for (int i = 0; i < groupDynamicLikeListBeen.size(); i++) {
+                            DynamicDigListBean likeListBean = groupDynamicLikeListBeen.get(i);
+                            if (likeListBean.getUser_id() != null && likeListBean.getUser_id() != 0) {
+                                user_ids.add(likeListBean.getUser_id());
                             }
-                            // 通过用户id列表请求用户信息和用户关注状态
-                            return mUserInfoRepository.getUserInfo(user_ids)
-                                    .map(listBaseJson -> {
-                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : listBaseJson) {
-                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                        }
-                                        for (DynamicDigListBean dynamicDigListBean : groupDynamicLikeListBeen) {
-                                            if (dynamicDigListBean.getUser_id() != null && dynamicDigListBean.getUser_id() != 0) {
-                                                dynamicDigListBean.setDiggUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getUser_id()
-                                                        .intValue()));
-                                            }
-                                            if (dynamicDigListBean.getTarget_user() != null && dynamicDigListBean.getTarget_user() != 0) {
-                                                dynamicDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getTarget_user
-                                                        ().intValue()));
-                                            }
-                                        }
-                                        mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
-                                        return groupDynamicLikeListBeen;
-                                    });
-                        } else {
-                            return Observable.just(new ArrayList<>());
+                            if (likeListBean.getTarget_user() != null && likeListBean.getTarget_user() != 0) {
+                                user_ids.add(likeListBean.getTarget_user());
+                            }
                         }
+                        // 通过用户id列表请求用户信息和用户关注状态
+                        return mUserInfoRepository.getUserInfo(user_ids)
+                                .map(listBaseJson -> {
+                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                    for (UserInfoBean userInfoBean : listBaseJson) {
+                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    }
+                                    for (DynamicDigListBean dynamicDigListBean : groupDynamicLikeListBeen) {
+                                        if (dynamicDigListBean.getUser_id() != null && dynamicDigListBean.getUser_id() != 0) {
+                                            dynamicDigListBean.setDiggUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getUser_id()
+                                                    .intValue()));
+                                        }
+                                        if (dynamicDigListBean.getTarget_user() != null && dynamicDigListBean.getTarget_user() != 0) {
+                                            dynamicDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getTarget_user
+                                                    ().intValue()));
+                                        }
+                                    }
+                                    return groupDynamicLikeListBeen;
+                                });
+                    } else {
+                        return Observable.just(new ArrayList<>());
                     }
                 }).observeOn(AndroidSchedulers.mainThread())
                 ;
@@ -296,25 +274,22 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
         return mChannelClient.getGroupDynamicDetail(group_id, dynamic_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<GroupDynamicListBean, Observable<GroupDynamicListBean>>() {
-                    @Override
-                    public Observable<GroupDynamicListBean> call(GroupDynamicListBean groupDynamicListBean) {
-                        List<Object> user_ids = new ArrayList<>();
-                        if (groupDynamicListBean != null) {
-                            user_ids.add(groupDynamicListBean.getUser_id());
-                            return mUserInfoRepository.getUserInfo(user_ids)
-                                    .map(listBaseJson -> {
-                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : listBaseJson) {
-                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                        }
-                                        groupDynamicListBean.setUserInfoBean(
-                                                userInfoBeanSparseArray.get(Integer.parseInt(String.valueOf(groupDynamicListBean.getUser_id()))));
-                                        return groupDynamicListBean;
-                                    });
-                        }
-                        return null;
+                .flatMap(groupDynamicListBean -> {
+                    List<Object> user_ids = new ArrayList<>();
+                    if (groupDynamicListBean != null) {
+                        user_ids.add(groupDynamicListBean.getUser_id());
+                        return mUserInfoRepository.getUserInfo(user_ids)
+                                .map(listBaseJson -> {
+                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                    for (UserInfoBean userInfoBean : listBaseJson) {
+                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    }
+                                    groupDynamicListBean.setUserInfoBean(
+                                            userInfoBeanSparseArray.get(Integer.parseInt(String.valueOf(groupDynamicListBean.getUser_id()))));
+                                    return groupDynamicListBean;
+                                });
                     }
+                    return null;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 ;
@@ -364,5 +339,16 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                     }
                     BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
                 }, throwable -> throwable.printStackTrace());
+    }
+
+
+    @Override
+    public Observable<List<GroupInfoBean>> getAllGroupList(long max_id) {
+        return getGroupList(0, max_id);
+    }
+
+    @Override
+    public Observable<List<GroupInfoBean>> getUserJoinedGroupList(long max_id) {
+        return getGroupList(1, max_id);
     }
 }

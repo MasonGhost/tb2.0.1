@@ -2,10 +2,9 @@ package com.zhiyicx.thinksnsplus.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.SparseArray;
-import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -19,16 +18,12 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircle
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
-import com.zhiyicx.baseproject.widget.textview.CircleImageDrawable;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-
-import org.greenrobot.greendao.annotation.Transient;
 
 import java.util.Locale;
 
@@ -69,6 +64,22 @@ public class ImageUtils {
 
     public static int getmHightPixels() {
         return DeviceUtils.getScreenHeight(AppApplication.getContext());
+    }
+
+    public static boolean isLongImage(float netHeight, float netWidth) {
+        float net = netHeight / netWidth;
+        float result = 0;
+        if (net >= 3 || net <= .3f) {
+
+            result = getmWidthPixels() / netWidth;
+
+            if (result <= .3f) {
+
+            } else {
+                result = result * netHeight / getmHightPixels();
+            }
+        }
+        return (result >= 3 || result <= .3f) && result > 0;
     }
 
     public static int getmMargin() {
@@ -469,7 +480,7 @@ public class ImageUtils {
      * @param token 图片token
      */
     public static GlideUrl imagePathConvertV2(String url, String token) {
-        LogUtils.d("imagePathConvertV2:" + url);
+//        LogUtils.d("imagePathConvertV2:" + url);
         return new GlideUrl(url, new LazyHeaders.Builder()
                 .addHeader("Authorization", token)
                 .build());
@@ -492,5 +503,29 @@ public class ImageUtils {
         return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
     }
 
+    public static long[] getBitmapSize(String url) {
+        BitmapFactory.Options op = new BitmapFactory.Options();
+        op.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(url, op);
+        return new long[]{op.outWidth, op.outHeight};
+    }
+
+    /**
+     * 默认加载图片
+     *
+     * @param imageView target view to display image
+     * @param url       image resuorce path
+     */
+    public static void loadImageDefault(ImageView imageView, String url) {
+        if (checkImageContext(imageView)) {
+            return;
+        }
+        Glide.with(imageView.getContext())
+                .load(url)
+                .placeholder(R.drawable.shape_default_image)
+                .placeholder(R.drawable.shape_default_error_image)
+                .into(imageView);
+
+    }
 
 }

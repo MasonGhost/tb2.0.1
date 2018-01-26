@@ -38,7 +38,7 @@ import static com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHand
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MusicCommentRepositroty extends BaseMusicRepository implements MusicCommentContract.Repository {
+public class MusicCommentRepositroty extends BaseMusicRepository {
 
     @Inject
     public MusicCommentRepositroty(ServiceManager serviceManager) {
@@ -85,7 +85,6 @@ public class MusicCommentRepositroty extends BaseMusicRepository implements Musi
                                     }
 
                                 }
-                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                 return commentedBeens;
                             });
                         }
@@ -137,7 +136,6 @@ public class MusicCommentRepositroty extends BaseMusicRepository implements Musi
                                     }
 
                                 }
-                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                 return listBaseJson;
                             });
                         }

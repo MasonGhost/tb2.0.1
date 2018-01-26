@@ -18,6 +18,8 @@ import com.zhiyicx.common.utils.recycleviewdecoration.ShareDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
+import static com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA;
+
 /**
  * @Describe 用于 item 分类选择
  * @Author Jungle68
@@ -26,7 +28,6 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
  */
 
 public class TypeChoosePopupWindow extends PopupWindow {
-    public static final float POPUPWINDOW_ALPHA = 0.8f;
 
     public static final int VERTICAL = 0;
     public static final int HORIZONTAL = 1;
@@ -74,6 +75,7 @@ public class TypeChoosePopupWindow extends PopupWindow {
 
     private void initLayout() {
         mContentView = LayoutInflater.from(mActivity).inflate(R.layout.view_type_choose_popup_window, null);
+        mContentView.setLayerType(View.LAYER_TYPE_SOFTWARE, null); // 关闭硬件加速，使用自定义的阴影
         RecyclerView recyclerView = (RecyclerView) mContentView.findViewById(R.id
                 .rv_popup_window);
         // 设置布局管理器
@@ -81,22 +83,23 @@ public class TypeChoosePopupWindow extends PopupWindow {
             case VERTICAL:
                 LinearLayoutManager verticalManager = new LinearLayoutManager(mActivity);
                 verticalManager.setOrientation(LinearLayoutManager.VERTICAL);
-                recyclerView.addItemDecoration(new LinearDecoration(0,0,0,mItemSpacing));
                 recyclerView.setLayoutManager(verticalManager);
+                recyclerView.addItemDecoration(new LinearDecoration(0, mItemSpacing, 0,0 ,false));
                 break;
             case HORIZONTAL:
                 LinearLayoutManager horizontalManager = new LinearLayoutManager(mActivity);
                 horizontalManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-                recyclerView.addItemDecoration(new ShareDecoration(mItemSpacing));
-                recyclerView.addItemDecoration(new LinearDecoration(0,0,mItemSpacing,0));
-
                 recyclerView.setLayoutManager(horizontalManager);
+                recyclerView.addItemDecoration(new LinearDecoration(0, 0, mItemSpacing, 0));
+
                 break;
             case GRID:
                 GridLayoutManager gridLayoutManager = new GridLayoutManager(mActivity, mSpanCount);
-                recyclerView.addItemDecoration(new ShareDecoration(mItemSpacing));
                 recyclerView.setLayoutManager(gridLayoutManager);
+
+                recyclerView.addItemDecoration(new ShareDecoration(mItemSpacing));
                 break;
+            default:
         }
 
         recyclerView.setAdapter(mAdapter);
@@ -132,7 +135,7 @@ public class TypeChoosePopupWindow extends PopupWindow {
         private CommonAdapter mAdapter;
         private int mOritation = VERTICAL;
         private int mSpanCount;
-        private int mItemSpacing;
+        private int mItemSpacing = 1;
 
         private Builder() {
         }

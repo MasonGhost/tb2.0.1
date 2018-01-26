@@ -17,5 +17,4 @@ public interface DraftBoxContract {
     interface Presenter extends ITSListPresenter<BaseDraftBean> {
         void deleteDraft(BaseDraftBean draftBean);
     }
-    interface Repository{}
 }

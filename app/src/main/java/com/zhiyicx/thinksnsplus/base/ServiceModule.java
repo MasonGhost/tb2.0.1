@@ -4,6 +4,7 @@ package com.zhiyicx.thinksnsplus.base;
 import com.zhiyicx.thinksnsplus.comment.CommonCommentClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChatInfoClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.EasemobClient;
@@ -172,6 +173,12 @@ public class ServiceModule {
     @Provides
     RankClient provideRankClient(Retrofit retrofit) {
         return retrofit.create(RankClient.class);
+    }
+
+    @Singleton
+    @Provides
+    CircleClient provideCircleClient(Retrofit retrofit) {
+        return retrofit.create(CircleClient.class);
     }
 
     @Singleton

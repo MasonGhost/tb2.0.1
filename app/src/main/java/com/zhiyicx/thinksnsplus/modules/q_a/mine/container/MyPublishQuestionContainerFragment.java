@@ -92,17 +92,21 @@ public class MyPublishQuestionContainerFragment extends TSViewPagerFragment {
         mTsvToolbar.setLeftImg(setLeftImg());
         mTsvToolbar.setLeftImg(0);
         mTsvToolbar.showDivider(false);
-        mTsvToolbar.setPadding(getResources().getDimensionPixelOffset(R.dimen.spacing_mid),0,getResources().getDimensionPixelOffset(R.dimen.spacing_mid),0);
+        mTsvToolbar.setPadding(getResources().getDimensionPixelOffset(R.dimen.spacing_mid), 0, getResources().getDimensionPixelOffset(R.dimen
+                .spacing_mid), 0);
 //        mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
     }
 
     @Override
     protected List<Fragment> initFragments() {
-        Fragment allFragment = MyPublishQuestionFragment.getInstance(MY_QUESTION_TYPE_ALL);
-        Fragment invitationFragment = MyPublishQuestionFragment.getInstance(MY_QUESTION_TYPE_INVITATION);
-        Fragment rewardFragment = MyPublishQuestionFragment.getInstance(MY_QUESTION_TYPE_REWARD);
-        Fragment otherFragment = MyPublishQuestionFragment.getInstance(MY_QUESTION_TYPE_OTHER);
-        return Arrays.asList(allFragment, invitationFragment, rewardFragment, otherFragment);
+        if (mFragmentList == null) {
+            Fragment allFragment = MyPublishQuestionFragment.getInstance(MY_QUESTION_TYPE_ALL);
+            Fragment invitationFragment = MyPublishQuestionFragment.getInstance(MY_QUESTION_TYPE_INVITATION);
+            Fragment rewardFragment = MyPublishQuestionFragment.getInstance(MY_QUESTION_TYPE_REWARD);
+            Fragment otherFragment = MyPublishQuestionFragment.getInstance(MY_QUESTION_TYPE_OTHER);
+            mFragmentList = Arrays.asList(allFragment, invitationFragment, rewardFragment, otherFragment);
+        }
+        return mFragmentList;
     }
 
     @NonNull

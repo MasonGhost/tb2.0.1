@@ -51,7 +51,8 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
  * @Date 2017/01/06
  * @Contact master.jungle68@gmail.com
  */
-public class ChatFragment extends TSFragment<ChatContract.Presenter> implements ChatContract.View, InputLimitView.OnSendClickListener, OnRefreshListener, ChatMessageList.MessageListItemClickListener{
+public class ChatFragment extends TSFragment<ChatContract.Presenter> implements ChatContract.View, InputLimitView.OnSendClickListener,
+        OnRefreshListener, ChatMessageList.MessageListItemClickListener {
     public static final String BUNDLE_MESSAGEITEMBEAN = "MessageItemBean";
     public static final String BUNDLE_CHAT_ID = "bundle_chat_id";
     public static final String BUNDLE_CHAT_USER = "bundle_chat_user";
@@ -103,6 +104,12 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     }
 
     @Override
+    protected void setLeftClick() {
+        DeviceUtils.hideSoftKeyboard(mActivity, mIlvContainer.getEtContent());
+        super.setLeftClick();
+    }
+
+    @Override
     protected String setCenterTitle() {
         return "";
     }
@@ -142,7 +149,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                     LogUtils.i(TAG + "---RxView   " + aBoolean);
                     if (aBoolean) {
                         if (!mKeyboradIsOpen && mMessageItemBean.getConversation() != null) {// 如果对话没有创建，不做处理
-                            mMessageList.scrollToBottom();
+                            scrollToBottom();
                         }
                         mKeyboradIsOpen = true;
                     } else {
@@ -254,11 +261,11 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     public void reFreshMessage(ChatItemBean chatItemBean) {
-        if (mDatas.indexOf(chatItemBean) != -1){
+        if (mDatas.indexOf(chatItemBean) != -1) {
             mDatas.remove(chatItemBean);
         }
         mDatas.add(chatItemBean);
-        mMessageList.refreshSoomthBottom();
+        scrollToBottom();
     }
 
     @Override
@@ -312,8 +319,14 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         }
         mDatas.addAll(0, list);
         mMessageList.refresh();
-        if (isNeedScrollToBottom){
-            mMessageList.scrollToBottom();
+        if (isNeedScrollToBottom) {
+            mMessageList.post(new Runnable() {
+                @Override
+                public void run() {
+                    scrollToBottom();
+
+                }
+            });
         }
     }
 
@@ -347,8 +360,13 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     public void initMessageList(List<ChatItemBean> list) {
         mDatas.addAll(list);
-        mMessageList.init(mMessageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat ? mMessageItemBean.getUserInfo().getName() : getString(R.string.default_message_group)
+        mMessageList.init(mMessageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat ? mMessageItemBean.getUserInfo()
+                        .getName() : getString(R.string.default_message_group)
                 , mMessageItemBean.getConversation().getType(), mDatas);
+        scrollToBottom();
+    }
+    @Override
+    public void scrollToBottom() {
         mMessageList.scrollToBottom();
     }
 

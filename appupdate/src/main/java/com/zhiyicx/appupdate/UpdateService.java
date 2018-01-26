@@ -34,13 +34,15 @@ public class UpdateService extends AVersionService {
 
     @Override
     public void onResponses(AVersionService service, String response) {
-
-        List<AppVersionBean> appVersionBean = new Gson().fromJson(response, new TypeToken<List<AppVersionBean>>() {
-        }.getType());
-
-        Log.e("DemoService", response);
-
-
+        List<AppVersionBean> appVersionBean;
+        try {
+            appVersionBean = new Gson().fromJson(response, new TypeToken<List<AppVersionBean>>() {
+            }.getType());
+        } catch (Exception e) {
+            e.printStackTrace();
+            stopSelf();
+            return;
+        }
         //可以在判断版本之后在设置是否强制更新或者VersionParams
         if (appVersionBean != null
                 && !appVersionBean.isEmpty()

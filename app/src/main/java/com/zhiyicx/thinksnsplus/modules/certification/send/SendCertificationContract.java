@@ -25,7 +25,4 @@ public interface SendCertificationContract {
         SendCertificationBean checkUpdateData(SendCertificationBean bean);
     }
 
-    interface Repository{
-        Observable<BaseJsonV2<Object>> sendCertification(SendCertificationBean bean);
-    }
 }

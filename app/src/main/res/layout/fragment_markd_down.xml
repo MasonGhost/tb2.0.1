@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/ll_circle_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/create_circle_button_height"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_mid"
+            android:text="@string/select_circle"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_content"/>
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:hint="@string/select_circle"
+            android:text=""
+            android:textColor="@color/important_for_content"
+            android:textColorHint="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_assist"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_mid"
+            android:src="@mipmap/ic_arrow_smallgrey"/>
+    </LinearLayout>
+
+    <com.zhiyi.richtexteditorlib.SimpleRichEditor
+        android:id="@+id/rich_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/cb_syn_to_dynamic"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/ll_circle_container"/>
+
+    <CheckBox
+        android:id="@+id/cb_syn_to_dynamic"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/create_circle_button_height"
+        android:layout_above="@+id/lu_bottom_menu"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:background="@color/white"
+        android:button="@drawable/selector_circle_post_synchro"
+        android:paddingLeft="@dimen/spacing_small"
+        android:text="@string/syn_to_dynamic"
+        android:textColor="@color/important_for_content"
+        android:textSize="@dimen/size_content"
+        android:visibility="gone"/>
+
+    <com.zhiyi.richtexteditorlib.view.BottomMenu
+        android:id="@+id/lu_bottom_menu"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/full_button_height"
+        android:layout_alignParentBottom="true">
+    </com.zhiyi.richtexteditorlib.view.BottomMenu>
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_line"
+        android:layout_below="@+id/ll_circle_container"
+        android:background="@drawable/light_linear_driver"
+        android:visibility="gone"/>
+
+</RelativeLayout>

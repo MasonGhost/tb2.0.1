@@ -29,6 +29,13 @@ public class LinearDecoration extends RecyclerView.ItemDecoration {
         this.right = right;
     }
 
+    public LinearDecoration(int top, int bottom, int left, int right, boolean isNeedLastDecoration) {
+        this.top = top;
+        this.bottom = bottom;
+        this.left = left;
+        this.right = right;
+        this.mIsNeedLastDecoration = isNeedLastDecoration;
+    }
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {

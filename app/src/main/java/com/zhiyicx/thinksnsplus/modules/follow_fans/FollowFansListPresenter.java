@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,15 +32,11 @@ import rx.Subscription;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class FollowFansListPresenter extends AppBasePresenter<FollowFansListContract.Repository,
+public class FollowFansListPresenter extends AppBasePresenter<
         FollowFansListContract.View> implements FollowFansListContract.Presenter {
 
     @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
-
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
@@ -49,9 +46,9 @@ public class FollowFansListPresenter extends AppBasePresenter<FollowFansListCont
     private long mUserId;
 
     @Inject
-    public FollowFansListPresenter(FollowFansListContract.Repository repository,
-                                   FollowFansListContract.View rootView) {
-        super(repository, rootView);
+    public FollowFansListPresenter(
+            FollowFansListContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -66,7 +63,7 @@ public class FollowFansListPresenter extends AppBasePresenter<FollowFansListCont
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
     }
 
     @Override
@@ -80,9 +77,9 @@ public class FollowFansListPresenter extends AppBasePresenter<FollowFansListCont
         this.mPageType = pageType;
         Observable<List<UserInfoBean>> observable = null;
         if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
-            observable = mRepository.getFollowListFromNet(userId, maxId.intValue());
+            observable = mUserInfoRepository.getFollowListFromNet(userId, maxId.intValue());
         } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
-            observable = mRepository.getFansListFromNet(userId, maxId.intValue());
+            observable = mUserInfoRepository.getFansListFromNet(userId, maxId.intValue());
         }
         Subscription subscription = observable
                 .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
@@ -108,18 +105,23 @@ public class FollowFansListPresenter extends AppBasePresenter<FollowFansListCont
 
     @Override
     public List<UserInfoBean> requestCacheData(Long maxId, boolean isLoadMore, long userId, int pageType) {
-        List<UserInfoBean> followFansBeanList = null;
-        if(userId!= AppApplication.getmCurrentLoginAuth().getUser_id()){
-            return null;
-        }
-        if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
-            followFansBeanList = mUserInfoBeanGreenDao.getFollowingUserInfo(maxId.intValue());
-        } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
-            followFansBeanList = mUserInfoBeanGreenDao.getFollowerUserInfo( maxId.intValue());
-        }
-        mRootView.onCacheResponseSuccess(followFansBeanList, isLoadMore);
+///        取消缓存，因为需要首先显示最新关注用户
+//        List<UserInfoBean> followFansBeanList = null;
+//        if(userId!= AppApplication.getmCurrentLoginAuth().getUser_id()){
+//            return null;
+//        }
+//        if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
+//            followFansBeanList = mUserInfoBeanGreenDao.getFollowingUserInfo(maxId.intValue());
+//        } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
+//            followFansBeanList = mUserInfoBeanGreenDao.getFollowerUserInfo( maxId.intValue());
+//        }
+//        mRootView.onCacheResponseSuccess(followFansBeanList, isLoadMore);
+//
+//        return followFansBeanList;
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
+        return new ArrayList<>();
 
-        return followFansBeanList;
+
     }
 
     @Override
@@ -157,7 +159,8 @@ public class FollowFansListPresenter extends AppBasePresenter<FollowFansListCont
                 break;
             }
             // 遍历到最后一条数据，仍然不存在该用户，并且，当前订阅页面是关注页面，需要添加item
-            else if (position == followFansBeanList.size() - 1 && mRootView.getPageType() == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE&&followFansBean.isFollower()) {
+            else if (position == followFansBeanList.size() - 1 && mRootView.getPageType() == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE &&
+                    followFansBean.isFollower()) {
                 followFansBeanList.add(0, followFansBean);
                 mRootView.upDateFollowFansState();
             }

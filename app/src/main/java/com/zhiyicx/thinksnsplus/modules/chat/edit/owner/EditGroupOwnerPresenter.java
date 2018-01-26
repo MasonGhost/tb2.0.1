@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.EditGroupOwnerRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -29,15 +30,15 @@ import rx.functions.Func1;
  * Created by Catherine on 2018/1/22.
  */
 
-public class EditGroupOwnerPresenter extends AppBasePresenter<EditGroupOwnerContract.Repository, EditGroupOwnerContract.View>
+public class EditGroupOwnerPresenter extends AppBasePresenter<EditGroupOwnerContract.View>
         implements EditGroupOwnerContract.Presenter {
 
     @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    EditGroupOwnerRepository mRepository;
 
     @Inject
-    public EditGroupOwnerPresenter(EditGroupOwnerContract.Repository repository, EditGroupOwnerContract.View rootView) {
-        super(repository, rootView);
+    public EditGroupOwnerPresenter(EditGroupOwnerContract.View rootView) {
+        super(rootView);
     }
 
     @Override

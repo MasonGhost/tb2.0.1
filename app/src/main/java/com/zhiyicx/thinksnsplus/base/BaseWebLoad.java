@@ -1,14 +1,9 @@
 package com.zhiyicx.thinksnsplus.base;
 
-import android.graphics.Bitmap;
 import android.os.Message;
-import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-
-import com.zhiyicx.baseproject.widget.EmptyView;
 
 /**
  * @Describe
@@ -69,9 +64,9 @@ public class BaseWebLoad {
             webView.setWebChromeClient(null);
             webView.setWebViewClient(null);
             webView.destroy();
-            webView = null;
         }
     }
+
     public interface OnWebLoadListener {
         void onLoadFinish();
 

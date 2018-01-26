@@ -30,6 +30,7 @@ public class ServiceManager {
     private WalletClient mWalletClient;
     private QAClient mQAClient;
     private RankClient mRankClien;
+    private CircleClient mCircleClient;
     private EasemobClient mEasemobClient;
 
     /**
@@ -54,6 +55,7 @@ public class ServiceManager {
             , QAClient qAClient
             , CommonCommentClient commonCommentClient
             , RankClient rankClient
+            , CircleClient circleClient
             , EasemobClient easemobClient) {
         this.mCommonClient = commonClient;
         this.mLoginClient = loginClient;
@@ -70,6 +72,7 @@ public class ServiceManager {
         this.mCommonCommentClient = commonCommentClient;
         this.mWalletClient = walletClient;
         this.mRankClien = rankClient;
+        this.mCircleClient = circleClient;
         this.mEasemobClient = easemobClient;
     }
 
@@ -131,6 +134,10 @@ public class ServiceManager {
 
     public RankClient getRankClien() {
         return mRankClien;
+    }
+
+    public CircleClient getCircleClient() {
+        return mCircleClient;
     }
 
     public EasemobClient getEasemobClient() {

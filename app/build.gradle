@@ -28,7 +28,7 @@ android {
 
         ndk {
             //选择要添加的对应cpu类型的.so库。
-            abiFilters 'armeabi', 'x86', 'armeabi-v7a', 'armeabi-v8a', 'x86_64', 'mips', 'mips64'
+            abiFilters 'armeabi', 'armeabi-v7a', 'armeabi-v8a', 'x86', 'x86_64', 'mips', 'mips64'
         }
         // 极光推送
         manifestPlaceholders = [
@@ -59,6 +59,7 @@ android {
 
         debug {
             minifyEnabled false
+//            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
             testCoverageEnabled false  // false 的时候 debug 才能看到成员变量的数据，true 用来导出代码覆盖率数据
@@ -67,7 +68,7 @@ android {
             minifyEnabled true
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
     repositories {
@@ -139,7 +140,7 @@ greendao {
      * generateTests 设置是否自动生成单元测试。
      * targetGenDirTest 生成的单元测试的根目录。
      */
-    schemaVersion 78
+    schemaVersion 86
     daoPackage 'com.zhiyicx.thinksnsplus.data.beans'
     generateTests true
     //targetGenDir 'src/main/java'
@@ -163,6 +164,7 @@ dependencies {
     def dataDependences = rootProject.ext.dataDependencies
     def supportDependences = rootProject.ext.sdksoupportDependencies
     def testDependences = rootProject.ext.testDependencies
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     //support
     compile supportDependences.appcompatV7
@@ -203,6 +205,8 @@ dependencies {
     compile project(':contacts')
     compile project(':appupdate')
     compile project(':bigimage')
+    // markdown编辑器
+    compile project(':richtexteditorlib')
     // database
     compile dataDependences.greendao
     compile dataDependences.guava

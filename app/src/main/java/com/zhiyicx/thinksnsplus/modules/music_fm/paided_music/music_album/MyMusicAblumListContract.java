@@ -20,7 +20,4 @@ public interface MyMusicAblumListContract {
     interface Presenter extends ITSListPresenter<MusicAlbumListBean> {
         void updateOneMusic(MusicAlbumListBean albumListBean);
     }
-    interface Repository extends IMusicRepository {
-        Observable<List<MusicAlbumListBean>> getMyPaidsMusicAlbumList(long max_id);
-    }
 }

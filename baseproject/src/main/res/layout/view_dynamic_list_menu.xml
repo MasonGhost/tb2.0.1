@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<merge
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tool="http://schemas.android.com/tools"
-    android:id="@+id/ll_container"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    xmlns:tool="http://schemas.android.com/tools">
 
     <LinearLayout
         android:gravity="center_vertical"
@@ -110,5 +106,5 @@
             tool:src="@mipmap/home_ico_more"
             />
     </FrameLayout>
-</LinearLayout>
+</merge>
 

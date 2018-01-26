@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_circle_head_middle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:alpha="0"
+    android:orientation="vertical"
+    android:tag="middle"
+    app:layout_collapseMode="parallax"
+    app:layout_collapseParallaxMultiplier="0.5">
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_mid"
+        android:layout_marginTop="@dimen/circle_detail_header_magin">
+
+        <ImageView
+            android:id="@+id/iv_circle_head"
+            android:layout_width="@dimen/circle_detail_head_iamge_height"
+            android:layout_height="@dimen/circle_detail_head_iamge_height"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/default_pic_personal"/>
+
+        <TextView
+            android:id="@+id/tv_circle_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/iv_circle_head"
+            android:layout_toLeftOf="@+id/tv_circle_subscrib"
+            android:layout_toRightOf="@+id/iv_circle_head"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="啦啦啦"
+            android:textColor="@color/general_for_bg_light"
+            android:textSize="@dimen/size_sub_title"/>
+
+        <TextView
+            android:id="@+id/tv_circle_member"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tv_circle_dec"
+            android:layout_marginBottom="@dimen/spacing_mid_small_8dp"
+            android:layout_toRightOf="@+id/iv_circle_head"
+            android:text="23"
+            android:textColor="@color/general_for_bg_light"
+            android:textSize="@dimen/size_icon_assist"/>
+
+        <TextView
+            android:id="@+id/tv_circle_dec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/iv_circle_head"
+            android:layout_toRightOf="@+id/iv_circle_head"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="秒速5毫米"
+            android:textColor="@color/general_for_bg_light"
+            android:textSize="@dimen/size_icon_assist"/>
+
+        <CheckBox
+            android:id="@+id/tv_circle_subscrib"
+            android:layout_width="@dimen/channel_subscrib_btn_width"
+            android:layout_height="@dimen/channel_subscrib_btn_height"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:background="@drawable/shape_circle_join_button"
+            android:button="@null"
+            android:drawableLeft="@mipmap/channel_ico_add_white"
+            android:drawablePadding="@dimen/spacing_small_3dp"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:text="@string/join_group"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_content_comment"/>
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_manager_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/create_circle_button_height"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="@dimen/create_circle_button_height"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_mid"
+            android:text="@string/circle_owner"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_assist"/>
+
+        <TextView
+            android:id="@+id/tv_circle_owner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/edit_circle_type"
+            android:text=""
+            android:textColor="@color/important_for_content"
+            android:textColorHint="@color/general_for_hint"
+            android:textSize="@dimen/size_content"/>
+
+        <TextView
+            android:id="@+id/tv_circle_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:background="@drawable/shape_bg_circle_radus_gold"
+            android:gravity="center"
+            android:paddingBottom="@dimen/spacing_tiny"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:paddingRight="@dimen/spacing_normal"
+            android:paddingTop="@dimen/spacing_tiny"
+            android:text="@string/circle_chat"
+            android:textColor="@color/general_for_bg_light"
+            android:textSize="@dimen/size_icon_assist"/>
+
+    </LinearLayout>
+
+    <include
+        layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
+    <LinearLayout
+        android:id="@+id/ll_intro_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingTop="@dimen/spacing_mid"
+        android:paddingBottom="@dimen/spacing_mid"
+        android:minHeight="@dimen/create_circle_button_height"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="@dimen/create_circle_button_height"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_mid"
+            android:text="@string/introduce"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_assist"/>
+
+        <com.zhiyicx.thinksnsplus.widget.ExpandableTextView
+            android:id="@+id/tv_introduce_content"
+            android:layout_width="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:textColor="@color/normal_for_dynamic_list_content"
+            android:textSize="@dimen/size_content"
+            app:etv_IsNeedShrink="false"
+            app:etv_MaxLinesOnShrink="2"
+            app:etv_ToExpandHint="@string/more_group"
+            app:etv_ToShrinkHint=""/>
+
+    </LinearLayout>
+
+</LinearLayout>

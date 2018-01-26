@@ -40,11 +40,6 @@ public interface WalletContract {
 
     }
 
-    interface Repository {
-        Observable<WalletConfigBean> getWalletConfig();
-
-    }
-
     interface Presenter extends IBaseTouristPresenter {
         /**
          * update user info

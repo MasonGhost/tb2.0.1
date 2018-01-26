@@ -28,11 +28,6 @@ public interface RechargeContract {
         boolean useInputMonye();
     }
 
-    interface Repository {
-        Observable<RechargeSuccessBean> rechargeSuccessCallBack(String charge);
-        Observable<RechargeSuccessBean> rechargeSuccess(String charge);
-    }
-
     interface Presenter extends IBaseTouristPresenter {
         void getPayStr(@TSPayClient.PayKey String channel, double amount);
         void rechargeSuccess(String charge);

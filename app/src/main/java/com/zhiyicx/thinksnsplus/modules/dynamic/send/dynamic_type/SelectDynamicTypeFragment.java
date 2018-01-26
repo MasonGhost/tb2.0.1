@@ -11,6 +11,7 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -22,12 +23,12 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
-import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.information.publish.detail.EditeInfoDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhiyicx.thinksnsplus.widget.IconTextView;
 
@@ -35,12 +36,9 @@ import org.simple.eventbus.EventBus;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_DEFAULT_COUNT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_CHECK_IN_CLICK;
@@ -151,12 +149,12 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
         mUserCertificationInfo = userCertificationInfo;
         mSystemConfigBean = mPresenter.getSystemConfigBean();
         SystemConfigBean.NewsConfig mPublishInfoConfig = mSystemConfigBean.getNewsContribute();
-        if (userCertificationInfo.getStatus() == 1 || !mPublishInfoConfig.hasVerified()) {
+        if (userCertificationInfo.getStatus() == UserCertificationInfo.CertifyStatusEnum.PASS.value || !mPublishInfoConfig.hasVerified()) {
             if (mPresenter.isNeedPayTip() && (mPublishInfoConfig != null
                     && mPublishInfoConfig.hasPay())) {
                 mPayAlertPopWindow.show();
             } else {
-                startActivity(new Intent(getActivity(), PublishInfoActivity.class));
+                startActivity(new Intent(getActivity(), EditeInfoDetailActivity.class));
             }
         } else {
             mCertificationAlertPopWindow.show();
@@ -190,7 +188,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
     }
 
     @OnClick({R.id.send_words_dynamic, R.id.send_image_dynamic, R.id.check_in, R.id.im_close_dynamic, R.id.send_words_question, R.id.open_zhibo, R
-            .id.send_info})
+            .id.send_info, R.id.send_circle_post})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.send_words_dynamic:
@@ -233,6 +231,10 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                 // 投稿
                 // 发布提示 1、首先需要认证 2、需要付费
                 mPresenter.checkCertification();
+                break;
+            case R.id.send_circle_post:
+                BaseMarkdownActivity.startActivityForPublishPostOutCircle(mActivity);
+                closeActivity();
                 break;
             default:
         }
@@ -289,7 +291,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                         mCertificationAlertPopWindow.hide();
                         if (mUserCertificationInfo != null // 待审核
                                 && mUserCertificationInfo.getId() != 0
-                                && mUserCertificationInfo.getStatus() != 2) {
+                                && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
                             Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
                             Bundle bundleData = new Bundle();
                             bundleData.putInt(BUNDLE_DETAIL_TYPE, 0);
@@ -308,7 +310,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                         mCertificationAlertPopWindow.hide();
                         if (mUserCertificationInfo != null // 待审核
                                 && mUserCertificationInfo.getId() != 0
-                                && mUserCertificationInfo.getStatus() != 2) {
+                                && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
 
                             Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
                             Bundle bundleData = new Bundle();
@@ -330,7 +332,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
             mPayAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
                     .item6Str(getString(R.string.info_publish_go_to_next))
-                    .desStr(String.format(Locale.getDefault(), getString(R.string.info_publish_hint_pay), mPresenter.getGoldName()))
+                    .desStr(String.format(Locale.getDefault(), getString(R.string.info_publish_hint_pay), mPresenter!=null?mPresenter.getGoldName():""))
                     .bottomStr(getString(R.string.cancel))
                     .isOutsideTouch(true)
                     .isFocus(true)
@@ -340,7 +342,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                     .item6ClickListener(() -> {
                         mPayAlertPopWindow.hide();
                         mPresenter.savePayTip(false);
-                        startActivity(new Intent(getActivity(), PublishInfoActivity.class));
+                        startActivity(new Intent(getActivity(), EditeInfoDetailActivity.class));
                     })
                     .build();
         }

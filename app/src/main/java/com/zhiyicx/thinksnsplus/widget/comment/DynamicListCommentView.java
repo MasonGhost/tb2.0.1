@@ -102,6 +102,17 @@ public class DynamicListCommentView extends LinearLayout {
 
             }
         });
+        mDynamicNoPullRecycleView.setOnIitemLongClickListener((view, position) -> {
+            if (!mIsUserNameClick) {
+                if (mOnCommentClickListener != null) {
+                    mOnCommentClickListener.onCommentContentLongClick(mDynamicBean, position);
+                }
+            } else {
+                mIsUserNameClick = false;
+
+            }
+
+        });
         mDynamicNoPullRecycleView.setOnUserNameLongClickListener(userInfoBean -> {
             if (!mIsUserNameClick) {
                 mIsUserNameClick = true;
@@ -123,25 +134,21 @@ public class DynamicListCommentView extends LinearLayout {
      */
     public void setData(DynamicDetailBeanV2 dynamicBean) {
         mDynamicBean = dynamicBean;
-        List<DynamicCommentBean> data = new ArrayList<>();
-
         if (dynamicBean.getComments() != null && !dynamicBean.getComments().isEmpty()) {
             //最多显示 SHOW_MORE_COMMENT_SIZE_LIMIT-1 条
             if (dynamicBean.getComments().size() >= SHOW_MORE_COMMENT_SIZE_LIMIT) {
+                List<DynamicCommentBean> data = new ArrayList<>();
                 for (int i = 0; i < SHOW_MORE_COMMENT_SIZE_LIMIT - 1; i++) {
                     data.add(dynamicBean.getComments().get(i));
                 }
+                mDynamicNoPullRecycleView.setData(data);
             } else {
-                data.addAll(dynamicBean.getComments());
+                mDynamicNoPullRecycleView.setData(dynamicBean.getComments());
             }
         }
-        mDynamicNoPullRecycleView.setTopFlagPosition(DynamicNoPullRecycleView.TopFlagPosition.WORDS_RIGHT);
-        mDynamicNoPullRecycleView.setData(data);
-        if (dynamicBean.getFeed_comment_count() >= SHOW_MORE_COMMENT_SIZE_LIMIT) {
-            mMoreComment.setVisibility(VISIBLE);
-        } else {
-            mMoreComment.setVisibility(GONE);
-        }
+        mDynamicNoPullRecycleView.setTopFlagPosition(CommentBaseRecycleView.TopFlagPosition.WORDS_RIGHT);
+        mMoreComment.setVisibility(dynamicBean.getFeed_comment_count() >= SHOW_MORE_COMMENT_SIZE_LIMIT ? VISIBLE : GONE);
+
     }
 
     public void setOnMoreCommentClickListener(OnMoreCommentClickListener onMoreCommentClickListener) {
@@ -164,6 +171,8 @@ public class DynamicListCommentView extends LinearLayout {
         void onCommentUserInfoClick(UserInfoBean userInfoBean);
 
         void onCommentContentClick(DynamicDetailBeanV2 dynamicBean, int position);
+
+        void onCommentContentLongClick(DynamicDetailBeanV2 dynamicBean, int position);
     }
 
 }

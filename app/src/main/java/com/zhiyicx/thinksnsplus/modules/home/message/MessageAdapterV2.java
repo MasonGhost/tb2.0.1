@@ -171,7 +171,8 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(messageItemBean.getConversation().getLastMessage().getMsgTime()));
         }
         try {
-            ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(messageItemBean.getConversation().getUnreadMsgCount())));
+            ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(messageItemBean
+                    .getConversation().getUnreadMsgCount())));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -8,6 +8,7 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -35,11 +36,9 @@ import rx.schedulers.Schedulers;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class HeadPortraitViewPresenter extends BasePresenter<HeadPortraitViewContract.Repository, HeadPortraitViewContract.View>
+public class HeadPortraitViewPresenter extends AppBasePresenter< HeadPortraitViewContract.View>
         implements HeadPortraitViewContract.Presenter {
 
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
 //    @Inject
 //    IUploadRepository mIUploadRepository;
@@ -48,8 +47,8 @@ public class HeadPortraitViewPresenter extends BasePresenter<HeadPortraitViewCon
     UserInfoRepository mUserInfoRepository;
 
     @Inject
-    public HeadPortraitViewPresenter(HeadPortraitViewContract.Repository repository, HeadPortraitViewContract.View rootView) {
-        super(repository, rootView);
+    public HeadPortraitViewPresenter( HeadPortraitViewContract.View rootView) {
+        super( rootView);
     }
 
     @Override

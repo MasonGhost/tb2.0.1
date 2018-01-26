@@ -21,11 +21,14 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.i.OnCommentTextClickListener;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.adapter.MusicCommentItem;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.adapter.MusicEmptyCommentItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
@@ -219,7 +222,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     }
 
     private void handleItemClick(int position) {
-        position = position - 1;
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();
         if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
                 .getUser_id()) {// 自己的评论
 //            if (mListDatas.get(position).getId() != -1) {
@@ -241,7 +244,8 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
 
     @Override
     public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
-        return false;
+        goReportComment(position);
+        return true;
     }
 
     @Override
@@ -391,5 +395,24 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     @Override
     public void onCommentTextClick(int position) {
         handleItemClick(position);
+    }
+
+    @Override
+    public void onCommentTextLongClick(int position) {
+        goReportComment(position);
+    }
+
+    private void goReportComment(int position) {
+        // 减去 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();
+        // 举报
+        if (mListDatas.get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
+            ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mListDatas.get(position).getFromUserInfoBean(), mListDatas.get
+                    (position).getId().toString(),
+                    null, null, mListDatas.get(position).getComment_content(), ReportType.COMMENT));
+
+        } else {
+
+        }
     }
 }

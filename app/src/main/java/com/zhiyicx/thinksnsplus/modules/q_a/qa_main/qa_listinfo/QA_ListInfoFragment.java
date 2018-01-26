@@ -1,10 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -16,7 +14,6 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QA_InfoContainerFragment;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
@@ -273,6 +270,24 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 })
                 .build();
         mPayWatchPopWindow.show();
+    }
+
+    /**
+     * 默认值 new, all - 全部、new - 最新、hot - 热门、reward - 悬赏、excellent - 精选 follow - 关注
+     */
+    public enum QuestionType {
+        ALL("all"),
+        NEWS("new"),
+        HOT("hot"),
+        REWARD("reward"),
+        EXCELLENT("excellent"),
+        FOLLOW("follow");
+
+        public String value;
+
+        QuestionType(String value) {
+            this.value = value;
+        }
     }
 
 }

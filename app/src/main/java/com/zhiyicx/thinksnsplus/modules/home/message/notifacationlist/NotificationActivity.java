@@ -14,7 +14,7 @@ public class NotificationActivity extends TSActivity<NotificationPresenter, Noti
 
     @Override
     protected NotificationFragment getFragment() {
-        return new NotificationFragment().instance();
+        return NotificationFragment.instance();
     }
 
     @Override

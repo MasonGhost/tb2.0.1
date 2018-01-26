@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
@@ -12,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.VerifiedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserCertificationInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.simple.eventbus.EventBus;
 
@@ -26,23 +28,24 @@ import rx.Subscription;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class CertificationDetailPresenter extends BasePresenter<CertificationDetailContract.Repository, CertificationDetailContract.View>
-        implements CertificationDetailContract.Presenter{
+public class CertificationDetailPresenter extends AppBasePresenter<CertificationDetailContract.View>
+        implements CertificationDetailContract.Presenter {
 
     @Inject
     UserCertificationInfoGreenDaoImpl mUserCertificationInfoGreenDao;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
-    public CertificationDetailPresenter(CertificationDetailContract.Repository repository,
-                                        CertificationDetailContract.View rootView) {
-        super(repository, rootView);
+    UserInfoRepository mUserInfoRepository;
+
+    @Inject
+    public CertificationDetailPresenter(
+            CertificationDetailContract.View rootView) {
+        super(rootView);
     }
 
     @Override
     public void getCertificationInfo() {
-        Subscription subscription = mRepository.getCertificationInfo()
+        Subscription subscription = mUserInfoRepository.getCertificationInfo()
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<UserCertificationInfo>() {
 
@@ -53,8 +56,8 @@ public class CertificationDetailPresenter extends BasePresenter<CertificationDet
                         // 更新状态
                         UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache
                                 (AppApplication.getmCurrentLoginAuth().getUser_id());
-                        if (userInfoBean != null){
-                            if (userInfoBean.getVerified() != null){
+                        if (userInfoBean != null) {
+                            if (userInfoBean.getVerified() != null) {
                                 userInfoBean.getVerified().setStatus((int) data.getStatus());
                             } else {
                                 VerifiedBean verifiedBean = new VerifiedBean();

@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseFriendsRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,20 +27,20 @@ import rx.Subscription;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class MyFriendsListPresenter extends AppBasePresenter<MyFriendsListContract.Repository, MyFriendsListContract.View>
+public class MyFriendsListPresenter extends AppBasePresenter< MyFriendsListContract.View>
         implements MyFriendsListContract.Presenter{
 
     @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    BaseFriendsRepository mBaseFriendsRepository;
 
     @Inject
-    public MyFriendsListPresenter(MyFriendsListContract.Repository repository, MyFriendsListContract.View rootView) {
-        super(repository, rootView);
+    public MyFriendsListPresenter( MyFriendsListContract.View rootView) {
+        super(rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscription = mRepository.getUserFriendsList(maxId, "")
+        Subscription subscription = mBaseFriendsRepository.getUserFriendsList(maxId, "")
                 .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
                     @Override
                     protected void onSuccess(List<UserInfoBean> data) {

@@ -20,7 +20,8 @@ android {
                 TECENT_APPID: 1105978541, // 腾讯 QQ id
                 UMENG_APPKEY: "58d0998e9f06fd05680011f6", // 友盟三方key配置
                 AMAP_APPKEY: "e954e82021efe2f4d334879cff3880cf", // 高德三方配置
-                EASEMOB_APPKEY: "1139171207178196#thinksns-plus-test", // 环信三方配置
+                EASEMOB_APPKEY: "1139171207178196#thinksns-plus", // 环信三方配置
+//                EASEMOB_APPKEY: "1139171207178196#thinksns-plus-test", // 环信三方配置 测试服
         ]
         multiDexEnabled true
     }
@@ -59,7 +60,6 @@ buildscript {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
     def dataDependences = rootProject.ext.dataDependencies
     def testDependences = rootProject.ext.testDependencies
     // Test
@@ -73,11 +73,9 @@ dependencies {
     androidTestCompile testDependences.mockito
     androidTestCompile testDependences.dexmaker
     androidTestCompile testDependences.dexmakerMockito
-
     annotationProcessor dataDependences.daggerCompiler
     // Dagger dependencies
     compile dataDependences.dagger
-
     compile dataDependences.swipeLayout
     compile(dataDependences.recyclerviewAnimator) {
         exclude group: 'com.android.support', module: 'appcompat-v7'
@@ -95,14 +93,13 @@ dependencies {
     compile dataDependences.zxing
     compile dataDependences.bgaQrcodecore
     compile dataDependences.bgaZxing
-    annotationProcessor dataDependences.daggerCompiler
     // Project
     compile project(':common')
     compile project(':imsdk')
     compile project(':baseadapter-recyclerview')
     compile project(':ucrop')
-    compile project(':pickerview')
     compile project(':PhotoPicker')
+    compile project(':pickerview')
     compile project(':overscrolllib')
     compile project(':easeui')
     compile dataDependences.refresh

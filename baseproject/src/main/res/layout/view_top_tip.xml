@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:id="@+id/fl_top_tip_container"
-             android:layout_width="match_parent"
-             android:layout_height="@dimen/view_top_tip_height"
-             android:alpha="0.7"
-             android:background="@color/themeColor"
-             android:orientation="horizontal"
-             android:visibility="gone">
-
-    <TextView
-        android:id="@+id/tv_top_tip_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:ellipsize="end"
-        android:gravity="center"
-        android:maxLines="1"
-        android:text="@string/err_net_not_work"
-        android:textColor="@color/white"
-        android:textSize="@dimen/size_icon_assist"/>
-</FrameLayout>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tv_top_tip_text"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/themeColor_alpha7"
+    android:ellipsize="end"
+    android:gravity="center"
+    android:maxLines="1"
+    android:text="@string/err_net_not_work"
+    android:textColor="@color/white"
+    android:textSize="@dimen/size_icon_assist"/>

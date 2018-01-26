@@ -68,13 +68,19 @@ public class AnswerDetailCommentItem implements ItemViewDelegate<AnswerCommentLi
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(infoCommentListBean
                 .getCreated_at()));
         holder.setText(R.id.tv_content, setShowText(infoCommentListBean, position));
-        holder.setOnClickListener(R.id.tv_content, v -> {
+              holder.setOnClickListener(R.id.tv_content, v -> {
             if (mOnCommentItemListener != null) {
                 mOnCommentItemListener.onItemClick(v, holder, position);
             }
         });
+        holder.setOnLongClickListener(R.id.tv_content, v -> {
+            if (mOnCommentItemListener != null) {
+                mOnCommentItemListener.onItemLongClick(v, holder, position);
+            }
+            return true;
+        });
 
-        TextView topFlag=holder.getView(R.id.tv_top_flag);
+        TextView topFlag = holder.getView(R.id.tv_top_flag);
         topFlag.setVisibility(View.GONE);
         topFlag.setText(topFlag.getContext().getString(R.string.dynamic_top_flag));
 
@@ -105,10 +111,13 @@ public class AnswerDetailCommentItem implements ItemViewDelegate<AnswerCommentLi
 
     protected List<Link> setLiknks(ViewHolder holder, final AnswerCommentListBean answerCommentListBean, int position) {
         List<Link> links = new ArrayList<>();
-        if (answerCommentListBean.getToUserInfoBean() != null && answerCommentListBean.getReply_user() != 0 && answerCommentListBean.getToUserInfoBean().getName() != null) {
+        if (answerCommentListBean.getToUserInfoBean() != null && answerCommentListBean.getReply_user() != 0 && answerCommentListBean
+                .getToUserInfoBean().getName() != null) {
             Link replyNameLink = new Link(answerCommentListBean.getToUserInfoBean().getName())
-                    .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
-                    .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
+                    .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  //
+                    // optional, defaults to holo blue
+                    .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) //
+                    // optional, defaults to holo blue
                     .setHighlightAlpha(.5f)                                     // optional, defaults to .15f
                     .setUnderlined(false)                                       // optional, defaults to true
                     .setOnLongClickListener((clickedText, linkMetadata) -> {
@@ -146,6 +155,8 @@ public class AnswerDetailCommentItem implements ItemViewDelegate<AnswerCommentLi
 
     public interface OnCommentItemListener {
         void onItemClick(View view, RecyclerView.ViewHolder holder, int position);
+
+        void onItemLongClick(View view, RecyclerView.ViewHolder holder, int position);
 
         void onUserInfoClick(UserInfoBean userInfoBean);
     }

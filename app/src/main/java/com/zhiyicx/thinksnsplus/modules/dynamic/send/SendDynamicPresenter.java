@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IUploadRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -37,21 +38,17 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAM
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class SendDynamicPresenter extends AppBasePresenter<SendDynamicContract.Repository, SendDynamicContract.View>
+public class SendDynamicPresenter extends AppBasePresenter< SendDynamicContract.View>
         implements SendDynamicContract.Presenter {
 
     @Inject
-    IUploadRepository mIUploadRepository;
+    UpLoadRepository mIUploadRepository;
     @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-    @Inject
-    DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
 
     @Inject
-    public SendDynamicPresenter(SendDynamicContract.Repository repository, SendDynamicContract.View rootView) {
-        super(repository, rootView);
+    public SendDynamicPresenter( SendDynamicContract.View rootView) {
+        super( rootView);
     }
 
     @Override

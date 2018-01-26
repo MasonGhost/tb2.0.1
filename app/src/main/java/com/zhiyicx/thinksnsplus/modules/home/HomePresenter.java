@@ -27,6 +27,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.ChatRepository;
@@ -55,14 +56,11 @@ import rx.schedulers.Schedulers;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContract.View> implements HomeContract.Presenter, EMConnectionListener, EMMessageListener {
-    @Inject
-    AuthRepository mAuthRepository;
+class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeContract.Presenter, EMConnectionListener, EMMessageListener {
+
 
     @Inject
     UserInfoRepository mUserInfoRepository;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     WalletConfigBeanGreenDaoImpl mWalletConfigBeanGreenDao;
@@ -70,8 +68,8 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
     ChatRepository mChatRepository;
 
     @Inject
-    public HomePresenter(HomeContract.Repository repository, HomeContract.View rootView) {
-        super(repository, rootView);
+    public HomePresenter(HomeContract.View rootView) {
+        super(rootView);
     }
 
     @Override

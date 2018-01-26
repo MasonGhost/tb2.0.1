@@ -38,7 +38,4 @@ public interface TopicDetailContract {
         void shareTopic(Bitmap bitmap);
     }
 
-    interface Repository extends IBasePublishQuestionRepository {
-        Observable<QATopicBean> getTopicDetail(String topic_id);
-    }
 }

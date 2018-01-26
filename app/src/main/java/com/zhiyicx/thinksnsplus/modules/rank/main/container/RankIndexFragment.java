@@ -87,32 +87,35 @@ public class RankIndexFragment extends TSViewPagerFragment {
 
     @Override
     protected List<Fragment> initFragments() {
-        List<Fragment> fragments = new ArrayList<>();
-        // 用户
-        Bundle bundleUser = new Bundle();
-        RankIndexBean rankIndexBean = new RankIndexBean();
-        rankIndexBean.setCategory(getString(R.string.rank_user));
-        bundleUser.putSerializable(BUNDLE_RANK_TYPE, rankIndexBean);
-        fragments.add(new RankListFragment().instance(bundleUser));
-        // 问答
-        Bundle bundleQa = new Bundle();
-        RankIndexBean rankIndexBeanQa = new RankIndexBean();
-        rankIndexBeanQa.setCategory(getString(R.string.rank_qa));
-        bundleQa.putSerializable(BUNDLE_RANK_TYPE, rankIndexBeanQa);
-        fragments.add(new RankListFragment().instance(bundleQa));
-        // 动态
-        Bundle bundleDynamic = new Bundle();
-        RankIndexBean rankIndexBeanDynamic = new RankIndexBean();
-        rankIndexBeanDynamic.setCategory(getString(R.string.rank_dynamic));
-        bundleDynamic.putSerializable(BUNDLE_RANK_TYPE, rankIndexBeanDynamic);
-        fragments.add(new RankListFragment().instance(bundleDynamic));
-        // 资讯
-        Bundle bundleInfo = new Bundle();
-        RankIndexBean rankIndexBeanInfo = new RankIndexBean();
-        rankIndexBeanInfo.setCategory(getString(R.string.rank_info));
-        bundleInfo.putSerializable(BUNDLE_RANK_TYPE, rankIndexBeanInfo);
-        fragments.add(new RankListFragment().instance(bundleInfo));
-        return fragments;
+        if (mFragmentList == null) {
+            mFragmentList = new ArrayList<>();
+            // 用户
+            Bundle bundleUser = new Bundle();
+            RankIndexBean rankIndexBean = new RankIndexBean();
+            rankIndexBean.setCategory(getString(R.string.rank_user));
+            bundleUser.putSerializable(BUNDLE_RANK_TYPE, rankIndexBean);
+            mFragmentList.add(new RankListFragment().instance(bundleUser));
+            // 问答
+            Bundle bundleQa = new Bundle();
+            RankIndexBean rankIndexBeanQa = new RankIndexBean();
+            rankIndexBeanQa.setCategory(getString(R.string.rank_qa));
+            bundleQa.putSerializable(BUNDLE_RANK_TYPE, rankIndexBeanQa);
+            mFragmentList.add(new RankListFragment().instance(bundleQa));
+            // 动态
+            Bundle bundleDynamic = new Bundle();
+            RankIndexBean rankIndexBeanDynamic = new RankIndexBean();
+            rankIndexBeanDynamic.setCategory(getString(R.string.rank_dynamic));
+            bundleDynamic.putSerializable(BUNDLE_RANK_TYPE, rankIndexBeanDynamic);
+            mFragmentList.add(new RankListFragment().instance(bundleDynamic));
+            // 资讯
+            Bundle bundleInfo = new Bundle();
+            RankIndexBean rankIndexBeanInfo = new RankIndexBean();
+            rankIndexBeanInfo.setCategory(getString(R.string.rank_info));
+            bundleInfo.putSerializable(BUNDLE_RANK_TYPE, rankIndexBeanInfo);
+            mFragmentList.add(new RankListFragment().instance(bundleInfo));
+        }
+
+        return mFragmentList;
     }
 
     @NonNull

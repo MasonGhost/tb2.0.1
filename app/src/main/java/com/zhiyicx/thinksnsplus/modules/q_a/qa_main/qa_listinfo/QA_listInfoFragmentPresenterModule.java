@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.QA_ListInfoRepostory;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,8 +22,4 @@ public class QA_listInfoFragmentPresenterModule {
         return mView;
     }
 
-    @Provides
-    QA_ListInfoConstact.Repository provideQA$ListInfoConstactRepository(QA_ListInfoRepostory qa_listInfoRepostory){
-        return qa_listInfoRepostory;
-    }
 }

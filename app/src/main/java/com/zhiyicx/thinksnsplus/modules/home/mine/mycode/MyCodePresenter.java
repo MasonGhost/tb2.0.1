@@ -46,17 +46,15 @@ import rx.schedulers.Schedulers;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class MyCodePresenter extends AppBasePresenter<MyCodeContract.Repository, MyCodeContract.View>
+public class MyCodePresenter extends AppBasePresenter<MyCodeContract.View>
         implements MyCodeContract.Presenter, OnShareCallbackListener {
 
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     public SharePolicy mSharePolicy;
 
     @Inject
-    public MyCodePresenter(MyCodeContract.Repository repository, MyCodeContract.View rootView) {
-        super(repository, rootView);
+    public MyCodePresenter( MyCodeContract.View rootView) {
+        super( rootView);
     }
 
     @Override

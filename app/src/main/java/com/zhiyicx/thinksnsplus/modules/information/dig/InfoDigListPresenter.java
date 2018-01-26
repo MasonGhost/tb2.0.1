@@ -5,7 +5,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.InfoDetailsRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseInfoRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.information.dig.InfoDigListContract.Presenter;
 
@@ -24,16 +24,16 @@ import rx.Subscription;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class InfoDigListPresenter extends AppBasePresenter<InfoDigListContract.Repository, InfoDigListContract.View> implements Presenter{
+public class InfoDigListPresenter extends AppBasePresenter<InfoDigListContract.View> implements Presenter{
 
     @Inject
-    InfoDetailsRepository mInfoDetailsRepository;
+    BaseInfoRepository mInfoDetailsRepository;
     @Inject
     UserInfoRepository mUserInfoRepository;
 
     @Inject
-    public InfoDigListPresenter(InfoDigListContract.Repository repository, InfoDigListContract.View rootView) {
-        super(repository, rootView);
+    public InfoDigListPresenter(InfoDigListContract.View rootView) {
+        super( rootView);
     }
 
     @Override

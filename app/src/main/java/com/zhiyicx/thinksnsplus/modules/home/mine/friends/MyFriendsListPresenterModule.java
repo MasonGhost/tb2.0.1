@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine.friends;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.MyFriendsListRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -23,10 +21,5 @@ public class MyFriendsListPresenterModule {
     @Provides
     public MyFriendsListContract.View provideMyFriendsListContractView(){
         return mView;
-    }
-
-    @Provides
-    public MyFriendsListContract.Repository provideMyFriendsListContractRepository(MyFriendsListRepository repository){
-        return repository;
     }
 }

@@ -61,16 +61,4 @@ public interface FollowFansListContract {
         void cleanNewFans();
     }
 
-    interface Repository {
-
-        Observable<List<UserInfoBean>> getFollowListFromNet(long userId, int maxId);
-
-        Observable<List<UserInfoBean>> getFansListFromNet(long userId, int maxId);
-
-        Observable<Object> followUser(long followedId);
-
-        Observable<Object> cancleFollowUser(long followedId);
-
-    }
-
 }

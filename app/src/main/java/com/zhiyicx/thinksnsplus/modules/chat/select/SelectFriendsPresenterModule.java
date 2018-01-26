@@ -24,9 +24,4 @@ public class SelectFriendsPresenterModule {
     public SelectFriendsContract.View provideSelectFriendsContractView(){
         return mView;
     }
-
-    @Provides
-    public SelectFriendsContract.Repository provideSelectFriendsContractRepository(SelectFriendsRepository repository){
-        return repository;
-    }
 }

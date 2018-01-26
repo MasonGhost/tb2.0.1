@@ -5,6 +5,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.GroupManagerRepository;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -23,12 +24,15 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_C
  * @contact email:648129313@qq.com
  */
 
-public class GroupManagerPresenter extends AppBasePresenter<GroupManagerContract.Repository, GroupManagerContract.View>
+public class GroupManagerPresenter extends AppBasePresenter<GroupManagerContract.View>
         implements GroupManagerContract.Presenter {
 
     @Inject
-    public GroupManagerPresenter(GroupManagerContract.Repository repository, GroupManagerContract.View rootView) {
-        super(repository, rootView);
+    GroupManagerRepository mGroupManagerRepository;
+    
+    @Inject
+    public GroupManagerPresenter(GroupManagerContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -43,7 +47,7 @@ public class GroupManagerPresenter extends AppBasePresenter<GroupManagerContract
 
     @Override
     public void updateGroup(ChatGroupBean chatGroupBean) {
-        Subscription subscription = mRepository.updateGroup(chatGroupBean.getIm_group_id(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0, 200, chatGroupBean.isMembersonly(),
+        Subscription subscription = mGroupManagerRepository.updateGroup(chatGroupBean.getIm_group_id(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0, 200, chatGroupBean.isMembersonly(),
                 0, chatGroupBean.getGroup_face(), false, chatGroupBean.getOwner() + "")
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage("修改中..."))
                 .observeOn(AndroidSchedulers.mainThread())

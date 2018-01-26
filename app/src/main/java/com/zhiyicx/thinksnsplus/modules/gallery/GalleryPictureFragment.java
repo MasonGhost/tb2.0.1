@@ -71,7 +71,6 @@ import butterknife.OnClick;
 import me.iwf.photopicker.utils.AndroidLifecycleUtils;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -108,17 +107,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     private ActionPopupWindow mActionPopupWindow;
     private Context context;
     private TSnackbar mSavingTSnackbar;
-    private int screenW, screenH;
+    private int screenW;
     private boolean hasAnim = false;
     private PayPopWindow mPayPopWindow;
-
-    public static GalleryPictureFragment newInstance(ImageBean imageUrl) {
-        final GalleryPictureFragment f = new GalleryPictureFragment();
-        final Bundle args = new Bundle();
-        args.putParcelable("url", imageUrl);
-        f.setArguments(args);
-        return f;
-    }
 
     @Override
     protected boolean useEventBus() {
@@ -134,7 +125,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     protected void initView(View rootView) {
         context = getContext();
         screenW = DeviceUtils.getScreenWidth(context);
-        screenH = DeviceUtils.getScreenHeight(context);
         mPhotoViewAttacherNormal = new PhotoViewAttacher(mIvPager);
         mPhotoViewAttacherOrigin = new PhotoViewAttacher(mIvOriginPager);
         mPhotoViewAttacherNormal.setOnPhotoTapListener(this);
@@ -159,7 +149,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     }
 
     private void checkAndLoadImage() {
-        boolean animateIn = getArguments().getBoolean("animationIn");
+        hasAnim = getArguments().getBoolean("animationIn");
         final AnimationRectBean rect = getArguments().getParcelable("rect");
         mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
         assert mImageBean != null;
@@ -176,7 +166,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         } else {
             boolean canLoadImage = AndroidLifecycleUtils.canLoadImage(context);
             if (canLoadImage) {
-                loadImage(mImageBean, rect, animateIn);
+                loadImage(mImageBean, rect);
             }
         }
     }
@@ -260,7 +250,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         if (mTvOriginPhoto.getVisibility() == View.VISIBLE) {
             if (isIn) {
                 ViewCompat.animate(mTvOriginPhoto).alpha(1.0f).scaleX(1.0f).scaleY(1.0f)
-                        .setDuration(500)
+                        .setDuration(300)
                         .setInterpolator(INTERPOLATOR).withLayer()
                         .start();
             } else {
@@ -299,7 +289,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         return fragment;
     }
 
-    private void loadImage(final ImageBean imageBean, final AnimationRectBean rect, final boolean animationIn) {
+    private void loadImage(final ImageBean imageBean, final AnimationRectBean rect) {
         final Toll toll = mImageBean.getToll();
         final boolean canLook;
         canLook = toll == null || !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
@@ -307,8 +297,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         final int w, h;
         w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
         h = (int) (w * imageBean.getHeight() / imageBean.getWidth());
-        LogUtils.e("imageBean = " + imageBean.toString() + "---animationIn---" + animationIn);
-
         // 本地图片
         if (imageBean.getImgUrl() != null) {
             DrawableRequestBuilder local = Glide.with(context)
@@ -327,16 +315,17 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         @Override
                         public GlideUrl requestGlideUrl() {
                             return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), 0, 0,
-                                    ImageZipConfig.IMAGE_80_ZIP, AppApplication.getTOKEN());
+                                    ImageZipConfig.IMAGE_60_ZIP, AppApplication.getTOKEN());
                         }
                     }
                             .requestGlideUrl())
                     .diskCacheStrategy(DiskCacheStrategy.ALL);
 
-            // // 不从网络读取原图(cacheOnlyStreamLoader) 尝试从缓存获取原图
+            // // 不从网络读取原图(CACHE_ONLY_STREAM_LOADER) 尝试从缓存获取原图
             DrawableRequestBuilder requestBuilder = Glide.with(context)
-                    .using(cacheOnlyStreamLoader)
-                    .load(ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), 0, 0, ImageZipConfig.IMAGE_70_ZIP))
+                    .using(CACHE_ONLY_STREAM_LOADER)
+                    .load(ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), w, h,
+                            ImageZipConfig.IMAGE_100_ZIP))
                     // 加载缩略图，上一个页面已经缓存好了，直接读取
                     .thumbnail(thumbnailBuilder)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -366,7 +355,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
                             DrawableRequestBuilder builder = Glide.with(context)
                                     .load(ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), canLook ? w : 0, canLook ? h : 0,
-                                            ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN()))
+                                            ImageZipConfig.IMAGE_80_ZIP, AppApplication.getTOKEN()))
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .listener(new RequestListener<GlideUrl, GlideDrawable>() {
                                         @Override
@@ -396,12 +385,10 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                                                        boolean isFromMemoryCache, boolean isFirstResource) {
                                             LogUtils.i(TAG + "加载高清图成功");
 
-//                                            if (mIvPager != null) {
-//                                                mIvPager.setImageDrawable(resource);
-//                                            }
                                             if (mPbProgress != null) {
                                                 mPbProgress.setVisibility(View.GONE);
                                             }
+                                            // mPhotoViewAttacherNormal.update() 必须在图片设置上后才有效果
                                             Observable.timer(20, TimeUnit.MILLISECONDS)
                                                     .observeOn(AndroidSchedulers.mainThread())
                                                     .subscribeOn(Schedulers.io())
@@ -416,7 +403,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             if (imageBean.getWidth() * imageBean.getHeight() != 0) {
                                 builder.override(w, h);
                             }
-                            builder.into(mIvPager);
+                            if (mIvPager != null) {
+                                builder.into(mIvPager);
+                            }
                             return false;
                         }
 
@@ -453,23 +442,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         mTvOriginPhoto.setText("0%");
         Glide.with(context)
                 .using(new ProgressModelLoader(new MyImageLoadHandler(this)
-//                        new Handler() {
-//                    @Override
-//                    public void handleMessage(Message msg) {
-//                        // 这部分的图片，都是通过 OKHttp 从网络获取的，如果改图片从 glide缓 存中读取，不会经过这儿
-//                        if (msg.what == ProgressListener.SEND_LOAD_PROGRESS && mTvOriginPhoto != null) {
-//                            int totalReadBytes = msg.arg1;
-//                            int lengthBytes = msg.arg2;
-//                            int progressResult = (int) (((float) totalReadBytes / (float) lengthBytes) * 100);
-//                            mTvOriginPhoto.setText(progressResult + "%");
-//                            LogUtils.i("progress-result:-->" + progressResult + " msg.arg1-->" + msg.arg1 + "  msg.arg2-->" +
-//                                    msg.arg2 + " 比例-->" + progressResult + "%/" + "100%");
-//                            if (progressResult == 100) {
-//                                mTvOriginPhoto.setText(R.string.completed);
-//                            }
-//                        }
-//                    }
-//                }
                         , AppApplication.getTOKEN()))
                 .load(ImageUtils.imagePathConvertV2(imageBean.getStorage_id(), w, h, ImageZipConfig.IMAGE_100_ZIP))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -580,8 +552,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         final Runnable endAction = new Runnable() {
             @Override
             public void run() {
-                Bundle bundle = getArguments();
-                bundle.putBoolean("animationIn", false);
+
                 LogUtils.i("startInAnim" + "endAction");
             }
         };
@@ -628,7 +599,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     if (mSavingTSnackbar != null) {
                         mSavingTSnackbar.dismiss();
                     }
-                  showSnackSuccessMessage(result);
+                    showSnackSuccessMessage(result);
                 });
     }
 
@@ -667,8 +638,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             }
             mPhotoViewAttacherNormal.update();
             // 获取到模糊图进行放大动画
-            if (!hasAnim) {
-                hasAnim = true;
+            if (hasAnim) {
+                hasAnim = false;
                 startInAnim(rect);
             }
         }
@@ -676,7 +647,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
     }
 
-    private static final StreamModelLoader<String> cacheOnlyStreamLoader
+    private static final StreamModelLoader<String> CACHE_ONLY_STREAM_LOADER
             = (model, i, i1) -> new DataFetcher<InputStream>() {
         @Override
         public InputStream loadData(Priority priority) throws Exception {
@@ -704,6 +675,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     public void onDestroy() {
         DeviceUtils.gc();
         super.onDestroy();
+        dismissPop(mPayPopWindow);
+        dismissPop(mActionPopupWindow);
     }
 
     private void initCenterPopWindow(int resId) {
@@ -721,13 +694,15 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(1.0f)
                 .buildDescrStr(String.format(getString(resId) + getString(R
-                                .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(mImageBean.getToll().getToll_money(), mPresenter.getRatio()),
+                                .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(mImageBean.getToll().getToll_money(), mPresenter
+                                .getRatio()),
                         mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(mImageBean.getToll().getToll_money(), mPresenter.getRatio())))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(mImageBean.getToll()
+                        .getToll_money(), mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(mImageBean.getFeed_id(), mImageBean.getPosition(), mImageBean.getToll().getPaid_node());
                     mPayPopWindow.hide();

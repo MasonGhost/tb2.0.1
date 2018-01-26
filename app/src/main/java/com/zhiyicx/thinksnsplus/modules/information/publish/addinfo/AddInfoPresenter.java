@@ -1,14 +1,17 @@
 package com.zhiyicx.thinksnsplus.modules.information.publish.addinfo;
 
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.UserTagBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseInfoRepository;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Subscription;
 
 /**
  * @Describe
@@ -17,15 +20,18 @@ import javax.inject.Inject;
  * @Contact master.jungle68@gmail.com
  */
 
-public class AddInfoPresenter extends AppBasePresenter<AddInfoContract.Repository, AddInfoContract.View>
+public class AddInfoPresenter extends AppBasePresenter<AddInfoContract.View>
         implements AddInfoContract.Presenter {
+
+    @Inject
+    BaseInfoRepository mBaseInfoRepository;
 
     @Inject
     InfoTypeBeanGreenDaoImpl mInfoTypeBeanGreenDao;
 
     @Inject
-    public AddInfoPresenter(AddInfoContract.Repository repository, AddInfoContract.View rootView) {
-        super(repository, rootView);
+    public AddInfoPresenter(AddInfoContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -33,4 +39,18 @@ public class AddInfoPresenter extends AppBasePresenter<AddInfoContract.Repositor
         return mInfoTypeBeanGreenDao.getAllCatesLists();
     }
 
+    @Override
+    public void getInfoType() {
+        Subscription subscribe = mBaseInfoRepository.getInfoType()
+                .subscribe(data -> {
+                    for (InfoTypeCatesBean myCates : data.getMy_cates()) {
+                        myCates.setIsMyCate(true);
+                    }
+                    mInfoTypeBeanGreenDao.updateSingleData(data);
+                    mRootView.setInfoType(data.getMy_cates());
+                }, throwable -> {
+
+                });
+        addSubscrebe(subscribe);
+    }
 }

@@ -24,9 +24,4 @@ public class MessageConversationPresenterModule {
     public MessageConversationContract.View provideMessageConversationContractView(){
         return mView;
     }
-
-    @Provides
-    public MessageConversationContract.Repository provedeMessageConversationContractRepository(MessageConversationRepository repository){
-        return repository;
-    }
 }

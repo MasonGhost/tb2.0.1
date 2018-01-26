@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.InfoChannelRepository;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -22,7 +23,7 @@ import static com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay.RETRY
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class InfoChannelPresenter extends AppBasePresenter<InfoChannelConstract.Reppsitory,
+public class InfoChannelPresenter extends AppBasePresenter<
         InfoChannelConstract.View> implements InfoChannelConstract.Presenter {
 
     @Inject
@@ -32,15 +33,11 @@ public class InfoChannelPresenter extends AppBasePresenter<InfoChannelConstract.
     InfoTypeBeanGreenDaoImpl mInfoTypeBeanGreenDao;
 
     @Inject
-    public InfoChannelPresenter(InfoChannelConstract.Reppsitory repository, InfoChannelConstract
-            .View rootView) {
-        super(repository, rootView);
+    public InfoChannelPresenter(InfoChannelConstract
+                                        .View rootView) {
+        super(rootView);
     }
 
-    @Inject
-    void setupListeners() {
-        mRootView.setPresenter(this);
-    }
 
     @Override
     public void updateLocalInfoType(InfoTypeBean infoTypeBean) {
@@ -49,7 +46,7 @@ public class InfoChannelPresenter extends AppBasePresenter<InfoChannelConstract.
 
     @Override
     public void doSubscribe(String follows) {
-        mInfoChannelRepository.doSubscribe(follows)
+        Subscription subscribe = mInfoChannelRepository.doSubscribe(follows)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
@@ -69,6 +66,7 @@ public class InfoChannelPresenter extends AppBasePresenter<InfoChannelConstract.
 
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override

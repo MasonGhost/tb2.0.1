@@ -10,6 +10,7 @@ import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
@@ -17,6 +18,9 @@ import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseInfoRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseRewardRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.VertifyCodeRepository;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
@@ -66,14 +70,11 @@ import static com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean.SEND_ING;
  * @Description
  */
 @FragmentScoped
-public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.Repository,
-        InfoDetailsConstract.View> implements InfoDetailsConstract.Presenter, OnShareCallbackListener {
+public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.View> implements InfoDetailsConstract.Presenter,
+        OnShareCallbackListener {
 
     @Inject
     public SharePolicy mSharePolicy;
-
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     InfoCommentListBeanDaoImpl mInfoCommentListBeanDao;
@@ -83,11 +84,15 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
 
     @Inject
     AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
+    @Inject
+    BaseInfoRepository mBaseInfoRepository;
+    @Inject
+    BaseRewardRepository mBaseRewardRepository;
 
     @Inject
-    public InfoDetailsPresenter(InfoDetailsConstract.Repository repository, InfoDetailsConstract
-            .View rootView) {
-        super(repository, rootView);
+    public InfoDetailsPresenter(InfoDetailsConstract
+                                        .View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -99,33 +104,23 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     public void requestNetData(Long maxId, final boolean isLoadMore) {
         if (mRootView.getCurrentInfo().getRelateInfoList() == null
                 || mRootView.getCurrentInfo().getRelateInfoList().size() == 0) {
-            Subscription subscribe = Observable.zip(mRepository.getInfoDetail(String.valueOf(mRootView.getNewsId())),
-                    mRepository.getInfoDigListV2(String.valueOf(mRootView.getNewsId()), 0L),
-                    mRepository.getRelateInfoList(String.valueOf(mRootView.getNewsId())),
-                    mRepository.getInfoCommentListV2(String.valueOf(mRootView.getNewsId()), 0L, 0L),
-                    mRepository.getRewardCount(mRootView.getCurrentInfo().getId()),
-                    mRepository.rewardInfoList(mRootView.getCurrentInfo().getId(),
-                            TSListFragment.DEFAULT_ONE_PAGE_SIZE, null, null, null),
+            Subscription subscribe = Observable.zip(mBaseInfoRepository.getInfoDetail(String.valueOf(mRootView.getNewsId())),
+                    mBaseInfoRepository.getInfoDigListV2(String.valueOf(mRootView.getNewsId()), 0L),
+                    mBaseInfoRepository.getRelateInfoList(String.valueOf(mRootView.getNewsId())),
+                    mBaseInfoRepository.getInfoCommentListV2(String.valueOf(mRootView.getNewsId()), 0L, 0L),
+                    mBaseRewardRepository.getRewardCount(mRootView.getCurrentInfo().getId()),
+                    mBaseRewardRepository.rewardInfoList(mRootView.getCurrentInfo().getId(),
+                            TSListFragment.DEFAULT_PAGE_SIZE, null, null, null),
                     (infoListDataBean, infoDigListBeen, infoRelateBean, infoCommentBean, rewardsCountBean, rewardsListBeen) -> {
                         infoListDataBean.setDigList(infoDigListBeen);
                         infoListDataBean.setRelateInfoList(infoRelateBean);
                         infoListDataBean.setCommentList(dealComment(infoCommentBean, 0));
                         Observable.empty()
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new rx.Subscriber<Object>() {
+                                .subscribe(new EmptySubscribe<Object>() {
                                     @Override
                                     public void onCompleted() {
                                         mRootView.updateReWardsView(rewardsCountBean, rewardsListBeen);
-                                    }
-
-                                    @Override
-                                    public void onError(Throwable e) {
-
-                                    }
-
-                                    @Override
-                                    public void onNext(Object o) {
-
                                     }
                                 });
 
@@ -153,7 +148,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
             addSubscrebe(subscribe);
 
         } else {
-            Subscription subscribe = mRepository.getInfoCommentListV2(mRootView.getNewsId() + "", maxId, 0L)
+            Subscription subscribe = mBaseInfoRepository.getInfoCommentListV2(mRootView.getNewsId() + "", maxId, 0L)
                     .compose(mSchedulersTransformer)
                     .subscribe(new BaseSubscribeForV2<InfoCommentBean>() {
                         @Override
@@ -191,7 +186,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     public void shareInfo(Bitmap bitmap) {
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
-        shareContent.setTitle(mContext.getString(R.string.app_name_info,mContext.getString(R.string.app_name)));
+        shareContent.setTitle(mContext.getString(R.string.app_name_info, mContext.getString(R.string.app_name)));
         shareContent.setUrl(String.format(Locale.getDefault(), APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
                 mRootView.getCurrentInfo().getId()));
         shareContent.setContent(mRootView.getCurrentInfo().getTitle());
@@ -227,7 +222,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         mRootView.setCollect(isUnCollected);
         mInfoListBeanGreenDao.updateInfo(mRootView.getCurrentInfo());
         EventBus.getDefault().post(mRootView.getCurrentInfo(), EVENT_SEND_INFO_LIST_COLLECT);
-        mRepository.handleCollect(isUnCollected, news_id);
+        mBaseInfoRepository.handleCollect(isUnCollected, news_id);
     }
 
     @Override
@@ -262,7 +257,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
             //return;// 搜索出来的资讯，收藏状态有待优化  已处理
         }
         mInfoListBeanGreenDao.updateInfo(mRootView.getCurrentInfo());
-        mRepository.handleLike(isLiked, news_id);
+        mBaseInfoRepository.handleLike(isLiked, news_id);
     }
 
     @Override
@@ -277,8 +272,8 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
 
     @Override
     public void reqReWardsData(int id) {
-        Subscription subscribe = Observable.zip(mRepository.getRewardCount(id), mRepository.rewardInfoList(id
-                , TSListFragment.DEFAULT_ONE_PAGE_SIZE, null, null, null)
+        Subscription subscribe = Observable.zip(mBaseRewardRepository.getRewardCount(id), mBaseRewardRepository.rewardInfoList(id
+                , TSListFragment.DEFAULT_PAGE_SIZE, null, null, null)
                 , (Func2<RewardsCountBean, List<RewardsListBean>, Object>) (rewardsCountBean, rewardsListBeen) -> {
 
                     mRootView.updateReWardsView(rewardsCountBean, rewardsListBeen);
@@ -293,10 +288,10 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
 
     @Override
     public void getInfoDetail(String news_id) {
-        Subscription subscription = Observable.zip(mRepository.getInfoDetail(news_id),
-                mRepository.getInfoDigListV2(news_id, 0L),
-                mRepository.getRelateInfoList(news_id),
-                mRepository.getInfoCommentListV2(news_id, 0L, 0L),
+        Subscription subscription = Observable.zip(mBaseInfoRepository.getInfoDetail(news_id),
+                mBaseInfoRepository.getInfoDigListV2(news_id, 0L),
+                mBaseInfoRepository.getRelateInfoList(news_id),
+                mBaseInfoRepository.getInfoCommentListV2(news_id, 0L, 0L),
                 (infoListDataBean, infoDigListBeen, infoRelateBean, infoCommentBean) -> {
                     infoListDataBean.setDigList(infoDigListBeen);
                     infoListDataBean.setRelateInfoList(infoRelateBean);
@@ -354,14 +349,14 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     @Override
     public void deleteInfo() {
         mRootView.deleteInfo(true, false, "");
-        Subscription subscription = mRepository.deleteInfo(String.valueOf(mRootView.getCurrentInfo().getCategory().getId()),
+        Subscription subscription = mBaseInfoRepository.deleteInfo(String.valueOf(mRootView.getCurrentInfo().getCategory().getId()),
                 String.valueOf(mRootView.getNewsId()))
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
                         mInfoListBeanGreenDao.deleteInfo(mRootView.getCurrentInfo());
-                        mRootView.deleteInfo(false, true, "");
+                        mRootView.deleteInfo(false, true, data.getMessage().get(0));
                     }
 
                     @Override
@@ -397,7 +392,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
             mRootView.getListDatas().add(emptyData);
         }
         mRootView.refreshData();
-        mRepository.deleteComment(mRootView.getNewsId().intValue(), data.getId().intValue());
+        mBaseInfoRepository.deleteComment(mRootView.getNewsId().intValue(), data.getId().intValue());
     }
 
     /**
@@ -476,7 +471,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         mRootView.getListDatas().add(0, createComment);
         mRootView.getCurrentInfo().setComment_count(mRootView.getCurrentInfo().getComment_count() + 1);
         mRootView.refreshData();
-        mRepository.sendComment(content, mRootView.getNewsId(), reply_id,
+        mBaseInfoRepository.sendComment(content, mRootView.getNewsId(), reply_id,
                 createComment.getComment_mark());
     }
 
@@ -501,7 +496,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-      mRootView.onCacheResponseSuccess(new ArrayList<>(),isLoadMore);
+        mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
     }
 
     @Override

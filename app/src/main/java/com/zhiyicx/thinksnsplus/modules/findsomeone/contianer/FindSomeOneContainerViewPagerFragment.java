@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -26,9 +27,6 @@ import java.util.List;
  */
 public class FindSomeOneContainerViewPagerFragment extends TSViewPagerFragment {
 
-    public static final int PAGE_POSITION_HOT = 0;
-    public static final int PAGE_POSITION_NEW = 1;
-    public static final int PAGE_POSITION_RECOMMEND = 2;
     public static final int PAGE_POSITION_NEARBY = 3;
 
 
@@ -54,22 +52,23 @@ public class FindSomeOneContainerViewPagerFragment extends TSViewPagerFragment {
 
     @Override
     protected List<String> initTitles() {
-        List<String> titles = new ArrayList<>();
-        titles.add(getString(R.string.hot));
-        titles.add(getString(R.string.the_last));
-        titles.add(getString(R.string.info_recommend));
-        titles.add(getString(R.string.neary_by));
-        return titles;
+        return Arrays.asList(getString(R.string.hot)
+                , getString(R.string.the_last)
+                , getString(R.string.info_recommend)
+                , getString(R.string.neary_by)
+        );
     }
 
     @Override
     protected List<Fragment> initFragments() {
-        List<Fragment> fragmentList = new ArrayList<>();
-        getFragment(fragmentList, FindSomeOneListFragment.TYPE_HOT);
-        getFragment(fragmentList, FindSomeOneListFragment.TYPE_NEW);
-        getFragment(fragmentList, FindSomeOneListFragment.TYPE_RECOMMENT);
-        fragmentList.add(FindSomeOneNearbyListFragment.initFragment());
-        return fragmentList;
+        if (mFragmentList == null) {
+            mFragmentList = new ArrayList<>();
+            getFragment(mFragmentList, FindSomeOneListFragment.TYPE_HOT);
+            getFragment(mFragmentList, FindSomeOneListFragment.TYPE_NEW);
+            getFragment(mFragmentList, FindSomeOneListFragment.TYPE_RECOMMENT);
+            mFragmentList.add(FindSomeOneNearbyListFragment.initFragment());
+        }
+        return mFragmentList;
     }
 
     private void getFragment(List<Fragment> fragmentList, int type) {

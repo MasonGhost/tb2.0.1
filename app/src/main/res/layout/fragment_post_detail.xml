@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/behavior_demo_coordinatorLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        app:elevation="0dp">
+
+        <android.support.v7.widget.Toolbar
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height"
+            android:background="@color/white"
+            android:titleMargin="0dp"
+            app:layout_scrollFlags="scroll|enterAlways|snap">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/toolbar_height">
+
+
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center"
+                        android:layout_marginLeft="@dimen/toolbar_center_margin"
+                        android:layout_marginRight="@dimen/toolbar_center_margin"
+                        android:layout_centerInParent="true"
+                        android:paddingBottom="@dimen/divider_line"
+                        android:paddingLeft="@dimen/toolbar_padding_left"
+                        android:paddingRight="@dimen/toolbar_padding_right">
+                    <com.zhiyicx.baseproject.widget.UserAvatarView
+                            android:id="@+id/iv_user_portrait"
+                            android:layout_width="@dimen/headpic_for_assist"
+                            android:layout_height="@dimen/headpic_for_assist"/>
+                    <TextView
+                            android:id="@+id/tv_toolbar_center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textColor="@color/important_for_content"
+                            android:textSize="@dimen/size_sub_title"
+                            android:visibility="invisible"
+                            android:layout_marginLeft="@dimen/spacing_small"
+                            tools:text="xxx"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_toolbar_left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:drawableLeft="@mipmap/topbar_back"
+                    android:drawablePadding="@dimen/spacing_small"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/divider_line"
+                    android:paddingLeft="@dimen/toolbar_padding_left"
+                    android:paddingRight="@dimen/toolbar_padding_right"
+                    android:textColor="@color/toolbar_text_corlor_normal"
+                    android:textSize="@dimen/toolbar_left_text_size"
+                    tools:text="左边"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_toolbar_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="right"
+                    android:drawablePadding="@dimen/spacing_small"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/divider_line"
+                    android:paddingLeft="@dimen/toolbar_padding_left"
+                    android:paddingRight="@dimen/toolbar_padding_right"
+                    android:textColor="@color/selector_theme_color_toolbar_text_color"
+                    android:textSize="@dimen/toolbar_right_text_size"
+                    android:visibility="invisible"
+                    tools:text="右边"
+                    />
+
+                <View
+                    android:id="@+id/v_horizontal_line"
+                    style="@style/style_divider_horizontal"
+                    android:layout_alignParentBottom="true"
+                    />
+            </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+    <include
+        layout="@layout/fragment_tslist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <!--为了防止状态栏透明，添加一个白色的色块-->
+    <View
+        android:id="@+id/toolbar_top_blank"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"/>
+
+    <LinearLayout
+        android:id="@+id/ll_bottom_menu_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        app:layout_behavior="com.zhiyicx.thinksnsplus.widget.coordinatorlayout.BottomLayoutBehavior">
+
+        <View
+            style="@style/style_divider_horizontal_light"
+            />
+
+        <com.zhiyicx.baseproject.widget.DynamicDetailMenuView
+            android:id="@+id/dd_dynamic_tool"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            >
+        </com.zhiyicx.baseproject.widget.DynamicDetailMenuView>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/v_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/masked_color"
+        android:visibility="gone"/>
+
+    <com.zhiyicx.baseproject.widget.InputLimitView
+        android:id="@+id/ilv_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="@bool/pickerview_customTextSize"
+        android:layout_gravity="bottom"
+        android:fitsSystemWindows="true"
+        android:visibility="gone"
+        app:limitSize="@integer/comment_input_max_size"
+        app:showLimitSize="@integer/show_comment_input_size"/>
+
+</android.support.design.widget.CoordinatorLayout>

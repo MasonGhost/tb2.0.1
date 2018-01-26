@@ -10,11 +10,11 @@ import javax.inject.Inject;
  * @contact email:648129313@qq.com
  */
 
-public class SendLocationPresenter extends AppBasePresenter<SendLocationContract.Repository, SendLocationContract.View>
+public class SendLocationPresenter extends AppBasePresenter<SendLocationContract.View>
         implements SendLocationContract.Presenter{
 
     @Inject
-    public SendLocationPresenter(SendLocationContract.Repository repository, SendLocationContract.View rootView) {
-        super(repository, rootView);
+    public SendLocationPresenter(SendLocationContract.View rootView) {
+        super(rootView);
     }
 }

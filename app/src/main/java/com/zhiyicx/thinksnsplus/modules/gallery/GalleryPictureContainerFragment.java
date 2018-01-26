@@ -146,10 +146,6 @@ public class GalleryPictureContainerFragment extends TSFragment {
 
     public boolean canAnimateCloseActivity() {
         Fragment fragment = getChildFragmentManager().findFragmentById(R.id.fl_picture_container);
-        if (fragment instanceof GalleryPictureFragment) {
-            return true;
-        } else {
-            return false;
-        }
+        return fragment instanceof GalleryPictureFragment;
     }
 }

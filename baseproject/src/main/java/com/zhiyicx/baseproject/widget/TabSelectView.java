@@ -49,11 +49,12 @@ public class TabSelectView extends FrameLayout {
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = R.color.normal_for_assist_text;// 缺省的tab未选择文字
     private static final int DEFAULT_TAB_SELECTED_TEXTCOLOR = R.color.important_for_content;// 缺省的tab被选择文字
     private static final int DEFAULT_TAB_TEXTSIZE = R.integer.tab_text_size;// 缺省的tab文字大小
-    private static final int DEFAULT_TAB_MARGIN = R.integer.tab_margin;// 缺省的tab左右padding
-    private static final int DEFAULT_TAB_PADDING = R.integer.tab_padding;// 缺省的tab的线和文字的边缘距离
     private static final int DEFAULT_TAB_LINE_COLOR = R.color.themeColor;// 缺省的tab的线的颜色
-    private static final int DEFAULT_TAB_LINE_HEGIHT = R.integer.line_height;// 缺省的tab的线的高度
+    private int mTabMargin = R.integer.tab_margin;// 缺省的tab左padding
+    private int mTabMargin1 = R.integer.tab_margin;// 缺省的tab右padding
 
+    private int mTabPadding = R.integer.tab_padding;// 缺省的tab的线和文字的边缘距离
+    private int mLineHeight = R.integer.line_height;// 缺省的tab的线的高度
     private MagicIndicator mMagicIndicator;
     private ViewPager mViewPager;
     private View divider;
@@ -62,7 +63,8 @@ public class TabSelectView extends FrameLayout {
     private Context mContext;
     private CommonNavigator mCommonNavigator;
     private boolean mIsAdjustMode;
-    private int mLinePagerIndicator;
+    private int mLinePagerIndicator = LinePagerIndicator.MODE_WRAP_CONTENT;
+    private float mlineWith;
 
     public TabSelectView(Context context) {
         super(context);
@@ -175,7 +177,7 @@ public class TabSelectView extends FrameLayout {
 
     public void setLeftClickListener(final TSFragment fragment, final TabLeftRightClickListener tabLeftClickListener) {
         RxView.clicks(tvToolbarLeft)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(fragment.<Void>bindToLifecycle())
                 .subscribe(new Action1<Void>() {
                     @Override
@@ -189,7 +191,7 @@ public class TabSelectView extends FrameLayout {
 
     public void setRightClickListener(TSFragment fragment, final TabLeftRightClickListener tabRightClickListener) {
         RxView.clicks(tvToolbarRight)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(fragment.<Void>bindToLifecycle())
                 .subscribe(new Action1<Void>() {
                     @Override
@@ -216,8 +218,8 @@ public class TabSelectView extends FrameLayout {
             public IPagerTitleView getTitleView(Context context, final int index) {
                 SimplePagerTitleView simplePagerTitleView = new ColorTransitionPagerTitleView(context);
                 simplePagerTitleView.setNormalColor(ContextCompat.getColor(context, DEFAULT_TAB_UNSELECTED_TEXTCOLOR));
-                int leftRightPadding = UIUtil.dip2px(context, mContext.getResources().getInteger(DEFAULT_TAB_MARGIN));
-                simplePagerTitleView.setPadding(leftRightPadding, 0, leftRightPadding, 0);
+                simplePagerTitleView.setPadding(getResources().getDimensionPixelOffset(R.dimen.spacing_large), 0, getResources()
+                        .getDimensionPixelOffset(R.dimen.spacing_large), 0);
                 simplePagerTitleView.setSelectedColor(ContextCompat.getColor(context, DEFAULT_TAB_SELECTED_TEXTCOLOR));
                 simplePagerTitleView.setText(mStringList.get(index));
                 simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, context.getResources().getInteger(DEFAULT_TAB_TEXTSIZE));
@@ -234,9 +236,11 @@ public class TabSelectView extends FrameLayout {
             public IPagerIndicator getIndicator(Context context) {
                 LinePagerIndicator linePagerIndicator = new LinePagerIndicator(context);
                 linePagerIndicator.setMode(mLinePagerIndicator);// 适应文字长度
-                //linePagerIndicator.setMode(LinePagerIndicator.MODE_MATCH_EDGE);// 占满
-                linePagerIndicator.setXOffset(-UIUtil.dip2px(context, context.getResources().getInteger(DEFAULT_TAB_PADDING)));// 每个item边缘到指示器的边缘距离
-                linePagerIndicator.setLineHeight(UIUtil.dip2px(context, context.getResources().getInteger(DEFAULT_TAB_LINE_HEGIHT)));
+                linePagerIndicator.setXOffset(-UIUtil.dip2px(context, context.getResources().getInteger(mTabPadding)));// 每个item边缘到指示器的边缘距离
+                if (mlineWith > 0) {
+                    linePagerIndicator.setLineWidth(mlineWith);
+                }
+                linePagerIndicator.setLineHeight(UIUtil.dip2px(context, context.getResources().getInteger(mLineHeight)));
                 linePagerIndicator.setColors(ContextCompat.getColor(context, DEFAULT_TAB_LINE_COLOR));
                 return linePagerIndicator;
             }
@@ -279,15 +283,38 @@ public class TabSelectView extends FrameLayout {
             ViewGroup.LayoutParams params = mMagicIndicator.getLayoutParams();
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            mMagicIndicator.setPadding(0, 0, 50, 0);
             mMagicIndicator.setLayoutParams(params);
         }
     }
+
+    public void setDefaultTabLinehegiht(int height) {
+        mLineHeight = height;
+    }
+
+    public void setTabLineMarigin(int height) {
+        mTabPadding = height;
+    }
+
+    public void setTabLineWith(int with) {
+        mlineWith = with;
+    }
+
+    public void setDefaultTabLeftMargin(int defaultTabLeftMargin) {
+        mTabMargin = defaultTabLeftMargin;
+    }
+
+    public void setDefaultTabRightMargin(int defaultTabRightMargin) {
+        mTabMargin1 = defaultTabRightMargin;
+    }
+
 
     public interface TabLeftRightClickListener {
         void buttonClick();
     }
 
-    public CommonNavigator getCommonNavigator() {
-        return mCommonNavigator;
+    public void notifyDataSetChanged(List<String> stringList) {
+        mStringList = stringList;
+        mCommonNavigator.notifyDataSetChanged();
     }
 }

@@ -24,9 +24,4 @@ public class ChatInfoPresenterModule {
     public ChatInfoContract.View provideChatInfoContractView(){
         return mView;
     }
-
-    @Provides
-    public ChatInfoContract.Repository provideChatInfoContractRepository(ChatInfoRepository repository){
-        return repository;
-    }
 }

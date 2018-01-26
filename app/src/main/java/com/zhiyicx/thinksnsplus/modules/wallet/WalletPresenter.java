@@ -9,11 +9,8 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import java.util.concurrent.TimeUnit;
@@ -21,10 +18,8 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 /**
  * @Describe
@@ -32,7 +27,7 @@ import rx.functions.Action1;
  * @Date 2017/05/22
  * @Contact master.jungle68@gmail.com
  */
-public class WalletPresenter extends AppBasePresenter<WalletContract.Repository, WalletContract.View> implements WalletContract.Presenter {
+public class WalletPresenter extends AppBasePresenter<WalletContract.View> implements WalletContract.Presenter {
     public static final int DEFAULT_LOADING_SHOW_TIME = 1;
 
     /**
@@ -45,31 +40,27 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
     public static final int TAG_SHOWRULE_JUMP = 4; // jump rule
 
     @Inject
-    AuthRepository mIAuthRepository;
-
-    @Inject
     UserInfoRepository mUserInfoRepository;
-
     @Inject
-    SystemRepository mSystemRepository;
-
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-
-    @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
+    BillRepository mBillRepository;
 
     @Inject
     WalletConfigBeanGreenDaoImpl mWalletConfigBeanGreenDao;
 
-    private boolean mIsUsreInfoRequseted = false;// 用户信息是否拿到了
+    /**
+     * 用户信息是否拿到了
+     */
+    private boolean mIsUsreInfoRequseted = false;
 
-    WalletConfigBean mWalletConfigBean; // 钱包配置信息，必须的数据
+    /**
+     * 钱包配置信息，必须的数据
+     */
+    WalletConfigBean mWalletConfigBean;
 
 
     @Inject
-    public WalletPresenter(WalletContract.Repository repository, WalletContract.View rootView) {
-        super(repository, rootView);
+    public WalletPresenter(WalletContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -95,8 +86,7 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
                         if (data.getWallet() != null) {
                             mWalletBeanGreenDao.insertOrReplace(data.getWallet());
                         }
-                        int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
-                        mRootView.updateBalance(data.getWallet() != null ? PayConfig.realCurrency2GameCurrency(data.getWallet().getBalance(),getRatio()) : 0);
+                        mRootView.updateBalance(data.getWallet() != null ? PayConfig.realCurrency2GameCurrency(data.getWallet().getBalance(), getRatio()) : 0);
                     }
 
                     @Override
@@ -160,7 +150,7 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
      */
     private void getWalletConfigFromServer(final int tag, final boolean isNeedTip) {
 
-        final Subscription walletConfigSub = mRepository.getWalletConfig()
+        final Subscription walletConfigSub = mBillRepository.getWalletConfig()
                 .doOnSubscribe(() -> {
                     if (isNeedTip) {
                         mRootView.showSnackLoadingMessage(mContext.getString(R.string.wallet_config_info_get_loading_tip));
@@ -174,7 +164,6 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
                         mWalletConfigBeanGreenDao.insertOrReplace(data);
                         if (isNeedTip) {
                             mRootView.dismissSnackBar();
-//                            mRootView.showSnackSuccessMessage(mContext.getString(R.string.get_success));
                         }
                         mRootView.walletConfigCallBack(data, tag);
                     }
@@ -188,8 +177,8 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        super.onError(e);
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
                         if (isNeedTip) {
                             mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
                         }

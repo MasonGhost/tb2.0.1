@@ -9,6 +9,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 
 import okhttp3.FormBody;
 import okhttp3.Interceptor;
@@ -28,6 +29,7 @@ import okio.BufferedSource;
 public class RequestIntercept implements Interceptor {
     private static final String TAG = "RequestIntercept";
     private RequestInterceptListener mListener;
+    private static final boolean USE_ERROR_LOG = false;
 
     public RequestIntercept(RequestInterceptListener listener) {
         this.mListener = listener;
@@ -37,7 +39,9 @@ public class RequestIntercept implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
         if (mListener != null)//在请求服务器之前可以拿到request,做一些操作比如给request添加header,如果不做操作则返回参数中的request
+        {
             request = mListener.onHttpRequestBefore(chain, request);
+        }
 
         Buffer requestbuffer = new Buffer();
         if (request.body() != null) {
@@ -69,7 +73,6 @@ public class RequestIntercept implements Interceptor {
         BufferedSource source = responseBody.source();
         source.request(Long.MAX_VALUE); // Buffer the entire body.
         Buffer buffer = source.buffer();
-
         //获取content的压缩类型
         String encoding = originalResponse
                 .headers()
@@ -79,9 +82,18 @@ public class RequestIntercept implements Interceptor {
         String bodyString = ConvertUtils.praseBodyString(responseBody, encoding, clone);
         // 打印返回的json结果
         LogUtils.json(TAG, bodyString);
+        if (USE_ERROR_LOG) {
+            // 服務器出錯時候打印
+            try {
+                LogUtils.d(TAG, bodyString);
+            } catch (Exception ignored) {
+            }
+        }
 
-        if (mListener != null)//这里可以比客户端提前一步拿到服务器返回的结果,可以做一些操作,比如token超时,重新获取
+        //这里可以比客户端提前一步拿到服务器返回的结果,可以做一些操作,比如token超时,重新获取
+        if (mListener != null) {
             return mListener.onHttpResponse(bodyString, chain, originalResponse);
+        }
 
         return originalResponse;
     }

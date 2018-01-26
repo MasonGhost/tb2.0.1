@@ -31,15 +31,4 @@ public class BaseDraftBean extends BaseListBean{
         super(in);
     }
 
-    public static final Creator<BaseDraftBean> CREATOR = new Creator<BaseDraftBean>() {
-        @Override
-        public BaseDraftBean createFromParcel(Parcel source) {
-            return new BaseDraftBean(source);
-        }
-
-        @Override
-        public BaseDraftBean[] newArray(int size) {
-            return new BaseDraftBean[size];
-        }
-    };
 }

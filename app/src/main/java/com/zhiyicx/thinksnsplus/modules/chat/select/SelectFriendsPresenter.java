@@ -17,12 +17,11 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.SelectFriendsRepository;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,15 +38,15 @@ import rx.Subscription;
  * @contact email:648129313@qq.com
  */
 
-public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContract.Repository, SelectFriendsContract.View>
+public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContract.View>
         implements SelectFriendsContract.Presenter {
 
     @Inject
-    protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    SelectFriendsRepository mRepository;
 
     @Inject
-    public SelectFriendsPresenter(SelectFriendsContract.Repository repository, SelectFriendsContract.View rootView) {
-        super(repository, rootView);
+    public SelectFriendsPresenter(SelectFriendsContract.View rootView) {
+        super(rootView);
     }
 
     @Override

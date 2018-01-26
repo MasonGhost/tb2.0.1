@@ -24,5 +24,4 @@ public interface QA_ListInfoConstact {
         SystemConfigBean getSystemConfig();
     }
 
-    interface Repository extends IBasePublishQuestionRepository {}
 }

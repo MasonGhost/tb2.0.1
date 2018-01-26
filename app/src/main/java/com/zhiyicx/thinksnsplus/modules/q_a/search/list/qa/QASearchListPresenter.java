@@ -26,11 +26,12 @@ import rx.Subscription;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class QASearchListPresenter extends AppBasePresenter<QASearchListContract.Repository,
+public class QASearchListPresenter extends AppBasePresenter<
         QASearchListContract.View> implements QASearchListContract.Presenter {
 
 
     public static final int DEFAULT_FIRST_SHOW_HISTORY_SIZE = 5;
+
     @Inject
     UserInfoRepository mUserInfoRepository;
 
@@ -43,9 +44,8 @@ public class QASearchListPresenter extends AppBasePresenter<QASearchListContract
     private Subscription all;
 
     @Inject
-    public QASearchListPresenter(QASearchListContract.Repository repository,
-                                 QASearchListContract.View rootView) {
-        super(repository, rootView);
+    public QASearchListPresenter(QASearchListContract.View rootView) {
+        super(rootView);
 
     }
 
@@ -60,7 +60,7 @@ public class QASearchListPresenter extends AppBasePresenter<QASearchListContract
             all.unsubscribe();
         }
         final String searchContent = mRootView.getSearchInput();
-        if(TextUtils.isEmpty(searchContent)){// 无搜索内容
+        if (TextUtils.isEmpty(searchContent)) {// 无搜索内容
             mRootView.hideRefreshState(isLoadMore);
             return;
         }
@@ -95,12 +95,12 @@ public class QASearchListPresenter extends AppBasePresenter<QASearchListContract
      */
     private void saveSearhDatq(String searchContent) {
         QASearchHistoryBean qaSearchHistoryBean = new QASearchHistoryBean(searchContent, QASearchHistoryBean.TYPE_QA);
-        mQASearchBeanGreenDao.saveHistoryDataByType(qaSearchHistoryBean,QASearchHistoryBean.TYPE_QA);
+        mQASearchBeanGreenDao.saveHistoryDataByType(qaSearchHistoryBean, QASearchHistoryBean.TYPE_QA);
     }
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-      mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class QASearchListPresenter extends AppBasePresenter<QASearchListContract
 
     @Override
     public List<QASearchHistoryBean> getFirstShowHistory() {
-        return mQASearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE,QASearchHistoryBean.TYPE_QA);
+        return mQASearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, QASearchHistoryBean.TYPE_QA);
     }
 
     @Override
@@ -128,4 +128,5 @@ public class QASearchListPresenter extends AppBasePresenter<QASearchListContract
     public void deleteSearchHistory(QASearchHistoryBean qaSearchHistoryBean) {
         mQASearchBeanGreenDao.deleteSingleCache(qaSearchHistoryBean);
     }
+
 }

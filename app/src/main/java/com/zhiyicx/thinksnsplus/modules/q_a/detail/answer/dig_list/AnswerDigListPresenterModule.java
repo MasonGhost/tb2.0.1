@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.dig_list;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.AnswerDigListRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,8 +22,4 @@ public class AnswerDigListPresenterModule {
         return mView;
     }
 
-    @Provides
-    AnswerDigListContract.Repository provideDigListContractRepository(AnswerDigListRepository digListRepository) {
-        return digListRepository;
-    }
 }

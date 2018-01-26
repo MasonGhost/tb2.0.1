@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.rank.main.list;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -35,6 +36,16 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        DaggerRankListComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .rankListPresenterModule(new RankListPresenterModule(this))
+                .build()
+                .inject(this);
+    }
+
+    @Override
     protected boolean setUseSatusbar() {
         return true;
     }
@@ -46,11 +57,6 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
 
     @Override
     protected void initView(View rootView) {
-        DaggerRankListComponent.builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .rankListPresenterModule(new RankListPresenterModule(this))
-                .build()
-                .inject(this);
         super.initView(rootView);
     }
 

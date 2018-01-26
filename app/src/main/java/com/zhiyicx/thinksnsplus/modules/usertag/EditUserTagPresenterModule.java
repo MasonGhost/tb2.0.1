@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.usertag;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.EditUserTagRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,8 +22,4 @@ public class EditUserTagPresenterModule {
         return mView;
     }
 
-    @Provides
-    EditUserTagContract.Repository provideEditUserTagContractRepository(EditUserTagRepository repository) {
-        return repository;
-    }
 }

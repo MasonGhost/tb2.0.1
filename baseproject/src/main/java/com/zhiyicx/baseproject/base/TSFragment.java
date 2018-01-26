@@ -30,6 +30,7 @@ import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.baseproject.widget.dialog.LoadingDialog;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.base.BaseActivity;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -73,6 +74,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected TextView mToolbarLeft;
     protected View mDriver;
     protected TextView mToolbarRight;
+    protected TextView mToolbarRightLeft;
     protected TextView mToolbarCenter;
     protected View mStatusPlaceholderView;
     /**
@@ -93,10 +95,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 右上角的按钮因为音乐播放悬浮显示，是否已经偏左移动
      */
     private boolean rightViewHadTranslated = false;
-    /**
-     * 是否是第一次进入页面
-     */
-    private boolean isFirstIn = true;
+
     /**
      * View 树监听订阅器
      */
@@ -108,50 +107,14 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private LoadingDialog mCenterLoadingDialog;
     private TSnackbar mSnackBar;
     private View mMusicWindowView;
-    private FrameLayout musicWindowContainer;
     protected SystemConfigBean mSystemConfigBean;
 
     private ActionPopupWindow mDeleteTipPopupWindow;// 删除二次确认弹框
 
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        return view;
-    }
-
     @Override
     protected View getContentView() {
         LinearLayout linearLayout = new LinearLayout(getActivity());
-        // 添加音乐悬浮窗
-        if (getParentFragment() == null) {
-            mMusicWindowView = mLayoutInflater.inflate(R.layout.windows_music, null);
-            musicWindowContainer = new FrameLayout(getActivity());
-            musicWindowContainer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
-                    .MATCH_PARENT));
-            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ConvertUtils.dp2px(getActivity(), 24),
-                    ConvertUtils.dp2px(getActivity(), 24));
-            layoutParams.gravity = Gravity.RIGHT;
-            layoutParams.setMargins(0, ConvertUtils.dp2px(getActivity(), 30), ConvertUtils.dp2px(getContext(), 10), 0);
-            mMusicWindowView.setLayoutParams(layoutParams);
-            mMusicWindowView.setVisibility(View.GONE);
-            mMusicWindowView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent("android.intent.action.MAIN");
-                    intent.setClassName(getActivity(), "com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity");
-                    intent.putExtra("music_info", WindowUtils.getMusicAlbumDetailsBean());
-                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    getActivity().startActivity(intent);
-                }
-            });
-            musicWindowContainer.addView(linearLayout);
-            musicWindowContainer.addView(mMusicWindowView);
-        }
-
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         linearLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         // 是否添加和状态栏等高的占位 View
         if (setUseSatusbar() && setUseStatusView()) {
@@ -194,14 +157,15 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             StatusBarUtils.statusBarLightMode(getActivity());
         }
         setToolBarTextColor();
-        FrameLayout frameLayout = new FrameLayout(getActivity());
-        frameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         // 内容区域
         final View bodyContainer = mLayoutInflater.inflate(getBodyLayoutId(), null);
         bodyContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        frameLayout.addView(bodyContainer);
         // 加载动画
         if (setUseCenterLoading()) {
+            FrameLayout frameLayout = new FrameLayout(getActivity());
+            frameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            frameLayout.addView(bodyContainer);
+
             mCenterLoadingView = mLayoutInflater.inflate(R.layout.view_center_loading, null);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             if (!showToolbar()) {
@@ -224,14 +188,51 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                     });
 
             frameLayout.addView(mCenterLoadingView);
+            linearLayout.addView(frameLayout);
+
+        } else {
+            linearLayout.addView(bodyContainer);
         }
 
-        linearLayout.addView(frameLayout);
         mSnackRootView = (ViewGroup) getActivity().findViewById(android.R.id.content).getRootView();
         if (needCenterLoadingDialog()) {
             mCenterLoadingDialog = new LoadingDialog(getActivity());
         }
-        return musicWindowContainer == null ? linearLayout : musicWindowContainer;
+        return linearLayout;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        // 添加音乐悬浮窗
+        if (getParentFragment() == null && needMusicWindowView()) {
+
+            mMusicWindowView = mLayoutInflater.inflate(R.layout.windows_music, null);
+
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(getResources().getDimensionPixelOffset(R.dimen.music_icon_size),
+                    getResources().getDimensionPixelOffset(R.dimen.music_icon_size));
+            layoutParams.gravity = Gravity.RIGHT;
+            int marginTop = DeviceUtils.getStatuBarHeight(mActivity) + (getResources().getDimensionPixelOffset(R.dimen.toolbar_height) -
+                    getResources().getDimensionPixelOffset(R.dimen.music_icon_size)) / 2;
+            layoutParams.setMargins(0, marginTop, getResources().getDimensionPixelOffset(R.dimen.spacing_normal), 0);
+            mMusicWindowView.setLayoutParams(layoutParams);
+            mMusicWindowView.setVisibility(View.GONE);
+            mMusicWindowView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent("android.intent.action.MAIN");
+                    intent.setClassName(getActivity(), "com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity");
+                    intent.putExtra("music_info", WindowUtils.getMusicAlbumDetailsBean());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getActivity().startActivity(intent);
+                }
+            });
+
+            if (mActivity instanceof BaseActivity) {
+                ((ViewGroup) mActivity.findViewById(R.id.fl_fragment_container)).addView(mMusicWindowView);
+            }
+        }
     }
 
     @Override
@@ -240,14 +241,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         boolean isshow = WindowUtils.getIsShown();
         musicWindowsStatus(isshow);
         WindowUtils.setWindowDismisslistener(this);
-        if (!this.getClass().getSimpleName().equals("InfoListFragment") && isshow) {
-            if (mMusicWindowView != null) {
-                mMusicWindowView.setVisibility(View.VISIBLE);
-                RotateAnimation mRotateAnimation = (RotateAnimation) AnimationUtils.loadAnimation(getActivity(), R.anim
-                        .music_window_rotate);
-                mMusicWindowView.setAnimation(mRotateAnimation);
-                mRotateAnimation.start();
-            }
+        if (isshow && mMusicWindowView != null) {
+            mMusicWindowView.setVisibility(View.VISIBLE);
+            RotateAnimation mRotateAnimation = (RotateAnimation) AnimationUtils.loadAnimation(getActivity(), R.anim
+                    .music_window_rotate);
+            mMusicWindowView.setAnimation(mRotateAnimation);
+            mRotateAnimation.start();
         }
     }
 
@@ -289,8 +288,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                 .setPromptThemBackground(prompt)
                 .setCallback(new TSnackbar.Callback() {
                     @Override
-                    public void onDismissed(TSnackbar TSnackbar, @DismissEvent int event) {
-                        super.onDismissed(TSnackbar, event);
+                    public void onDismissed(TSnackbar tsnackbar, @DismissEvent int event) {
+                        super.onDismissed(tsnackbar, event);
                         switch (event) {
                             case DISMISS_EVENT_TIMEOUT:
                                 try {
@@ -377,7 +376,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     /**
      * 关闭中心放大缩小加载动画
      */
-    protected void closeLoadingView() {
+    @Override
+    public void closeLoadingView() {
         if (mCenterLoadingView == null) {
             return;
         }
@@ -572,6 +572,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         return true;
     }
 
+    protected boolean needMusicWindowView() {
+        return true;
+    }
+
     /**
      * 获取toolbar的布局文件,如果需要返回自定义的toolbar布局，重写该方法；否则默认返回缺省的toolbar
      */
@@ -645,6 +649,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         toolBarContainer.setBackgroundResource(setToolBarBackgroud());
         mToolbarLeft = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_left);
         mToolbarRight = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_right);
+        mToolbarRightLeft = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_right_left);
         mToolbarCenter = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_center);
         mIvRefresh = (ImageView) toolBarContainer.findViewById(R.id.iv_refresh);
         // 如果标题为空，就隐藏它
@@ -654,9 +659,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         mToolbarLeft.setText(setLeftTitle());
         mToolbarRight.setVisibility(TextUtils.isEmpty(setRightTitle()) && setRightImg() == 0 ? View.GONE : View.VISIBLE);
         mToolbarRight.setText(setRightTitle());
+        mToolbarRightLeft.setVisibility(TextUtils.isEmpty(setRightLeftTitle()) && setRightLeftImg() == 0 ? View.GONE : View.VISIBLE);
+        mToolbarRightLeft.setText(setRightLeftTitle());
 
         setToolBarLeftImage(setLeftImg());
         setToolBarRightImage(setRightImg());
+        setToolBarRightLeftImage(setRightLeftImg());
         RxView.clicks(mToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.<Void>bindToLifecycle())
@@ -673,6 +681,16 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                     @Override
                     public void call(Void aVoid) {
                         setRightClick();
+                    }
+                });
+
+        RxView.clicks(mToolbarRightLeft)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        setRightLeftClick();
                     }
                 });
         RxView.clicks(mToolbarCenter)
@@ -701,6 +719,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      */
     protected void setToolBarRightImage(int resImg) {
         mToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), resImg), null);
+    }
+
+    protected void setToolBarRightLeftImage(int resImg) {
+        mToolbarRightLeft.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), resImg), null);
     }
 
     /**
@@ -746,6 +768,13 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     /**
+     * 设置右边靠左边那个的标题
+     */
+    protected String setRightLeftTitle() {
+        return "";
+    }
+
+    /**
      * 设置左边的图片
      */
     protected int setLeftImg() {
@@ -760,9 +789,17 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     /**
+     * 设置右边靠左边那个的图片
+     */
+    protected int setRightLeftImg() {
+        return 0;
+    }
+
+    /**
      * 设置左边的点击事件，默认为关闭activity，有必要重写该方法
      */
     protected void setLeftClick() {
+        DeviceUtils.hideSoftKeyboard(mActivity,mRootView);
         getActivity().finish();
     }
 
@@ -770,6 +807,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 设置右边的点击时间，有必要重写该方法
      */
     protected void setRightClick() {
+    }
+
+    /**
+     * 设置右边的点击时间，有必要重写该方法
+     */
+    protected void setRightLeftClick() {
     }
 
     protected void setCenterClick() {
@@ -783,6 +826,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         if (showToolbar() && ContextCompat.getColor(getContext(), setToolBarBackgroud()) == Color.WHITE) {
             mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
             mToolbarRight.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.selector_text_color));
+            mToolbarRightLeft.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.selector_text_color));
             mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
         }
     }
@@ -904,6 +948,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     @Override
     public void onDestroyView() {
         if (mSnackBar != null) {
+            mSnackBar.setCallback(null);
             if (mSnackBar.isShownOrQueued()) {
                 mSnackBar.dismiss();
             }

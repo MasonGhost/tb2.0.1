@@ -70,13 +70,6 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
         holder.setText(R.id.tv_name, dynamicCommentBean.getCommentUser().getName());
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicCommentBean.getCreated_at()));
         holder.setText(R.id.tv_content, setShowText(dynamicCommentBean, position));
-        holder.getView(R.id.tv_content).setOnClickListener(v -> {
-            LogUtils.d("-----dy------onClick----------------");
-            if (mOnCommentTextClickListener != null) {
-                mOnCommentTextClickListener.onCommentTextClick(position);
-            }
-        });
-
         holder.setVisible(R.id.fl_tip, dynamicCommentBean.getState() == DynamicCommentBean.SEND_ERROR ? View.VISIBLE : View.GONE);
 
         RxView.clicks(holder.getView(R.id.fl_tip))
@@ -94,6 +87,17 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
         if (!links.isEmpty()) {
             ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
         }
+        holder.getView(R.id.tv_content).setOnClickListener(v -> {
+            if (mOnCommentTextClickListener != null) {
+                mOnCommentTextClickListener.onCommentTextClick(position);
+            }
+        });
+        holder.getView(R.id.tv_content).setOnLongClickListener(v -> {
+            if (mOnCommentTextClickListener != null) {
+                mOnCommentTextClickListener.onCommentTextLongClick(position);
+            }
+            return true;
+        });
         ImageUtils.loadCircleUserHeadPic(dynamicCommentBean.getCommentUser(), holder.getView(R.id.iv_headpic));
         setUserInfoClick(holder.getView(R.id.tv_name), dynamicCommentBean.getCommentUser());
         setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicCommentBean.getCommentUser());
@@ -113,7 +117,8 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
 
     protected List<Link> setLiknks(ViewHolder holder, final DynamicCommentBean dynamicCommentBean, int position) {
         List<Link> links = new ArrayList<>();
-        if (dynamicCommentBean.getReplyUser() != null && dynamicCommentBean.getReply_to_user_id() != 0 && dynamicCommentBean.getReplyUser().getName() != null) {
+        if (dynamicCommentBean.getReplyUser() != null && dynamicCommentBean.getReply_to_user_id() != 0 && dynamicCommentBean.getReplyUser().getName
+                () != null) {
             Link replyNameLink = new Link(dynamicCommentBean.getReplyUser().getName())
                     .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))
                     // optional, defaults to holo blue

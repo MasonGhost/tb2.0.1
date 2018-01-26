@@ -11,7 +11,7 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.text.SpannableString;
+import android.support.annotation.FloatRange;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.View;
@@ -41,6 +41,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import okhttp3.MediaType;
@@ -841,7 +842,21 @@ public class ConvertUtils {
      * @return bitmap
      */
     public static Bitmap drawable2Bitmap(Drawable drawable) {
-        return drawable == null ? null : ((BitmapDrawable) drawable).getBitmap();
+        Bitmap bitmap = null;
+        try {
+            bitmap = drawable == null ? null : ((BitmapDrawable) drawable).getBitmap();
+        } catch (Exception e) {
+            int w = drawable.getIntrinsicWidth();
+            int h = drawable.getIntrinsicHeight();
+            Bitmap.Config config =
+                    drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.RGB_565
+                            : Bitmap.Config.RGB_565;
+            bitmap = Bitmap.createBitmap(w, h, config);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, w, h);
+            drawable.draw(canvas);
+        }
+        return bitmap;
     }
 
     /**
@@ -1071,16 +1086,102 @@ public class ConvertUtils {
 
     /**
      * emoji 所占的长度
+     *
      * @param emojiNUm emoji 个数
      * @return
      */
     public static int emojiStrLenght(int emojiNUm) {
-        return 2*emojiNUm;
+        return 2 * emojiNUm;
     }
 
     private static boolean isEmojiCharacter(char codePoint) {
         return !(codePoint == 0x0 || codePoint == 0x9 || codePoint == 0xA || codePoint == 0xD || codePoint >= 0x20 && codePoint <= 0xD7FF ||
                 codePoint >= 0xE000 && codePoint <= 0xFFFD);
+    }
+
+    /**
+     * @param color 处理的颜色
+     * @param i     处理的步长
+     * @return 处理完后较深的颜色
+     */
+    public static int getDarkerColor(int color, @FloatRange(from = 0, to = 1) float i) {
+        float redrate = 0.299f;
+        float greenrate = 0.587f;
+        float bluerate = 0.114f;
+
+        int red = (color >> 16) & 0xFF;
+        int green = (color >> 8) & 0xFF;
+        int blue = color & 0xFF;
+
+        return Color.rgb((int) Math.max(red - redrate * i * 0xFF, 0),
+                (int) Math.max(green - greenrate * i * 0xFF, 0),
+                (int) Math.max(blue - bluerate * i * 0xFF, 0));
+    }
+
+    public static String toBase64(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] bytes = baos.toByteArray();
+
+        return Base64.encodeToString(bytes, Base64.NO_WRAP);
+    }
+
+    public static Bitmap toBitmap(Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
+
+        int width = drawable.getIntrinsicWidth();
+        width = width > 0 ? width : 1;
+        int height = drawable.getIntrinsicHeight();
+        height = height > 0 ? height : 1;
+
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
+
+    public static Bitmap decodeResource(Context context, int resId) {
+        return BitmapFactory.decodeResource(context.getResources(), resId);
+    }
+
+    public static long getCurrentTime() {
+        return System.currentTimeMillis();
+    }
+
+    /**
+     * 生成漂亮的颜色
+     */
+    public static int generateBeautifulColor() {
+        Random random = new Random();
+        //为了让生成的颜色不至于太黑或者太白，所以对3个颜色的值进行限定
+        int red = random.nextInt(150) + 50;//50-200
+        int green = random.nextInt(150) + 50;//50-200
+        int blue = random.nextInt(150) + 50;//50-200
+        return Color.rgb(red, green, blue);//使用r,g,b混合生成一种新的颜色
+    }
+
+    /**
+     * 获得状态栏的高度
+     */
+    public static int getStatusHeight(Context context) {
+        int statusHeight = -1;
+        try {
+            Class<?> clazz = Class.forName("com.android.internal.R$dimen");
+            Object object = clazz.newInstance();
+            int height = Integer.parseInt(clazz.getField("status_bar_height").get(object).toString());
+            statusHeight = context.getResources().getDimensionPixelSize(height);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return statusHeight;
+    }
+
+    public static String converInt2HexColor(int color) {
+        return "#" + Integer.toHexString(color).substring(2);
     }
 
 }

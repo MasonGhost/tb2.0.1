@@ -21,6 +21,7 @@ import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.MessageConversationRepository;
 import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -47,11 +48,11 @@ import rx.schedulers.Schedulers;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class MessageConversationPresenter extends AppBasePresenter<MessageConversationContract.Repository, MessageConversationContract.View>
+public class MessageConversationPresenter extends AppBasePresenter<MessageConversationContract.View>
         implements MessageConversationContract.Presenter {
 
     @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    MessageConversationRepository mRepository;
 
     /**
      * 复制的所有原数据
@@ -59,8 +60,8 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
     private List<MessageItemBeanV2> mCopyConversationList;
 
     @Inject
-    public MessageConversationPresenter(MessageConversationContract.Repository repository, MessageConversationContract.View rootView) {
-        super(repository, rootView);
+    public MessageConversationPresenter(MessageConversationContract.View rootView) {
+        super(rootView);
     }
 
     @Override

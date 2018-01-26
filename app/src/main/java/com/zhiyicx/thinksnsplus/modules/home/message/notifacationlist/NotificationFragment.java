@@ -24,7 +24,10 @@ import javax.inject.Inject;
 public class NotificationFragment extends TSListFragment<NotificationContract.Presenter, TSPNotificationBean>
         implements NotificationContract.View {
 
-    public NotificationFragment instance() {
+    @Inject
+    NotificationPresenter mNotificationPresenter;
+
+    public static NotificationFragment instance() {
         NotificationFragment fragment = new NotificationFragment();
         fragment.setArguments(new Bundle());
         return fragment;

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:gravity="center_vertical"
+    android:background="@color/white"
+    android:paddingLeft="@dimen/spacing_normal"
+    android:layout_height="@dimen/create_circle_location"
+    android:orientation="vertical">
+
+    <TextView
+        android:text="环球中心"
+        android:id="@+id/tv_location_name"
+        android:textSize="@dimen/size_content"
+        android:textColor="@drawable/selector_create_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:text="武侯大道"
+        android:id="@+id/tv_location_address"
+        android:textSize="@dimen/size_note_assist"
+        android:textColor="@color/normal_for_assist_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

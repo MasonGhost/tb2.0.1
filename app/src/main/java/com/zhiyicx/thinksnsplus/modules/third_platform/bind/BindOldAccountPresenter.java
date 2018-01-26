@@ -2,20 +2,17 @@ package com.zhiyicx.thinksnsplus.modules.third_platform.bind;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.AccountBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.WalletRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.i.IAuthRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import javax.inject.Inject;
@@ -29,7 +26,7 @@ import rx.Subscription;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class BindOldAccountPresenter extends BasePresenter<BindOldAccountContract.Repository, BindOldAccountContract.View>
+public class BindOldAccountPresenter extends BasePresenter<BindOldAccountContract.View>
         implements BindOldAccountContract.Presenter {
 
     @Inject
@@ -41,12 +38,12 @@ public class BindOldAccountPresenter extends BasePresenter<BindOldAccountContrac
     @Inject
     WalletBeanGreenDaoImpl mWalletBeanGreenDao;
     @Inject
-    WalletRepository mWalletRepository;
+    BillRepository mWalletRepository;
 
     @Inject
-    public BindOldAccountPresenter(BindOldAccountContract.Repository repository,
-                                   BindOldAccountContract.View rootView) {
-        super(repository, rootView);
+    public BindOldAccountPresenter(
+            BindOldAccountContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -92,6 +89,7 @@ public class BindOldAccountPresenter extends BasePresenter<BindOldAccountContrac
     }
 
     private void handleIMLogin() {
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig
+                .GET_IM_INFO));
     }
 }

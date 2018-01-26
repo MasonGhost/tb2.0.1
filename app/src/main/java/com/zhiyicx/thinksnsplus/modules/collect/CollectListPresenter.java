@@ -2,6 +2,8 @@ package com.zhiyicx.thinksnsplus.modules.collect;
 
 import com.zhiyicx.common.mvp.BasePresenter;
 
+import javax.inject.Inject;
+
 /**
  * @author LiuChao
  * @describe
@@ -9,5 +11,9 @@ import com.zhiyicx.common.mvp.BasePresenter;
  * @contact email:450127106@qq.com
  */
 
-public class CollectListPresenter extends BasePresenter<CollectListContract.Repository, CollectListContract.View> implements CollectListContract.Presenter {
+public class CollectListPresenter extends BasePresenter<CollectListContract.View> implements CollectListContract.Presenter {
+    @Inject
+    public CollectListPresenter(CollectListContract.View rootView) {
+        super(rootView);
+    }
 }

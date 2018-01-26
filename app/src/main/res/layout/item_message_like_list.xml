@@ -98,7 +98,7 @@
     android:layout_height="wrap_content">
 
     <include
-        layout="@layout/item_message_review_list_v2"
+        layout="@layout/item_message_review_list"
         />
 
 </FrameLayout>

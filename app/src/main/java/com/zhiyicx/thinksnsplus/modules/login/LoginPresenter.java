@@ -8,13 +8,10 @@ import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AccountBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AccountBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.WalletRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.List;
@@ -35,24 +32,21 @@ import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.DATA_HAS_BE_DELETE
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, LoginContract.View> implements LoginContract.Presenter {
+public class LoginPresenter extends AppBasePresenter<LoginContract.View> implements LoginContract.Presenter {
 
-    @Inject
-    AuthRepository mAuthRepository;
+
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-    @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
-    @Inject
     AccountBeanGreenDaoImpl mAccountBeanGreenDao;
     @Inject
-    WalletRepository mWalletRepository;
+    BillRepository mWalletRepository;
+    @Inject
+    BaseCircleRepository mBaseCircleRepository;
 
     @Inject
-    public LoginPresenter(LoginContract.Repository repository, LoginContract.View rootView) {
-        super(repository, rootView);
+    public LoginPresenter(LoginContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -67,10 +61,10 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
             return;
         }
         mRootView.setLogining();
-        Subscription subscription = mRepository.loginV2(phone, password)
+        Subscription subscription = mUserInfoRepository.loginV2(phone, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .map((Func1<AuthBean, Boolean>) data -> {
+                .map(data -> {
                     mAuthRepository.clearAuthBean();
                     // 登录成功跳转
                     // 保存auth信息
@@ -83,6 +77,8 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
                     if (data.getUser().getWallet() != null) {
                         mWalletBeanGreenDao.insertOrReplace(data.getUser().getWallet());
                     }
+
+//                    mBaseCircleRepository.saveCircleType(); // 保存圈子分组信息
                     mAccountBeanGreenDao.insertOrReplaceByName(mRootView.getAccountBean());
                     return true;
                 })
@@ -125,7 +121,7 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
     @Override
     public void checkBindOrLogin(String provider, String access_token) {
 
-        mUserInfoRepository.checkThridIsRegitser(provider, access_token)
+        Subscription subscribe = mUserInfoRepository.checkThridIsRegitser(provider, access_token)
                 .observeOn(Schedulers.io())
                 .map((Func1<AuthBean, Boolean>) data -> {
                     mAuthRepository.clearAuthBean();
@@ -167,6 +163,7 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
                         mRootView.setLoginState(false);
                     }
                 });
+        addSubscrebe(subscribe);
 
     }
 

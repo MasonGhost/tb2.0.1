@@ -10,9 +10,10 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.VertifyCodeRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import javax.inject.Inject;
@@ -26,7 +27,7 @@ import rx.Subscription;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class RegisterPresenter extends AppBasePresenter<RegisterContract.Repository, RegisterContract.View>
+public class RegisterPresenter extends AppBasePresenter<RegisterContract.View>
         implements RegisterContract.Presenter {
 
     public static final int S_TO_MS_SPACING = 1000; // s 和 ms 的比例
@@ -35,11 +36,9 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
     private int mTimeOut = SNS_TIME;
 
     @Inject
-    AuthRepository mAuthRepository;
-
-
+    UserInfoRepository mUserInfoRepository;
     @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    VertifyCodeRepository mVertifyCodeRepository;
 
     CountDownTimer timer = new CountDownTimer(mTimeOut, S_TO_MS_SPACING) {
 
@@ -56,8 +55,8 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
     };
 
     @Inject
-    public RegisterPresenter(RegisterContract.Repository repository, RegisterContract.View rootView) {
-        super(repository, rootView);
+    public RegisterPresenter(RegisterContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -87,7 +86,7 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
         }
         mRootView.setVertifyCodeBtEnabled(false);
         mRootView.setVertifyCodeLoadin(true);
-        Subscription getVertifySub = mRepository.getNonMemberVertifyCode(phone)
+        Subscription getVertifySub = mVertifyCodeRepository.getNonMemberVertifyCode(phone)
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
@@ -123,7 +122,7 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
         }
         mRootView.setVertifyCodeBtEnabled(false);
         mRootView.setVertifyCodeLoadin(true);
-        Subscription getVerifySub = mRepository.getNonMemberVerifyCodeByEmail(email)
+        Subscription getVerifySub = mVertifyCodeRepository.getNonMemberVerifyCodeByEmail(email)
                 .subscribe(new BaseSubscribeForV2<Object>() {
 
                     @Override
@@ -175,13 +174,14 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
             return;
         }
         mRootView.setRegisterBtEnabled(false);
-        Subscription registerSub = mRepository.registerByPhone(phone, name, vertifyCode, password)
+        Subscription registerSub = mUserInfoRepository.registerByPhone(phone, name, vertifyCode, password)
                 .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
                     public void onSuccess(AuthBean data) {
                         mRootView.setRegisterBtEnabled(true);
 
-                        mAuthRepository.saveAuthBean(data);// 保存登录认证信息
+                        // 保存登录认证信息
+                        mAuthRepository.saveAuthBean(data);
                         mUserInfoBeanGreenDao.insertOrReplace(data.getUser());
                         // IM 登录 需要 token ,所以需要先保存登录信息
                         handleIMLogin();
@@ -221,13 +221,14 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
             return;
         }
         mRootView.setRegisterBtEnabled(false);
-        Subscription registerSub = mRepository.registerByEmail(email, name, verifyCode, password)
+        Subscription registerSub = mUserInfoRepository.registerByEmail(email, name, verifyCode, password)
                 .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
                     public void onSuccess(AuthBean data) {
                         mRootView.setRegisterBtEnabled(true);
 
-                        mAuthRepository.saveAuthBean(data);// 保存登录认证信息
+                        // 保存登录认证信息
+                        mAuthRepository.saveAuthBean(data);
                         mUserInfoBeanGreenDao.insertOrReplace(data.getUser());
                         // IM 登录 需要 token ,所以需要先保存登录信息
                         handleIMLogin();
@@ -253,7 +254,8 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
     }
 
     private void handleIMLogin() {
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig
+                .GET_IM_INFO));
     }
 
     /**
@@ -309,7 +311,8 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
      * @return
      */
     private boolean checkUsername(String name) {
-        if (!RegexUtils.isUsernameLength(name, mContext.getResources().getInteger(R.integer.username_min_length), mContext.getResources().getInteger(R.integer.username_max_length))) {
+        if (!RegexUtils.isUsernameLength(name, mContext.getResources().getInteger(R.integer.username_min_length), mContext.getResources()
+                .getInteger(R.integer.username_max_length))) {
             mRootView.showMessage(mContext.getString(R.string.username_toast_hint));
             return true;
         }

@@ -47,7 +47,7 @@ public class TSViewPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
-    public int  getCount() {
+    public int getCount() {
         return list.size();
     }
 
@@ -60,16 +60,18 @@ public class TSViewPagerAdapter extends FragmentStatePagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         Fragment f = (Fragment) super.instantiateItem(container, position);
         View view = f.getView();
-        if (view != null)
+        if (view != null) {
             container.addView(view);
+        }
         return f;
     }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         View view = list.get(position).getView();
-        if (view != null)
+        if (view != null) {
             container.removeView(view);
+        }
     }
 }
 

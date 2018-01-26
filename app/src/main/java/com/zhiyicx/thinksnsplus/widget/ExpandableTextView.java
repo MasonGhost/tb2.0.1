@@ -31,7 +31,6 @@ import java.lang.reflect.Field;
  * @date 2017/8/15
  * @contact email:648129313@qq.com
  */
-
 public class ExpandableTextView extends AppCompatTextView {
     public static final int STATE_SHRINK = 0;
     public static final int STATE_EXPAND = 1;
@@ -320,6 +319,7 @@ public class ExpandableTextView extends AppCompatTextView {
                 ssbExpand.setSpan(mTouchableSpan, ssbExpand.length() - getLengthOfString(mToShrinkHint), ssbExpand.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 return ssbExpand;
             }
+            default:
         }
         return mOrigText;
     }
@@ -343,17 +343,23 @@ public class ExpandableTextView extends AppCompatTextView {
     private void toggle() {
         switch (mCurrState) {
             case STATE_SHRINK:
-                mCurrState = STATE_EXPAND;
                 if (mOnExpandListener != null) {
                     mOnExpandListener.onExpand(this);
                 }
+                if (hasOnClickListeners() && (getOnClickListener(ExpandableTextView.this) instanceof ExpandableClickListener)) {
+                    mCurrState = STATE_EXPAND;
+                }
+
                 break;
             case STATE_EXPAND:
-                mCurrState = STATE_SHRINK;
                 if (mOnExpandListener != null) {
                     mOnExpandListener.onShrink(this);
                 }
+                if (hasOnClickListeners() && (getOnClickListener(ExpandableTextView.this) instanceof ExpandableClickListener)) {
+                    mCurrState = STATE_SHRINK;
+                }
                 break;
+            default:
         }
         setTextInternal(getNewTextByConfig(), mBufferType);
     }
@@ -370,14 +376,16 @@ public class ExpandableTextView extends AppCompatTextView {
     }
 
     private int getLengthOfString(String string) {
-        if (string == null)
+        if (string == null) {
             return 0;
+        }
         return string.length();
     }
 
     private String getContentOfString(String string) {
-        if (string == null)
+        if (string == null) {
             return "";
+        }
         return string;
     }
 
@@ -456,8 +464,7 @@ public class ExpandableTextView extends AppCompatTextView {
 
         @Override
         public void onClick(View widget) {
-            if (hasOnClickListeners()
-                    && (getOnClickListener(ExpandableTextView.this) instanceof ExpandableClickListener)) {
+            if (hasOnClickListeners() && (getOnClickListener(ExpandableTextView.this) instanceof ExpandableClickListener)) {
             } else {
                 toggle();
             }
@@ -475,6 +482,7 @@ public class ExpandableTextView extends AppCompatTextView {
                     ds.setColor(mToShrinkHintColor);
                     ds.bgColor = mIsPressed ? mToShrinkHintColorBgPressed : 0;
                     break;
+                default:
             }
             ds.setUnderlineText(false);
         }

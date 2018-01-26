@@ -48,6 +48,8 @@ public class SystemConfigBean implements Serializable {
     @SerializedName("feed")
     private Feed mFeed;
     private boolean checkin;
+    @SerializedName("group:create")
+    private CircleGroup mCircleGroup;
 
     /**
      * registerSettings : {"showTerms":false,"registerMode":"all","completeData":true,"accountType":"all","content":"# 服务条款及隐私政策"}
@@ -92,6 +94,14 @@ public class SystemConfigBean implements Serializable {
 
     public void setFeed(Feed feed) {
         mFeed = feed;
+    }
+
+    public CircleGroup getCircleGroup() {
+        return mCircleGroup;
+    }
+
+    public void setCircleGroup(CircleGroup circleGroup) {
+        mCircleGroup = circleGroup;
     }
 
     public int getExcellentQuestion() {
@@ -293,8 +303,17 @@ public class SystemConfigBean implements Serializable {
         private String method;// 注册类型
         private String type;// 注册方式
         private String rules;
+        private String fixed;// 是否完善资料
         private boolean completeData;
         private String content;// 用户协议
+
+        public String getFixed() {
+            return fixed;
+        }
+
+        public void setFixed(String fixed) {
+            this.fixed = fixed;
+        }
 
         public String getRules() {
             return rules;
@@ -600,15 +619,15 @@ public class SystemConfigBean implements Serializable {
         @Override
         public String toString() {
             return "SiteBean{" +
-                    "status=" + status +
+                    "reserved_nickname='" + reserved_nickname + '\'' +
+                    ", client_email='" + client_email + '\'' +
+                    ", user_invite_template='" + user_invite_template + '\'' +
+                    ", status=" + status +
                     ", off_reason='" + off_reason + '\'' +
                     ", app=" + app +
                     ", h5=" + h5 +
-                    ", reserved_nickname='" + reserved_nickname + '\'' +
-                    ", client_email='" + client_email + '\'' +
                     ", gold=" + gold +
                     ", reward=" + reward +
-                    ", user_invite_template='" + user_invite_template + '\'' +
                     ", gold_name=" + gold_name +
                     '}';
         }
@@ -699,6 +718,27 @@ public class SystemConfigBean implements Serializable {
         }
     }
 
+    public static class CircleGroup implements Serializable {
+
+        private static final long serialVersionUID = 2393545893640479535L;
+        private boolean need_verified;
+
+        public boolean isNeed_verified() {
+            return need_verified;
+        }
+
+        public void setNeed_verified(boolean need_verified) {
+            this.need_verified = need_verified;
+        }
+
+        @Override
+        public String toString() {
+            return "CircleGroup{" +
+                    "need_verified=" + need_verified +
+                    '}';
+        }
+    }
+
     @Override
     public String toString() {
         return "SystemConfigBean{" +
@@ -707,9 +747,14 @@ public class SystemConfigBean implements Serializable {
                 ", im_helper=" + im_helper +
                 ", mAdverts=" + mAdverts +
                 ", mWalletTtype=" + Arrays.toString(mWalletTtype) +
+                ", mNewsContribute=" + mNewsContribute +
+                ", mAppversion=" + mAppversion +
                 ", excellentQuestion=" + excellentQuestion +
                 ", onlookQuestion=" + onlookQuestion +
+                ", newsPayContribute=" + newsPayContribute +
+                ", mFeed=" + mFeed +
                 ", checkin=" + checkin +
+                ", mCircleGroup=" + mCircleGroup +
                 ", registerSettings=" + registerSettings +
                 ", site=" + site +
                 '}';

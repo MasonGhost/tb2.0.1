@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.chat.location;
 
-import com.zhiyicx.thinksnsplus.base.AppComponent;
-
-import dagger.Component;
 import dagger.Module;
 import dagger.Provides;
 
@@ -22,13 +19,7 @@ public class SendLocationPresenterModule {
     }
 
     @Provides
-    public SendLocationContract.View provideSendLocationContractView(){
+    public SendLocationContract.View provideSendLocationContractView() {
         return mView;
-    }
-
-    @Provides
-    public SendLocationContract.Repository provideSendLocationContractRepository(){
-        return new SendLocationContract.Repository() {
-        };
     }
 }

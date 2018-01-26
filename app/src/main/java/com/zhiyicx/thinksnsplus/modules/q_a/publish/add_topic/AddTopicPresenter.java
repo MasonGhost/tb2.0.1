@@ -9,7 +9,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.QA$RewardRepositoryPublish;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -28,15 +28,17 @@ import rx.Subscription;
  */
 
 @FragmentScoped
-public class AddTopicPresenter extends AppBasePresenter<AddTopicContract.Repository, AddTopicContract.View>
+public class AddTopicPresenter extends AppBasePresenter< AddTopicContract.View>
         implements AddTopicContract.Presenter {
 
     @Inject
-    QA$RewardRepositoryPublish mQA$RewardRepositoryPublish;
+    BaseQARepository mQA$RewardRepositoryPublish;
+    @Inject
+    BaseQARepository mBaseQARepository;
 
     @Inject
-    public AddTopicPresenter(AddTopicContract.Repository repository, AddTopicContract.View rootView) {
-        super(repository, rootView);
+    public AddTopicPresenter( AddTopicContract.View rootView) {
+        super( rootView);
     }
 
     @Override
@@ -46,7 +48,7 @@ public class AddTopicPresenter extends AppBasePresenter<AddTopicContract.Reposit
 
     @Override
     public void requestNetData(String name, Long maxId, Long follow, boolean isLoadMore) {
-        Subscription subscribe = mRepository.getAllTopic(name, maxId, follow)
+        Subscription subscribe = mBaseQARepository.getAllTopic(name, maxId, follow)
                 .subscribe(new BaseSubscribeForV2<List<QATopicBean>>() {
                     @Override
                     protected void onSuccess(List<QATopicBean> data) {
@@ -80,9 +82,9 @@ public class AddTopicPresenter extends AppBasePresenter<AddTopicContract.Reposit
                         qaListInfoBean.setUser_id(AppApplication.getMyUserIdWithdefault());
                         qaListInfoBean.setLook(qaPublishBean.getLook());
                         mRootView.updateSuccess(qaListInfoBean);
-                        mRepository.deleteQuestion(qaPublishBean);
+                        mBaseQARepository.deleteQuestion(qaPublishBean);
                         qaPublishBean.setMark(qaPublishBean.getMark() - 1);
-                        mRepository.deleteQuestion(qaPublishBean);
+                        mBaseQARepository.deleteQuestion(qaPublishBean);
                         mRootView.showSnackMessage(mContext.getString(R.string.update_success), Prompt.DONE);
                     }
 
@@ -113,11 +115,11 @@ public class AddTopicPresenter extends AppBasePresenter<AddTopicContract.Reposit
 
     @Override
     public QAPublishBean getDraftQuestion(long qestion_mark) {
-        return mRepository.getDraftQuestion(qestion_mark);
+        return mBaseQARepository.getDraftQuestion(qestion_mark);
     }
 
     @Override
     public void saveQuestion(QAPublishBean qestion) {
-        mRepository.saveQuestion(qestion);
+        mBaseQARepository.saveQuestion(qestion);
     }
 }

@@ -32,7 +32,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public class DynamicListMenuView extends FrameLayout {
+public class DynamicListMenuView extends LinearLayout {
     public static final int DEFAULT_RESOURES_ID = -1; // 默认 id ，当子类使用默认 id 时，进行占位判断
     public static final int DEFAULT_RESOURES_ID_ = -2; // 默认 id ，当子类使用默认 id 时，进行占位判断
     // item 数量
@@ -121,6 +121,7 @@ public class DynamicListMenuView extends FrameLayout {
         mTvDynamicListPageviewst = (TextView) findViewById(R.id.tv_dynamic_list_pageviews);
         initListener();
         setData();
+        setOrientation(HORIZONTAL);
     }
 
     private void initListener() {

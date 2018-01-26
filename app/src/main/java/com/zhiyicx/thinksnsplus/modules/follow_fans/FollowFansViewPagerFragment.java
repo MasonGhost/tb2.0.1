@@ -40,17 +40,19 @@ public class FollowFansViewPagerFragment extends TSViewPagerFragment<FollowFansL
 
     @Override
     protected List<Fragment> initFragments() {
-        long userId = getArguments().getLong(FollowFansListFragment.PAGE_DATA);
-        List<Fragment> fragmentList = new ArrayList<>();
-        Bundle bundle1 = new Bundle();
-        bundle1.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FANS_FRAGMENT_PAGE);
-        bundle1.putLong(FollowFansListFragment.PAGE_DATA, userId);
-        fragmentList.add(FollowFansListFragment.initFragment(bundle1));
-        Bundle bundle2 = new Bundle();
-        bundle2.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FOLLOW_FRAGMENT_PAGE);
-        bundle2.putLong(FollowFansListFragment.PAGE_DATA, userId);
-        fragmentList.add(FollowFansListFragment.initFragment(bundle2));
-        return fragmentList;
+        if (mFragmentList == null) {
+            long userId = getArguments().getLong(FollowFansListFragment.PAGE_DATA);
+            mFragmentList = new ArrayList<>();
+            Bundle bundle1 = new Bundle();
+            bundle1.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FANS_FRAGMENT_PAGE);
+            bundle1.putLong(FollowFansListFragment.PAGE_DATA, userId);
+            mFragmentList.add(FollowFansListFragment.initFragment(bundle1));
+            Bundle bundle2 = new Bundle();
+            bundle2.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FOLLOW_FRAGMENT_PAGE);
+            bundle2.putLong(FollowFansListFragment.PAGE_DATA, userId);
+            mFragmentList.add(FollowFansListFragment.initFragment(bundle2));
+        }
+        return mFragmentList;
     }
 
     private void setCurrentItem() {

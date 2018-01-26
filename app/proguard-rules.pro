@@ -16,8 +16,10 @@ public static final int *;
 -keep interface  com.zhiyicx.common.** { *; }
 
 -keep class com.zhiyicx.common.base.BaseJson { *; } #实体类不参与混淆
+-keep class com.zhiyicx.common.base.BaseJsonV2 { *; } #实体类不参与混淆
 -keep class com.zhiyicx.common.net.** { *; } #实体类不参与混淆
 -keep class com.zhiyicx.common.utils.** { *; } #实体类不参与混淆
+-keep class com.zhiyicx.common.widget.** { *; } #实体类不参与混淆
 -keep class com.zhiyicx.common.thridmanager.share.** { *; } #　分享
 
 ################app###############

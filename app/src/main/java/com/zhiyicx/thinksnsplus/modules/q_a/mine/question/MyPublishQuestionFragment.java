@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
@@ -14,6 +13,11 @@ import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo.QAListInfoAdapte
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
 
@@ -66,7 +70,7 @@ public class MyPublishQuestionFragment extends TSListFragment<MyPublishQuestionC
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), mListDatas){
+        QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), mListDatas) {
             @Override
             protected int getRatio() {
                 return mPresenter.getRatio();
@@ -91,12 +95,35 @@ public class MyPublishQuestionFragment extends TSListFragment<MyPublishQuestionC
     }
 
     @Override
-    protected void initData() {
-        DaggerMyPublishQuestionComponent.builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .myPublishQuestionPresenterModule(new MyPublishQuestionPresenterModule(this))
-                .build()
-                .inject(this);
-        super.initData();
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        Observable.create(subscriber -> {
+
+            DaggerMyPublishQuestionComponent.builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .myPublishQuestionPresenterModule(new MyPublishQuestionPresenterModule(MyPublishQuestionFragment.this))
+                    .build()
+                    .inject(MyPublishQuestionFragment.this);
+
+            subscriber.onCompleted();
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        initData();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+
+                    }
+                });
     }
+
 }

@@ -19,6 +19,8 @@
         android:background="@drawable/shape_raduse_bg_white"
         android:gravity="center_horizontal"
         android:orientation="vertical"
+        android:showDividers="middle"
+        android:divider="@drawable/light_linear_driver"
         app:cardCornerRadius="@dimen/button_corner_small"
         app:cardElevation="2dp"
         app:cardPreventCornerOverlap="true"
@@ -26,7 +28,7 @@
 
         <!--选择完善资料-->
         <TextView
-            android:id="@+id/choose_to_complete_account"
+            android:id="@+id/item_1"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/pop_choose_third_type_height"
             android:gravity="center"
@@ -34,11 +36,22 @@
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_sub_title"/>
 
-        <ImageView style="@style/style_divider_horizontal_light"/>
 
         <!--选择绑定已有账号-->
         <TextView
-            android:id="@+id/choose_to_bind_account"
+            android:id="@+id/item_2"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/pop_choose_third_type_height"
+            android:gravity="center"
+            android:paddingLeft="@dimen/margin_25"
+            android:paddingRight="@dimen/margin_25"
+            android:text="@string/third_platform_bind_old_account"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_sub_title"/>
+
+
+        <TextView
+            android:id="@+id/item_3"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/pop_choose_third_type_height"
             android:gravity="center"

@@ -73,7 +73,7 @@ public class MessageContainerFragment extends TSViewPagerFragment implements Eas
 
     private EaseConversationListFragment mConversationListFragment;
 
-    public MessageContainerFragment instance() {
+    public static MessageContainerFragment instance() {
         return new MessageContainerFragment();
     }
 

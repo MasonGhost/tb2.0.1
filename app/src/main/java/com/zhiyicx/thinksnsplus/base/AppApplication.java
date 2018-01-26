@@ -1,16 +1,12 @@
 package com.zhiyicx.thinksnsplus.base;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.SparseArray;
-import android.view.KeyEvent;
 
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.github.tamir7.contacts.Contacts;
@@ -21,9 +17,6 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.easeui.EaseUI;
 import com.pingplusplus.android.Pingpp;
-import com.umeng.analytics.MobclickAgent;
-import com.umeng.socialize.UMShareAPI;
-import com.zhiyicx.appupdate.AppUpdateManager;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.base.TSApplication;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -51,6 +44,7 @@ import com.zhiyicx.thinksnsplus.modules.chat.receiver.CallReceiver;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
+import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
@@ -87,6 +81,20 @@ import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.AUTH_FAIL;
  * @Contact 335891510@qq.com
  */
 public class AppApplication extends TSApplication {
+    /**
+     * 丢帧检查设置
+     */
+//    static {
+//        try {
+//            Field field = Choreographer.class.getDeclaredField("SKIPPED_FRAME_WARNING_LIMIT");
+//            field.setAccessible(true);
+//            // 可设置最大丢帧时显示丢帧日志
+//            field.set(Choreographer.class, 20);
+//        } catch (Throwable e) {
+//            e.printStackTrace();
+//        }
+//    }
+
     @Inject
     AuthRepository mAuthRepository;
     @Inject
@@ -281,12 +289,14 @@ public class AppApplication extends TSApplication {
      * @param tipStr
      */
     private void handleAuthFail(final String tipStr) {
-        if (!(ActivityHandler
-                .getInstance().currentActivity() instanceof LoginActivity) && ActivityHandler
-                .getInstance().currentActivity() instanceof TSActivity) {
+        boolean showDialog = !(ActivityHandler
+                .getInstance().currentActivity() instanceof LoginActivity || ActivityHandler
+                .getInstance().currentActivity() instanceof GuideActivity) && ActivityHandler
+                .getInstance().currentActivity() instanceof TSActivity;
+        if (showDialog) {
             ((TSActivity) ActivityHandler
                     .getInstance().currentActivity()).showWarnningDialog(tipStr, (dialog, which) -> {
-                // TODO: 2017/2/8  清理登录信息 token 信息
+                // 清理登录信息 token 信息
                 mAuthRepository.clearAuthBean();
                 mAuthRepository.clearThridAuth();
 
@@ -398,9 +408,6 @@ public class AppApplication extends TSApplication {
 
     public static void setmCurrentLoginAuth(AuthBean mCurrentLoginAuth) {
         AppApplication.mCurrentLoginAuth = mCurrentLoginAuth;
-        if (mCurrentLoginAuth != null) {
-            TOKEN = mCurrentLoginAuth.getToken();
-        }
     }
 
     public static String getTOKEN() {
@@ -473,7 +480,7 @@ public class AppApplication extends TSApplication {
                                 .subscribe(aLong -> {
                                     WindowUtils.setIsPause(true);
                                     WindowUtils.hidePopupWindow();
-                                });
+                                }, Throwable::printStackTrace);
                     }
                 }
             }
@@ -497,6 +504,7 @@ public class AppApplication extends TSApplication {
     public void onLowMemory() {
         super.onLowMemory();
         LogUtils.e("---------------------------------------------onLowMemory---------------------------------------------------");
+        // TODO: 2018/1/9 内存不够处理
     }
 
 }

@@ -205,7 +205,8 @@ public class ApiConfig {
     public static final String APP_PATH_DYNAMIC_REWARDS = "/api/" + API_VERSION_2 + "/feeds/{feed_id}/rewards";
     // 动态打赏用户列表
     public static final String APP_PATH_DYNAMIC_REWARDS_USER_LIST = "/api/" + API_VERSION_2 + "/feeds/{feed_id}/rewards";
-
+    // 举报动态
+    public static final String APP_PATH_DYNAMIC_REPORT = "/api/" + API_VERSION_2 + "/feeds/{feed_id}/reports";
 
     /**
      * 资讯相关
@@ -222,7 +223,6 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_FOLLOW_LIST = "api/" + API_VERSION_2 + "/news/categories/follows";
 
 
-
     //置顶资讯、评论
     public static final String APP_PATH_TOP_INFO = "/api/" + API_VERSION_2 + "/news/{news_id}/pinneds";
     public static final String APP_PATH_TOP_INFO_COMMENT = "/api/" + API_VERSION_2 + "/news/{news_id}/comments/{comment_id}/pinneds";
@@ -231,6 +231,8 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_REWARDS = "/api/" + API_VERSION_2 + "/news/{news_id}/rewards";
     // 打赏用户列表
     public static final String APP_PATH_INFO_REWARDS_USER_LIST = "/api/" + API_VERSION_2 + "/news/{news_id}/rewards";
+    // 咨询举报
+    public static final String APP_PATH_INFO_REPORT = "/api/" + API_VERSION_2 + "/news/{news_id}/reports";
     // 资讯打赏统计
     public static final String APP_PATH_INFO_REWARDS_COUNT = "/api/" + API_VERSION_2 + "/news/{news_id}/rewards/sum";
 
@@ -295,88 +297,198 @@ public class ApiConfig {
     public static final String APP_PATH_MUSIC_ABLUM_SHARE = "api/" + API_VERSION_2 + "/music/specials/%s/share";
 
     /**
-     * 问答相关
+     * *******************************问答相关**************************************/
+    /**
+     * 发布问题
      */
-    // 发布问题
     public static final String APP_PATH_PUBLISH_QUESTIONS = "api/" + API_VERSION_2 + "/questions";
-    // 更新问题的悬赏 PATCH
+
+    /**
+     * 更新问题的悬赏 PATCH
+     */
     public static final String APP_PATH_UPDATE_QUESTION_REWARD = "api/" + API_VERSION_2 + "/questions/{question}/amount";
-    // 获取全部话题
+
+    /**
+     * 获取全部话题
+     */
     public static final String APP_PATH_GET_ALL_TOPIC = "api/" + API_VERSION_2 + "/question-topics";
-    // 申请创建话题
+
+    /**
+     * 申请创建话题
+     */
     public static final String APP_PATH_CREATE_TOPIC = "api/" + API_VERSION_2 + "/user/question-topics/application";
-    // 获取认证用户关注的话题或者专家话题
+
+    /**
+     * 获取认证用户关注的话题或者专家话题
+     */
     public static final String APP_PATH_GET_FOLLOW_TOPIC = "api/" + API_VERSION_2 + "/user/question-topics";
-    // 获取话题下专家列表
+
+    /**
+     * 获取话题下专家列表
+     */
     public static final String APP_PATH_GET_TOPIC_EXPERTS = "api/" + API_VERSION_2 + "/question-topics/{topic_id}/experts";
-    // 话题详情
+
+    /**
+     * 话题详情
+     */
     public static final String APP_PATH_GET_TOPIC_DETAIL = "api/" + API_VERSION_2 + "/question-topics/{topic}";
-    // 话题下的问答列表
+
+    /**
+     * 话题下的问答列表
+     */
     public static final String APP_PATH_GET_QUESTION_LIST_BY_TOPIC = "api/" + API_VERSION_2 + "/question-topics/{topic}/questions";
-    // 关注或者取消一个话题
+
+    /**
+     * 关注或者取消一个话题
+     */
     public static final String APP_PATH_HANDLE_TOPIC_FOLLOW = "api/" + API_VERSION_2 + "/user/question-topics/{topic}";
     public static final String APP_PATH_HANDLE_TOPIC_FOLLOW_S = "api/" + API_VERSION_2 + "/user/question-topics/%s";
-    // 获取问题详情
+
+    /**
+     * 获取问题详情
+     */
     public static final String APP_PATH_GET_QUESTION_DETAIL = "api/" + API_VERSION_2 + "/questions/{question}";
-    // 关注问题
+
+    /**
+     * 关注问题
+     */
     public static final String APP_PATH_HANDLE_QUESTION_FOLLOW = "api/" + API_VERSION_2 + "/user/question-watches/{question}";
     public static final String APP_PATH_HANDLE_QUESTION_FOLLOW_S = "api/" + API_VERSION_2 + "/user/question-watches/%s";
-    // 删除问题用
+
+    /**
+     * 删除问题用
+     */
     public static final String APP_PATH_GET_DELETE_QUESTION = "api/" + API_VERSION_2 + "/questions/{question}";
-    // 获取一个问题的回答列表
+
+    /**
+     * 获取一个问题的回答列表
+     */
     public static final String APP_PATH_GET_QUESTION_ANSWER_LIST = "api/" + API_VERSION_2 + "/questions/{question}/answers";
-    // 获取一个回答的详情
+
+    /**
+     * 获取一个回答的详情
+     */
     public static final String APP_PATH_GET_ANSWER_DETAIL = "api/" + API_VERSION_2 + "/question-answers/{answer_id}";
     public static final String APP_PATH_GET_ANSWER_DETAIL_S = "api/" + API_VERSION_2 + "/question-answers/%s";
-    // 申请精选问答 POST
+
+    /**
+     * 申请精选问答 POST
+     */
     public static final String APP_PATH_APPLY_FOR_EXCELLENT = "api/" + API_VERSION_2 + "/user/question-application/{question}";
     public static final String APP_PATH_APPLY_FOR_EXCELLENT_S = "api/" + API_VERSION_2 + "/user/question-application/%s";
-    // 获取问答的评论列表
+
+    /**
+     * 获取问答的评论列表
+     */
     public static final String APP_PATH_GET_QUESTION_COMMENT_LIST = "api/" + API_VERSION_2 + "/questions/{question}/comments";
-    // 评论问题
+
+    /**
+     * 评论问题
+     */
     public static final String APP_PATH_SEND_QUESTION_COMMENT = "api/" + API_VERSION_2 + "/questions/{question}/comments";
     public static final String APP_PATH_SEND_QUESTION_COMMENT_S = "api/" + API_VERSION_2 + "/questions/%s/comments";
-    // 删除问题的评论
+
+    /**
+     * 删除问题的评论
+     */
     public static final String APP_PATH_DELETE_QUESTION_COMMENT = "api/" + API_VERSION_2 + "/questions/{question}/comments/{answer}";
-    // 发布回答
+
+    /**
+     * 发布回答
+     */
     public static final String APP_PATH_PUBLISH_ANSWER = "api/" + API_VERSION_2 + "/questions/{question}/answers";
-    // 更新回答 PATCH
+
+    /**
+     * 更新回答 PATCH
+     */
     public static final String APP_PATH_UPDATE_ANSWER = "api/" + API_VERSION_2 + "/question-answers/{answer_id}";
-    // 采纳答案 PUT
+
+    /**
+     * 采纳答案 PUT
+     */
     public static final String APP_PATH_ADOPT_ANSWER = "api/" + API_VERSION_2 + "/questions/{question_id}/adoptions/{answer_id}";
     public static final String APP_PATH_ADOPT_ANSWER_S = "api/" + API_VERSION_2 + "/questions/%d/adoptions/%d";
-    // 删除答案 DELETE
+
+    /**
+     * 删除答案 DELETE
+     */
     public static final String APP_PATH_DELETE_ANSWER = "api/" + API_VERSION_2 + "/question-answers/{answer}";
     public static final String APP_PATH_DELETE_ANSWER_S = "api/" + API_VERSION_2 + "/question-answers/%d";
-    // 获取回答评论列表
+
+    /**
+     * 获取回答评论列表
+     */
     public static final String APP_PATH_GET_ANSWER_COMMENTS = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/comments";
-    // 点赞回答
+
+    /**
+     * 点赞回答
+     */
     public static final String APP_PATH_LIKE_ANSWER = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/likes";
     public static final String APP_PATH_LIKE_ANSWER_FORMAT = "api/" + API_VERSION_2 + "/question-answers/%d/likes";
-    // 收藏回答
+
+    /**
+     * 收藏回答
+     */
     public static final String APP_PATH_COLLECT_ANSWER_FORMAT = "api/" + API_VERSION_2 + "/user/question-answer/collections/%d";
 
-    // 问答回答打赏
+    /**
+     * 回答收藏列表
+     */
+    public static final String APP_PATH_USER_COLLECT_ANSWER_FORMAT = "api/" + API_VERSION_2 + "/user/question-answer/collections";
+
+    /**
+     * 问答回答打赏
+     */
     public static final String APP_PATH_QA_ANSWER_REWARD = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/rewarders";
-    // 问答回答围观
+
+    /**
+     * 问答回答围观
+     */
     public static final String APP_PATH_QA_ANSWER_LOOK = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/onlookers";
-    // 获取回答打赏列表
+
+    /**
+     * 获取回答打赏列表
+     */
     public static final String APP_PATH_QA_ANSWER_REWARD_USER_LIST = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/rewarders";
-    // 评论答案
+
+    /**
+     * 问答问题举报
+     */
+    public static final String APP_PATH_QA_REPORT = "api/" + API_VERSION_2 + "/questions/{question_id}/reports";
+
+    /**
+     * 问答回答举报
+     */
+    public static final String APP_PATH_QA_ANSWER_REPORT = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/reports";
+
+    /**
+     * 评论答案
+     */
     public static final String APP_PATH_COMMENT_QA_ANSWER_FORMAT = "api/" + API_VERSION_2 + "/question-answers/%d/comments";
-    // 删除答案评论
+
+    /**
+     * 删除答案评论
+     */
     public static final String APP_PATH_DELETE_QA_ANSWER_COMMENT_FORMAT = "api/" + API_VERSION_2 + "/question-answers/%d/comments/%d";
-    // 批量获取专家列表
+
+    /**
+     * 批量获取专家列表
+     */
     public static final String APP_PATH_GET_TOPIC_EXPERT_LIST = "api/" + API_VERSION_2 + "/question-experts";
-    // 获取用户发布的问题列表
+
+    /**
+     * 获取用户发布的问题列表
+     */
     public static final String APP_PATH_GET_USER_QUESTIONS = "api/" + API_VERSION_2 + "/user/questions";
-    // 获取用户发布的回答列表
+
+    /**
+     * 获取用户发布的回答列表
+     */
     public static final String APP_PATH_GET_USER_ANSWER = "api/" + API_VERSION_2 + "/user/question-answer";
 
 
     /**
-     * 通用 CommonClient
-     */
+     * **************************通用 CommonClient**************************/
     public static final String APP_PATH_REFRESH_TOKEN = "api/" + API_VERSION_2 + "/tokens/{token}";// 刷新 token
     public static final String APP_PATH_HANDLE_BACKGROUND_TASK = "{path}";// 处理后台任务
 
@@ -397,7 +509,10 @@ public class ApiConfig {
     // 地区
     public static final String APP_PATH_SEARDCH_LOCATION = "api/" + API_VERSION_2 + "/locations/search";// 搜索位置
     public static final String APP_PATH_SGET_HOT_CITY = "api/" + API_VERSION_2 + "/locations/hots";// 热门城市
-
+    /**
+     * 举报评论通用，除圈子评论
+     */
+    public static final String APP_PATH_REPORT_COMMON_COMMENT = "api/" + API_VERSION_2 + "/report/comments/{comment_id}";
 
     /**
      * 分享相关
@@ -446,6 +561,256 @@ public class ApiConfig {
     public static final String APP_PATH_SEND_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts";// 创建圈子动态
     public static final String APP_PATH_DELETE_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}";// 删除圈子动态
     public static final String APP_PATH_DELETE_GROUP_DYNAMIC_FORMAT = "api/" + API_VERSION_2 + "/groups/%d/posts/%d";// 删除圈子动态
+
+    // 2017年11月27日16:51:15 圈子在这里翻开了崭新的篇章
+    /**
+     * 获取圈子分类
+     */
+    public static final String APP_PATH_GET_CIRCLE_CATEGROIES = "api/" + API_VERSION_2 + "/plus-group/categories";
+
+    /**
+     * 推荐的圈子
+     */
+    public static final String APP_PATH_GET_RECOMMEND_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/recommend/groups";
+
+    /**
+     * 我加入的圈子
+     */
+    public static final String APP_PATH_GET_MY_JOINED_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/user-groups";
+
+    /**
+     * 全部圈子
+     */
+    public static final String APP_PATH_GET_ALL_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/groups";
+
+    /**
+     * 圈子个数
+     */
+    public static final String APP_PATH_GET_CIRCLE_COUNT = "api/" + API_VERSION_2 + "/plus-group/groups/count";
+
+    /**
+     * 圈子待审核成员列表
+     */
+    public static final String APP_PATH_GET_CIRCLE_MEMBER_JOIN = "api/" + API_VERSION_2 + "/plus-group/user-group-audit-members";
+
+    /**
+     * 审核圈子加入请求
+     */
+    public static final String APP_PATH_DEAL_CIRCLE_MEMBER_JOIN = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/members/{member_id}/audit";
+
+    /**
+     * 加入圈子
+     */
+    public static final String APP_PATH_PUT_JOIN_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}";
+    public static final String APP_PATH_PUT_JOIN_CIRCLE_FORMAT = "api/" + API_VERSION_2 + "/plus-group/groups/%s";
+
+    /**
+     * 指定/撤销圈子管理员职位
+     */
+    public static final String APP_PATH_DEAL_CIRCLE_MANAGER = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/managers/{member_id}";
+
+    /**
+     * 踢出圈子
+     */
+    public static final String APP_PATH_CANCEL_CIRCLE_MEMBERS = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/members/{member_id}";
+
+    /**
+     * 加入/移除圈子黑名单
+     */
+    public static final String APP_PATH_DEAL_CIRCLE_BLACKLIST = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/blacklist/{member_id}";
+
+    /**
+     * 退出圈子
+     */
+    public static final String APP_PATH_PUT_EXIT_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/exit";
+    public static final String APP_PATH_PUT_EXIT_CIRCLE_FROMAT = "api/" + API_VERSION_2 + "/plus-group/groups/%s/exit";
+
+    /**
+     * 设置圈子权限
+     */
+    public static final String APP_PATH_SET_CIRCLE_PERMISSIONS = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/permissions";
+
+    /**
+     * 创建圈子
+     */
+    public static final String APP_PATH_CREATE_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/categories/{category_id}/groups";
+
+    /**
+     * 获取圈子协议
+     */
+    public static final String APP_PATH_GET_CREATE_RULE = "api/" + API_VERSION_2 + "/plus-group/groups/protocol";
+
+    /**
+     * 圈子收入记录
+     */
+    public static final String APP_PATH_GET_CIRCLE_EARNINGLIST = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/incomes";
+
+    /**
+     * 获取圈子列表
+     */
+    public static final String APP_PATH_GET_CIRCLELIST = "api/" + API_VERSION_2 + "/plus-group/categories/{category_id}/groups ";
+
+    /**
+     * 获取附近圈子列表
+     */
+    public static final String APP_PATH_GET_ROUNDCIRCLE = "api/" + API_VERSION_2 + "/plus-group/round/groups ";
+
+    /**
+     * 获取圈子详情
+     */
+    public static final String APP_PATH_GET_CIRCLEDETAIL = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}";
+
+    /**
+     * 圈子发帖
+     */
+    public static final String APP_PATH_PUBLISH_POST = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/posts";
+
+    /**
+     * 获取圈子成员列表
+     */
+    public static final String APP_PATH_GET_CIRCLEMEMBERS = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/members";
+
+    /**
+     * 转让圈子
+     */
+    public static final String APP_PATH_ATTORN_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/owner";
+
+    /**
+     * 获取圈子下帖子列表
+     */
+    public static final String APP_PATH_GET_POSTLIST = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/posts";
+    /**
+     * 获取我的帖子列表
+     */
+    public static final String APP_PATH_GET_MINE_POSTLIST = "api/" + API_VERSION_2 + "/plus-group/user-group-posts";
+    /**
+     * 全部帖子列表包含搜索
+     */
+    public static final String APP_PATH_GET_ALL_POSTLIST = "api/" + API_VERSION_2 + "/plus-group/group-posts";
+    /**
+     * 用户帖子收藏列表
+     *
+     */
+    public static final String APP_PATH_GET_USER_COLLECT_POST = "api/" + API_VERSION_2 + "/plus-group/user-post-collections";
+    /**
+     * 评论帖子/评论列表
+     */
+    public static final String APP_PATH_COMMENT_POST = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/comments";
+    public static final String APP_PATH_COMMENT_POST_FORMAT = "api/" + API_VERSION_2 + "/plus-group/group-posts/%s/comments";
+
+    /**
+     * 帖子点赞
+     */
+    public static final String APP_PATH_LIKE_POST_FORMAT = "api/" + API_VERSION_2 + "/plus-group/group-posts/%s/likes";
+    public static final String APP_PATH_LIKE_POST = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/likes";
+
+    /**
+     * 帖子置顶
+     */
+    public static final String APP_PATH_TOP_POST = "api/" + API_VERSION_2 + "/plus-group/pinned/posts/{post_id}";
+
+    /**
+     * 圈主和管理员置顶帖子
+     */
+    public static final String APP_PATH_MANAGER_TOP_POST = "api/" + API_VERSION_2 + "/plus-group/pinned/posts/{post_id}/create";
+
+    /**
+     * 圈主和管理员撤销置顶帖子
+     */
+    public static final String APP_PATH_UNDO_TOP_POST = "api/" + API_VERSION_2 + "/plus-group/pinned/posts/{post_id}/cancel";
+
+    /**
+     * 帖子申请置顶列表
+     */
+    public static final String APP_PATH_TOP_POST_LIST = "api/" + API_VERSION_2 + "/plus-group/pinned/posts";
+
+    /**
+     * 帖子打赏
+     */
+    public static final String APP_PATH_REWARD_POST = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/rewards";
+
+    /**
+     * 帖子评论置顶
+     */
+    public static final String APP_PATH_TOP_POST_COMMENT = "api/" + API_VERSION_2 + "/plus-group/pinned/comments/{comment_id}";
+
+    /**
+     * 帖子评论置顶申请列表
+     */
+    public static final String APP_PATH_GET_TOP_POST_COMMENT = "api/" + API_VERSION_2 + "/plus-group/pinned/comments";
+
+    /**
+     * 同意帖子评论置顶
+     */
+    public static final String APP_PATH_APPROVED_POST_COMMENT = "api/" + API_VERSION_2 + "/plus-group/pinned/comments/{comment_id}/accept";
+
+    /**
+     * 拒绝帖子评论置顶
+     */
+    public static final String APP_PATH_REFUSE_POST_COMMENT = "api/" + API_VERSION_2 + "/plus-group/pinned/comments/{comment_id}/reject";
+
+    /**
+     * 同意帖子置顶
+     */
+    public static final String APP_PATH_APPROVED_POST = "api/" + API_VERSION_2 + "/plus-group/pinned/posts/{post_id}/accept";
+
+    /**
+     * 拒绝帖子置顶
+     */
+    public static final String APP_PATH_REFUSE_POST = "api/" + API_VERSION_2 + "/plus-group/pinned/posts/{post_id}/reject";
+
+    /**
+     * 圈子成员列表
+     */
+    public static final String APP_PATH_GET_CIRCLE_MEMBERS = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/members";
+
+    /**
+     * 帖子收藏
+     */
+    public static final String APP_PATH_COLLECT_POST_FORMAT = "api/" + API_VERSION_2 + "/plus-group/group-posts/%s/collections";
+    public static final String APP_PATH_UNCOLLECT_POST_FORMAT = "api/" + API_VERSION_2 + "/plus-group/group-posts/&s/uncollect";
+    public static final String APP_PATH_COLLECTLIST_POST_FORMAT = "api/" + API_VERSION_2 + "/plus-group/user-post-collections";
+
+    /**
+     * 删除帖子/帖子详情
+     */
+    public static final String APP_PATH_POST = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/posts/{post_id}";
+    public static final String APP_PATH_POST_FORMAT = "api/" + API_VERSION_2 + "/plus-group/groups/%s/posts/%s";
+
+    /**
+     * 删除帖子评论
+     */
+    public static final String APP_PATH_DELETE_POST_COMMENT = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/comments/{comment_id}";
+    public static final String APP_PATH_DELETE_POST_COMMENT_FORMAT = "api/" + API_VERSION_2 + "/plus-group/group-posts/%s/comments/%s";
+
+    /**
+     * 举报圈子
+     */
+    public static final String APP_PATH_CIRCLE_REPOT = "api/" + API_VERSION_2 + "/plus-group/groups/{group_id}/reports";
+
+    /**
+     * 拒绝举报
+     */
+    public static final String APP_PATH_REFUSE_CIRCLE_REPOT = "api/" + API_VERSION_2 + "/plus-group/reports/{report_id}/reject";
+
+    /**
+     * 同意举报
+     */
+    public static final String APP_PATH_APPROVE_CIRCLE_REPOT = "api/" + API_VERSION_2 + "/plus-group/reports/{report_id}/accept";
+
+    /**
+     * 圈子举报列表
+     */
+    public static final String APP_PATH_GET_CIRCLE_REPOTS = "api/" + API_VERSION_2 + "/plus-group/reports";
+
+    /**
+     * 举报圈子中的帖子
+     */
+    public static final String APP_PATH_CIRCLE_POST_REPOT = "api/" + API_VERSION_2 + "/plus-group/reports/posts/{post_id}";
+    /**
+     * 举报评论
+     */
+    public static final String APP_PATH_COMMENT_REPOT = "api/" + API_VERSION_2 + "/plus-group/reports/comments/{comment_id}";
 
     /**
      * 组件 目前：动态（feed）、音乐（music）、资讯（news）
@@ -525,6 +890,11 @@ public class ApiConfig {
     public static final String APP_PATH_CHECK_IN = "api/" + API_VERSION_2 + "/user/checkin";
     // 连续签到排行榜
     public static final String APP_PATH_GET_CHECK_IN_RANKS = "api/" + API_VERSION_2 + "/checkin-ranks";
+    /**
+     * 举报用户
+     */
+    public static final String APP_PATH_REPORT_USER = "api/" + API_VERSION_2 + "/report/users/{user_id}";
+
 
     /**
      * 三方登录绑定

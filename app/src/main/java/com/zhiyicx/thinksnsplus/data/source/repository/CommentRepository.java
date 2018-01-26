@@ -1,20 +1,13 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import android.app.Application;
-
-import com.google.gson.Gson;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.data.source.remote.WalletClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.ICommentRepository;
 
 import java.util.HashMap;
@@ -40,13 +33,10 @@ public class CommentRepository implements ICommentRepository {
     protected CommonClient mCommonClient;
 
     @Inject
-    WalletRepository mWalletRepository;
-
-    @Inject
     UserInfoRepository mUserInfoRepository;
 
     @Inject
-    public CommentRepository(ServiceManager serviceManager, Application context) {
+    public CommentRepository(ServiceManager serviceManager) {
         mCommonClient = serviceManager.getCommonClient();
     }
 
@@ -124,11 +114,6 @@ public class CommentRepository implements ICommentRepository {
         return mCommonClient.payNote(note)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    @Override
-    public Observable<WalletConfigBean> getWalletConfig() {
-        return mWalletRepository.getWalletConfig();
     }
 
     @Override

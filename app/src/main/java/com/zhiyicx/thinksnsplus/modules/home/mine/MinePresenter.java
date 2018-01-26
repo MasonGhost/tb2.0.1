@@ -18,7 +18,6 @@ import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserCertificationInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.CertificationDetailRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
@@ -44,30 +43,20 @@ import rx.schedulers.Schedulers;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class MinePresenter extends AppBasePresenter<MineContract.Repository, MineContract.View> implements MineContract.Presenter {
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-    @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
+public class MinePresenter extends AppBasePresenter<MineContract.View> implements MineContract.Presenter {
 
     @Inject
     FlushMessageBeanGreenDaoImpl mFlushMessageBeanGreenDao;
 
     @Inject
-    SystemRepository mSystemRepository;
-
-    @Inject
     UserInfoRepository mUserInfoRepository;
-
-    @Inject
-    CertificationDetailRepository mCertificationDetailRepository;
 
     @Inject
     UserCertificationInfoGreenDaoImpl mUserCertificationInfoGreenDao;
 
     @Inject
-    public MinePresenter(MineContract.Repository repository, MineContract.View rootView) {
-        super(repository, rootView);
+    public MinePresenter(MineContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -77,18 +66,21 @@ public class MinePresenter extends AppBasePresenter<MineContract.Repository, Min
 
     @Override
     public void getUserInfoFromDB() {
+        if (mUserInfoBeanGreenDao == null) {
+            return;
+        }
         // 尝试从数据库获取当前用户的信息
-            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
-            if (userInfoBean != null) {
-                WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getMyUserIdWithdefault());
-                if (walletBean != null) {
-                    int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
+        UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
+        if (userInfoBean != null) {
+            WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getMyUserIdWithdefault());
+            if (walletBean != null) {
+                int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
 ///                    walletBean.setBalance(walletBean.getBalance() * (ratio / MONEY_UNIT));
-                    userInfoBean.setWallet(walletBean);
-                }
-                mRootView.setUserInfo(userInfoBean);
+                userInfoBean.setWallet(walletBean);
             }
-            setMineTipVisable(false);
+            mRootView.setUserInfo(userInfoBean);
+        }
+        setMineTipVisable(false);
     }
 
     /**
@@ -99,8 +91,8 @@ public class MinePresenter extends AppBasePresenter<MineContract.Repository, Min
         Subscription subscribe = rx.Observable.just(data)
                 .observeOn(Schedulers.io())
                 .map(userInfoBeans -> {
-                    if (data != null) {
-                        for (UserInfoBean userInfoBean : data) {
+                    if (userInfoBeans != null) {
+                        for (UserInfoBean userInfoBean : userInfoBeans) {
                             if (userInfoBean.getUser_id() == AppApplication.getMyUserIdWithdefault()) {
                                 userInfoBean.setWallet(mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getMyUserIdWithdefault()));
                                 return userInfoBean;
@@ -145,11 +137,17 @@ public class MinePresenter extends AppBasePresenter<MineContract.Repository, Min
      */
     @Override
     public void updateUserInfo() {
+        if (mUserInfoBeanGreenDao == null) {
+            return;
+        }
         Subscription subscribe = mUserInfoRepository.getCurrentLoginUserInfo()
                 .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
                     @Override
                     protected void onSuccess(UserInfoBean data) {
                         mUserInfoBeanGreenDao.insertOrReplace(data);
+                        if (data.getWallet() != null) {
+                            mWalletBeanGreenDao.insertOrReplace(data.getWallet());
+                        }
                         mRootView.setUserInfo(data);
                     }
                 });
@@ -163,7 +161,10 @@ public class MinePresenter extends AppBasePresenter<MineContract.Repository, Min
 
     @Override
     public void getCertificationInfo() {
-        Subscription subscribe = mCertificationDetailRepository.getCertificationInfo()
+        if (mUserInfoBeanGreenDao == null) {
+            return;
+        }
+        Subscription subscribe = mUserInfoRepository.getCertificationInfo()
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<UserCertificationInfo>() {
 

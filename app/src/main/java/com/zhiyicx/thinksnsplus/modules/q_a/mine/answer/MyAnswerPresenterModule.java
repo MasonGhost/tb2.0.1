@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.mine.answer;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.MyAnswerRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,8 +22,4 @@ public class MyAnswerPresenterModule {
         return mView;
     }
 
-    @Provides
-    public MyAnswerContract.Repository provideMyAnswerContractRepository(MyAnswerRepository repository){
-        return repository;
-    }
 }

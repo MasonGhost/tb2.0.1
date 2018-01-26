@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.information.publish.addinfo;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.InfoPublishAddInfoRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,8 +22,4 @@ public class AddInfoPresenterModule {
         return mView;
     }
 
-    @Provides
-    AddInfoContract.Repository providesAddInfoContractRepository(InfoPublishAddInfoRepository repository){
-        return repository;
-    }
 }

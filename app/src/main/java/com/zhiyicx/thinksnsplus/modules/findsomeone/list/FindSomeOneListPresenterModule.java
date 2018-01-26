@@ -1,9 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.findsomeone.list;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.FindSomeRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.FollowFansListRepository;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListContract;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,11 +20,6 @@ public class FindSomeOneListPresenterModule {
     @Provides
     FindSomeOneListContract.View provideFindSomeOneListContractView() {
         return mView;
-    }
-
-    @Provides
-    FindSomeOneListContract.Repository provideFindSomeOneListContractRepository(FindSomeRepository repository) {
-        return repository;
     }
 
 }

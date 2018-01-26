@@ -29,8 +29,4 @@ public interface CompleteAccountContract {
 
         void thridRegister(ThridInfoBean thridInfoBean, String name);
     }
-
-    interface Repository extends IThirdPlatformRepository{
-
-    }
 }

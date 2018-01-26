@@ -14,12 +14,12 @@ import java.util.List;
  */
 public interface AddInfoContract {
     interface View extends IBaseView<Presenter> {
+        void setInfoType(List<InfoTypeCatesBean> infoType);
     }
 
     interface Presenter extends IBasePresenter {
         List<InfoTypeCatesBean> getInfoTypeBean();
+        void getInfoType();
     }
 
-    interface Repository {
-    }
 }

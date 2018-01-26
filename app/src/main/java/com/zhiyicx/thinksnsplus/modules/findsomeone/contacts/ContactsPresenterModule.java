@@ -22,10 +22,4 @@ public class ContactsPresenterModule {
         return mView;
     }
 
-    @Provides
-    ContactsContract.Repository provideRepository() {
-        return new ContactsContract.Repository() {
-
-        };
-    }
 }

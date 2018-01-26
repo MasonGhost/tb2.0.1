@@ -19,10 +19,12 @@ import com.zhiyicx.thinksnsplus.modules.q_a.mine.adapter.QuestionTopicAdapter;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
-import java.util.Collection;
-import java.util.List;
-
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity.BUNDLE_TOPIC_BEAN;
@@ -45,7 +47,9 @@ public class MyFollowFragment extends TSListFragment<MyFollowContract.Presenter,
 
     private String mType;
 
-    public MyFollowFragment instance(String type) {
+    private QuestionTopicAdapter mTopicAdapter;
+
+    public static MyFollowFragment instance(String type) {
         MyFollowFragment followFragment = new MyFollowFragment();
         Bundle bundle = new Bundle();
         bundle.putString(BUNDLE_MY_QUESTION_TYPE, type);
@@ -65,13 +69,40 @@ public class MyFollowFragment extends TSListFragment<MyFollowContract.Presenter,
 
     @Override
     protected void initView(View rootView) {
-        DaggerMyFollowComponent.builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .myFollowPresenterModule(new MyFollowPresenterModule(this))
-                .build()
-                .inject(this);
+
         super.initView(rootView);
+        Observable.create(subscriber -> {
+
+            DaggerMyFollowComponent.builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .myFollowPresenterModule(new MyFollowPresenterModule(MyFollowFragment.this))
+                    .build()
+                    .inject(MyFollowFragment.this);
+
+            subscriber.onCompleted();
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        initData();
+                        if (mTopicAdapter != null) {
+                            mTopicAdapter.setPresenter(mPresenter);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+
+                    }
+                });
     }
+
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
@@ -96,11 +127,13 @@ public class MyFollowFragment extends TSListFragment<MyFollowContract.Presenter,
                     return mPresenter.getRatio();
                 }
             };
+            adapter.setOnItemClickListener(this);
+            return adapter;
         } else {
-            adapter = new QuestionTopicAdapter(getContext(), mListDatas, mFollowPresenter);
+            mTopicAdapter = new QuestionTopicAdapter(getContext(), mListDatas, mFollowPresenter);
+            mTopicAdapter.setOnItemClickListener(this);
+            return mTopicAdapter;
         }
-        adapter.setOnItemClickListener(this);
-        return adapter;
     }
 
     @Override

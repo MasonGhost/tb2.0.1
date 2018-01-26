@@ -38,7 +38,4 @@ public interface MusicCommentContract {
         void getMusicAblum(String id);
     }
 
-    interface Repository extends IMusicRepository{
-
-    }
 }

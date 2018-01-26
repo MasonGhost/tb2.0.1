@@ -71,7 +71,7 @@ public class SearchFriendsFragment extends TSListFragment<SearchFriendsContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        mEmptyView.setVisibility(View.GONE);
+       setEmptyViewVisiable(false);
         RxTextView.editorActionEvents(mFragmentInfoSearchEdittext).subscribe(textViewEditorActionEvent -> {
             if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
                 mKeyWord = mFragmentInfoSearchEdittext.getText().toString();

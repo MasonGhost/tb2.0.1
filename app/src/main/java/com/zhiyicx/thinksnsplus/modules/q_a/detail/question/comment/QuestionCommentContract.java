@@ -31,10 +31,4 @@ public interface QuestionCommentContract {
         void deleteComment(long question_id, long answer_id, int position);
     }
 
-    interface Repository extends IBasePublishQuestionRepository{
-        Observable<List<QuestionCommentBean>> getQuestionCommentList(Long question_Id, Long max_id);
-        void sendComment(String comment_content, long question_id,
-                         long reply_to_user_id, long comment_mark);
-        Observable<BaseJsonV2<Object>> deleteComment(long question_id, long answer_id);
-    }
 }

@@ -47,12 +47,13 @@ import static com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository.RET
 
 public class ChatRepository implements ChatContract.Repository {
     private static final String TAG = "ChatRepository";
+
+    private ChatInfoClient mChatInfoClient;
+
     @Inject
     protected Application mContext;
     @Inject
     protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-
-    private ChatInfoClient mChatInfoClient;
 
     @Inject
     UserInfoRepository mUserInfoRepository;

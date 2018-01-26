@@ -13,17 +13,15 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
-import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +32,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.functions.Action1;
 
-import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL_MONEY;
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL_TYPE;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.DOWNLOAD_TOLL;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL;
@@ -83,7 +79,7 @@ public class PictureTollFragment extends TSFragment {
     @Inject
     SystemRepository mSystemRepository;
 
-    private ArrayList<Float> mSelectDays;
+    private ArrayList<Float> mSelectMoney;
 
     private int mPayType;
 
@@ -151,23 +147,35 @@ public class PictureTollFragment extends TSFragment {
 
     @Override
     protected void initData() {
-        mSelectDays = new ArrayList<>();
-        mSelectDays.add(1f);
-        mSelectDays.add(5f);
-        mSelectDays.add(10f);
-        initSelectDays(mSelectDays);
         DaggerPictureTollComponent
                 .builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .build()
                 .inject(this);
 
-        try {
-            mMoneyName = mSystemRepository.getAppConfigInfoFromLocal().getSite().getGold_name().getName();
-        } catch (Exception e) {
-            e.printStackTrace();
-            mMoneyName = getString(R.string.defualt_golde_name);
+        mSelectMoney = new ArrayList<>();
+        mSelectMoney.add(1f);
+        mSelectMoney.add(5f);
+        mSelectMoney.add(10f);
+        mMoneyName = getString(R.string.defualt_golde_name);
+
+        mSystemConfigBean = mSystemRepository.getAppConfigInfoFromLocal();
+
+        if (mSystemConfigBean != null) {
+            int[] amount = new int[]{};
+            if (mSystemConfigBean.getFeed() != null) {
+                amount = mSystemConfigBean.getFeed().getItems();
+            }
+            if (amount != null && amount.length > 2) {
+                mSelectMoney.add(0,(float) PayConfig.realCurrency2GameCurrency(amount[0], mSystemConfigBean.getWallet_ratio()));
+                mSelectMoney.add(1,(float) PayConfig.realCurrency2GameCurrency(amount[1], mSystemConfigBean.getWallet_ratio()));
+                mSelectMoney.add(2,(float) PayConfig.realCurrency2GameCurrency(amount[2], mSystemConfigBean.getWallet_ratio()));
+            }
+            if (mSystemConfigBean.getSite() != null && mSystemConfigBean.getSite().getGold_name() != null) {
+                mMoneyName = mSystemConfigBean.getSite().getGold_name().getName();
+            }
         }
+        initSelectDays(mSelectMoney);
         mCustomMoney.setText(mMoneyName);
     }
 
@@ -189,7 +197,7 @@ public class PictureTollFragment extends TSFragment {
         if (mToll.getCustom_money() > 0) {
             mEtInput.setText(String.valueOf(mToll.getCustom_money()));
         } else {
-            int position = mSelectDays.indexOf((float)mToll.getToll_money());
+            int position = mSelectMoney.indexOf((float) mToll.getToll_money());
             if (position != -1) {
                 mRbDaysGroup.check(tollMoney[position]);
             }
@@ -212,6 +220,7 @@ public class PictureTollFragment extends TSFragment {
         back();
     }
 
+    @Override
     public void onBackPressed() {
         back();
     }
@@ -266,15 +275,15 @@ public class PictureTollFragment extends TSFragment {
                 .subscribe(checkedId -> {
                     switch (checkedId) {
                         case R.id.rb_one:
-                            mRechargeMoney = mSelectDays.get(0).longValue();
+                            mRechargeMoney = mSelectMoney.get(0).longValue();
                             mToll.setToll_money(Double.valueOf(mRechargeMoney).longValue());
                             break;
                         case R.id.rb_two:
-                            mRechargeMoney = mSelectDays.get(1).longValue();
+                            mRechargeMoney = mSelectMoney.get(1).longValue();
                             mToll.setToll_money(Double.valueOf(mRechargeMoney).longValue());
                             break;
                         case R.id.rb_three:
-                            mRechargeMoney = mSelectDays.get(2).longValue();
+                            mRechargeMoney = mSelectMoney.get(2).longValue();
                             mToll.setToll_money(Double.valueOf(mRechargeMoney).longValue());
                             break;
                         case -1:

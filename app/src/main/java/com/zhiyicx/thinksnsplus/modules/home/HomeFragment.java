@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -31,17 +30,14 @@ import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity;
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
-import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
-import com.zhiyicx.thinksnsplus.utils.LocationUtils;
 import com.zhiyicx.thinksnsplus.widget.popwindow.CheckInPopWindow;
 
 import java.util.ArrayList;
@@ -53,7 +49,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_DEFAULT_COUNT;
@@ -116,9 +111,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     LinearLayout mLlBottomContainer;
 
 
-    private TSViewPagerAdapter mHomePager;
     private PhotoSelectorImpl mPhotoSelector;
-    private JpushAlias mJpushAlias;
 
     private int mCurrenPage;
 
@@ -227,8 +220,13 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         switch (view.getId()) {
             // 点击主页
             case R.id.ll_home:
-                mVpHome.setCurrentItem(PAGE_HOME, false);
-                mCurrenPage = PAGE_HOME;
+                if (mCurrenPage == PAGE_HOME) {
+//                    暂时不需要点击 home 刷新
+//                    ((MainFragment) mFragmentList.get(mCurrenPage)).refreshCurrentPage();
+                } else {
+                    mVpHome.setCurrentItem(PAGE_HOME, false);
+                    mCurrenPage = PAGE_HOME;
+                }
                 break;
             // 点击发现
             case R.id.ll_find:
@@ -333,19 +331,21 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     private void initViewPager() {
         //设置缓存的个数
         mVpHome.setOffscreenPageLimit(PAGE_NUMS - 1);
-        mHomePager = new TSViewPagerAdapter(getChildFragmentManager());
+        TSViewPagerAdapter homePager = new TSViewPagerAdapter(getChildFragmentManager());
+
         mFragmentList.clear();
         mFragmentList.add(MainFragment.newInstance(this));
         mFragmentList.add(FindFragment.newInstance());
         if (TouristConfig.MESSAGE_CAN_LOOK || mPresenter.isLogin()) {
-            mFragmentList.add(new MessageContainerFragment().instance());
+            mFragmentList.add(MessageContainerFragment.instance());
         }
         if (TouristConfig.MINE_CAN_LOOK || mPresenter.isLogin()) {
             mFragmentList.add(MineFragment.newInstance());
         }
         //将 List 设置给 adapter
-        mHomePager.bindData(mFragmentList);
-        mVpHome.setAdapter(mHomePager);
+        homePager.bindData(mFragmentList);
+        mVpHome.setAdapter(homePager);
+
     }
 
     /**
@@ -419,8 +419,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     private void setJpushAlias() {
         if (mPresenter.isLogin()) {
             // 设置极光推送别名
-            mJpushAlias = new JpushAlias(getContext(), AppApplication.getmCurrentLoginAuth().getUser_id() + "");
-            mJpushAlias.setAlias();
+            JpushAlias jpushAlias = new JpushAlias(getContext(), String.valueOf(AppApplication.getMyUserIdWithdefault()));
+            jpushAlias.setAlias();
         }
 
     }

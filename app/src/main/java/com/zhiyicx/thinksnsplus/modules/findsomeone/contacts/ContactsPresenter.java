@@ -6,13 +6,13 @@ import com.github.tamir7.contacts.Contact;
 import com.github.tamir7.contacts.Contacts;
 import com.github.tamir7.contacts.PhoneNumber;
 import com.github.tamir7.contacts.Query;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.ContactsBean;
 import com.zhiyicx.thinksnsplus.data.beans.ContactsContainerBean;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
@@ -36,19 +36,15 @@ import rx.schedulers.Schedulers;
  * @Contact master.jungle68@gmail.com
  */
 
-public class ContactsPresenter extends AppBasePresenter<ContactsContract.Repository, ContactsContract.View> implements ContactsContract.Presenter {
+public class ContactsPresenter extends AppBasePresenter<ContactsContract.View> implements ContactsContract.Presenter {
 
 
     @Inject
     UserInfoRepository mUserInfoRepository;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-    @Inject
-    SystemRepository mSystemRepository;
 
     @Inject
-    public ContactsPresenter(ContactsContract.Repository repository, ContactsContract.View rootView) {
-        super(repository, rootView);
+    public ContactsPresenter(ContactsContract.View rootView) {
+        super(rootView);
     }
 
 
@@ -86,41 +82,38 @@ public class ContactsPresenter extends AppBasePresenter<ContactsContract.Reposit
             }
         })
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<List<ContactsBean>, Observable<List<ContactsContainerBean>>>() {
-                    @Override
-                    public Observable<List<ContactsContainerBean>> call(List<ContactsBean> contacts) {
-                        ArrayList<String> phones = new ArrayList<>();
-                        for (ContactsBean contact : contacts) {
-                            phones.add(contact.getPhone());
-                        }
-                        return mUserInfoRepository.getUsersByPhone(phones)
-                                .observeOn(Schedulers.io())
-                                .map(userInfoBeen -> {
-                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeen);
-                                    List<ContactsContainerBean> contactsContainerBeens = new ArrayList<>();
-                                    ContactsContainerBean hadAdd = new ContactsContainerBean();
-                                    hadAdd.setContacts(new ArrayList<>());
-                                    hadAdd.setTitle(mContext.getString(R.string.contact_had_add_ts_plust));
-                                    ContactsContainerBean notAdd = new ContactsContainerBean();
-                                    notAdd.setContacts(new ArrayList<>());
-                                    notAdd.setTitle(mContext.getString(R.string.contact_not_add_ts_plust));
-                                    contactsContainerBeens.add(hadAdd);
-                                    contactsContainerBeens.add(notAdd);
-
-                                    for (ContactsBean contact : contacts) {
-                                        List<UserInfoBean> tmp = mUserInfoBeanGreenDao.getUserInfoByPhone(contact.getPhone());
-                                        if (!tmp.isEmpty()) {
-                                            contact.setUser(tmp.get(0));
-                                            hadAdd.getContacts().add(contact);
-                                        } else {
-                                            notAdd.getContacts().add(contact);
-                                        }
-                                    }
-                                    return contactsContainerBeens;
-                                });
-
+                .observeOn(Schedulers.io())
+                .flatMap(contacts -> {
+                    ArrayList<String> phones = new ArrayList<>();
+                    for (ContactsBean contact : contacts) {
+                        phones.add(contact.getPhone());
                     }
+                    return mUserInfoRepository.getUsersByPhone(phones)
+                            .observeOn(Schedulers.io())
+                            .map(userInfoBeen -> {
+                                mUserInfoBeanGreenDao.insertOrReplace(userInfoBeen);
+                                List<ContactsContainerBean> contactsContainerBeens = new ArrayList<>();
+                                ContactsContainerBean hadAdd = new ContactsContainerBean();
+                                hadAdd.setContacts(new ArrayList<>());
+                                hadAdd.setTitle(mContext.getString(R.string.contact_had_add_ts_plust));
+                                ContactsContainerBean notAdd = new ContactsContainerBean();
+                                notAdd.setContacts(new ArrayList<>());
+                                notAdd.setTitle(mContext.getString(R.string.contact_not_add_ts_plust));
+                                contactsContainerBeens.add(hadAdd);
+                                contactsContainerBeens.add(notAdd);
+
+                                for (ContactsBean contact : contacts) {
+                                    List<UserInfoBean> tmp = mUserInfoBeanGreenDao.getUserInfoByPhone(contact.getPhone());
+                                    if (!tmp.isEmpty()) {
+                                        contact.setUser(tmp.get(0));
+                                        hadAdd.getContacts().add(contact);
+                                    } else {
+                                        notAdd.getContacts().add(contact);
+                                    }
+                                }
+                                return contactsContainerBeens;
+                            });
+
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<List<ContactsContainerBean>>() {

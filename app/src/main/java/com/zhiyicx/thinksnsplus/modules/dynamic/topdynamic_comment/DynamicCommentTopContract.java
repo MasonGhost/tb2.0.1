@@ -34,7 +34,4 @@ public interface DynamicCommentTopContract {
         void topDynamicComment(long feed_id,long comment_id, double amount, int day);
     }
 
-    interface Repository {
-        Observable<BaseJsonV2<Integer>> stickTop(long feed_id,long comment_id, double amount, int day);
-    }
 }

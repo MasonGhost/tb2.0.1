@@ -6,6 +6,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.MotionEvent;
 import android.view.View;
@@ -131,35 +132,14 @@ public class TextViewUtils {
         mTextView.setVisibility(View.INVISIBLE);
         if (!mCanRead) {
             mTextView.setText(getSpannableString(mOriMsg));
-            //mTextView.setMovementMethod(LinkMovementMethod.getInstance());// 已经交给上级分发处理
-            // dealTextViewClickEvent
-            mTextView.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (mTextView.getLineCount() > mMaxLineNums) {
-                        int endOfLastLine = mTextView.getLayout().getLineEnd(mMaxLineNums - 1);
-                        String result = mTextView.getText().subSequence(0, endOfLastLine) + "...";
-                        mTextView.setText(getSpannableString(result));
-                        mTextView.setVisibility(View.VISIBLE);
-                        if (mOnTextSpanComplete != null) {
-                            mOnTextSpanComplete.onComplete();
-                        }
-                    } else {
-                        mTextView.setText(getSpannableString(mTextView.getText()));
-                        mTextView.setVisibility(View.VISIBLE);
-                        if (mOnTextSpanComplete != null) {
-                            mOnTextSpanComplete.onComplete();
-                        }
-                    }
-                }
-            });
             dealTextViewClickEvent(mTextView);
         } else {
             mTextView.setText(mOriMsg);
-            if (mOnTextSpanComplete != null) {
-                mOnTextSpanComplete.onComplete();
-            }
         }
+        if (mOnTextSpanComplete != null) {
+            mOnTextSpanComplete.onComplete();
+        }
+
     }
 
     class SpanTextClickable extends ClickableSpan {

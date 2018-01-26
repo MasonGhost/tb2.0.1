@@ -30,9 +30,4 @@ public class GroupMemberListPresenterModule {
     public GroupMemberListContract.View provideGroupManagerContractView(){
         return mView;
     }
-
-    @Provides
-    public GroupMemberListContract.Repository provideGroupManagerContractRepository(GroupMemberListRepository repository){
-        return repository;
-    }
 }

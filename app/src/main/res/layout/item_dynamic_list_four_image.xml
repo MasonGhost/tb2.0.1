@@ -76,7 +76,7 @@
         android:textSize="@dimen/size_sub_title"
         tools:text="了解到富士康垃圾管理的高考了了"/>
 
-    <TextView
+    <com.zhiyicx.baseproject.widget.textview.SpanTextViewWithEllipsize
         android:id="@+id/tv_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -163,12 +163,23 @@
         </LinearLayout>
     </LinearLayout>
 
+    <TextView
+        android:paddingBottom="@dimen/dynamic_image_padding_bottom"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:textColor="@color/normal_for_disable_button_text"
+        android:layout_toRightOf="@+id/iv_headpic"
+        android:id="@+id/tv_from"
+        android:visibility="gone"
+        android:layout_below="@+id/nrv_image"
+        android:textSize="@dimen/size_icon_assist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <View
         android:id="@+id/v_line"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_line"
-        android:layout_below="@+id/nrv_image"
+        android:layout_below="@+id/tv_from"
         android:background="@color/general_for_line_light"/>
 
     <com.zhiyicx.baseproject.widget.DynamicListMenuView
@@ -193,25 +204,8 @@
         android:layout_toRightOf="@+id/iv_headpic"
         />
 
-    <com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView
-        android:id="@+id/dcv_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/fl_tip"
-        android:layout_marginLeft="@dimen/dynamic_list_comment_marginright"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:paddingBottom="@dimen/spacing_mid">
-    </com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView>
-
-    <com.zhiyicx.thinksnsplus.widget.comment.GroupDynamicListCommentView
-        android:visibility="gone"
-        android:id="@+id/group_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/fl_tip"
-        android:layout_marginLeft="@dimen/dynamic_list_comment_marginright"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:paddingBottom="@dimen/spacing_mid">
-    </com.zhiyicx.thinksnsplus.widget.comment.GroupDynamicListCommentView>
+    <include
+        layout="@layout/include_dynamic_list_comment_view"
+        />
 
 </RelativeLayout>

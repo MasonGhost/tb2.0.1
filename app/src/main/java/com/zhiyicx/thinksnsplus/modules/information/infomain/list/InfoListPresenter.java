@@ -8,9 +8,8 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoRecommendBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.InfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListDataBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.InfoRecommendBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 
 import org.jetbrains.annotations.NotNull;
@@ -24,8 +23,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_LIST_DELETE;
@@ -37,25 +34,25 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_LIS
  * @Description
  */
 @FragmentScoped
-public class InfoListPresenter extends AppBasePresenter<InfoMainContract.Repository
-        , InfoMainContract.InfoListView> implements InfoMainContract.InfoListPresenter {
+public class InfoListPresenter extends AppBasePresenter<InfoMainContract.InfoListView> implements InfoMainContract.InfoListPresenter {
 
-    @Inject
-    InfoListBeanGreenDaoImpl mInfoListBeanGreenDao;
 
-    @Inject
     InfoListDataBeanGreenDaoImpl mInfoListDataBeanGreenDao;
 
-    @Inject
-    InfoRecommendBeanGreenDaoImpl mInfoRecommendBeanGreenDao;
 
-    @Inject
     AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
 
+    BaseInfoRepository mBaseInfoRepository;
+
     @Inject
-    public InfoListPresenter(InfoMainContract.Repository repository,
-                             InfoMainContract.InfoListView rootInfoListView) {
-        super(repository, rootInfoListView);
+    public InfoListPresenter(InfoMainContract.InfoListView rootInfoListView
+            , InfoListDataBeanGreenDaoImpl infoListDataBeanGreenDao
+            , AllAdvertListBeanGreenDaoImpl allAdvertListBeanGreenDao
+            , BaseInfoRepository baseInfoRepository) {
+        super(rootInfoListView);
+        mInfoListDataBeanGreenDao = infoListDataBeanGreenDao;
+        mAllAdvertListBeanGreenDao = allAdvertListBeanGreenDao;
+        mBaseInfoRepository = baseInfoRepository;
     }
 
     @Override
@@ -78,7 +75,7 @@ public class InfoListPresenter extends AppBasePresenter<InfoMainContract.Reposit
     public void requestNetData(Long maxId, final boolean isLoadMore) {
         String typeString = mRootView.getInfoType();
         final long type = Long.parseLong(typeString);
-        Subscription subscription = mRepository.getInfoListV2(mRootView.getInfoType().equals("-1") ? "" : mRootView.getInfoType()
+        Subscription subscription = mBaseInfoRepository.getInfoListV2(mRootView.getInfoType().equals("-1") ? "" : mRootView.getInfoType()
                 , "", maxId, mRootView.getPage(), mRootView.isRecommend())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -86,26 +83,11 @@ public class InfoListPresenter extends AppBasePresenter<InfoMainContract.Reposit
                     @Override
                     protected void onSuccess(List<InfoListDataBean> data) {
                         List<BaseListBean> list = new ArrayList<>();
-                        List<InfoRecommendBean> recommendList;
-//                        try {
-//                            recommendList = data.getRecommend();
-//                        } catch (Exception e) {
-//                            recommendList = data.getNetRecommend();
-//                        }
-//                        if (recommendList != null) {
-//                            for (InfoRecommendBean recommendBean : recommendList) {
-//                                recommendBean.setInfo_type(type);
-//                            }
-//                            list.addAll(recommendList);
-//                            mInfoRecommendBeanGreenDao.saveMultiData(recommendList);
-//                        }
                         for (InfoListDataBean listDataBean : data) {
                             listDataBean.setInfo_type(type);
                         }
                         list.addAll(data);
                         mInfoListDataBeanGreenDao.saveMultiData(data);
-//                        data.setInfo_type(type);
-//                        mInfoListBeanGreenDao.insertOrReplace(data);
                         mRootView.onNetResponseSuccess(list, isLoadMore);
                     }
 
@@ -126,7 +108,7 @@ public class InfoListPresenter extends AppBasePresenter<InfoMainContract.Reposit
     public void requestCacheData(Long maxId, final boolean isLoadMore) {
         String typeString = mRootView.getInfoType();
         final long type = Long.parseLong(typeString);
-        Observable.just(mInfoListDataBeanGreenDao)
+        Subscription subscription = Observable.just(mInfoListDataBeanGreenDao)
                 .observeOn(Schedulers.io())
                 .map(infoListDataBeanGreenDao -> infoListDataBeanGreenDao
                         .getInfoByType(type))
@@ -143,9 +125,8 @@ public class InfoListPresenter extends AppBasePresenter<InfoMainContract.Reposit
                     return localData;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                    mRootView.onCacheResponseSuccess(result,isLoadMore);
-                }, Throwable::printStackTrace);
+                .subscribe(result -> mRootView.onCacheResponseSuccess(result, isLoadMore), Throwable::printStackTrace);
+        addSubscrebe(subscription);
     }
 
     @Override

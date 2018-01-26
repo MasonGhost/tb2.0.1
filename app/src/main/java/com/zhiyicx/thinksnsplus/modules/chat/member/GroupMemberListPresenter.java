@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.GroupMemberListRepository;
 
 import org.simple.eventbus.Subscriber;
 
@@ -24,12 +25,15 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_R
  * @contact email:648129313@qq.com
  */
 
-public class GroupMemberListPresenter extends AppBasePresenter<GroupMemberListContract.Repository, GroupMemberListContract.View>
+public class GroupMemberListPresenter extends AppBasePresenter< GroupMemberListContract.View>
         implements GroupMemberListContract.Presenter{
 
     @Inject
-    public GroupMemberListPresenter(GroupMemberListContract.Repository repository, GroupMemberListContract.View rootView) {
-        super(repository, rootView);
+    GroupMemberListRepository mGroupMemberListRepository;
+
+    @Inject
+    public GroupMemberListPresenter( GroupMemberListContract.View rootView) {
+        super(rootView);
     }
 
     @Override

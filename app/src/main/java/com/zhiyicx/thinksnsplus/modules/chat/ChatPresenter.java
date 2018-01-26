@@ -21,11 +21,13 @@ import com.zhiyicx.imsdk.manage.ChatClient;
 import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.ChatRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import org.simple.eventbus.EventBus;
@@ -53,18 +55,18 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_ONCONVE
  * @Contact master.jungle68@gmail.com
  */
 
-public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatContract.View>
-        implements ChatContract.Presenter{
+public class ChatPresenter extends AppBasePresenter<ChatContract.View> implements ChatContract.Presenter {
 
     private SparseArray<UserInfoBean> mUserInfoBeanSparseArray = new SparseArray<>();// 把用户信息存入内存，方便下次使用
     @Inject
     SystemRepository mSystemRepository;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
-    public ChatPresenter(ChatContract.Repository repository, ChatContract.View rootView) {
-        super(repository, rootView);
+    ChatRepository mChatRepository;
+
+    @Inject
+    public ChatPresenter(ChatContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -79,7 +81,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 
     @Override
     public List<ChatItemBean> getHistoryMessages(int cid, long creat_time) {
-        final List<ChatItemBean> data = mRepository.getChatListData(cid, creat_time);
+        final List<ChatItemBean> data = mChatRepository.getChatListData(cid, creat_time);
         Collections.reverse(data);
         Subscription subscribe = Observable.just(data)
                 .observeOn(Schedulers.io())
@@ -98,23 +100,23 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 
     @Override
     public List<ChatItemBean> getHistoryMessagesV2(String id, int pageSize, boolean isNeedScrollToBottom) {
-        List<ChatItemBean> data = mRepository.getChatListDataV2(mRootView.getMessItemBean(), id, pageSize);
-        Subscription subscribe = mRepository.completeUserInfo(data)
+        List<ChatItemBean> data = mChatRepository.getChatListDataV2(mRootView.getMessItemBean(), id, pageSize);
+        Subscription subscribe = mChatRepository.completeUserInfo(data)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map(list -> {
                     // 未读的消息发送已读回执
-                     for (ChatItemBean chatItemBean : list){
-                         EMMessage message = chatItemBean.getMessage();
-                         // 收到的消息，自己发送的消息不处理
-                         if (!String.valueOf(AppApplication.getMyUserIdWithdefault()).equals(message.getFrom()) && !message.isUnread()){
-                             try {
-                                 EMClient.getInstance().chatManager().ackMessageRead(message.getFrom(), message.getMsgId());
-                             } catch (HyphenateException e) {
-                                 e.printStackTrace();
-                             }
-                         }
-                     }
+                    for (ChatItemBean chatItemBean : list) {
+                        EMMessage message = chatItemBean.getMessage();
+                        // 收到的消息，自己发送的消息不处理
+                        if (!String.valueOf(AppApplication.getMyUserIdWithdefault()).equals(message.getFrom()) && !message.isUnread()) {
+                            try {
+                                EMClient.getInstance().chatManager().ackMessageRead(message.getFrom(), message.getMsgId());
+                            } catch (HyphenateException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
                     return list;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -168,9 +170,13 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
             public void onSuccess() {
                 // 发送成功 需要刷新页面
                 LogUtils.d("Cathy", "发送成功" + message.getBody().toString());
-                Observable.just("")
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(s -> mRootView.refreshData());
+                if (mRootView.getListDatas().isEmpty()||mRootView.getListDatas().size()==1) {
+                    Observable.just("")
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(s -> {
+                                mRootView.scrollToBottom();
+                            });
+                }
             }
 
             @Override
@@ -321,7 +327,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
                     if (chatItemBean12.getUserInfo() == null) {
                         List<ChatItemBean> chatItemBeans = new ArrayList<>();
                         chatItemBeans.add(chatItemBean12);
-                        return mRepository.completeUserInfo(chatItemBeans)
+                        return mChatRepository.completeUserInfo(chatItemBeans)
                                 .map(list -> list.get(0));
                     }
                     return Observable.just(chatItemBean12);

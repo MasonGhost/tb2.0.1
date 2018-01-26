@@ -18,10 +18,4 @@ public class EditGroupNamePresenterModule {
     public EditGroupNameContract.View provideEditGroupNameContractView(){
         return mView;
     }
-
-    @Provides
-    public EditGroupNameContract.Repository provideEditGroupNameContractRepository(){
-        return new EditGroupNameContract.Repository() {
-        };
-    }
 }

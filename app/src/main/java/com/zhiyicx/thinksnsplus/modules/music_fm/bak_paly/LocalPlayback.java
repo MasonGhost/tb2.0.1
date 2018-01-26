@@ -193,9 +193,12 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
         }
 
         // 防止未准备好的时候 重新播放该歌曲 mState == PlaybackStateCompat.STATE_PAUSED &&
-        if (mState == PlaybackStateCompat.STATE_PAUSED && !mediaHasChanged && mMediaPlayer != null) { //没有切歌
+        if (mState == PlaybackStateCompat.STATE_PAUSED && !mediaHasChanged && mMediaPlayer != null) {
             LogUtils.d("mCurrentPosition:::没有切歌");
             configMediaPlayerState();
+        } else if (mState == PlaybackStateCompat.STATE_PAUSED && mediaHasChanged && mMediaPlayer != null) {
+            // 这里是 错误后自动播放，如果暂停，则停止自动播放
+            stop(true);
         } else {
             mState = PlaybackStateCompat.STATE_STOPPED;
             relaxResources(false);
@@ -234,7 +237,6 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
                     Uri uri = Uri.parse(source);
                     mMediaPlayer.setDataSource(mContext, uri, header);
                 }
-
 
                 mMediaPlayer.prepareAsync();
                 EventBus.getDefault().post(-1,

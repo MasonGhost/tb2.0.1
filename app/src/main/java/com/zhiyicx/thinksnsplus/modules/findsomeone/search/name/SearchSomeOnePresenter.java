@@ -21,7 +21,7 @@ import rx.Subscription;
  * @Contact master.jungle68@gmail.com
  */
 
-public class SearchSomeOnePresenter extends AppBasePresenter<SearchSomeOneContract.Repository, SearchSomeOneContract.View>
+public class SearchSomeOnePresenter extends AppBasePresenter<SearchSomeOneContract.View>
         implements SearchSomeOneContract.Presenter {
 
     @Inject
@@ -30,8 +30,8 @@ public class SearchSomeOnePresenter extends AppBasePresenter<SearchSomeOneContra
 
 
     @Inject
-    public SearchSomeOnePresenter(SearchSomeOneContract.Repository repository, SearchSomeOneContract.View rootView) {
-        super(repository, rootView);
+    public SearchSomeOnePresenter(SearchSomeOneContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class SearchSomeOnePresenter extends AppBasePresenter<SearchSomeOneContra
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(new ArrayList<>(),isLoadMore);
+        mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
     }
 
     @Override

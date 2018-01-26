@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine.scan;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.ScanCodeRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -23,10 +21,5 @@ public class ScanCodePresenterModule {
     @Provides
     public ScanCodeContract.View provideScanCodeContractView(){
         return mView;
-    }
-
-    @Provides
-    public ScanCodeContract.Repository provideScanCodeContractRepository(ScanCodeRepository repository){
-        return repository;
     }
 }

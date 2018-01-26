@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.StickTopRepsotory;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
@@ -32,7 +33,7 @@ import static com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment.
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class StickTopPresenter extends AppBasePresenter<StickTopContract.Repository, StickTopContract.View>
+public class StickTopPresenter extends AppBasePresenter< StickTopContract.View>
         implements StickTopContract.Presenter {
 
     @Inject
@@ -45,7 +46,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
     UserInfoRepository mUserInfoRepository;
 
     @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    StickTopRepsotory mStickTopRepsotory;
 
     @Inject
     CommentRepository mCommentRepository;
@@ -56,8 +57,8 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
     }
 
     @Inject
-    public StickTopPresenter(StickTopContract.Repository repository, StickTopContract.View rootView) {
-        super(repository, rootView);
+    public StickTopPresenter( StickTopContract.View rootView) {
+        super( rootView);
     }
 
     /**
@@ -93,7 +94,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
                             return Observable.error(new RuntimeException(""));
                         }
                     }
-                    return mRepository.stickTop(mRootView.getType(), parent_id, amount, mRootView.getTopDyas());
+                    return mStickTopRepsotory.stickTop(mRootView.getType(), parent_id, amount, mRootView.getTopDyas());
                 }, throwable -> {
                     mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
                     return null;
@@ -155,7 +156,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
         if (parent_id < 0) {
             return;
         }
-        Subscription subscription = mRepository.stickTop(mRootView.getType(), parent_id, child_id,
+        Subscription subscription = mStickTopRepsotory.stickTop(mRootView.getType(), parent_id, child_id,
                 PayConfig.gameCurrency2RealCurrency(mRootView.getInputMoney() * mRootView.getTopDyas(), getRatio()),
                 mRootView.getTopDyas())
                 .doOnSubscribe(() ->

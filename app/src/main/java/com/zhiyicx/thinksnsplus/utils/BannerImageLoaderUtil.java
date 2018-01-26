@@ -15,12 +15,11 @@ public class BannerImageLoaderUtil extends com.youth.banner.loader.ImageLoader {
     @Override
     public void displayImage(Context context, Object path, ImageView imageView) {
         String url=(String) path;
-        LogUtils.d("displayImage:::"+url);
         AppApplication.AppComponentHolder.getAppComponent()
                 .imageLoader()
                 .loadImage(context, GlideImageConfig.builder()
                         .imagerView(imageView)
-                        .url((String) path)
+                        .url(url)
                         .placeholder(R.drawable.shape_default_image)
                         .crossFade(true)
                         .errorPic(R.drawable.shape_default_image)

@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.information.dig;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.InfoDigListRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,5 @@ public class InfoDigListPresenterModule {
         return mView;
     }
 
-    @Provides
-    public InfoDigListContract.Repository provideInfoDigListContractRepository(InfoDigListRepository repository){
-        return repository;
-    }
+
 }

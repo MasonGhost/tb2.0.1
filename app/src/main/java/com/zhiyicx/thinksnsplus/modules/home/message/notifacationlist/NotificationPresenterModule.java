@@ -25,8 +25,4 @@ public class NotificationPresenterModule {
         return mView;
     }
 
-    @Provides
-    public NotificationContract.Repository provideNotificationContractRepository(NotificationRepository repository){
-        return repository;
-    }
 }

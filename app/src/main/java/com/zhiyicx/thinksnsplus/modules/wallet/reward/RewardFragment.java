@@ -154,20 +154,20 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     private void initRechargeLables() {
         String[] amount = new String[]{};
         mRechargeLables = new ArrayList<>();
-
-        if (RewardType.DYNAMIC == mRewardType) {
-            try {
-                amount = Arrays.toString(mSystemConfigBean.getFeed().getItems()).split("[\\[\\]]")[1].split(", ");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
+// 去掉动态特殊打赏
+//        if (RewardType.DYNAMIC == mRewardType) {
+//            try {
+//                amount = Arrays.toString(mSystemConfigBean.getFeed().getItems()).split("[\\[\\]]")[1].split(", ");
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        } else {
             try {
                 amount = mSystemConfigBean.getSite().getReward().getAmounts().split(",");
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+//        }
         if (amount.length > 0) {// 配置的打赏金额
             mRechargeLables.add((float) PayConfig.realCurrency2GameCurrency(Float.parseFloat(amount[0]), mPresenter.getRatio()));
             mRechargeLables.add((float) PayConfig.realCurrency2GameCurrency(Float.parseFloat(amount[1]), mPresenter.getRatio()));
