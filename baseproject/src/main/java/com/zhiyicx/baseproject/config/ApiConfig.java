@@ -742,7 +742,7 @@ public class ApiConfig {
     /**
      * 同意帖子评论置顶
      */
-    public static final String APP_PATH_APPROVED_POST_COMMENT = "api/" + API_VERSION_2 + "/plus-group/pinned/comments/{comment_id}/accept";
+    public static final String APP_PATH_APPROVED_POST_COMMENT = "api/" + API_VERSION_2 + "/plus-group/currency-pinned/comments/{comment_id}/accept";
 
     /**
      * 拒绝帖子评论置顶
