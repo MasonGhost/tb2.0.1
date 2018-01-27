@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
@@ -163,8 +164,8 @@ public class IntegrationWithdrawalsFragment extends TSFragment<IntegrationWithdr
         // 元对应的积分比例，服务器返回的是以分为单位的比例
         setDynamicRatio(mBaseRatioNum);
         mTvRechargeRule.setText(getResources().getString(R.string.integration_withdrawals_rule_format, mGoldName));
-        mTvInputTip1.setText(getString(R.string.input_withdrawals_integration_format,mGoldName));
-        mTvInputTip2.setText(getString(R.string.input_withdrawals_integration_tip_format,mGoldName));
+        mTvInputTip1.setText(getString(R.string.input_withdrawals_integration_format, mGoldName));
+        mTvInputTip2.setText(getString(R.string.input_withdrawals_integration_tip_format, mGoldName));
     }
 
     /**
@@ -254,6 +255,13 @@ public class IntegrationWithdrawalsFragment extends TSFragment<IntegrationWithdr
 
     }
 
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        if (getActivity() != null && Prompt.SUCCESS == prompt) {
+            getActivity().finish();
+        }
+    }
 
     /**
      * 设置自定义金额数量

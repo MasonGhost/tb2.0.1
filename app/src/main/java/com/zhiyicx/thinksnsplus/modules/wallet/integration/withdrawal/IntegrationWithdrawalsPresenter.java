@@ -2,8 +2,10 @@ package com.zhiyicx.thinksnsplus.modules.wallet.integration.withdrawal;
 
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -46,6 +48,12 @@ public class IntegrationWithdrawalsPresenter extends AppBasePresenter<Integratio
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
+                        try {
+                            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
+                            userInfoBean.getCurrency().setSum(userInfoBean.getCurrency().getSum() - amount);
+                            mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                        } catch (Exception ignored) {
+                        }
                         mRootView.showSnackSuccessMessage(mContext.getResources().getString(R.string.integration_withdrawals_report_success));
                     }
 
