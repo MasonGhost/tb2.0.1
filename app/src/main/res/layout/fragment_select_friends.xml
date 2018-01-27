@@ -22,7 +22,7 @@
                 android:layout_marginRight="@dimen/spacing_normal"
                 android:layout_gravity="center_vertical"/>
 
-        <android.support.v7.widget.RecyclerView
+        <com.zhiyicx.baseproject.widget.recycleview.MaxWidthRecyclerView
                 android:id="@+id/rv_select_result"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -32,6 +32,8 @@
                 android:id="@+id/edit_search_friends"
                 android:layout_width="0dp"
                 android:layout_weight="1"
+                android:singleLine="true"
+                android:ellipsize="middle"
                 android:layout_height="match_parent"
                 android:minWidth="@dimen/select_edit_min_width"
                 android:background="@null"

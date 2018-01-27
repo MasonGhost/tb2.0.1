@@ -325,7 +325,7 @@ public class AuthRepository implements IAuthRepository {
                 public void onSuccess() {
                     EMClient.getInstance().groupManager().loadAllGroups();
                     EMClient.getInstance().chatManager().loadAllConversations();
-                    LogUtils.d("main", "登录聊天服务器成功！");
+                    LogUtils.d("环信 -IM-", "登录聊天服务器成功！");
                     EventBus.getDefault().post("", EventBusTagConfig.EVENT_IM_ONCONNECTED);
                 }
 

@@ -57,8 +57,8 @@ public class BaseFriendsRepository implements IBaseFriendsRepository {
                                                  int maxUser, boolean isMemberOnly, boolean isAllowInvites,
                                                  long owner, String members) {
         return mEasemobClient.createGroup(groupName, groupIntro, isPublic ? 1 : 0, maxUser, isMemberOnly, isAllowInvites ? 1 : 0, owner, members)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
+
     }
 
     @Override

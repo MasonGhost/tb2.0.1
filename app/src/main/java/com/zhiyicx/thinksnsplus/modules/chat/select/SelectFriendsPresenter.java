@@ -5,10 +5,13 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMGroup;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.bean.ChatVerifiedBean;
+import com.hyphenate.exceptions.HyphenateException;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -29,6 +32,8 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -137,10 +142,10 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
     public void createConversation(List<UserInfoBean> list) {
         // 没有添加当前用户的情况下 添加在第一个
         if (list.get(0).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
-            list.add(0, mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
+            list.add(0, AppApplication.getmCurrentLoginAuth().getUser());
         }
         if (list.size() == 2) {
-            String id = String.valueOf(list.get(0).getUser_id());
+            String id = String.valueOf(list.get(1).getUser_id());
             // 创建单聊，判断当前是否与该用户的会话，没有创建会话
             mRootView.createConversionResult(getChatUser(list), EMConversation.EMConversationType.Chat, EaseConstant.CHATTYPE_SINGLE, id);
         } else {
@@ -154,6 +159,16 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
             }
             Subscription subscription = mRepository.createGroup(groupName, groupIntro, false,
                     200, true, false, list.get(0).getUser_id(), members.substring(0, members.length() - 1))
+                    .flatMap(groupInfo -> {
+                        EMGroup group = null;
+                        try {
+                            group = EMClient.getInstance().groupManager().getGroupFromServer(groupInfo.getIm_group_id());
+                        } catch (HyphenateException e) {
+                            e.printStackTrace();
+                        }
+                        return Observable.just(groupInfo);
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new BaseSubscribeForV2<ChatGroupBean>() {
                         @Override
                         protected void onSuccess(ChatGroupBean data) {

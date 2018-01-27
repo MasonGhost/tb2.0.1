@@ -20,7 +20,7 @@ public class ChatActivityV2 extends TSActivity{
 
     @Override
     protected Fragment getFragment() {
-        return new ChatFragmentV2().instance(getIntent().getBundleExtra(BUNDLE_CHAT_DATA));
+        return ChatFragmentV2.instance(getIntent().getBundleExtra(BUNDLE_CHAT_DATA));
     }
 
     @Override

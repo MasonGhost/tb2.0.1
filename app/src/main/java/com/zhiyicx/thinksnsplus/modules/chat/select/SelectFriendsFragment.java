@@ -16,12 +16,16 @@ import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
+import com.hyphenate.exceptions.HyphenateException;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
+import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivityV2;
 import com.zhiyicx.thinksnsplus.modules.chat.adapter.SelectFriendsAllAdapter;
@@ -31,9 +35,14 @@ import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.chat.ChatActivityV2.BUNDLE_CHAT_DATA;
 
@@ -202,13 +211,15 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
      */
     private void checkData() {
         mToolbarRight.setEnabled(mSelectedList.size() != 0);
-        mIvSearchIcon.setVisibility(mSelectedList.size() > 0 ? View.VISIBLE : View.GONE);
+        mIvSearchIcon.setVisibility(mSelectedList.size() > 0 ? View.GONE : View.VISIBLE);
         if (mSelectedList.size() > 0) {
+
             if (mChatGroupBean == null) {
                 setRightText(String.format(getString(R.string.select_friends_right_title), mSelectedList.size()));
             } else {
                 setRightText(String.format(getString(mIsDeleteMember ? R.string.chat_edit_group_remove_d : R.string.chat_edit_group_add_d), mSelectedList.size()));
             }
+
             mToolbarRight.setTextColor(getColor(R.color.themeColor));
         } else {
             if (mChatGroupBean == null) {
@@ -227,10 +238,12 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
         if (userInfoBean.getIsSelected() == 1) {
             mSelectedList.add(userInfoBean);
         } else {
-            for (UserInfoBean userInfoBean1 : mSelectedList) {
-                if (userInfoBean1.getUser_id().equals(userInfoBean.getUser_id())) {
+            Iterator<UserInfoBean> userIterator = mSelectedList.iterator();
+            while (userIterator.hasNext()) {
+                UserInfoBean data = userIterator.next();
+                if (data.getUser_id().equals(userInfoBean.getUser_id())) {
                     // 列表中已经有这个用户了->取消选中->直接移除这个人，这里因为有搜索列表，所以不能直接remove
-                    mSelectedList.remove(userInfoBean1);
+                    userIterator.remove();
                 }
             }
         }
@@ -270,9 +283,10 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
             EMGroup group = EMClient.getInstance().groupManager().getGroup(id);
             if (group == null) {
                 showSnackErrorMessage("创建失败");
+                return;
             }
-            return;
         }
+
         Intent to = new Intent(getActivity(), ChatActivityV2.class);
         Bundle bundle = new Bundle();
         bundle.putString(EaseConstant.EXTRA_USER_ID, id);

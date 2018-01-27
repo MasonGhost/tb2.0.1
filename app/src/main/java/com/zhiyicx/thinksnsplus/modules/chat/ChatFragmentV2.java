@@ -30,6 +30,7 @@ import com.hyphenate.easeui.ui.EaseGroupListener;
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
 import com.hyphenate.easeui.widget.presenter.EaseChatVideoPresenter;
+import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.PathUtil;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
@@ -100,12 +101,11 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     private static final int ITEM_VOICE_CALL_TS = 35;
     private static final int ITEM_VIDEO_CALL_TS = 36;
 
-    protected View mDriver;
     protected View mStatusPlaceholderView;
     private TSGroupListener mTsGroupListener;
     private UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
-    public ChatFragmentV2 instance(Bundle bundle) {
+    public static ChatFragmentV2 instance(Bundle bundle) {
         ChatFragmentV2 fragmentV2 = new ChatFragmentV2();
         fragmentV2.setArguments(bundle);
         return fragmentV2;
@@ -136,12 +136,6 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
             }
             linearLayout.addView(mStatusPlaceholderView);
         }
-        // 分割线
-        mDriver = new View(getContext());
-        mDriver.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(com.zhiyicx.baseproject.R.dimen
-                .divider_line)));
-        mDriver.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.general_for_line));
-        linearLayout.addView(mDriver);
         if (setUseSatusbar()) {
             // 状态栏顶上去
             StatusBarUtils.transparencyBar(getActivity());
@@ -176,6 +170,7 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
         titleBar.setRightImageResource(R.mipmap.topbar_more_black);
         if (chatType == EaseConstant.CHATTYPE_SINGLE) {
             titleBar.setTitle(mUserInfoBeans.get(1).getName());
+
         } else if (chatType == EaseConstant.CHATTYPE_GROUP) {
             EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatUsername);
             titleBar.setTitle(group.getGroupName());
