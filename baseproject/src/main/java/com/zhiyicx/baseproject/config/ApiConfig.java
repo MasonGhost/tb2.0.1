@@ -603,8 +603,7 @@ public class ApiConfig {
     /**
      * 加入圈子
      */
-    public static final String APP_PATH_PUT_JOIN_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}";
-    public static final String APP_PATH_PUT_JOIN_CIRCLE_FORMAT = "api/" + API_VERSION_2 + "/plus-group/groups/%s";
+    public static final String APP_PATH_PUT_JOIN_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/currency-groups/{circle_id}";
 
     /**
      * 指定/撤销圈子管理员职位
