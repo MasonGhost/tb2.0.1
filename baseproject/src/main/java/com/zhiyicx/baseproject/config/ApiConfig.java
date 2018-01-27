@@ -757,7 +757,7 @@ public class ApiConfig {
     /**
      * 拒绝帖子置顶
      */
-    public static final String APP_PATH_REFUSE_POST = "api/" + API_VERSION_2 + "/plus-group/pinned/posts/{post_id}/reject";
+    public static final String APP_PATH_REFUSE_POST = "api/" + API_VERSION_2 + "/plus-group/currency-pinned/posts/{post_id}/reject";
 
     /**
      * 圈子成员列表
