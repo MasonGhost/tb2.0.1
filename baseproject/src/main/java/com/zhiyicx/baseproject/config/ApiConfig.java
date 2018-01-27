@@ -307,7 +307,7 @@ public class ApiConfig {
     /**
      * 更新问题的悬赏 PATCH
      */
-    public static final String APP_PATH_UPDATE_QUESTION_REWARD = "api/" + API_VERSION_2 + "/questions/{question}/amount";
+    public static final String APP_PATH_UPDATE_QUESTION_REWARD = "api/" + API_VERSION_2 + "/currency-questions/{question}/amount";
 
     /**
      * 获取全部话题
