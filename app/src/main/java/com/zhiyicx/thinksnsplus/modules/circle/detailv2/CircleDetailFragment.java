@@ -958,18 +958,20 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 })
                 .item4ClickListener(() -> {
                     // 举报帖子
-                    String img = "";
-                    if (circlePostListBean.getImages() != null && !circlePostListBean.getImages().isEmpty()) {
-                        img = ImageUtils.imagePathConvertV2(circlePostListBean.getImages().get(0).getFile_id(), getResources()
-                                        .getDimensionPixelOffset(R.dimen.report_resource_img), getResources()
-                                        .getDimensionPixelOffset(R.dimen.report_resource_img),
-                                100);
+                    if (!mPresenter.handleTouristControl()){
+                        String img = "";
+                        if (circlePostListBean.getImages() != null && !circlePostListBean.getImages().isEmpty()) {
+                            img = ImageUtils.imagePathConvertV2(circlePostListBean.getImages().get(0).getFile_id(), getResources()
+                                            .getDimensionPixelOffset(R.dimen.report_resource_img), getResources()
+                                            .getDimensionPixelOffset(R.dimen.report_resource_img),
+                                    100);
+                        }
+                        ReportActivity.startReportActivity(mActivity, new ReportResourceBean(circlePostListBean.getUser(), String.valueOf
+                                (circlePostListBean.getId()),
+                                circlePostListBean.getTitle(), img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
+                        mOtherPostPopWindow.hide();
+                        showBottomView(true);
                     }
-                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(circlePostListBean.getUser(), String.valueOf
-                            (circlePostListBean.getId()),
-                            circlePostListBean.getTitle(), img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
-                    mOtherPostPopWindow.hide();
-                    showBottomView(true);
                 })
                 .item3ClickListener(() -> {
                     // 管理员置顶操作
