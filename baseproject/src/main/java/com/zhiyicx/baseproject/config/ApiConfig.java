@@ -444,7 +444,7 @@ public class ApiConfig {
     /**
      * 问答回答围观
      */
-    public static final String APP_PATH_QA_ANSWER_LOOK = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/onlookers";
+    public static final String APP_PATH_QA_ANSWER_LOOK = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/currency-onlookers";
 
     /**
      * 获取回答打赏列表
