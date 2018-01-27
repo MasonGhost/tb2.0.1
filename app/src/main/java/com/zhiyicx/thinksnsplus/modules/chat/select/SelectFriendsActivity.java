@@ -12,7 +12,6 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 public class SelectFriendsActivity extends TSActivity<SelectFriendsPresenter, SelectFriendsFragment>{
 
-
     @Override
     protected SelectFriendsFragment getFragment() {
         return SelectFriendsFragment.instance(getIntent().getExtras());

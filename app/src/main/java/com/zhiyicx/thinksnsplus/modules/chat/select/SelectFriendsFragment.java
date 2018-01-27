@@ -98,9 +98,16 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        mSelectedList = new ArrayList<>();
+        mSearchResultList = new ArrayList<>();
         getIntentData();
         setLeftTextColor(R.color.themeColor);
+        initListener();
+    }
+
+    private void initListener() {
         RxView.focusChanges(mEditSearchFriends)
+                .filter(aVoid -> mEditSearchFriends != null)
                 .subscribe(aBoolean -> mFlSearchResult.setVisibility(aBoolean ? View.VISIBLE : View.GONE));
         RxTextView.textChanges(mEditSearchFriends)
                 .subscribe(charSequence -> {
@@ -114,19 +121,6 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
                     mEditSearchFriends.clearFocus();
                     mSearchResultList.clear();
                 });
-        // 选中结果
-        LinearLayoutManager selectManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        mRvSelectResult.setLayoutManager(selectManager);
-        mSelectedList = new ArrayList<>();
-        mSelectedFriendsAdapter = new SelectedFriendsAdapter(getContext(), mSelectedList);
-        mRvSelectResult.setAdapter(mSelectedFriendsAdapter);
-        mRvSelectResult.addItemDecoration(new LinearDecoration(0, 0, 5, 5));
-        // 搜索结果
-        LinearLayoutManager searchManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        mRvSearchResult.setLayoutManager(searchManager);
-        mSearchResultList = new ArrayList<>();
-        mSearchResultAdapter = new SelectFriendsAllAdapter(getContext(), mSearchResultList, this);
-        mRvSearchResult.setAdapter(mSearchResultAdapter);
     }
 
     /**
@@ -145,6 +139,18 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     @Override
     protected void initData() {
         super.initData();
+        // 选中结果
+        LinearLayoutManager selectManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        mRvSelectResult.setLayoutManager(selectManager);
+        mSelectedFriendsAdapter = new SelectedFriendsAdapter(getContext(), mSelectedList);
+        mRvSelectResult.setAdapter(mSelectedFriendsAdapter);
+        mRvSelectResult.addItemDecoration(new LinearDecoration(0, 0, 5, 5));
+
+        // 搜索结果
+        LinearLayoutManager searchManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mRvSearchResult.setLayoutManager(searchManager);
+        mSearchResultAdapter = new SelectFriendsAllAdapter(getContext(), mSearchResultList, this);
+        mRvSearchResult.setAdapter(mSearchResultAdapter);
         checkData();
     }
 
@@ -177,7 +183,7 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     protected void setRightClick() {
         // 发起聊天
         if (mSelectedList.size() > 0) {
-            if (mChatGroupBean != null){
+            if (mChatGroupBean != null) {
                 mPresenter.dealGroupMember(mSelectedList);
             } else {
                 // 创建群
@@ -196,6 +202,7 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
      */
     private void checkData() {
         mToolbarRight.setEnabled(mSelectedList.size() != 0);
+        mIvSearchIcon.setVisibility(mSelectedList.size() > 0 ? View.VISIBLE : View.GONE);
         if (mSelectedList.size() > 0) {
             if (mChatGroupBean == null) {
                 setRightText(String.format(getString(R.string.select_friends_right_title), mSelectedList.size()));
@@ -261,7 +268,7 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
             EMClient.getInstance().chatManager().getConversation(id, type, true);
         } else {
             EMGroup group = EMClient.getInstance().groupManager().getGroup(id);
-            if (group == null){
+            if (group == null) {
                 showSnackErrorMessage("创建失败");
             }
             return;
@@ -319,7 +326,7 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
         }
         for (UserInfoBean userInfoBean : list) {
             // 给已经选中的用户手动设置
-            if (mSelectedList.size() > 0){
+            if (mSelectedList.size() > 0) {
                 for (int i = 0; i < mSelectedList.size(); i++) {
                     if (userInfoBean.getUser_id().equals(mSelectedList.get(i).getUser_id())) {
                         userInfoBean.setIsSelected(1);

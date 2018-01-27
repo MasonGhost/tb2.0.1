@@ -30,7 +30,8 @@
 
         <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/edit_search_friends"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="match_parent"
                 android:minWidth="@dimen/select_edit_min_width"
                 android:background="@null"
