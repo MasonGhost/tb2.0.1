@@ -376,8 +376,7 @@ public class ApiConfig {
     /**
      * 申请精选问答 POST
      */
-    public static final String APP_PATH_APPLY_FOR_EXCELLENT = "api/" + API_VERSION_2 + "/user/question-application/{question}";
-    public static final String APP_PATH_APPLY_FOR_EXCELLENT_S = "api/" + API_VERSION_2 + "/user/question-application/%s";
+    public static final String APP_PATH_APPLY_FOR_EXCELLENT = "api/" + API_VERSION_2 + "/currency-question-application/{question}";
 
     /**
      * 获取问答的评论列表
