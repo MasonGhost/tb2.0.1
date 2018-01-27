@@ -887,7 +887,7 @@ public class ApiConfig {
     // 获取签到信息
     public static final String APP_PATH_GET_CHECK_IN_INFO = "api/" + API_VERSION_2 + "/user/checkin";
     // 签到
-    public static final String APP_PATH_CHECK_IN = "api/" + API_VERSION_2 + "/user/checkin";
+    public static final String APP_PATH_CHECK_IN = "api/" + API_VERSION_2 + "/user/checkin/currency";
     // 连续签到排行榜
     public static final String APP_PATH_GET_CHECK_IN_RANKS = "api/" + API_VERSION_2 + "/checkin-ranks";
     /**
