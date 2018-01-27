@@ -36,6 +36,10 @@ public class TSPayClient {
     public static final String CHANNEL_WXPAY = "wechat";
     public static final String CHANNEL_WX = "wx";
     /**
+     * 余额支付
+     */
+    public static final String CHANNEL_BALANCE = "balance";
+    /**
      * 手机网页发起微信支付
      */
     public static final String CHANNEL_WXWAPPAY = "wx_wap";

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.pingplusplus.android.Pingpp;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
@@ -154,8 +155,8 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
         mToolbar.setBackgroundResource(android.R.color.transparent);
         ((LinearLayout.LayoutParams) mToolbar.getLayoutParams()).setMargins(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0);
         mTvToolbarCenter.setTextColor(ContextCompat.getColor(mActivity, R.color.white));
-        mGoldName=mPresenter.getGoldName();
-        mTvToolbarCenter.setText(getString(R.string.recharge_integration_foramt,mGoldName));
+        mGoldName = mPresenter.getGoldName();
+        mTvToolbarCenter.setText(getString(R.string.recharge_integration_foramt, mGoldName));
         mTvToolbarRight.setText(getString(R.string.recharge_record));
         mTvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.topbar_back_white), null, null, null);
 
@@ -172,7 +173,7 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
             return;
         }
         // 元对应的积分比例，服务器返回的是以分为单位的比例
-        mTvMineIntegration.setText(getString(R.string.integration_ratio_formart, 1,mIntegrationConfigBean.getRechargeratio() * 100,mGoldName));
+        mTvMineIntegration.setText(getString(R.string.integration_ratio_formart, 1, mIntegrationConfigBean.getRechargeratio() * 100, mGoldName));
         if (!TextUtils.isEmpty(mIntegrationConfigBean.getRechargeoptions())) {
             List<ChooseDataBean> datas = new ArrayList<>();
             String[] rechargeoptions = mIntegrationConfigBean.getRechargeoptions().split(ConstantConfig.SPLIT_SMBOL);
@@ -248,7 +249,7 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    if (PayConfig.realCurrencyYuan2Fen(mRechargeMoney) <PayConfig.realCurrencyYuan2Fen( mIntegrationConfigBean.getRechargemin())) {
+                    if (PayConfig.realCurrencyYuan2Fen(mRechargeMoney) < mIntegrationConfigBean.getRechargemin()) {
                         showSnackErrorMessage(getString(R.string.please_more_than_min_recharge_formart, PayConfig.realCurrencyFen2Yuan(
                                 (mIntegrationConfigBean.getRechargemin()))));
                         return;
@@ -298,6 +299,8 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
      * 充值方式选择弹框
      */
     private void initPayStylePop() {
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
+
         List<String> rechargeTypes = new ArrayList<>();
         if (mIntegrationConfigBean.getRecharge_type() != null) {
             rechargeTypes.addAll(Arrays.asList(mIntegrationConfigBean.getRecharge_type()));
@@ -308,26 +311,35 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
             return;
         }
         mPayStylePopupWindow = ActionPopupWindow.builder()
-                .item2Str(rechargeTypes.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string
+                .item1Str(rechargeTypes.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string
                         .alipay)) : "")
-                .item3Str(rechargeTypes.contains(TSPayClient.CHANNEL_WXPAY) || rechargeTypes.contains(TSPayClient.CHANNEL_WX) ? getString(R.string
+                .item2Str(rechargeTypes.contains(TSPayClient.CHANNEL_WXPAY) || rechargeTypes.contains(TSPayClient.CHANNEL_WX) ? getString(R.string
                         .choose_pay_style_formart, getString(R.string
                         .wxpay)) : "")
-                .item4Str(rechargeTypes.size() == 0 ? getString(R.string.recharge_disallow) : "")
+                .item3Str((mSystemConfigBean.getWalletTransform() != null && mSystemConfigBean.getWalletTransform().isOpen()) ? getString(R.string
+                        .choose_pay_style_formart, getString(R.string.balance)) : "")
+                .item4Str(rechargeTypes.size() == 0 && mSystemConfigBean.getWalletTransform() == null || !mSystemConfigBean.getWalletTransform()
+                        .isOpen() ? getString(R.string.recharge_disallow) : "")
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item2ClickListener(() -> {
+                .item1ClickListener(() -> {
                     mPayType = TSPayClient.CHANNEL_ALIPAY;
                     mBtRechargeStyle.setRightText(getString(R.string.choose_recharge_style_formart, getString(R.string.alipay)));
                     mPayStylePopupWindow.hide();
                     configSureButton();
                 })
-                .item3ClickListener(() -> {
-                    mPayType = TSPayClient.CHANNEL_WXPAY;
+                .item2ClickListener(() -> {
+                    mPayType = TSPayClient.CHANNEL_WX;
                     mBtRechargeStyle.setRightText(getString(R.string.choose_recharge_style_formart, getString(R.string.wxpay)));
+                    mPayStylePopupWindow.hide();
+                    configSureButton();
+                })
+                .item3ClickListener(() -> {
+                    mPayType = TSPayClient.CHANNEL_BALANCE;
+                    mBtRechargeStyle.setRightText(getString(R.string.choose_recharge_style_formart, getString(R.string.balance)));
                     mPayStylePopupWindow.hide();
                     configSureButton();
                 })
@@ -343,6 +355,7 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
             mEtInput.setText("");
             try {
                 mRechargeMoney = Double.parseDouble(dataBean.getText());
+                configSureButton();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -398,6 +411,13 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
     @Override
     public void rechargeSuccess(@NotNull RechargeSuccessBean rechargeSuccessBean) {
         EventBus.getDefault().post("", EventBusTagConfig.EVENT_INTEGRATION_RECHARGE);
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt, String message) {
+        if (getActivity() != null && Prompt.SUCCESS == prompt && getString(R.string.handle_success).equals(message)) {
+            getActivity().finish();
+        }
     }
 
     /**

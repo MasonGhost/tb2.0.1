@@ -145,11 +145,23 @@ public class BillRepository implements IBillRepository {
 
     @Override
     public Observable<PayStrV2Bean> getPayStr(String channel, double amount) {
-        return mWalletClient.getPayStr(channel, (long) amount,null)
+        return mWalletClient.getPayStr(channel, (long) amount, null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     * 钱包转积分
+     *
+     * @param amount 转账金额，分单位
+     * @return
+     */
+    @Override
+    public Observable<BaseJsonV2> balance2Integration(long amount) {
+        return mWalletClient.balance2Integration(amount)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
     /*******************************************  积分  *********************************************/
     /**
      * @return 积分配置信息

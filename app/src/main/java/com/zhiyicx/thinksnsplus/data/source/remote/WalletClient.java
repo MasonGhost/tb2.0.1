@@ -24,6 +24,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_ORDE
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE_SUCCESS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_WITHDRAWALS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_BALANCE_TO_INTEGRATION;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_CONFIG;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS;
@@ -67,6 +68,7 @@ public interface WalletClient {
 
     /**
      * 取回凭据
+     *
      * @param order
      * @return
      */
@@ -91,7 +93,18 @@ public interface WalletClient {
      */
     @FormUrlEncoded
     @POST(APP_PAHT_WALLET_RECHARGE)
-    Observable<PayStrV2Bean> getPayStr(@Field("type") String channel, @Field("amount") long amount,@Field("extra") String extra);
+    Observable<PayStrV2Bean> getPayStr(@Field("type") String channel, @Field("amount") long amount, @Field("extra") String extra);
+
+    /**
+     * 钱包余额转积分
+     *
+     * @param amount 转账金额，分单位
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PAHT_WALLET_BALANCE_TO_INTEGRATION)
+    Observable<BaseJsonV2> balance2Integration(@Field("amount") long amount);
+
 
     /*******************************************  积分  *********************************************/
     /**

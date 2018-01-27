@@ -241,7 +241,8 @@ public class ApiConfig {
     public static final String APP_PATH_GET_REVIEW_INFO_COMMENT = "/api/" + API_VERSION_2 + "/news/comments/pinneds";
 
     // 同意资讯评论置顶
-    public static final String APP_PATH_APPROVED_INFO_COMMENT = "/api/" + API_VERSION_2 + "/news/{news_id}/comments/{comment_id}/currency-pinneds/{pinned_id}";
+    public static final String APP_PATH_APPROVED_INFO_COMMENT = "/api/" + API_VERSION_2 +
+            "/news/{news_id}/comments/{comment_id}/currency-pinneds/{pinned_id}";
 
     // 拒绝资讯评论置顶
     public static final String APP_PATH_REFUSE_INFO_COMMENT = "/api/" + API_VERSION_2 +
@@ -957,6 +958,9 @@ public class ApiConfig {
     // 凭据回执
     public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK = "api/" + API_VERSION_2 + "/wallet/charges/{charge}?mode=retrieve";
     public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK_FORMAT = "api/" + API_VERSION_2 + "/wallet/charges/%s?mode=retrieve";
+    //    钱包余额转积分
+    public static final String APP_PAHT_WALLET_BALANCE_TO_INTEGRATION = "api/" + API_VERSION_2 + "/plus-pay/transform";
+
 
     /**
      * 积分
@@ -971,7 +975,7 @@ public class ApiConfig {
     // 积分流水
     public static final String APP_PAHT_INTEGRATION_ORDERS = "api/" + API_VERSION_2 + "/currency/orders";
     // 积分提取 POST /api/v2/currency/cash
-    public static final String APP_PAHT_INTEGRATION_WITHDRAWALS= "api/" + API_VERSION_2 + "/currency/cash";
+    public static final String APP_PAHT_INTEGRATION_WITHDRAWALS = "api/" + API_VERSION_2 + "/currency/cash";
 
 
     /*排行榜相关*/

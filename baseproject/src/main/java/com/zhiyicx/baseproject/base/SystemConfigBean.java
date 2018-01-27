@@ -70,6 +70,8 @@ public class SystemConfigBean implements Serializable {
     private OpenConfig walletCash;
     @SerializedName("wallet:recharge")
     private OpenConfig walletRecharge;
+    @SerializedName("wallet:transform")
+    private OpenConfig walletTransform; // 余额转积分
     @SerializedName("currency:cash")
     private OpenConfig currencyCash;
     @SerializedName("currency:recharge")
@@ -246,6 +248,14 @@ public class SystemConfigBean implements Serializable {
 
     public void setCurrencyRecharge(OpenConfig currencyRecharge) {
         this.currencyRecharge = currencyRecharge;
+    }
+
+    public OpenConfig getWalletTransform() {
+        return walletTransform;
+    }
+
+    public void setWalletTransform(OpenConfig walletTransform) {
+        this.walletTransform = walletTransform;
     }
 
     /**
@@ -840,6 +850,12 @@ public class SystemConfigBean implements Serializable {
                 ", mFeed=" + mFeed +
                 ", checkin=" + checkin +
                 ", mCircleGroup=" + mCircleGroup +
+                ", serverVersion='" + serverVersion + '\'' +
+                ", walletCash=" + walletCash +
+                ", walletRecharge=" + walletRecharge +
+                ", walletTransform=" + walletTransform +
+                ", currencyCash=" + currencyCash +
+                ", currencyRecharge=" + currencyRecharge +
                 ", registerSettings=" + registerSettings +
                 ", site=" + site +
                 '}';

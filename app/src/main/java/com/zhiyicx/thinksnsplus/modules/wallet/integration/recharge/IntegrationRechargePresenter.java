@@ -1,15 +1,22 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge;
 
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessV2Bean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.functions.Func1;
+
+import static com.zhiyicx.tspay.TSPayClient.CHANNEL_BALANCE;
 
 /**
  * @Describe
@@ -29,6 +36,8 @@ public class IntegrationRechargePresenter extends AppBasePresenter<IntegrationRe
 
     @Inject
     BillRepository mBillRepository;
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     @Override
     public void getPayStr(String channel, double amount) {
@@ -37,58 +46,98 @@ public class IntegrationRechargePresenter extends AppBasePresenter<IntegrationRe
             return;
         }
 
-        mBillRepository.getIntegrationPayStr(channel, (long) amount,null).doOnSubscribe(() -> {
-            mRootView.configSureBtn(false);
-            mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing));
-        }).subscribe(new BaseSubscribeForV2<PayStrV2Bean>() {
-            @Override
-            protected void onSuccess(PayStrV2Bean data) {
-                try {
-                    mRootView.showSnackSuccessMessage(mContext.getString(R.string.recharge_credentials_succes));
-                } catch (Exception e) {
+        if (CHANNEL_BALANCE.equals(channel)) {
+            mBillRepository.balance2Integration((long) amount)
+                    .flatMap(baseJsonV2 -> mUserInfoRepository.getCurrentLoginUserInfo())
+                    .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
+                        @Override
+                        protected void onSuccess(UserInfoBean data) {
+                            try {
+                                mRootView.showSnackSuccessMessage(mContext.getString(R.string.handle_success));
+                            } catch (Exception e) {
+                            }
+
+                        }
+
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            super.onFailure(message, code);
+                            try {
+                                mRootView.showSnackErrorMessage(message);
+                            } catch (Exception igonred) {
+                            }
+                        }
+
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            super.onException(throwable);
+                            try {
+                                mRootView.showSnackErrorMessage(throwable.getMessage());
+                            } catch (Exception igonred) {
+                            }
+                        }
+
+                    });
+
+
+        } else {
+
+            mBillRepository.getIntegrationPayStr(channel, (long) amount, null).doOnSubscribe(() -> {
+                mRootView.configSureBtn(false);
+                mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing));
+            }).subscribe(new BaseSubscribeForV2<PayStrV2Bean>() {
+                @Override
+                protected void onSuccess(PayStrV2Bean data) {
+                    mRootView.payCredentialsResult(data);
                 }
 
-                mRootView.payCredentialsResult(data);
-            }
+                @Override
+                protected void onFailure(String message, int code) {
+                    super.onFailure(message, code);
+                    mRootView.showSnackErrorMessage(message);
+                }
 
-            @Override
-            protected void onFailure(String message, int code) {
-                super.onFailure(message, code);
-                mRootView.showSnackErrorMessage(message);
-            }
+                @Override
+                protected void onException(Throwable throwable) {
+                    super.onException(throwable);
+                    mRootView.showSnackErrorMessage(throwable.getMessage());
+                }
 
-            @Override
-            protected void onException(Throwable throwable) {
-                super.onException(throwable);
-                mRootView.showSnackErrorMessage(throwable.getMessage());
-            }
-
-        });
+            });
+        }
     }
 
     @Override
     public void rechargeSuccess(String charge) {
-        Subscription subscribe = mBillRepository.integrationRechargeSuccess(charge).subscribe(new BaseSubscribeForV2<RechargeSuccessV2Bean>() {
-            @Override
-            protected void onSuccess(RechargeSuccessV2Bean data) {
-                rechargeSuccessCallBack(data.getId() + "");
-            }
+        Subscription subscribe = mBillRepository.integrationRechargeSuccess(charge)
+                .subscribe(new BaseSubscribeForV2<RechargeSuccessV2Bean>() {
+                    @Override
+                    protected void onSuccess(RechargeSuccessV2Bean data) {
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.handle_success));
+                        rechargeSuccessCallBack(data.getId() + "");
+                    }
 
-            @Override
-            protected void onFailure(String message, int code) {
-                super.onFailure(message, code);
-            }
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                    }
 
-            @Override
-            protected void onException(Throwable throwable) {
-                super.onException(throwable);
-            }
-        });
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                    }
+                });
         addSubscrebe(subscribe);
     }
 
     @Override
     public void rechargeSuccessCallBack(String charge) {
+        mUserInfoRepository.getCurrentLoginUserInfo()
+                .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
+                    @Override
+                    protected void onSuccess(UserInfoBean data) {
+                    }
+                });
         mRootView.rechargeSuccess(null);
 //        不需要获取详细信息
 //        BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();

@@ -11,7 +11,12 @@ import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean;
 
 import java.util.List;
 
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.POST;
 import rx.Observable;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_BALANCE_TO_INTEGRATION;
 
 /**
  * @Describe
@@ -50,6 +55,16 @@ public interface IBillRepository {
      * @return
      */
     Observable<PayStrV2Bean> getPayStr(String channel, double amount);
+
+    /**
+     * 钱包余额转积分
+     *
+     * @param amount 转账金额，分单位
+     * @return
+     */
+    Observable<BaseJsonV2> balance2Integration(long amount);
+
+
 
     /*******************************************  积分  *********************************************/
     /**

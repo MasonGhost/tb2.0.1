@@ -967,6 +967,8 @@
     <string name="integration_detail_format">%s明细</string>
     <string name="integration_withdrawals_format">%s提取</string>
     <string name="integration_withdrawals_rule_format">%s提取规则</string>
+    <string name="balance">余额</string>
+    <string name="handle_success">操作成功</string>
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>
         <item>提取记录</item>
