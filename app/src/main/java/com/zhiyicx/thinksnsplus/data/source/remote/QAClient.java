@@ -43,6 +43,11 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_QA_REPORT;
  */
 public interface QAClient {
 
+    /**
+     * 发布问题
+     * @param body
+     * @return
+     */
     @Headers({"Content-type:application/json;charset=UTF-8"})
     @POST(ApiConfig.APP_PATH_PUBLISH_QUESTIONS)
     Observable<Object> publishQuestion(@Body RequestBody body);
@@ -134,7 +139,7 @@ public interface QAClient {
      * @param after   获取 id 之后的数据，要获取某条问题之后的数据，传递该问题 ID。
      * @param type    默认值 new, all - 全部、new - 最新、hot - 热门、reward - 悬赏、excellent - 精选 。
      */
-    @GET(ApiConfig.APP_PATH_PUBLISH_QUESTIONS)
+    @GET(ApiConfig.APP_PATH_GET_QUESTIONS_LSIT)
     Observable<List<QAListInfoBean>> getQAQustion(@Query("subject") String subject, @Query
             ("offset") Long after, @Query("type") String type, @Query("limit") Long limit);
 

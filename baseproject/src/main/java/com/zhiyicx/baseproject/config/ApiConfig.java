@@ -301,7 +301,8 @@ public class ApiConfig {
     /**
      * 发布问题
      */
-    public static final String APP_PATH_PUBLISH_QUESTIONS = "api/" + API_VERSION_2 + "/questions";
+    public static final String APP_PATH_PUBLISH_QUESTIONS = "api/" + API_VERSION_2 + "/currency-questions";
+    public static final String APP_PATH_GET_QUESTIONS_LSIT = "api/" + API_VERSION_2 + "/questions";
 
     /**
      * 更新问题的悬赏 PATCH

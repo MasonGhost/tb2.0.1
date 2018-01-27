@@ -34,12 +34,7 @@ import rx.Subscription;
 public class QARewardPresenter extends AppBasePresenter<QARewardContract.View>
         implements QARewardContract.Presenter {
 
-    @Inject
-    CommentRepository mCommentRepository;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-    @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
+
     @Inject
     BaseQARepository mBaseQARepository;
 
@@ -50,7 +45,7 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.View>
 
     @Override
     public void publishQuestion(final QAPublishBean qaPublishBean) {
-        Subscription subscribe = handleWalletBlance((long) qaPublishBean.getAmount())
+        Subscription subscribe = handleIntegrationBlance((long) qaPublishBean.getAmount())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.publish_doing)))
                 .flatMap(o -> qaPublishBean.isHasAgainEdite() ? mBaseQARepository.updateQuestion(qaPublishBean)
@@ -92,7 +87,7 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.View>
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        if (isBalanceCheck(throwable)) {
+                        if (isIntegrationBalanceCheck(throwable)) {
                             return;
                         }
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.bill_doing_fialed));

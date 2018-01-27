@@ -215,7 +215,7 @@
     <string name="dynamic_send_toll_look">查看收费</string>
     <string name="dynamic_send_toll_download">下载收费</string>
     <string name="dynamic_send_toll_notes">注：超过%1$d字部分内容收费</string>
-    <string name="dynamic_send_toll_select_money">%1$.2f</string>
+    <string name="dynamic_send_toll_select_money">%1$.0f</string>
     <string name="dynamic_send_toll_select_money_">%1$.2f</string>
     <string name="dynamic_send_toll_toll_verify">应配置至少一张图片费用</string>
     <string name="group_dynamic_send_must_has_title">请输入标题</string>
@@ -969,6 +969,8 @@
     <string name="integration_withdrawals_rule_format">%s提取规则</string>
     <string name="balance">余额</string>
     <string name="handle_success">操作成功</string>
+    <string name="not_invite_expert">邀请的专家呢？</string>
+    <string name="handle_fail">操作失败</string>
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>
         <item>提取记录</item>

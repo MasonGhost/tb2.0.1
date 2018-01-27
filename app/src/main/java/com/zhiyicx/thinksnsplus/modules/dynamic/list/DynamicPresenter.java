@@ -515,7 +515,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
             amount = mRootView.getListDatas().get(dynamicPosition).getPaid_node().getAmount();
         }
 
-        handleWalletBlance((long) amount)
+        handleIntegrationBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
                 .flatMap(o -> mCommentRepository.paykNote(note))
@@ -578,7 +578,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        if (isBalanceCheck(throwable)) {
+                        if (isIntegrationBalanceCheck(throwable)) {
                             return;
                         }
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
