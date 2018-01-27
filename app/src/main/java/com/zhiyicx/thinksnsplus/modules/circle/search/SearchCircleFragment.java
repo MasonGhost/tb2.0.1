@@ -248,6 +248,10 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
         return CircleClient.MineCircleType.SEARCH;
     }
 
+    @Override
+    protected boolean isUseTouristLoadLimit() {
+        return false;
+    }
 
     @Override
     public void onEditChanged(String str) {
