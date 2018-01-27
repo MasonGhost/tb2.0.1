@@ -1054,6 +1054,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
          */
         RxView.clicks(mBtnSendPost)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .filter(aVoid -> !mPresenter.handleTouristControl())
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     // TODO: 2017/12/14
