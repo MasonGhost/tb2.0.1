@@ -45,10 +45,25 @@ public interface WalletClient {
     @GET(APP_PAHT_WALLET_CONFIG)
     Observable<WalletConfigBean> getWalletConfig();
 
+    /**
+     * 提现
+     *
+     * @param value   用户需要提现的金额
+     * @param type    用户提现账户方式
+     * @param account 用户提现账户
+     * @return
+     */
     @FormUrlEncoded
     @POST(APP_PAHT_WALLET_WITHDRAW)
     Observable<WithdrawResultBean> withdraw(@Field("value") long value, @Field("type") String type, @Field("account") String account);
 
+    /**
+     * 提现明细
+     *
+     * @param limit 可以设置获取数量
+     * @param after 获取更多数据，上一次获取列表的最后一条 ID
+     * @return
+     */
     @GET(APP_PAHT_WALLET_WITHDRAW)
     Observable<List<WithdrawalsListBean>> getWithdrawList(@Query("limit") int limit, @Query("after") int after);
 
@@ -56,7 +71,6 @@ public interface WalletClient {
     Observable<RechargeSuccessBean> rechargeSuccess(@Path("charge") String charge);
 
     /**
-     *
      * @param limit
      * @param after
      * @param action income - 收入 expenses - 支出
