@@ -752,7 +752,7 @@ public class ApiConfig {
     /**
      * 同意帖子置顶
      */
-    public static final String APP_PATH_APPROVED_POST = "api/" + API_VERSION_2 + "/plus-group/pinned/posts/{post_id}/accept";
+    public static final String APP_PATH_APPROVED_POST = "api/" + API_VERSION_2 + "/plus-group/currency-pinned/posts/{post_id}/accept";
 
     /**
      * 拒绝帖子置顶
