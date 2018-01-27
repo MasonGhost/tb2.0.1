@@ -407,8 +407,7 @@ public class ApiConfig {
     /**
      * 采纳答案 PUT
      */
-    public static final String APP_PATH_ADOPT_ANSWER = "api/" + API_VERSION_2 + "/questions/{question_id}/adoptions/{answer_id}";
-    public static final String APP_PATH_ADOPT_ANSWER_S = "api/" + API_VERSION_2 + "/questions/%d/adoptions/%d";
+    public static final String APP_PATH_ADOPT_ANSWER = "api/" + API_VERSION_2 + "/questions/{question_id}/currency-adoptions/{answer_id}";
 
     /**
      * 删除答案 DELETE
