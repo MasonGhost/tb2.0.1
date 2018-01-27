@@ -664,10 +664,10 @@
     <!--改了改了，真的改了-问答详情页的悬赏和围观金额样式-->
     <string name="qa_show_question_followed_count">%1$s 关注</string>
     <string name="qa_show_question_followed_count_">%1$s 关注\t\t·\t</string>
-    <string name="qa_show_question_reward_count">[%1$s.0]</string>
-    <string name="qa_show_question_reward_count_">[%1$s.0]\t\t·\t</string>
+    <string name="qa_show_question_reward_count">[%1$s]</string>
+    <string name="qa_show_question_reward_count_">[%1$s]\t\t·\t</string>
     <string name="qa_show_question_look_count">%1$s</string>
-    <string name="qa_watch_amount_count">%1$.1f</string>
+    <string name="qa_watch_amount_count">%1$.0f</string>
     <!--改了改了，真的改了-问答详情页的悬赏和围观金额样式-->
 
     <string name="edit_quit">放弃编辑</string>

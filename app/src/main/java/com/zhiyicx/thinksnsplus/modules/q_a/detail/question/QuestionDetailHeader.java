@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
@@ -54,7 +53,6 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
     private View mQuestionHeaderView;
     private TagFlowLayout mTflQuestion;
     private TextView mTvQuestionTitle;
-    private TextView mTvRewardAmount;
     private QuestionDetailContent mQdContent;
     private TextView mTvQuestionFeedCount;
     private TextView mTvQuestionReward;
@@ -83,7 +81,6 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         mQuestionHeaderView = LayoutInflater.from(context).inflate(R.layout.header_question_detail, null);
         mTflQuestion = (TagFlowLayout) mQuestionHeaderView.findViewById(R.id.tfl_question);
         mTvQuestionTitle = (TextView) mQuestionHeaderView.findViewById(R.id.tv_question_title);
-        mTvRewardAmount = (TextView) mQuestionHeaderView.findViewById(R.id.tv_reward_amount);
         mQdContent = (QuestionDetailContent) mQuestionHeaderView.findViewById(R.id.qd_content);
         mTvQuestionFeedCount = (TextView) mQuestionHeaderView.findViewById(R.id.tv_question_feed_count);
         mTvQuestionReward = (TextView) mQuestionHeaderView.findViewById(R.id.tv_question_detail_reward);
@@ -131,7 +128,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         if (qaListInfoBean.getInvitation_answers() != null && !qaListInfoBean.getInvitation_answers().isEmpty()) {
             outLookAmount = Double.parseDouble(qaListInfoBean.getInvitation_answers().get(0).getOnlookers_total());
         }
-        double rewardMoney = PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(), ratio);
+        double rewardMoney =qaListInfoBean.getAmount();
         String rewardstr = String.format(mContext.getString(outLookAmount == 0 ? R.string.qa_show_question_reward_count :
                         R.string.qa_show_question_reward_count_),
                 ConvertUtils.numberConvert((int) rewardMoney));
@@ -187,7 +184,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         if (qaListInfoBean.getInvitation_answers() != null && !qaListInfoBean.getInvitation_answers().isEmpty()) {
             outLookAmount = Double.parseDouble(qaListInfoBean.getInvitation_answers().get(0).getOnlookers_total());
         }
-        double rewardMoney = PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(), ratio);
+        double rewardMoney = qaListInfoBean.getAmount();
         String rewardstr = String.format(mContext.getString(outLookAmount == 0 ? R.string.qa_show_question_reward_count :
                         R.string.qa_show_question_reward_count_),
                 ConvertUtils.numberConvert((int) rewardMoney));
@@ -231,7 +228,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         if (qaListInfoBean.getInvitation_answers() != null && !qaListInfoBean.getInvitation_answers().isEmpty()) {
             outLookAmount = Double.parseDouble(qaListInfoBean.getInvitation_answers().get(0).getOnlookers_total());
         }
-        double rewardMoney = PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(), ratio);
+        double rewardMoney = qaListInfoBean.getAmount();
         String rewardstr = String.format(mContext.getString(outLookAmount == 0 ? R.string.qa_show_question_reward_count :
                         R.string.qa_show_question_reward_count_),
                 ConvertUtils.numberConvert((int) rewardMoney));
@@ -261,8 +258,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
      */
     public void updateOutLook(boolean onlook, double amount, int ratio) {
         mTvQuestionOnlookAmount.setVisibility(onlook && amount > 0 ? View.VISIBLE : View.GONE);
-        mTvQuestionOnlookAmount.setText(String.format(mContext.getString(R.string.qa_watch_amount_count), PayConfig.realCurrency2GameCurrency(amount,
-                ratio)));
+        mTvQuestionOnlookAmount.setText(String.format(mContext.getString(R.string.qa_watch_amount_count), amount));
     }
 
     /**
