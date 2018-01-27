@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -211,7 +210,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(getString(R.string.buy_pay_money, amout))
+                .buildMoneyStr(getString(R.string.buy_pay_integration, amout))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(position, note);
                     mPayMusicPopWindow.hide();

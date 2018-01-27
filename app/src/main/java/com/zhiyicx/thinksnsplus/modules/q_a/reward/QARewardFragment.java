@@ -172,9 +172,9 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         if (draft != null) {
             mWcInvite.setChecked(draft.getAutomaticity() == 1);
             mWcOnlooker.setChecked(draft.getLook() == 1);
-            double money = PayConfig.realCurrency2GameCurrency(draft.getAmount(), mPresenter.getRatio());
+            double money = draft.getAmount();
             if (money > 0) {
-                mEtInput.setText(String.valueOf(PayConfig.realCurrency2GameCurrency(draft.getAmount(), mPresenter.getRatio())));
+                mEtInput.setText(String.valueOf(draft.getAmount()));
             }
             if (draft.getInvitations() != null && !draft.getInvitations().isEmpty()) {
                 List<QAPublishBean.Invitations> typeIdsList = new ArrayList<>();
@@ -550,7 +550,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     @Override
     public void resetRewardSuccess() {
         Bundle bundle = new Bundle();
-        bundle.putDouble(BUNDLE_QUESTION_ID, PayConfig.gameCurrency2RealCurrency(mRewardMoney, mPresenter.getRatio()));
+        bundle.putDouble(BUNDLE_QUESTION_ID, mRewardMoney);
         Intent intent = new Intent();
         intent.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);

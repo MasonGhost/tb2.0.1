@@ -139,7 +139,7 @@
     <string name="qa_pay_for_excellent_hint">您只需要支付%1$d%2$s\n就可以使问题成为精选问答</string>
     <string name="qa_pay_for_watch_answer_hint">您只需要支付%1$d%2$s\n就可以围观该回答</string>
     <string name="buy_pay_member">""</string>
-    <string name="buy_pay_money">%d</string>
+    <string name="buy_pay_integration">%d</string>
     <string name="buy_pay_in">购买</string>
     <string name="buy_pay_in_payment">支付</string>
     <string name="buy_pay_out">返回</string>

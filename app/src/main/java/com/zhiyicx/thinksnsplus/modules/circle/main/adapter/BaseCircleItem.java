@@ -70,7 +70,7 @@ public abstract class BaseCircleItem implements ItemViewDelegate<CircleInfo> {
                 .buildTitleStr(context.getString(R.string.buy_pay))
                 .buildItem1Str(context.getString(R.string.buy_pay_in))
                 .buildItem2Str(context.getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(context.getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(amout, ratio)))
+                .buildMoneyStr(String.format(context.getString(R.string.buy_pay_integration), PayConfig.realCurrency2GameCurrency(amout, ratio)))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     if (mCircleItemItemEvent != null) {
                         mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);

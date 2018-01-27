@@ -78,9 +78,10 @@ public interface QAClient {
     Observable<BaseJsonV2> createTopic(@Field("name") String name, @Field("description") String description);
 
     /**
+     * 更新问题
      * @param body 如果 anonymity 不传，则本字段必须存在， 回答详情。
      */
-    @PATCH(ApiConfig.APP_PATH_GET_QUESTION_DETAIL)
+    @PATCH(ApiConfig.APP_PATH_UPDATE_QUESTION_DETAIL)
     Observable<Object> uplaodQuestion(@Path("question") Long question_id, @Body RequestBody body);
 
     /**

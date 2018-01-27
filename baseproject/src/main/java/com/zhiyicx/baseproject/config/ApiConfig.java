@@ -349,6 +349,7 @@ public class ApiConfig {
      * 获取问题详情
      */
     public static final String APP_PATH_GET_QUESTION_DETAIL = "api/" + API_VERSION_2 + "/questions/{question}";
+    public static final String APP_PATH_UPDATE_QUESTION_DETAIL = "api/" + API_VERSION_2 + "/currency-questions/{question}";
 
     /**
      * 关注问题

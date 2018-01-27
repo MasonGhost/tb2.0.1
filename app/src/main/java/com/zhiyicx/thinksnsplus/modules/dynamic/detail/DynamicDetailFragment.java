@@ -6,7 +6,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
-import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.InputLimitView.OnSendClickListener;
@@ -737,7 +735,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), amout))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_integration), amout))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(imagePosition, note, isImage);
                     mPayImagePopWindow.hide();

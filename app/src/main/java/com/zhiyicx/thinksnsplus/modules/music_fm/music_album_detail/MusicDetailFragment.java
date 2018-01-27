@@ -31,7 +31,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
 import com.zhiyicx.baseproject.utils.WindowUtils;
@@ -751,7 +750,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(getString(R.string.buy_pay_money, amout))
+                .buildMoneyStr(getString(R.string.buy_pay_integration, amout))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(position, note);
                     mPayMusicPopWindow.hide();

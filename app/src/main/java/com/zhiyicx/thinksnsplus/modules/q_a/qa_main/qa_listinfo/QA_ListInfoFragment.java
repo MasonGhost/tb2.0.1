@@ -249,7 +249,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 .buildTitleStr(getString(R.string.qa_pay_for_watch))
                 .buildItem1Str(getString(R.string.buy_pay_in_payment))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig()
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_integration), PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig()
                         .getOnlookQuestion(), mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payForOnlook(answer_id, pisotion);

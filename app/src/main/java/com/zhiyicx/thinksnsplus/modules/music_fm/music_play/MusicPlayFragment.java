@@ -37,7 +37,6 @@ import android.widget.TextView;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideMusicBgTransform;
 import com.zhiyicx.baseproject.utils.WindowUtils;
@@ -1071,7 +1070,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(getString(R.string.buy_pay_money,amout))
+                .buildMoneyStr(getString(R.string.buy_pay_integration,amout))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(position, note);
                     mPayMusicPopWindow.hide();
