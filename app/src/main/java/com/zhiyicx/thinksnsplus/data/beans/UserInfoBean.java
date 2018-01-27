@@ -104,6 +104,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     @SerializedName(value = "cover", alternate = {"bg"})
     private String cover;// 封面
     @Transient
+    @SerializedName("new_wallet")
     private WalletBean wallet;
 
     /**
