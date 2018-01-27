@@ -360,7 +360,7 @@ public class ApiConfig {
     /**
      * 删除问题用
      */
-    public static final String APP_PATH_GET_DELETE_QUESTION = "api/" + API_VERSION_2 + "/questions/{question}";
+    public static final String APP_PATH_GET_DELETE_QUESTION = "api/" + API_VERSION_2 + "/currency-questions/{question}";
 
     /**
      * 获取一个问题的回答列表
