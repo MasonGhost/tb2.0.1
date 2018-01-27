@@ -1107,6 +1107,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
         RxView.clicks(mTvCircleFounder)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .filter(aVoid -> !mPresenter.handleTouristControl())
                 .subscribe(aVoid -> {
                     MessageItemBean messageItemBean = new MessageItemBean();
                     messageItemBean.setUserInfo(mCircleInfo.getFounder().getUser());
