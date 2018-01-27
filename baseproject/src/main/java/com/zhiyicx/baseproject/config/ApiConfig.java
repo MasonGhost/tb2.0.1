@@ -707,7 +707,7 @@ public class ApiConfig {
     /**
      * 帖子置顶
      */
-    public static final String APP_PATH_TOP_POST = "api/" + API_VERSION_2 + "/plus-group/pinned/posts/{post_id}";
+    public static final String APP_PATH_TOP_POST = "api/" + API_VERSION_2 + "/plus-group/currency-pinned/posts/{post_id}";
 
     /**
      * 圈主和管理员置顶帖子
