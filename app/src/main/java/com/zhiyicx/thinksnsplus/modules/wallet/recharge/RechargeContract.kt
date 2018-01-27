@@ -2,12 +2,9 @@ package com.zhiyicx.thinksnsplus.modules.wallet.recharge
 
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter
 import com.zhiyicx.common.mvp.i.IBaseView
-import com.zhiyicx.thinksnsplus.data.beans.PayStrBean
+import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean
 import com.zhiyicx.tspay.TSPayClient
-
-import retrofit2.http.Path
-import rx.Observable
 
 /**
  * @Describe
@@ -20,7 +17,7 @@ interface RechargeContract {
 
     interface View : IBaseView<Presenter> {
         val money: Double
-        fun payCredentialsResult(payStrBean: PayStrBean)
+        fun payCredentialsResult(payStrBean: PayStrV2Bean)
         fun configSureBtn(enable: Boolean)
         fun rechargeSuccess(rechargeSuccessBean: RechargeSuccessBean)
         fun initmRechargeInstructionsPop()

@@ -1,15 +1,14 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.appupdate.AppVersionBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
-import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
@@ -36,7 +35,6 @@ import retrofit2.http.Query;
 import retrofit2.http.Url;
 import rx.Observable;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_NOTE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ADVERT_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_TAGS;
@@ -51,7 +49,6 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SYSTEM_CONVE
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_HANDLE_BACKGROUND_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFRESH_TOKEN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REPORT_COMMON_COMMENT;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REPORT_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SEARDCH_LOCATION;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SGET_HOT_CITY;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_STORAGE_HASH;

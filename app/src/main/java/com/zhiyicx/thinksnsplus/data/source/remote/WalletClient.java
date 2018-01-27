@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.common.base.BaseJsonV2;
-import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessV2Bean;
@@ -24,7 +23,6 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_CONF
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_ORDERS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE_SUCCESS;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE_SUCCESS_CALLBACK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_WITHDRAWALS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_CONFIG;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE;
@@ -67,8 +65,13 @@ public interface WalletClient {
     @GET(APP_PAHT_WALLET_WITHDRAW)
     Observable<List<WithdrawalsListBean>> getWithdrawList(@Query("limit") int limit, @Query("after") int after);
 
+    /**
+     * 取回凭据
+     * @param order
+     * @return
+     */
     @GET(APP_PAHT_WALLET_RECHARGE_SUCCESS)
-    Observable<RechargeSuccessBean> rechargeSuccess(@Path("charge") String charge);
+    Observable<RechargeSuccessBean> rechargeSuccess(@Path("order") String order);
 
     /**
      * @param limit
@@ -84,11 +87,11 @@ public interface WalletClient {
     Observable<RechargeSuccessBean> rechargeSuccessCallBack(@Path("charge") String charge);
 
     /**
-     * 获取支付信息
+     * 发起充值
      */
     @FormUrlEncoded
     @POST(APP_PAHT_WALLET_RECHARGE)
-    Observable<PayStrBean> getPayStr(@Field("type") String channel, @Field("amount") long amount);
+    Observable<PayStrV2Bean> getPayStr(@Field("type") String channel, @Field("amount") long amount,@Field("extra") String extra);
 
     /*******************************************  积分  *********************************************/
     /**

@@ -3,9 +3,9 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import android.app.Application;
 import android.content.Context;
 
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.zhiyicx.appupdate.AppVersionBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
@@ -20,23 +20,16 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
-import com.zhiyicx.baseproject.base.ImageAdvert;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
-import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.TagCategoryBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.UserTagBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.ISystemRepository;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.inject.Inject;

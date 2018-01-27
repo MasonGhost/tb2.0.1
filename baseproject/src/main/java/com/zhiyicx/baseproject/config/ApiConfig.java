@@ -949,9 +949,9 @@ public class ApiConfig {
     // 提现
     public static final String APP_PAHT_WALLET_WITHDRAW = "api/" + API_VERSION_2 + "/plus-pay/cashes";
     // 钱包余额充值
-    public static final String APP_PAHT_WALLET_RECHARGE = "api/" + API_VERSION_2 + "/wallet/recharge";
+    public static final String APP_PAHT_WALLET_RECHARGE = "api/" + API_VERSION_2 + "/plus-pay/recharge";
     // 钱包余额充值凭据
-    public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS = "api/" + API_VERSION_2 + "/wallet/charges/{charge}";
+    public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS = "api/" + API_VERSION_2 + "/plus-pay/orders/{order}";
     // 钱包流水
     public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS_LIST = "api/" + API_VERSION_2 + "/plus-pay/orders";
     // 凭据回执

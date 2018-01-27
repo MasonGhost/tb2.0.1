@@ -22,11 +22,10 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
+import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.tspay.TSPayClient;
@@ -40,7 +39,6 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
-import static com.zhiyicx.baseproject.config.PayConfig.MONEY_UNIT;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -128,9 +126,9 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     }
 
     @Override
-    public void payCredentialsResult(PayStrBean payStrBean) {
-        mPayChargeId = payStrBean.getId() + "";
-        TSPayClient.pay(ConvertUtils.object2JsonStr(payStrBean.getCharge()), getActivity());
+    public void payCredentialsResult(PayStrV2Bean payStrBean) {
+        mPayChargeId = payStrBean.getOrder().getId() + "";
+        TSPayClient.pay(ConvertUtils.object2JsonStr(payStrBean.getPingpp_order()), getActivity());
     }
 
     @Override

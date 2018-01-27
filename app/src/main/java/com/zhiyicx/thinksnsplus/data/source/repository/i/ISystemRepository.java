@@ -1,9 +1,8 @@
 package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
 import com.zhiyicx.appupdate.AppVersionBean;
-import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
-import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 

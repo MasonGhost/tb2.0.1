@@ -7,12 +7,10 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
-import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
+import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import javax.inject.Inject;
 
@@ -48,9 +46,9 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.View> i
         mBillRepository.getPayStr(channel, (long) amount).doOnSubscribe(() -> {
             mRootView.configSureBtn(false);
             mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing));
-        }).subscribe(new BaseSubscribeForV2<PayStrBean>() {
+        }).subscribe(new BaseSubscribeForV2<PayStrV2Bean>() {
             @Override
-            protected void onSuccess(PayStrBean data) {
+            protected void onSuccess(PayStrV2Bean data) {
                 try {
                     mRootView.showSnackSuccessMessage(mContext.getString(R.string.recharge_credentials_succes));
                 } catch (Exception e) {

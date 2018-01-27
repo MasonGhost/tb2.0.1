@@ -4,7 +4,6 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessV2Bean;
@@ -12,12 +11,10 @@ import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.WalletClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBillRepository;
-import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,8 +144,8 @@ public class BillRepository implements IBillRepository {
     }
 
     @Override
-    public Observable<PayStrBean> getPayStr(String channel, double amount) {
-        return mWalletClient.getPayStr(channel, (long) amount)
+    public Observable<PayStrV2Bean> getPayStr(String channel, double amount) {
+        return mWalletClient.getPayStr(channel, (long) amount,null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

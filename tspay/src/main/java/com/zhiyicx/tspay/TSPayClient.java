@@ -31,7 +31,7 @@ public class TSPayClient {
     public static final String CHANNEL_ALIWAPPAY = "alipay_wap";
     /**
      * 微信 APP 支付
-     * 充值用 wechat \ 提现用 wx
+     * 充值用 wx \ 提现用 wechat
      */
     public static final String CHANNEL_WXPAY = "wechat";
     public static final String CHANNEL_WX = "wx";

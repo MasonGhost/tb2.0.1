@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
 import com.zhiyicx.common.base.BaseJsonV2;
-import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessV2Bean;
@@ -12,18 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean;
 
 import java.util.List;
 
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
 import rx.Observable;
-
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_ORDERS;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE_SUCCESS;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_WITHDRAWALS;
 
 /**
  * @Describe
@@ -61,7 +49,7 @@ public interface IBillRepository {
      * @param amount  支付金额
      * @return
      */
-    Observable<PayStrBean> getPayStr(String channel, double amount);
+    Observable<PayStrV2Bean> getPayStr(String channel, double amount);
 
     /*******************************************  积分  *********************************************/
     /**
