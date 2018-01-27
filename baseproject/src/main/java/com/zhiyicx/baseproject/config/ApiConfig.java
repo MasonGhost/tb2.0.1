@@ -598,7 +598,7 @@ public class ApiConfig {
     /**
      * 审核圈子加入请求
      */
-    public static final String APP_PATH_DEAL_CIRCLE_MEMBER_JOIN = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/members/{member_id}/audit";
+    public static final String APP_PATH_DEAL_CIRCLE_MEMBER_JOIN = "api/" + API_VERSION_2 + "/plus-group/currency-groups/{circle_id}/members/{member_id}/audit";
 
     /**
      * 加入圈子
