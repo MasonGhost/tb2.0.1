@@ -121,7 +121,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
         super.snackViewDismissWhenTimeOut(prompt);
-        if (getActivity() != null) {
+        if (getActivity() != null && prompt == Prompt.SUCCESS) {
             getActivity().finish();
         }
     }
