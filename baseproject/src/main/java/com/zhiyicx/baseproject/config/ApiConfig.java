@@ -395,9 +395,9 @@ public class ApiConfig {
     public static final String APP_PATH_DELETE_QUESTION_COMMENT = "api/" + API_VERSION_2 + "/questions/{question}/comments/{answer}";
 
     /**
-     * 发布回答
+     * 回答问题
      */
-    public static final String APP_PATH_PUBLISH_ANSWER = "api/" + API_VERSION_2 + "/questions/{question}/answers";
+    public static final String APP_PATH_PUBLISH_ANSWER = "api/" + API_VERSION_2 + "/currency-questions/{question}/answers";
 
     /**
      * 更新回答 PATCH
