@@ -42,6 +42,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_APP_NEW_VERS
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_APP_VERSION;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_All_ADVERT_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BOOTSTRAPERS_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_NOTE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MEMBER_VERTIFYCODE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_NON_MEMBER_VERTIFYCODE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SINGLE_ADVERT_INFO;
@@ -195,9 +196,14 @@ public interface CommonClient {
      * @param note 文件付费节点
      * @return
      */
-    @GET(APP_PATH_CHECK_NOTE)
+    @GET(APP_PATH_GET_CHECK_NOTE)
     Observable<PurChasesBean> checkNote(@Path("note") int note);
 
+    /**
+     * 付费节点支付
+     * @param note
+     * @return
+     */
     @POST(APP_PATH_CHECK_NOTE)
     Observable<BaseJsonV2<String>> payNote(@Path("note") int note);
 

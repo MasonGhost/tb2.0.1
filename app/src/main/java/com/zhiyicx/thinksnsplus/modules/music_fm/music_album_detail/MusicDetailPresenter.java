@@ -52,10 +52,6 @@ public class MusicDetailPresenter extends AppBasePresenter<
 
     @Inject
     MusicAlbumDetailsBeanGreenDaoImpl mMusicAlbumDetailsBeanGreenDao;
-    @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
-    @Inject
-    CommentRepository mCommentRepository;
 
     @Inject
     public SharePolicy mSharePolicy;
@@ -71,30 +67,14 @@ public class MusicDetailPresenter extends AppBasePresenter<
         super(rootView);
     }
 
-    /**
-     * 将Presenter从传入fragment
-     */
-    @Inject
-    void setupListeners() {
-        mRootView.setPresenter(this);
-    }
-
     @Override
     public void payNote(int position, int note) {
-        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
-        double balance = 0;
-        if (walletBean != null) {
-            balance = walletBean.getBalance();
-        }
         double amount;
         amount = mRootView.getListDatas().get(position).getStorage().getAmount();
-
-        if (balance < amount) {
-            mRootView.goRecharge(WalletActivity.class);
-            return;
-        }
-        Subscription subscribe = mCommentRepository.paykNote(note)
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
+        Subscription subscribe = handleIntegrationBlance((long) amount)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
+                        .string.transaction_doing)))
+                .flatMap(o -> mCommentRepository.paykNote(note))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<String> data) {
@@ -114,6 +94,9 @@ public class MusicDetailPresenter extends AppBasePresenter<
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
+                        if (isIntegrationBalanceCheck(throwable)) {
+                            return;
+                        }
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
                     }
 

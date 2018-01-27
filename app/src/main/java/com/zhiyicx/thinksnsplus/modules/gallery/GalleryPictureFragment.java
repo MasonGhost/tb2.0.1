@@ -694,15 +694,13 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(1.0f)
                 .buildDescrStr(String.format(getString(resId) + getString(R
-                                .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(mImageBean.getToll().getToll_money(), mPresenter
-                                .getRatio()),
-                        mPresenter.getGoldName()))
+                                .string.buy_pay_member), mImageBean.getToll().getToll_money(), mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(mImageBean.getToll()
-                        .getToll_money(), mPresenter.getRatio())))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), mImageBean.getToll()
+                        .getToll_money()))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(mImageBean.getFeed_id(), mImageBean.getPosition(), mImageBean.getToll().getPaid_node());
                     mPayPopWindow.hide();

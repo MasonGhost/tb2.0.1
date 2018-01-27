@@ -515,7 +515,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
             amount = mRootView.getListDatas().get(dynamicPosition).getPaid_node().getAmount();
         }
 
-        handleIntegrationBlance((long) amount)
+        Subscription subscribe = handleIntegrationBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
                 .flatMap(o -> mCommentRepository.paykNote(note))
@@ -590,6 +590,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
                         mRootView.hideCenterLoading();
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
