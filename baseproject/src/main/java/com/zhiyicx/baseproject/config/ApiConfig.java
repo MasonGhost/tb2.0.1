@@ -728,6 +728,10 @@ public class ApiConfig {
      * 帖子打赏
      */
     public static final String APP_PATH_REWARD_POST = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/new-rewards";
+    /**
+     * 帖子打赏列表
+     */
+    public static final String APP_PATH_GET_REWARD_POST_LIST = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/rewards";
 
     /**
      * 帖子评论置顶

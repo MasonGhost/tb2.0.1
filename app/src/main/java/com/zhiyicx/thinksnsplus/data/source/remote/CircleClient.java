@@ -65,6 +65,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MINE_POSTLIS
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MY_JOINED_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_POSTLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMEND_CIRCLE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_REWARD_POST_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ROUNDCIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_TOP_POST_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_COLLECT_POST;
@@ -491,7 +492,7 @@ public interface CircleClient {
      * @param order_type 排序规则 date-按时间 amount-按金额
      * @return
      */
-    @GET(APP_PATH_REWARD_POST)
+    @GET(APP_PATH_GET_REWARD_POST_LIST)
     Observable<List<RewardsListBean>> getPostRewardList(@Path("post_id") long post_id, @Query("limit") Integer limit,
                                                         @Query("offset") Integer offset, @Query("order") String order,
                                                         @Query("order_type") String order_type);
