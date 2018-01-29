@@ -81,6 +81,10 @@ public class EditeInfoDetailFragment extends MarkdownFragment<PostDraftBean,Edit
     protected void handlePublish(String title, String markdwon, String noMarkdown) {
         super.handlePublish(title, markdwon, noMarkdown);
         mInfoPublishBean.setContent(markdwon);
+        if(mPresenter==null){
+            showSnackErrorMessage(getString(R.string.handle_fail));
+            return;
+        }
         mInfoPublishBean.setAmout(mPresenter.getSystemConfigBean().getNewsPayContribute());
 
         // 封面
