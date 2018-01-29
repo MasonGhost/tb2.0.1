@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
@@ -39,7 +40,7 @@ public class BaseRewardRepository implements IRewardRepository {
         mDynamicClient = serviceManager.getDynamicClient();
         mUserInfoClient = serviceManager.getUserInfoClient();
         mQAClient = serviceManager.getQAClient();
-        mCircleClient=serviceManager.getCircleClient();
+        mCircleClient = serviceManager.getCircleClient();
     }
 
     /*******************************************  用户打赏  *********************************************/
@@ -135,6 +136,20 @@ public class BaseRewardRepository implements IRewardRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     * @param answer_id  动态 id
+     * @param limit      默认 20 ，获取列表条数，修正值 1 - 30
+     * @param offset     默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @param order_type 默认值 time, time - 按照打赏时间倒序，amount - 按照金额倒序
+     * @return
+     */
+    @Override
+    public Observable<List<RewardsListBean>> rewardQAList(long answer_id, Integer limit, Integer offset, String order_type) {
+        return mQAClient.rewardQAList(answer_id, limit, offset, order_type)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     @Override
     public Observable<Object> rewardPost(long postId, double rewardMoney) {
         return mCircleClient.rewardPost(postId, (long) rewardMoney)
@@ -143,16 +158,18 @@ public class BaseRewardRepository implements IRewardRepository {
     }
 
     /**
+     * 帖子打赏列表
      *
-     * @param answer_id    动态 id
-     * @param limit      默认 20 ，获取列表条数，修正值 1 - 30
-     * @param offset     默认 0 ，数据偏移量，传递之前通过接口获取的总数。
-     * @param order_type 默认值 time, time - 按照打赏时间倒序，amount - 按照金额倒序
+     * @param post_id    帖子 id
+     * @param limit      列表返回数据条数
+     * @param offset     翻页标识 时间排序时为数据 id 金额排序时为打赏金额 amount
+     * @param order      翻页标识 排序 正序-asc 倒序 desc
+     * @param order_type 排序规则 date-按时间 amount-按金额
      * @return
      */
     @Override
-    public Observable<List<RewardsListBean>> rewardQAList(long answer_id, Integer limit, Integer offset, String order_type) {
-        return mQAClient.rewardQAList(answer_id,limit,offset,order_type)
+    public Observable<List<RewardsListBean>> rewardPostList(long post_id, Integer limit, Integer offset, String order, String order_type) {
+        return mCircleClient.getPostRewardList(post_id, TSListFragment.DEFAULT_PAGE_SIZE, offset, order, order_type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
