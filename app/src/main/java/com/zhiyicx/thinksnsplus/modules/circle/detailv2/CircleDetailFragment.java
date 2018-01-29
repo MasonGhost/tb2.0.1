@@ -734,7 +734,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     protected Long getMaxId(@NotNull List<CirclePostListBean> data) {
-        int pinnedCount=mCircleZipBean==null?0:mCircleZipBean.getPinnedCount();
+        int pinnedCount = mCircleZipBean == null ? 0 : mCircleZipBean.getPinnedCount();
         return (long) mListDatas.size() - pinnedCount;
     }
 
@@ -958,7 +958,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 })
                 .item4ClickListener(() -> {
                     // 举报帖子
-                    if (!mPresenter.handleTouristControl()){
+                    if (!mPresenter.handleTouristControl()) {
                         String img = "";
                         if (circlePostListBean.getImages() != null && !circlePostListBean.getImages().isEmpty()) {
                             img = ImageUtils.imagePathConvertV2(circlePostListBean.getImages().get(0).getFile_id(), getResources()
@@ -1301,7 +1301,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         boolean isManager = isJoined && CircleMembers.ADMINISTRATOR.equals(detail.getJoined().getRole());
 
         mLlEarningsContainer.setVisibility(!isOwner ? View.GONE : View.VISIBLE);
-        mBtReportCircle.setVisibility(isNormalMember ? View.VISIBLE : View.GONE);
+        mBtReportCircle.setVisibility((isNormalMember || mPresenter.isTourist()) ? View.VISIBLE : View.GONE);
 
         mLlPermissionContainer.setVisibility(!isOwner ? View.GONE : View.VISIBLE);
         mLlReportContainer.setVisibility(!isOwner && !isManager ? View.GONE : View.VISIBLE);
@@ -1392,6 +1392,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                  * 举报圈子
                  */
             case R.id.bt_report_circle:
+                if (mPresenter.handleTouristControl()) {
+                    return;
+                }
                 ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mCircleInfo.getFounder().getUser(), mCircleInfo.getId().toString
                         (), mCircleInfo.getName(), mCircleInfo.getAvatar(), mCircleInfo.getSummary(), ReportType.CIRCLE));
 
