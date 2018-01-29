@@ -85,7 +85,7 @@ public class ApiConfig {
     public static final String APP_PATH_CERTIFICATION = "api/" + API_VERSION_2 + "/user/certification"; // GET-获取认证信息 POST-申请认证 PACTH-更新认证
 
     // 打赏
-    public static final String APP_PATH_REWARD_USER = "api/" + API_VERSION_2 + "/user/{user_id}/rewards"; // 打赏一个用户
+    public static final String APP_PATH_REWARD_USER = "api/" + API_VERSION_2 + "/user/{user_id}/new-rewards"; // 打赏一个用户
 
     /**
      * 消息通知
@@ -200,7 +200,7 @@ public class ApiConfig {
 
 
     // 动态打赏
-    public static final String APP_PATH_DYNAMIC_REWARDS = "/api/" + API_VERSION_2 + "/feeds/{feed_id}/rewards";
+    public static final String APP_PATH_DYNAMIC_REWARDS = "/api/" + API_VERSION_2 + "/feeds/{feed_id}/new-rewards";
     // 动态打赏用户列表
     public static final String APP_PATH_DYNAMIC_REWARDS_USER_LIST = "/api/" + API_VERSION_2 + "/feeds/{feed_id}/rewards";
     // 举报动态
@@ -226,7 +226,7 @@ public class ApiConfig {
     public static final String APP_PATH_TOP_INFO_COMMENT = "/api/" + API_VERSION_2 + "/news/{news_id}/comments/{comment_id}/currency-pinneds";
 
     // 咨询打赏
-    public static final String APP_PATH_INFO_REWARDS = "/api/" + API_VERSION_2 + "/news/{news_id}/rewards";
+    public static final String APP_PATH_INFO_REWARDS = "/api/" + API_VERSION_2 + "/news/{news_id}/new-rewards";
     // 打赏用户列表
     public static final String APP_PATH_INFO_REWARDS_USER_LIST = "/api/" + API_VERSION_2 + "/news/{news_id}/rewards";
     // 咨询举报
@@ -439,7 +439,7 @@ public class ApiConfig {
     /**
      * 问答回答打赏
      */
-    public static final String APP_PATH_QA_ANSWER_REWARD = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/rewarders";
+    public static final String APP_PATH_QA_ANSWER_REWARD = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/new-rewards";
 
     /**
      * 问答回答围观
@@ -727,7 +727,7 @@ public class ApiConfig {
     /**
      * 帖子打赏
      */
-    public static final String APP_PATH_REWARD_POST = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/rewards";
+    public static final String APP_PATH_REWARD_POST = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/new-rewards";
 
     /**
      * 帖子评论置顶

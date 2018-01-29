@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.utils.ColorPhrase;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
@@ -138,8 +139,10 @@ public class ReWardView extends FrameLayout {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        // 目前打赏使用钱包，故显示元
+        moneyName =getResources().getString(R.string.yuan);
 
-        String result = getResources().getString(R.string.reward_show, "<" + rewardsCountBean.getCount() + ">", "<" + getResources().getString(R.string.money_format, amout) + ">", moneyName);
+        String result = getResources().getString(R.string.reward_show, "<" + ConvertUtils.numberConvert( rewardsCountBean.getCount()) + ">", "<" + getResources().getString(R.string.money_format, amout) + ">", moneyName);
         CharSequence charSequence = ColorPhrase.from(result).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(getContext(), R.color.money))
                 .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
@@ -211,7 +214,9 @@ public class ReWardView extends FrameLayout {
     }
 
     public interface OnRewardsClickListener {
-
+        /**
+         * 打赏信息被点击
+         */
         void onRewardClick();
     }
 }
