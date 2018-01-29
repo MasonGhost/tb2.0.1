@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -243,14 +242,14 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(R.string.qa_pay_for_watch_answer_hint) + getString(R
                                 .string.buy_pay_member),
-                        PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig().getOnlookQuestion(), mPresenter.getRatio())
+                        mPresenter.getSystemConfig().getOnlookQuestion()
                         , mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.qa_pay_for_watch))
                 .buildTitleStr(getString(R.string.qa_pay_for_watch))
                 .buildItem1Str(getString(R.string.buy_pay_in_payment))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_integration), PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig()
-                        .getOnlookQuestion(), mPresenter.getRatio())))
+                .buildMoneyStr(getString(R.string.buy_pay_integration, mPresenter.getSystemConfig()
+                        .getOnlookQuestion()))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payForOnlook(answer_id, pisotion);
                     mPayWatchPopWindow.hide();
