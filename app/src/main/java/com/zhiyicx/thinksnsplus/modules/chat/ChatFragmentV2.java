@@ -34,6 +34,7 @@ import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.PathUtil;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
+import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;

@@ -1,6 +1,8 @@
 package com.zhiyicx.common.utils;
 
 import android.graphics.BlurMaskFilter;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -246,6 +248,48 @@ public class TextViewUtils {
             }
         }
         return count;
+    }
+
+    /**
+     * 添加自定义 Ellipsis
+     *
+     * @param textView
+     * @param strLabel 后缀
+     * @param maxLines
+     */
+    public static void setLabelAfterEllipsis(TextView textView,String strLabel, int maxLines) {
+
+        if (textView.getLayout().getEllipsisCount(maxLines - 1) == 0) {
+            return; // Nothing to do
+        }
+
+        int start = textView.getLayout().getLineStart(0);
+        int end = textView.getLayout().getLineEnd(textView.getLineCount() - 1);
+        String displayed = textView.getText().toString().substring(start, end);
+        int displayedWidth = getTextWidth(displayed, textView.getTextSize());
+
+        String ellipsis = "...";
+        String suffix = ellipsis + strLabel;
+
+        int textWidth;
+        String newText = displayed;
+        textWidth = getTextWidth(newText + suffix, textView.getTextSize());
+
+        while (textWidth > displayedWidth) {
+            newText = newText.substring(0, newText.length() - 1).trim();
+            textWidth = getTextWidth(newText + suffix, textView.getTextSize());
+        }
+        String result = newText + suffix;
+        textView.setText(result);
+    }
+
+    private static int getTextWidth(String text, float textSize) {
+        Rect bounds = new Rect();
+        Paint paint = new Paint();
+        paint.setTextSize(textSize);
+        paint.getTextBounds(text, 0, text.length(), bounds);
+        int width = (int) Math.ceil(bounds.width());
+        return width;
     }
 
     public interface OnSpanTextClickListener {

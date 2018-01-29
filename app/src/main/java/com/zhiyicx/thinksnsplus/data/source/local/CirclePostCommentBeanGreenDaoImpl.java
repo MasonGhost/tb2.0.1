@@ -89,11 +89,13 @@ public class CirclePostCommentBeanGreenDaoImpl extends CommonCacheImpl<CirclePos
     }
 
     public CirclePostCommentBean getCircleCommentsByCommentMark(Long comment_mark) {
+        if (comment_mark == null) {
+            return null;
+        }
         List<CirclePostCommentBean> result = getRDaoSession().getCirclePostCommentBeanDao().queryBuilder()
                 .where(CirclePostCommentBeanDao.Properties.Comment_mark.eq(comment_mark))
-                .build()
                 .list();
-        if (!result.isEmpty()) {
+        if (result != null && !result.isEmpty()) {
             return result.get(0);
         }
         return null;

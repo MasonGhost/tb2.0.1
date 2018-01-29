@@ -114,6 +114,7 @@ public class BaseMessageRepository implements IBaseMessageRepository{
 
     @Override
     public Observable<List<MessageItemBeanV2>> completeEmConversation(List<MessageItemBeanV2> list) {
+
         return Observable.just(list)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -155,8 +156,6 @@ public class BaseMessageRepository implements IBaseMessageRepository{
                                 SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
                                 for (UserInfoBean userInfoBean : userInfoBeans) {
                                     userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                    // 更新数据库
-                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
                                 }
                                 for (int i = 0; i < list1.size(); i++) {
                                     // 只有单聊才给用户信息

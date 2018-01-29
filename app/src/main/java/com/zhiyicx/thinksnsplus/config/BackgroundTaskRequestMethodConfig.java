@@ -22,13 +22,13 @@ public enum BackgroundTaskRequestMethodConfig {
     POST_V2(11),
     SEND_GROUP_DYNAMIC(12),
     SEND_GROUP_DYNAMIC_COMMENT(13),
-    SEND_CIRCLE_POST_COMMENT(19),
     DELETE_V2(14),
     PUT(15),
     SEND_CERTIFICATION(16), // 发布认证申请
     SEND_ANSWER_COMMENT(17),// 评论问题答案
     SEND_QUESTION_COMMENT(18),// 评论问题
-    GET_CHAT_GROUP_INFO(19);// 获取群聊信息
+    SEND_CIRCLE_POST_COMMENT(19),// 圈子-帖子-评论
+    GET_CHAT_GROUP_INFO(20);// 获取群聊信息
 
 
     public final int id;

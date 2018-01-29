@@ -33,6 +33,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
 
@@ -149,16 +150,24 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
             // 创建单聊，判断当前是否与该用户的会话，没有创建会话
             mRootView.createConversionResult(getChatUser(list), EMConversation.EMConversationType.Chat, EaseConstant.CHATTYPE_SINGLE, id);
         } else {
-            // 创建群组会话
-            String groupName = String.format(mContext.getString(R.string.chat_group_name_default), list.size());
-            // 群简介并没有地方展示 随便写写啦
-            String groupIntro = "暂无";
             StringBuilder members = new StringBuilder();
+            StringBuilder groupNames = new StringBuilder();
             for (UserInfoBean userInfoBean : list) {
                 members.append(String.valueOf(userInfoBean.getUser_id())).append(",");
+                groupNames.append(userInfoBean.getName()).append("、");
             }
-            Subscription subscription = mRepository.createGroup(groupName, groupIntro, false,
-                    200, true, false, list.get(0).getUser_id(), members.substring(0, members.length() - 1))
+            groupNames.deleteCharAt(groupNames.length() - 1);
+
+            // 创建群组会话
+            String groupName = String.format(mContext.getString(R.string.chat_group_name_default), groupNames, list.size());
+
+            // 群简介并没有地方展示 随便写写啦
+            String groupIntro = "暂无";
+
+            Subscription subscription = mRepository
+                    .createGroup(groupName, groupIntro, false,
+                            200, true, false, list.get(0).getUser_id(), members.substring(0, members.length() - 1))
+                    .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
                     .flatMap(groupInfo -> {
                         EMGroup group = null;
                         try {
@@ -187,6 +196,12 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                         protected void onException(Throwable throwable) {
                             super.onException(throwable);
                             mRootView.showSnackErrorMessage(throwable.getMessage());
+                        }
+
+                        @Override
+                        public void onCompleted() {
+                            super.onCompleted();
+                            mRootView.dismissSnackBar();
                         }
                     });
             addSubscrebe(subscription);

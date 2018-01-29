@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
-import com.hyphenate.chat.EMChatManager;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMGroup;
@@ -18,15 +17,12 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
-import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.MessageConversationRepository;
 import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
 
 import org.jetbrains.annotations.NotNull;
-import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 import org.simple.eventbus.ThreadMode;
 
@@ -38,8 +34,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -161,7 +155,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                     return newList;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(list -> mRootView.onNetResponseSuccess(list,false));
+                .subscribe(list -> mRootView.onNetResponseSuccess(list, false));
     }
 
     private ChatUserInfoBean getChatUser(UserInfoBean userInfoBean) {
@@ -198,11 +192,18 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                                 singleList.add(itemBeanV2);
                             }
                         }
+                        for (MessageItemBeanV2 itemBeanV2 : mRootView.getListDatas()) {
+                            if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.GroupChat) {
+                                singleList.add(itemBeanV2);
+                            }
+                        }
+
                         if (mCopyConversationList == null) {
                             mCopyConversationList = new ArrayList<>();
                         }
                         mCopyConversationList = singleList;
-                        mRootView.onNetResponseSuccess(singleList,isLoadMore);
+
+                        mRootView.onNetResponseSuccess(singleList, isLoadMore);
                         mRootView.hideStickyMessage();
                         checkBottomMessageTip();
                     });
@@ -246,11 +247,16 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
 
     }
 
+    /**
+     * 请求 群聊天会话信息列表  成功的回调
+     *
+     * @param bundle
+     */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_GET_GROUP_INFO)
     public void getGroupList(Bundle bundle) {
         if (bundle != null && bundle.containsKey(EventBusTagConfig.EVENT_IM_GET_GROUP_INFO)) {
             List<ChatGroupBean> list = bundle.getParcelableArrayList(EventBusTagConfig.EVENT_IM_GET_GROUP_INFO);
-            if (list == null) {
+            if (list == null || list.isEmpty()) {
                 return;
             }
             List<MessageItemBeanV2> messageItemBeanList = new ArrayList<>();
@@ -259,6 +265,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                 boolean canAdded = true;
                 for (MessageItemBeanV2 exitItem : mRootView.getListDatas()) {
                     if (exitItem.getConversation().conversationId().equals(chatGroupBean.getId())) {
+                        exitItem.setChatGroupBean(chatGroupBean);
                         canAdded = false;
                         break;
                     }

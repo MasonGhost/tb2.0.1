@@ -110,6 +110,10 @@ public class EaseTitleBar extends RelativeLayout{
     public void setTitleColor(int color){
         titleView.setTextColor(color);
     }
+
+    public TextView getTitleView(){
+        return titleView;
+    }
     
     public RelativeLayout getLeftLayout(){
         return leftLayout;
