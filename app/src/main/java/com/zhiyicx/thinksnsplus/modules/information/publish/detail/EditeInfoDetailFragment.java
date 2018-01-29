@@ -47,6 +47,11 @@ public class EditeInfoDetailFragment extends MarkdownFragment<PostDraftBean,Edit
     }
 
     @Override
+    public boolean needSetting() {
+        return false;
+    }
+
+    @Override
     protected String setCenterTitle() {
         return getString(R.string.edit_info);
     }

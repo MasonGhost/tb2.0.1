@@ -185,6 +185,11 @@ public class PublishPostFragment extends MarkdownFragment<PostDraftBean,PublishP
     }
 
     @Override
+    public boolean needSetting() {
+        return false;
+    }
+
+    @Override
     protected void cancleEdit() {
         super.cancleEdit();
     }

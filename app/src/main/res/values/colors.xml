@@ -31,4 +31,6 @@
     <color name="circle_navigation_bg">#363845</color>
     <color name="circle_navigation_txt_color">#4a4d5e</color>
 
+    <!--问答匿名选项颜色-->
+    <color name="qa_anonymity_color">FBFBFB</color>
 </resources>

@@ -3,11 +3,12 @@ package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 
-import com.zhiyicx.baseproject.widget.popwindow.AnonymityPopWindow;
 import com.zhiyicx.baseproject.widget.popwindow.CenterAlertPopWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
@@ -20,7 +21,7 @@ import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFrag
 
 import org.simple.eventbus.Subscriber;
 
-import static com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA;
+import butterknife.BindView;
 
 /**
  * @Author Jliuer
@@ -28,15 +29,19 @@ import static com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,EditeQuestionDetailContract.Presenter>
+public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean, EditeQuestionDetailContract.Presenter>
         implements EditeQuestionDetailContract.View {
-
-    protected boolean isBack;
 
     /**
      * 匿名提示
      */
-    protected AnonymityPopWindow mAnonymityPopWindow;
+    @BindView(R.id.ll_anony)
+    LinearLayout mLLAnony;
+    @BindView(R.id.switch_anony)
+    SwitchCompat mSwitchAnony;
+
+    protected boolean isBack;
+
     protected CenterAlertPopWindow mAnonymityAlertPopWindow;
     protected int mAnonymity;
 
@@ -102,9 +107,9 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
     }
 
     @Override
-    public void onSettingImageButtionClick() {
-        super.onSettingImageButtionClick();
-        initAnonymityPopWindow(R.string.qa_publish_enable_anonymous);
+    public void onSettingImageButtionClick(boolean isSelected) {
+        super.onSettingImageButtionClick(isSelected);
+        setAnnoyVisible(isSelected);
     }
 
     @Override
@@ -153,26 +158,18 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
 
     }
 
-    protected void initAnonymityPopWindow(int strRes) {
-        if (mAnonymityPopWindow != null) {
-            mAnonymityPopWindow.showParentViewTop();
-            return;
-        }
-        mAnonymityPopWindow = AnonymityPopWindow.builder()
-                .with(getActivity())
-                .isWrap(true)
-                .isFocus(true)
-                .isOutsideTouch(true)
-                .parentView(mBottomMenu)
-                .buildDescrStr(getString(strRes))
-                .contentView(R.layout.pop_for_anonymity)
-                .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .buildAnonymityPopWindowSwitchClickListener(this::initAnonymityAlertPopWindow)
-                .build();
-        if (mAnonymity == 1 || PublishQuestionFragment.mDraftQuestion != null && PublishQuestionFragment.mDraftQuestion.getAnonymity() == 1) {
-            mAnonymityPopWindow.setSwitchButton(true);
-        }
-        mAnonymityPopWindow.showParentViewTop();
+    @Override
+    protected void initListener() {
+        super.initListener();
+        mSwitchAnony.setOnCheckedChangeListener((view, isCheck) -> initAnonymityAlertPopWindow(isCheck));
+    }
+
+    protected void setAnnoyVisible(boolean visible) {
+        boolean isAnnoy = mAnonymity == 1 || PublishQuestionFragment.mDraftQuestion != null
+                && PublishQuestionFragment.mDraftQuestion.getAnonymity() == 1;
+        mSwitchAnony.setChecked(isAnnoy);
+        mLLAnony.setVisibility(visible ? View.VISIBLE : View.GONE);
+
     }
 
     private void initAnonymityAlertPopWindow(boolean isChecked) {
@@ -199,9 +196,6 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
                             mAnonymityAlertPopWindow.dismiss();
                             mAnonymity = 1;
                             PublishQuestionFragment.mDraftQuestion.setAnonymity(1);
-                            if (mAnonymityPopWindow != null) {
-                                mAnonymityPopWindow.dismiss();
-                            }
                         }
 
                         @Override
@@ -210,11 +204,7 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
                             PublishQuestionFragment.mDraftQuestion.setAnonymity(0);
                             mCbSynToDynamic.setChecked(false);
                             mAnonymity = 0;
-                            if (mAnonymityPopWindow != null) {
-                                // 设置按钮的状态
-                                mAnonymityPopWindow.setSwitchButton(false);
-                                mAnonymityPopWindow.dismiss();
-                            }
+                            setAnnoyVisible(true);
                         }
                     })
                     .build();

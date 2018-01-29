@@ -47,12 +47,7 @@ public abstract class AbstractBottomMenuItem<T extends View> implements IBottomM
         //noinspection unchecked
         settingAfterCreate(isSelected, (T) (mMenuItem.getContentView()));
 
-        mMenuItem.getContentView().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemClick();
-            }
-        });
+        mMenuItem.getContentView().setOnClickListener(v1 -> onItemClick());
     }
 
     /**
