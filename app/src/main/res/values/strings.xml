@@ -216,7 +216,6 @@
     <string name="dynamic_send_toll_download">下载收费</string>
     <string name="dynamic_send_toll_notes">注：超过%1$d字部分内容收费</string>
     <string name="dynamic_send_toll_select_money">%1$.0f</string>
-    <string name="dynamic_send_toll_select_money_">%1$.2f</string>
     <string name="dynamic_send_toll_toll_verify">应配置至少一张图片费用</string>
     <string name="group_dynamic_send_must_has_title">请输入标题</string>
     <string name="instructions">说明</string>

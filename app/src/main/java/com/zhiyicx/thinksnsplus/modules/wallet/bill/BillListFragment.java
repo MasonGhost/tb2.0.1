@@ -78,7 +78,7 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                 boolean statusSuccess = recharge.getStatus() == 1;
                 int action = recharge.getAction();
                 desc.setEnabled(statusSuccess);
-                String moneyStr = String.format(Locale.getDefault(), getString(R.string.dynamic_send_toll_select_money_),
+                String moneyStr = String.format(Locale.getDefault(), getString(R.string.money_format),
                         PayConfig.realCurrency2GameCurrency(recharge.getAmount(), mPresenter.getRatio()));
                 desc.setText(statusSuccess ? (action == 0 ? "- " + moneyStr : "+ " + moneyStr) :
                         getString(recharge.getStatus() == 0 ? R.string.bill_doing : R.string.transaction_fail));

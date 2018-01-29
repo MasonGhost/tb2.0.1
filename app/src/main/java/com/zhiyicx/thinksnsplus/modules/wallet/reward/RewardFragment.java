@@ -130,8 +130,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     @Override
     protected void initData() {
         initRechargeLables();
-        String moneyName = mPresenter.getGoldName();
-        mCustomMoney.setText(moneyName);
+        mCustomMoney.setText(getString(R.string.yuan));
     }
 
     @Override
@@ -179,13 +178,13 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
             case 4:
             case 3:
                 mRbThree.setVisibility(View.VISIBLE);
-                mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(2)));
+                mRbThree.setText(String.format(getString(R.string.money_format), mRechargeLables.get(2)));
             case 2:
                 mRbTwo.setVisibility(View.VISIBLE);
-                mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(1)));
+                mRbTwo.setText(String.format(getString(R.string.money_format), mRechargeLables.get(1)));
             case 1:
                 mRbOne.setVisibility(View.VISIBLE);
-                mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(0)));
+                mRbOne.setText(String.format(getString(R.string.money_format), mRechargeLables.get(0)));
                 mLlRechargeChooseMoneyItem.setVisibility(View.VISIBLE);
                 break;
             case 0:

@@ -190,13 +190,13 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
             case 4:
             case 3:
                 mRbThree.setVisibility(View.VISIBLE);
-                mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(2) / PayConfig.MONEY_UNIT));
+                mRbThree.setText(String.format(getString(R.string.money_format), mRechargeLables.get(2) / PayConfig.MONEY_UNIT));
             case 2:
                 mRbTwo.setVisibility(View.VISIBLE);
-                mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(1) / PayConfig.MONEY_UNIT));
+                mRbTwo.setText(String.format(getString(R.string.money_format), mRechargeLables.get(1) / PayConfig.MONEY_UNIT));
             case 1:
                 mRbOne.setVisibility(View.VISIBLE);
-                mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(0) / PayConfig.MONEY_UNIT));
+                mRbOne.setText(String.format(getString(R.string.money_format), mRechargeLables.get(0) / PayConfig.MONEY_UNIT));
                 mLlRechargeChooseMoneyItem.setVisibility(View.VISIBLE);
                 break;
             case 0:

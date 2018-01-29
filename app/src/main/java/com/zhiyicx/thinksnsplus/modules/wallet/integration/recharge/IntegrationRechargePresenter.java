@@ -1,21 +1,23 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge;
 
-import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscription;
-import rx.functions.Func1;
+import rx.functions.Action0;
 
+import static com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay.RETRY_INTERVAL_TIME;
+import static com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay.RETRY_MAX_COUNT;
 import static com.zhiyicx.tspay.TSPayClient.CHANNEL_BALANCE;
 
 /**
@@ -165,4 +167,36 @@ public class IntegrationRechargePresenter extends AppBasePresenter<IntegrationRe
 //        addSubscrebe(subscribe);
     }
 
+    /**
+     * 更新积分配置
+     */
+    @Override
+    public void getIntegrationConfigBean() {
+        mRootView.handleLoading(true);
+        Subscription subscribe = mBillRepository.getIntegrationConfig()
+                .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
+                .doAfterTerminate(() -> mRootView.handleLoading(false))
+                .subscribe(new BaseSubscribeForV2<IntegrationConfigBean>() {
+                    @Override
+                    protected void onSuccess(IntegrationConfigBean data) {
+                        mRootView.updateIntegrationConfig(true, data);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.updateIntegrationConfig(false, null);
+
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.updateIntegrationConfig(false, null);
+
+                    }
+                });
+        addSubscrebe(subscribe);
+
+    }
 }

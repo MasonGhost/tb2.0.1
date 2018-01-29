@@ -170,11 +170,39 @@ public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeC
             mIntegrationConfigBean = (IntegrationConfigBean) getArguments().getSerializable(BUNDLE_DATA);
         }
         if (mIntegrationConfigBean == null) {
+            mPresenter.getIntegrationConfigBean();
             return;
         }
+        updateData();
+
+    }
+
+    /**
+     * 更新配置信息
+     *
+     * @param isGetSuccess
+     * @param data
+     */
+    @Override
+    public void updateIntegrationConfig(boolean isGetSuccess, @NotNull IntegrationConfigBean data) {
+        mIntegrationConfigBean = data;
+        updateData();
+    }
+
+    @Override
+    public void handleLoading(boolean isShow) {
+        if (isShow) {
+            showLeftTopLoading();
+        } else {
+            hideLeftTopLoading();
+        }
+    }
+
+
+    private void updateData() {
         // 元对应的积分比例，服务器返回的是以分为单位的比例
         mTvMineIntegration.setText(getString(R.string.integration_ratio_formart, 1, mIntegrationConfigBean.getRechargeratio() * 100, mGoldName));
-        if (!TextUtils.isEmpty(mIntegrationConfigBean.getRechargeoptions())) {
+        if (mIntegrationConfigBean != null && !TextUtils.isEmpty(mIntegrationConfigBean.getRechargeoptions())) {
             List<ChooseDataBean> datas = new ArrayList<>();
             String[] rechargeoptions = mIntegrationConfigBean.getRechargeoptions().split(ConstantConfig.SPLIT_SMBOL);
             for (String rechargeoption : rechargeoptions) {
