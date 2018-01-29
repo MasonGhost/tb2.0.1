@@ -141,7 +141,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
                 boolean isManager = CircleMembers.ADMINISTRATOR.equals(circleMembers.getRole());
                 boolean isOwner = CircleMembers.FOUNDER.equals(circleMembers.getRole());
 
-                boolean moreVisible = !((mPermissionMember || isOwner) || (isManager && mPermissionManager)) && needMore();
+                boolean moreVisible = !((mPermissionMember || isOwner) || (isManager && mPermissionManager)) && needMore() && mPresenter.isLogin();
                 more.setVisibility(!moreVisible ? View
                         .INVISIBLE : View.VISIBLE);
 
