@@ -15,7 +15,7 @@ public class GroupManagerActivity extends TSActivity<GroupManagerPresenter, Grou
 
     @Override
     protected GroupManagerFragment getFragment() {
-        return new GroupManagerFragment().instance(getIntent().getExtras());
+        return GroupManagerFragment.instance(getIntent().getExtras());
     }
 
     @Override

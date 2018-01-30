@@ -32,8 +32,9 @@ public class EditGroupNameFragment extends TSFragment<EditGroupNameContract.Pres
     AppCompatEditText mEditInput;
 
     private String mNewName;
+    private String mOldName;
 
-    public EditGroupNameFragment instance(Bundle bundle) {
+    public static EditGroupNameFragment instance(Bundle bundle) {
         EditGroupNameFragment fragment = new EditGroupNameFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -46,6 +47,8 @@ public class EditGroupNameFragment extends TSFragment<EditGroupNameContract.Pres
 
     @Override
     protected void initData() {
+        mOldName = getArguments().getString(GROUP_ORIGINAL_NAME);
+        mEditInput.setHint(mOldName);
         RxTextView.textChanges(mEditInput)
                 .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
@@ -57,8 +60,8 @@ public class EditGroupNameFragment extends TSFragment<EditGroupNameContract.Pres
     /**
      * 检测完成按钮是否可用
      */
-    private void checkButtonClickable(){
-        if (TextUtils.isEmpty(mNewName) || mNewName.length() < GROUP_NAME_MIN_LENGTH ){
+    private void checkButtonClickable() {
+        if (TextUtils.isEmpty(mNewName) || mNewName.length() < GROUP_NAME_MIN_LENGTH) {
             mToolbarRight.setClickable(false);
             mToolbarRight.setTextColor(getColor(R.color.normal_for_disable_button_text));
         } else {
@@ -69,8 +72,8 @@ public class EditGroupNameFragment extends TSFragment<EditGroupNameContract.Pres
 
     @Override
     protected void setRightClick() {
-        String originalName = getArguments().getString(GROUP_ORIGINAL_NAME);
-        if (!TextUtils.isEmpty(originalName) && mNewName.equals(originalName)){
+
+        if (!TextUtils.isEmpty(mOldName) && mNewName.equals(mOldName)) {
             showSnackErrorMessage(getString(R.string.chat_edit_group_name_no_change));
             return;
         }

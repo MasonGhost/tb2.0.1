@@ -12,7 +12,7 @@ public class EditGroupNameActivity extends TSActivity<EditGroupNamePresenter, Ed
 
     @Override
     protected EditGroupNameFragment getFragment() {
-        return new EditGroupNameFragment().instance(getIntent().getExtras());
+        return EditGroupNameFragment.instance(getIntent().getExtras());
     }
 
     @Override

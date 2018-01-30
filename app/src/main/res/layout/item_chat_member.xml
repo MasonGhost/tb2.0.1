@@ -1,45 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:orientation="vertical"
-        android:background="@color/white"
-        android:gravity="center_horizontal">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/chat_info_header_view_width"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
     <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
         <com.zhiyicx.baseproject.widget.UserAvatarView
-                android:id="@+id/iv_user_portrait"
-                android:layout_width="@dimen/chat_info_header_view_width"
-                android:layout_height="@dimen/chat_info_header_view_width"
-                app:ts_avatare_size="@dimen/chat_info_header_view_width"
-                app:pressShape="circle"/>
+            android:id="@+id/iv_user_portrait"
+            android:layout_width="@dimen/chat_info_header_view_width"
+            android:layout_height="@dimen/chat_info_header_view_width"
+            app:pressShape="circle"
+            app:ts_avatare_size="@dimen/chat_info_header_view_width"/>
         <!--群主标志-->
         <TextView
-                android:id="@+id/tv_owner_flag"
-                android:layout_width="@dimen/chat_info_member_owner_width"
-                android:layout_height="@dimen/chat_info_member_owner_height"
-                android:layout_gravity="bottom|center_horizontal"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:background="@drawable/shape_group_member_owner"
-                android:text="@string/chat_group_owner"
-                android:textSize="@dimen/size_note_assist"/>
+            android:id="@+id/tv_owner_flag"
+            android:layout_width="@dimen/chat_info_member_owner_width"
+            android:layout_height="@dimen/chat_info_member_owner_height"
+            android:layout_gravity="top|center_horizontal"
+            android:background="@drawable/shape_group_member_owner"
+            android:gravity="center"
+            android:text="@string/chat_group_owner"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_note_assist"/>
     </FrameLayout>
 
 
     <TextView
-            android:id="@+id/tv_user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/size_icon_assist"
-            android:textColor="@color/normal_for_assist_text"
-            android:layout_marginTop="@dimen/spacing_normal"
-            tools:text="xxxx"/>
+        android:id="@+id/tv_user_name"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:ellipsize="middle"
+        android:singleLine="true"
+        android:textColor="@color/normal_for_assist_text"
+        android:textSize="@dimen/size_icon_assist"
+        tools:text="xxxxxxxxxxxxxx"/>
 
 
 </LinearLayout>

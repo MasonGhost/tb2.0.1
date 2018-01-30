@@ -34,7 +34,7 @@ public class GroupManagerFragment extends TSFragment<GroupManagerContract.Presen
     /**是否需要请求网络*/
     private boolean mIsNeedChange;
 
-    public GroupManagerFragment instance(Bundle bundle) {
+    public static GroupManagerFragment instance(Bundle bundle) {
         GroupManagerFragment fragment = new GroupManagerFragment();
         fragment.setArguments(bundle);
         return fragment;

@@ -60,8 +60,13 @@ public class GroupMemberListFragment extends TSFragment<GroupMemberListContract.
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
     protected String setCenterTitle() {
-        return getString(R.string.chat_group_owner);
+        return getString(R.string.chat_group_all_member);
     }
 
     @Override

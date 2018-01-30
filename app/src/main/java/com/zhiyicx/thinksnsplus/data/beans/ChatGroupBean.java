@@ -1,10 +1,9 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
-import com.google.gson.annotations.SerializedName;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
 
 import java.io.Serializable;
@@ -59,16 +58,10 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
      * 以下为获取群组的信息
      */
     private String id;
+    @SerializedName(value = "name", alternate = {"groupname"})
     private String name;
-    /**
-     * 更新群信息返回的群名称
-     */
-    private String groupname;
+    @SerializedName(value = "description", alternate = {"desc"})
     private String description;
-    /**
-     * 更新群信息返回的群简介
-     */
-    private String desc;
     private boolean membersonly;
     /**
      * 更新群信息返回的权限
@@ -180,22 +173,6 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
         this.group_face = group_face;
     }
 
-    public String getGroupname() {
-        return groupname;
-    }
-
-    public void setGroupname(String groupname) {
-        this.groupname = groupname;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
     public boolean isMembers_only() {
         return members_only;
     }
@@ -221,9 +198,7 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
                 "im_group_id='" + im_group_id + '\'' +
                 ", id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", groupname='" + groupname + '\'' +
                 ", description='" + description + '\'' +
-                ", desc='" + desc + '\'' +
                 ", membersonly=" + membersonly +
                 ", members_only=" + members_only +
                 ", allowinvites=" + allowinvites +
@@ -237,6 +212,7 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
                 '}';
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -248,9 +224,7 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
         dest.writeString(this.im_group_id);
         dest.writeString(this.id);
         dest.writeString(this.name);
-        dest.writeString(this.groupname);
         dest.writeString(this.description);
-        dest.writeString(this.desc);
         dest.writeByte(this.membersonly ? (byte) 1 : (byte) 0);
         dest.writeByte(this.members_only ? (byte) 1 : (byte) 0);
         dest.writeByte(this.allowinvites ? (byte) 1 : (byte) 0);
@@ -268,9 +242,7 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
         this.im_group_id = in.readString();
         this.id = in.readString();
         this.name = in.readString();
-        this.groupname = in.readString();
         this.description = in.readString();
-        this.desc = in.readString();
         this.membersonly = in.readByte() != 0;
         this.members_only = in.readByte() != 0;
         this.allowinvites = in.readByte() != 0;

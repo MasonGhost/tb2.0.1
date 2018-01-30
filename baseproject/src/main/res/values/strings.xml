@@ -57,6 +57,8 @@
     <string name="qa_detail_edit">编辑</string>
     <string name="collect">收藏</string>
     <string name="loading_state">加载中&#8230;</string>
+    <string name="chat_send_message_read">已读</string>
+
 
     <!-- 注册 -->
     <string name="regist">注册</string>

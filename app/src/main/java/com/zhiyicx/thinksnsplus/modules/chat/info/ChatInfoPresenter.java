@@ -126,7 +126,7 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
 
     @Override
     public void createGroupFromSingleChat() {
-        String name = String.format(mContext.getString(R.string.chat_group_name_default), 2);
+        String name = mContext.getString(R.string.chat_single_name_default, 2);
         String member = AppApplication.getMyUserIdWithdefault() + "," + mRootView.getToUserId();
         Subscription subscription = mRepository.createGroup(name, "暂无", false,
                 200, false, true, AppApplication.getMyUserIdWithdefault(), member)

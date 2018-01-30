@@ -130,7 +130,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
-                        .SHAPE_RCTANGLE))
+                        .SHAPE_SQUARE))
                 .build().photoSelectorImpl();
         mUserInfoBeans = getArguments().getParcelableArrayList(ChatConfig.MESSAGE_CHAT_MEMBER_LIST);
         mChatType = getArguments().getInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_SINGLE);
@@ -306,8 +306,9 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         // emm 由于没有完全返回所有信息 再加上字段也不同 所以手动改一下
         mChatGroupBean.setGroup_face(chatGroupBean.getGroup_face());
         mChatGroupBean.setPublic(chatGroupBean.isPublic());
-        mChatGroupBean.setName(chatGroupBean.getGroupname());
-        mChatGroupBean.setDescription(chatGroupBean.getDesc());
+        String groupName = TextUtils.isEmpty(chatGroupBean.getName()) ? chatGroupBean.getName() : chatGroupBean.getName();
+        mChatGroupBean.setName(groupName);
+        mChatGroupBean.setDescription(chatGroupBean.getDescription());
         mChatGroupBean.setMembersonly(chatGroupBean.isMembers_only());
         mChatGroupBean.setAllowinvites(chatGroupBean.isAllowinvites());
         setGroupData();
@@ -362,7 +363,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     public void createGroupSuccess(ChatGroupBean chatGroupBean) {
         String id = !TextUtils.isEmpty(chatGroupBean.getIm_group_id()) ?
                 chatGroupBean.getIm_group_id() : chatGroupBean.getId();
-        if (EMClient.getInstance().groupManager().getGroup(id) == null){
+        if (EMClient.getInstance().groupManager().getGroup(id) == null) {
             // 不知道为啥 有时候获取不到群组对象
             showSnackErrorMessage("创建失败");
         } else {
@@ -421,7 +422,9 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             // 屏蔽按钮
             mScBlockMessage.setChecked(group.isMsgBlocked());
             // 群名称
-            mTvGroupName.setText(mChatGroupBean.getName());
+            String groupName = mChatGroupBean.getName()
+                    + "(" + mChatGroupBean.getAffiliations_count() + ")";
+            mTvGroupName.setText(groupName);
             // 群头像
             Glide.with(getContext())
                     .load(mChatGroupBean.getGroup_face() + "")

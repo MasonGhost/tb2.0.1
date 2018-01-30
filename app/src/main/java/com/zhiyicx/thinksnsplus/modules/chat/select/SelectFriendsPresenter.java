@@ -33,8 +33,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.schedulers.Schedulers;
 
 
 /**
@@ -210,44 +208,52 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
 
     @Override
     public void dealGroupMember(List<UserInfoBean> list) {
-        String id = "";
+        StringBuilder id = new StringBuilder();
         for (UserInfoBean userInfoBean : list) {
-            id += userInfoBean.getUser_id() + ",";
+            id.append(userInfoBean.getUser_id()).append(",");
         }
-        id = id.substring(0, id.length() - 1);
+        id = new StringBuilder(id.substring(0, id.length() - 1));
         Observable<Object> observable;
         if (mRootView.getIsDeleteMember()) {
             // 删除
-            observable = mRepository.removeGroupMember(mRootView.getGroupData().getId(), id);
+            observable = mRepository.removeGroupMember(mRootView.getGroupData().getId(), id.toString());
         } else {
-            observable = mRepository.addGroupMember(mRootView.getGroupData().getId(), id);
+            observable = mRepository.addGroupMember(mRootView.getGroupData().getId(), id.toString());
         }
-        Subscription subscription = observable.subscribe(new BaseSubscribeForV2<Object>() {
-            @Override
-            protected void onSuccess(Object data) {
-                Bundle bundle = new Bundle();
-                if (mRootView.getIsDeleteMember()) {
-                    bundle.putParcelableArrayList(EventBusTagConfig.EVENT_IM_GROUP_REMOVE_MEMBER, (ArrayList<? extends Parcelable>) list);
-                    EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_IM_GROUP_REMOVE_MEMBER);
-                } else {
-                    bundle.putParcelableArrayList(EventBusTagConfig.EVENT_IM_GROUP_ADD_MEMBER, (ArrayList<? extends Parcelable>) list);
-                    EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_IM_GROUP_ADD_MEMBER);
-                }
-                mRootView.dealGroupMemberResult();
-            }
+        Subscription subscription = observable
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
+                .subscribe(new BaseSubscribeForV2<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        Bundle bundle = new Bundle();
+                        if (mRootView.getIsDeleteMember()) {
+                            bundle.putParcelableArrayList(EventBusTagConfig.EVENT_IM_GROUP_REMOVE_MEMBER, (ArrayList<? extends Parcelable>) list);
+                            EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_IM_GROUP_REMOVE_MEMBER);
+                        } else {
+                            bundle.putParcelableArrayList(EventBusTagConfig.EVENT_IM_GROUP_ADD_MEMBER, (ArrayList<? extends Parcelable>) list);
+                            EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_IM_GROUP_ADD_MEMBER);
+                        }
+                        mRootView.dealGroupMemberResult();
+                    }
 
-            @Override
-            protected void onFailure(String message, int code) {
-                super.onFailure(message, code);
-                mRootView.showSnackErrorMessage(message);
-            }
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
 
-            @Override
-            protected void onException(Throwable throwable) {
-                super.onException(throwable);
-                mRootView.showSnackErrorMessage(throwable.getMessage());
-            }
-        });
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        mRootView.dismissSnackBar();
+                    }
+                });
         addSubscrebe(subscription);
     }
 
