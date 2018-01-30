@@ -45,7 +45,7 @@ public interface Playback {
 
         void onPlaybackStatusChanged(int state);
 
-        void onError(String error);
+        void onError(String error,int state);
 
         void setCurrentMediaId(String mediaId);
 
