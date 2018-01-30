@@ -38,6 +38,8 @@ public interface ChatInfoContract {
         String getToUserId();
 
         void createGroupSuccess(ChatGroupBean chatGroupBean);
+
+        void closeCurrentActivity();
     }
 
     interface Presenter extends IBasePresenter {
@@ -48,6 +50,20 @@ public interface ChatInfoContract {
         void getGroupChatInfo(String groupId);
 
         void createGroupFromSingleChat();
+
+        /**
+         * 接受，或者屏蔽群消息
+         * @param isChecked
+         * @param chatId
+         */
+        void openOrCloseGroupMessage(boolean isChecked, String chatId);
+
+        /**
+         * 退群 或者 解散群
+         * 群主是 解散，一般成员是退群
+         * @param chatId
+         */
+        void destoryOrLeaveGroup(String chatId);
     }
 
     interface Repository extends IBaseFriendsRepository {

@@ -157,7 +157,7 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
             groupNames.deleteCharAt(groupNames.length() - 1);
 
             // 创建群组会话
-            String groupName = String.format(mContext.getString(R.string.chat_group_name_default), groupNames, list.size());
+            String groupName = groupNames.toString();
 
             // 群简介并没有地方展示 随便写写啦
             String groupIntro = "暂无";

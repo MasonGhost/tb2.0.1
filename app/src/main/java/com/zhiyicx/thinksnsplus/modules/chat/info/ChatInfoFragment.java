@@ -33,6 +33,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -115,8 +116,16 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     // 删除群聊
     private ActionPopupWindow mDeleteGroupPopupWindow;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
+
+    /**
+     * 清楚消息记录
+     */
+    private ActionPopupWindow mClearAllMessagePop;
     private PhotoSelectorImpl mPhotoSelector;
     private ChatGroupBean mChatGroupBean;
+
+    private ChatMemberAdapter mChatMemberAdapter;
+    private List<UserInfoBean> mChatMembers;
 
     public ChatInfoFragment instance(Bundle bundle) {
         ChatInfoFragment fragment = new ChatInfoFragment();
@@ -156,6 +165,42 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
 
     @Override
     protected void initData() {
+        // 成员列表
+        RecyclerView.LayoutManager manager = new GridLayoutManager(getContext(), 5);
+        mRvMemberList.setLayoutManager(manager);
+        mRvMemberList.addItemDecoration(new GridDecoration(10, 10));
+        dealAddOrDeleteButton();
+        mChatMemberAdapter = new ChatMemberAdapter(getContext(), mChatMembers, -1);
+        mRvMemberList.setAdapter(mChatMemberAdapter);
+        mChatMemberAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                if (mChatMembers.get(position).getUser_id() == -1L) {
+                    // 添加
+                    Intent intent = new Intent(getContext(), SelectFriendsActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(BUNDLE_GROUP_EDIT_DATA, mChatGroupBean);
+                    bundle.putBoolean(BUNDLE_GROUP_IS_DELETE, false);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                } else if (mChatMembers.get(position).getUser_id() == -2L) {
+                    // 移除
+                    Intent intent = new Intent(getContext(), SelectFriendsActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(BUNDLE_GROUP_EDIT_DATA, mChatGroupBean);
+                    bundle.putBoolean(BUNDLE_GROUP_IS_DELETE, true);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                } else {
+                    PersonalCenterFragment.startToPersonalCenter(getContext(), mChatMembers.get(position));
+                }
+            }
+
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+                return false;
+            }
+        });
     }
 
     @Override
@@ -166,6 +211,11 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_chat_info;
+    }
+
+    @Override
+    public void closeCurrentActivity() {
+        mActivity.finish();
     }
 
     @OnClick({R.id.iv_add_user, R.id.tv_to_all_members, R.id.ll_manager, R.id.tv_clear_message, R.id.tv_delete_group,
@@ -194,7 +244,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                 break;
             case R.id.tv_clear_message:
                 // 清空消息记录
-                EMClient.getInstance().chatManager().getConversation(mChatId).clearAllMessages();
+                showClearAllMsgPopupWindow("您正在删除聊天记录，删除后不可恢复");
                 break;
             case R.id.tv_delete_group:
                 // （群主）删除群聊
@@ -237,21 +287,8 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                     .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .with(getActivity())
                     .item2ClickListener(() -> {
-                        try {
-                            if (mPresenter.isGroupOwner()) {
-                                // 解散群组
-                                EMClient.getInstance().groupManager().destroyGroup(mChatId);
-                            } else {
-                                // 退群
-                                EMClient.getInstance().groupManager().leaveGroup(mChatId);
-                            }
-                            mDeleteGroupPopupWindow.hide();
-                            EventBus.getDefault().post(mChatId, EVENT_IM_DELETE_QUIT);
-                            getActivity().finish();
-                        } catch (HyphenateException e) {
-                            e.printStackTrace();
-                            showSnackErrorMessage("操作失败");
-                        }
+                        mPresenter.destoryOrLeaveGroup(mChatId);
+                        mDeleteGroupPopupWindow.hide();
                     })
                     .bottomClickListener(() -> mDeleteGroupPopupWindow.hide())
                     .build();
@@ -305,6 +342,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     public void updateGroup(ChatGroupBean chatGroupBean) {
         // emm 由于没有完全返回所有信息 再加上字段也不同 所以手动改一下
         mChatGroupBean.setGroup_face(chatGroupBean.getGroup_face());
+        mChatGroupBean.setOwner(chatGroupBean.getOwner());
         mChatGroupBean.setPublic(chatGroupBean.isPublic());
         String groupName = TextUtils.isEmpty(chatGroupBean.getName()) ? chatGroupBean.getName() : chatGroupBean.getName();
         mChatGroupBean.setName(groupName);
@@ -319,6 +357,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         mChatGroupBean = chatGroupBean;
         mChatGroupBean.setIm_group_id(mChatId);
         setGroupData();
+        mScBlockMessage.setEnabled(chatGroupBean.getOwner() != AppApplication.getMyUserIdWithdefault());
         // 切换是否屏蔽消息
         mScBlockMessage.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (mChatType == EaseConstant.CHATTYPE_SINGLE) {
@@ -326,16 +365,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
 
                 }
             } else {
-                try {
-                    if (isChecked) {
-                        EMClient.getInstance().groupManager().blockGroupMessage(mChatId);
-                    } else {
-                        EMClient.getInstance().groupManager().unblockGroupMessage(mChatId);
-                    }
-                } catch (HyphenateException e) {
-                    e.printStackTrace();
-                    showSnackErrorMessage("操作失败");
-                }
+                mPresenter.openOrCloseGroupMessage(isChecked, mChatId);
             }
         });
     }
@@ -388,6 +418,14 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     }
 
     @Override
+    public void onDestroyView() {
+        dismissPop(mClearAllMessagePop);
+        dismissPop(mPhotoPopupWindow);
+        dismissPop(mDeleteGroupPopupWindow);
+        super.onDestroyView();
+    }
+
+    @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
         mChatGroupBean.setGroup_face(photoList.get(0).getImgUrl());
         mPresenter.updateGroup(mChatGroupBean, true);
@@ -396,6 +434,47 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     @Override
     public void getPhotoFailure(String errorMsg) {
         showSnackErrorMessage(errorMsg);
+    }
+
+    private void dealAddOrDeleteButton() {
+        if (mChatMembers == null) {
+            mChatMembers = new ArrayList<>();
+        }
+        if (mChatGroupBean == null) {
+            return;
+        }
+        mChatMembers.clear();
+        mChatMembers.addAll(mChatGroupBean.getAffiliations());
+        // 添加按钮，都可以拉人
+        UserInfoBean chatUserInfoBean = new UserInfoBean();
+        chatUserInfoBean.setUser_id(-1L);
+        mChatMembers.add(chatUserInfoBean);
+        if (mPresenter.isGroupOwner()) {
+            // 删除按钮，仅群主
+            UserInfoBean chatUserInfoBean1 = new UserInfoBean();
+            chatUserInfoBean1.setUser_id(-2L);
+            mChatMembers.add(chatUserInfoBean1);
+        }
+    }
+
+    private void showClearAllMsgPopupWindow(String tipStr) {
+        if (mClearAllMessagePop == null) {
+            mClearAllMessagePop = ActionPopupWindow.builder()
+                    .item1Str(getString(R.string.info_publish_hint))
+                    .desStr(tipStr)
+                    .item2Str(getString(R.string.chat_info_clear_message))
+                    .bottomStr(getString(R.string.cancel))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                    .with(getActivity())
+                    .item2ClickListener(() -> {
+                        EMClient.getInstance().chatManager().getConversation(mChatId).clearAllMessages();
+                        mClearAllMessagePop.hide();
+                    })
+                    .bottomClickListener(() -> mClearAllMessagePop.hide()).build();
+        }
+        mClearAllMessagePop.show();
     }
 
     private void setGroupData() {
@@ -432,53 +511,12 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                     .error(R.mipmap.ico_ts_assistant)
                     .placeholder(R.mipmap.ico_ts_assistant)
                     .into(mIvGroupPortrait);
-            // 成员列表
-            RecyclerView.LayoutManager manager = new GridLayoutManager(getContext(), 5);
-            mRvMemberList.setLayoutManager(manager);
-            mRvMemberList.addItemDecoration(new GridDecoration(10, 10));
-            List<UserInfoBean> list = new ArrayList<>();
-            list.addAll(mChatGroupBean.getAffiliations());
-            // 添加按钮，都可以拉人
-            UserInfoBean chatUserInfoBean = new UserInfoBean();
-            chatUserInfoBean.setUser_id(-1L);
-            list.add(chatUserInfoBean);
-            if (mPresenter.isGroupOwner()) {
-                // 删除按钮，仅群主
-                UserInfoBean chatUserInfoBean1 = new UserInfoBean();
-                chatUserInfoBean1.setUser_id(-2L);
-                list.add(chatUserInfoBean1);
-            }
-            ChatMemberAdapter memberAdapter = new ChatMemberAdapter(getContext(), list, mChatGroupBean.getOwner());
-            mRvMemberList.setAdapter(memberAdapter);
-            memberAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                    if (list.get(position).getUser_id() == -1L) {
-                        // 添加
-                        Intent intent = new Intent(getContext(), SelectFriendsActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable(BUNDLE_GROUP_EDIT_DATA, mChatGroupBean);
-                        bundle.putBoolean(BUNDLE_GROUP_IS_DELETE, false);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                    } else if (list.get(position).getUser_id() == -2L) {
-                        // 移除
-                        Intent intent = new Intent(getContext(), SelectFriendsActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable(BUNDLE_GROUP_EDIT_DATA, mChatGroupBean);
-                        bundle.putBoolean(BUNDLE_GROUP_IS_DELETE, true);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                    } else {
-                        PersonalCenterFragment.startToPersonalCenter(getContext(), list.get(position));
-                    }
-                }
 
-                @Override
-                public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
-                    return false;
-                }
-            });
+            if (mChatMemberAdapter != null && mChatGroupBean != null) {
+                mChatMemberAdapter.setOwnerId(mChatGroupBean.getOwner());
+                dealAddOrDeleteButton();
+                mChatMemberAdapter.notifyDataSetChanged();
+            }
         }
     }
 }

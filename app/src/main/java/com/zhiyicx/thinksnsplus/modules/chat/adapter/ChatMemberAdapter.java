@@ -52,4 +52,8 @@ public class ChatMemberAdapter extends CommonAdapter<UserInfoBean>{
             ivUserPortrait.getIvVerify().setVisibility(View.VISIBLE);
         }
     }
+
+    public void setOwnerId(Long ownerId) {
+        mOwnerId = ownerId;
+    }
 }

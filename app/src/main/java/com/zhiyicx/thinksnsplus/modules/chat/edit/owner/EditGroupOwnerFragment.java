@@ -144,4 +144,10 @@ public class EditGroupOwnerFragment extends TSListFragment<EditGroupOwnerContrac
         EventBus.getDefault().post(mNewOwner, EventBusTagConfig.EVENT_IM_GROUP_CHANGE_OWNER);
         getActivity().finish();
     }
+
+    @Override
+    public void onDestroyView() {
+        dismissPop(mAlertChangeOwnerPopupWindow);
+        super.onDestroyView();
+    }
 }

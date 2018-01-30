@@ -3,18 +3,17 @@ package com.zhiyicx.thinksnsplus.modules.chat.info;
 import android.os.Bundle;
 
 import com.hyphenate.chat.EMClient;
-import com.hyphenate.chat.EMGroup;
+import com.hyphenate.exceptions.HyphenateException;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.ChatInfoRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -24,13 +23,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_DELETE_QUIT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_ADD_MEMBER;
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_CHANGE_OWNER;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_DATA_CHANGED;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_EDIT_NAME;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_REMOVE_MEMBER;
@@ -61,6 +60,52 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
         }
         String owner = String.valueOf(chatGroupBean.getOwner());
         return owner.equals(String.valueOf(AppApplication.getMyUserIdWithdefault()));
+    }
+
+    @Override
+    public void destoryOrLeaveGroup(String chatId) {
+        Observable.empty()
+                .observeOn(Schedulers.io())
+                .subscribe(new EmptySubscribe<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        try {
+                            if (isGroupOwner()) {
+                                // 解散群组
+                                EMClient.getInstance().groupManager().destroyGroup(chatId);
+                            } else {
+                                // 退群
+                                EMClient.getInstance().groupManager().leaveGroup(chatId);
+                            }
+                            EventBus.getDefault().post(chatId, EVENT_IM_DELETE_QUIT);
+                            mRootView.closeCurrentActivity();
+                        } catch (HyphenateException e) {
+                            e.printStackTrace();
+                            mRootView.showSnackErrorMessage(mContext.getString(R.string.bill_doing_fialed));
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void openOrCloseGroupMessage(boolean isChecked, String chatId) {
+        Observable.empty()
+                .observeOn(Schedulers.io())
+                .subscribe(new EmptySubscribe<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        try {
+                            if (isChecked) {
+                                EMClient.getInstance().groupManager().blockGroupMessage(chatId);
+                            } else {
+                                EMClient.getInstance().groupManager().unblockGroupMessage(chatId);
+                            }
+                        } catch (HyphenateException e) {
+                            e.printStackTrace();
+                            mRootView.showSnackErrorMessage(mContext.getString(R.string.bill_doing_fialed));
+                        }
+                    }
+                });
     }
 
     @Override

@@ -94,7 +94,10 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                         .placeholder(R.mipmap.ico_ts_assistant)
                         .transform(new GlideCircleTransform(mContext))
                         .into(userAvatarView.getIvAvatar());
-                holder.setText(R.id.tv_name, chatGroupBean == null ? group.getGroupName() : chatGroupBean.getName());
+                // 群名称
+                String groupName = chatGroupBean == null ? group.getGroupName() : chatGroupBean.getName()
+                        + "(" + chatGroupBean.getAffiliations_count() + ")";
+                holder.setText(R.id.tv_name,groupName);
                 swipeLayout.setSwipeEnabled(true);
                 break;
             default:
