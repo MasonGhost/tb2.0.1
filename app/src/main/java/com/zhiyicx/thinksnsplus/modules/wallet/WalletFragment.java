@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
@@ -57,7 +58,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
     TextView getTvMineMoney;
 
     /**
-     *  充值提示规则选择弹框
+     * 充值提示规则选择弹框
      */
     private CenterInfoPopWindow mRulePop;
 
@@ -100,16 +101,16 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         setCenterTextColor(R.color.white);
         setRightText(getString(R.string.detail));
         initListener();
-        getTvMineMoney.setText(String.format(Locale.getDefault(),getString(R.string.account_balance),getString(R.string.yuan)));
-        mSystemConfigBean=mPresenter.getSystemConfigBean();
-        if(mSystemConfigBean==null||mSystemConfigBean.getWalletRecharge()==null||!mSystemConfigBean.getWalletRecharge().isOpen()){
+        getTvMineMoney.setText(String.format(Locale.getDefault(), getString(R.string.account_balance), getString(R.string.yuan)));
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
+        if (mSystemConfigBean == null || mSystemConfigBean.getWalletRecharge() == null || !mSystemConfigBean.getWalletRecharge().isOpen()) {
             mBtReCharge.setVisibility(View.GONE);
-        }else {
+        } else {
             mBtReCharge.setVisibility(View.VISIBLE);
         }
-        if(mSystemConfigBean==null||mSystemConfigBean.getWalletCash()==null||!mSystemConfigBean.getWalletCash().isOpen()){
+        if (mSystemConfigBean == null || mSystemConfigBean.getWalletCash() == null || !mSystemConfigBean.getWalletCash().isOpen()) {
             mBtWithdraw.setVisibility(View.GONE);
-        }else {
+        } else {
             mBtWithdraw.setVisibility(View.VISIBLE);
         }
     }
@@ -122,11 +123,11 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
 
     @Override
     protected void initData() {
-        mSystemConfigBean=mPresenter.getSystemConfigBean();
-        if(mSystemConfigBean.getCurrencyRecharge()!=null&&mSystemConfigBean.getCurrencyRecharge().isOpen()){
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
+        if (mSystemConfigBean.getCurrencyRecharge() != null && mSystemConfigBean.getCurrencyRecharge().isOpen()) {
             btMineIntegration.setVisibility(View.VISIBLE);
-            btMineIntegration.setLeftText(getString(R.string.integration_recharge_format,mPresenter.getGoldName()));
-        }else {
+            btMineIntegration.setLeftText(getString(R.string.integration_recharge_format, mPresenter.getGoldName()));
+        } else {
             btMineIntegration.setVisibility(View.GONE);
         }
     }
@@ -135,7 +136,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (mPresenter.checkIsNeedTipPop()) {
-            getView().post(() -> mPresenter.checkWalletConfig(TAG_SHOWRULE_POP,false));
+            getView().post(() -> mPresenter.checkWalletConfig(TAG_SHOWRULE_POP, false));
         }
     }
 
@@ -150,26 +151,26 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         RxView.clicks(mBtReCharge)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_RECHARGE,true));
+                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_RECHARGE, true));
         // 提现
         RxView.clicks(mBtWithdraw)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_WITHDRAW,true));     // 提现
+                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_WITHDRAW, true));     // 提现
         // 积分充值
         RxView.clicks(btMineIntegration)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid ->{
+                .subscribe(aVoid -> {
                     Intent intent = new Intent(mActivity, IntegrationRechargeActivity.class);
                     startActivity(intent);
-                } );
+                });
         // 充值提现规则
         RxView.clicks(mTvReChargeAndWithdrawRule)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    mPresenter.checkWalletConfig(WalletPresenter.TAG_SHOWRULE_JUMP,true);
+                    mPresenter.checkWalletConfig(WalletPresenter.TAG_SHOWRULE_JUMP, true);
                 });
     }
 
@@ -208,7 +209,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
 
     @Override
     public void updateBalance(double balance) {
-        mTvMineMoney.setText(getString(R.string.money_format, balance));
+        mTvMineMoney.setText(getString(R.string.money_format, PayConfig.realCurrencyFen2Yuan(balance)));
     }
 
     @Override
