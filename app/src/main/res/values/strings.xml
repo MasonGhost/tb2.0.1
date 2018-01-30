@@ -970,7 +970,6 @@
     <string name="balance">余额</string>
     <string name="handle_success">操作成功</string>
     <string name="not_invite_expert">邀请的专家呢？</string>
-    <string name="handle_fail">操作失败</string>
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>
         <item>提取记录</item>

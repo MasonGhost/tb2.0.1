@@ -5,8 +5,6 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.MyJoinedCircleFragment;
-import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.MyWaitAuditCircleFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.IntegrationDetailListFragment;
 
 import java.util.ArrayList;
@@ -57,7 +55,6 @@ public class IntegrationRWDetailContainerFragment extends TSViewPagerFragment {
         super.initViewPager(rootView);
         mTsvToolbar.setDefaultTabLeftMargin(getResources().getDimensionPixelOffset(R.dimen.spacing_big_large));
         mTsvToolbar.setDefaultTabRightMargin(getResources().getDimensionPixelOffset(R.dimen.spacing_big_large));
-        mTsvToolbar.setTabLineWith(80);
     }
     @Override
     protected void initData() {

@@ -125,7 +125,7 @@ public class ReWardView extends FrameLayout {
      *
      * @param rewardsCountBean the total rewad data
      */
-    public void updateRewardsCount(RewardsCountBean rewardsCountBean,String moneyName) {
+    public void updateRewardsCount(RewardsCountBean rewardsCountBean, String moneyName) {
 
         if (rewardsCountBean == null) {
             return;
@@ -140,9 +140,10 @@ public class ReWardView extends FrameLayout {
             e.printStackTrace();
         }
         // 目前打赏使用钱包，故显示元
-        moneyName =getResources().getString(R.string.yuan);
+        moneyName = getResources().getString(R.string.yuan);
 
-        String result = getResources().getString(R.string.reward_show, "<" + ConvertUtils.numberConvert( rewardsCountBean.getCount()) + ">", "<" + getResources().getString(R.string.money_format, amout) + ">", moneyName);
+        String result = getResources().getString(R.string.reward_show, "<" + ConvertUtils.numberConvert(rewardsCountBean.getCount()) + ">", "<" +
+                getResources().getString(R.string.money_format, PayConfig.realCurrencyFen2Yuan(amout)) + ">", moneyName);
         CharSequence charSequence = ColorPhrase.from(result).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(getContext(), R.color.money))
                 .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
@@ -202,10 +203,10 @@ public class ReWardView extends FrameLayout {
      * @param listData         user list for this rewad source
      * @param rewardsCountBean the total rewad data
      */
-    public void initData(long sourceId, List<RewardsListBean> listData, RewardsCountBean rewardsCountBean, RewardType rewardType,String moneyName) {
+    public void initData(long sourceId, List<RewardsListBean> listData, RewardsCountBean rewardsCountBean, RewardType rewardType, String moneyName) {
         updateSourceId(sourceId);
         updateRewardsUser(listData);
-        updateRewardsCount(rewardsCountBean,moneyName);
+        updateRewardsCount(rewardsCountBean, moneyName);
         updateRewardType(rewardType);
     }
 
