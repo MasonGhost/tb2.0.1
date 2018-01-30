@@ -99,7 +99,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
         super.onResume();
         // 刷新信息内容
         if (mPresenter != null) {
-            mPresenter.requestCacheData(0L, false);
+            mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
             mPresenter.refreshConversationReadMessage();
         }
     }
@@ -107,9 +107,6 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && mPresenter != null && mListDatas.isEmpty()) {
-            mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
-        }
         if (mAdapter != null && ((MessageAdapterV2) mAdapter).hasItemOpend()) {
             ((MessageAdapterV2) mAdapter).closeAllItems();
         }

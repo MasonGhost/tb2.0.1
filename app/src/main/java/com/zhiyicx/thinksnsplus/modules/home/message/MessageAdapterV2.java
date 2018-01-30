@@ -24,6 +24,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -101,7 +102,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                 break;
         }
         if (messageItemBean.getConversation().getLastMessage() == null) {
-            holder.setText(R.id.tv_content, "");
+            holder.setText(R.id.tv_content, AppApplication.getmCurrentLoginAuth().getUser().getName() + ": 出来嗨");
         } else {
             // 最新的消息的发言人，只有群组才管这个
             String lastUserName = "";
@@ -162,6 +163,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                             + mContext.getString(R.string.chat_type_file) : mContext.getString(R.string.chat_type_file);
                     break;
                 default:
+
             }
             holder.setText(R.id.tv_content, content);
         }
