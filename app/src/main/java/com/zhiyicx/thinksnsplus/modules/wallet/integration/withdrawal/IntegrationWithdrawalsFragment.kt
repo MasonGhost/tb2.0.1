@@ -180,25 +180,23 @@ class IntegrationWithdrawalsFragment : TSFragment<IntegrationWithdrawalsContract
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe {
-                    if (mRechargeMoney < mIntegrationConfigBean!!.cashmin) {
-                        showSnackErrorMessage(getString(R.string.please_more_than_min_withdrawals_formart, mIntegrationConfigBean!!.cashmin))
-                        return@subscribe
+                    when {
+                        mRechargeMoney < mIntegrationConfigBean!!.cashmin -> showSnackErrorMessage(getString(R.string.please_more_than_min_withdrawals_formart, mIntegrationConfigBean!!.cashmin))
+                        mRechargeMoney > mIntegrationConfigBean!!.cashmax -> showSnackErrorMessage(getString(R.string.please_less_max_withdrawals_formart, mIntegrationConfigBean!!.cashmax))
+                        else -> {
+                            setSureBtEnable(false)
+                            // 传入的是真实货币分单位
+                            mPresenter.integrationWithdrawals(mRechargeMoney.toInt())
+                        }
                     }
-                    if (mRechargeMoney > mIntegrationConfigBean!!.cashmax) {
-                        showSnackErrorMessage(getString(R.string.please_less_max_withdrawals_formart, mIntegrationConfigBean!!.cashmax))
-                        return@subscribe
-
-                    }
-                    setSureBtEnable(false)
-                    mPresenter.integrationWithdrawals(mRechargeMoney.toInt())
-                }// 传入的是真实货币分单位
+                }
 
         RxTextView.textChanges(mEtInput).subscribe({ charSequence ->
             val mRechargeMoneyStr = charSequence.toString()
-            if (mRechargeMoneyStr.replace(" ".toRegex(), "").isNotEmpty()) {
-                mRechargeMoney = java.lang.Double.parseDouble(mRechargeMoneyStr)
+            mRechargeMoney = if (mRechargeMoneyStr.replace(" ".toRegex(), "").isNotEmpty()) {
+                java.lang.Double.parseDouble(mRechargeMoneyStr)
             } else {
-                mRechargeMoney = 0.0
+                0.0
             }
             configSureButton()
         }) { throwable ->

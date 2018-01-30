@@ -241,22 +241,20 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe {
-                    if (PayConfig.realCurrencyYuan2Fen(money) < mIntegrationConfigBean!!.rechargemin) {
-                        showSnackErrorMessage(getString(R.string.please_more_than_min_recharge_formart, PayConfig.realCurrencyFen2Yuan(
+                    when {
+                        PayConfig.realCurrencyYuan2Fen(money) < mIntegrationConfigBean!!.rechargemin -> showSnackErrorMessage(getString(R.string.please_more_than_min_recharge_formart, PayConfig.realCurrencyFen2Yuan(
                                 mIntegrationConfigBean!!.rechargemin.toDouble())))
-
-                        return@subscribe
-                    }
-                    if (PayConfig.realCurrencyYuan2Fen(money) > mIntegrationConfigBean!!.rechargemax) {
-                        showSnackErrorMessage(getString(R.string.please_less_min_recharge_formart, PayConfig.realCurrencyFen2Yuan(
+                        PayConfig.realCurrencyYuan2Fen(money) > mIntegrationConfigBean!!.rechargemax -> showSnackErrorMessage(getString(R.string.please_less_min_recharge_formart, PayConfig.realCurrencyFen2Yuan(
                                 mIntegrationConfigBean!!.rechargemax.toDouble())))
-                        return@subscribe
+                        else -> {
+                            mBtSure.isEnabled = false
+                            // 传入的是真实货币分单位
+                            mPresenter.getPayStr(mPayType!!, PayConfig.realCurrencyYuan2Fen(money))
+                        }
                     }
-                    mBtSure.isEnabled = false
-                    mPresenter.getPayStr(mPayType!!, PayConfig.realCurrencyYuan2Fen(money))
-                }// 传入的是真实货币分单位
+                }
 
-        RxTextView.textChanges(mEtInput!!).subscribe({ charSequence ->
+        RxTextView.textChanges(mEtInput).subscribe({ charSequence ->
             val mRechargeMoneyStr = charSequence.toString()
             if (mRechargeMoneyStr.replace(" ".toRegex(), "").isNotEmpty()) {
                 money = java.lang.Double.parseDouble(mRechargeMoneyStr)
