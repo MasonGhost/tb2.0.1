@@ -52,7 +52,6 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.View>
         Subscription subscribe = handleIntegrationBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
                 .flatMap(o -> mCommentRepository.paykNote(note))
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<String> data) {

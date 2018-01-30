@@ -734,7 +734,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         LogUtils.d("EVENT_MUSIC_CHANGE");
     }
 
-    private void initMusicCenterPopWindow(final int position, float amout,
+    private void initMusicCenterPopWindow(final int position, int amout,
                                           final int note, int strRes) {
         mPayMusicPopWindow = PayPopWindow.builder()
                 .with(getActivity())

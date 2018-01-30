@@ -194,7 +194,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     }
 
 
-    private void initMusicCenterPopWindow(final int position, float amout,
+    private void initMusicCenterPopWindow(final int position, int amout,
                                           final int note, int strRes) {
         mPayMusicPopWindow = PayPopWindow.builder()
                 .with(getActivity())
@@ -205,12 +205,12 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
                 .buildLinksColor2(R.color.important_for_content)
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .buildDescrStr(String.format(getString(strRes), amout,mPresenter.getGoldName()))
+                .buildDescrStr(String.format(getString(strRes),amout,mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(getString(R.string.buy_pay_integration, amout))
+                .buildMoneyStr(getString(R.string.buy_pay_integration,amout))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(position, note);
                     mPayMusicPopWindow.hide();
