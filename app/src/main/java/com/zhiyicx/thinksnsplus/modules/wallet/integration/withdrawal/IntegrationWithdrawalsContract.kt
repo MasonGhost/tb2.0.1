@@ -20,6 +20,6 @@ interface IntegrationWithdrawalsContract {
     }
 
     interface Presenter : IBaseTouristPresenter {
-        fun integrationWithdrawals(amount: Integer)
+        fun integrationWithdrawals(amount: Int)
     }
 }
