@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.recharge_withdrawal;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
@@ -22,6 +23,21 @@ import static com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.Integra
  */
 
 public class IntegrationRWDetailContainerFragment extends TSViewPagerFragment {
+    public static final String BUNDLE_DEFAULT_POSITION = "default_postion";
+
+    public static final int POSITION_RECHARGE_RECORD = 0;
+    public static final int POSITION_WITHDRAWASL_RECORD = 1;
+
+    private int mDefaultPosition;
+
+    public static IntegrationRWDetailContainerFragment newInstance(int default_position) {
+
+        Bundle args = new Bundle();
+        IntegrationRWDetailContainerFragment fragment = new IntegrationRWDetailContainerFragment();
+        args.putInt(BUNDLE_DEFAULT_POSITION, default_position);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     protected boolean setUseSatusbar() {
@@ -55,7 +71,13 @@ public class IntegrationRWDetailContainerFragment extends TSViewPagerFragment {
         super.initViewPager(rootView);
         mTsvToolbar.setDefaultTabLeftMargin(getResources().getDimensionPixelOffset(R.dimen.spacing_big_large));
         mTsvToolbar.setDefaultTabRightMargin(getResources().getDimensionPixelOffset(R.dimen.spacing_big_large));
+        mDefaultPosition = getArguments().getInt(BUNDLE_DEFAULT_POSITION);
+        if (mDefaultPosition == POSITION_WITHDRAWASL_RECORD) {
+            mVpFragment.setCurrentItem(mDefaultPosition);
+        }
+
     }
+
     @Override
     protected void initData() {
 

@@ -15,7 +15,8 @@ public class IntegrationRWDetailActivity extends TSActivity {
 
     @Override
     protected Fragment getFragment() {
-        return new IntegrationRWDetailContainerFragment();
+        return IntegrationRWDetailContainerFragment.newInstance(getIntent().getIntExtra(IntegrationRWDetailContainerFragment
+                .BUNDLE_DEFAULT_POSITION, IntegrationRWDetailContainerFragment.POSITION_RECHARGE_RECORD));
     }
 
     @Override

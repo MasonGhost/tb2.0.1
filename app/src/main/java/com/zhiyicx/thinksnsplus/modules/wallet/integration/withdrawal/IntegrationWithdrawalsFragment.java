@@ -30,6 +30,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.recharge_withdrawal.IntegrationRWDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.recharge_withdrawal.IntegrationRWDetailContainerFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleFragment;
 import com.zhiyicx.thinksnsplus.widget.chooseview.ChooseDataBean;
@@ -209,6 +210,8 @@ public class IntegrationWithdrawalsFragment extends TSFragment<IntegrationWithdr
                 .subscribe(aVoid ->
                         {
                             Intent intent = new Intent(mActivity, IntegrationRWDetailActivity.class);
+                            intent.putExtra(IntegrationRWDetailContainerFragment.BUNDLE_DEFAULT_POSITION, IntegrationRWDetailContainerFragment
+                                    .POSITION_WITHDRAWASL_RECORD);
                             startActivity(intent);
                         }
                 );
