@@ -17,6 +17,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.concurrent.TimeUnit;
@@ -132,7 +133,7 @@ public class CircleListItem extends BaseCircleItem {
             }
             // 未加入的，需要申请加入
         } else {
-            boolean isJoined = circleInfo.getJoined() != null;
+            boolean isJoined = circleInfo.getJoined() != null && circleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
             TextView tvRole = holder.getView(R.id.tv_role);
             tvRole.setVisibility(View.GONE);
             if (isJoined) {

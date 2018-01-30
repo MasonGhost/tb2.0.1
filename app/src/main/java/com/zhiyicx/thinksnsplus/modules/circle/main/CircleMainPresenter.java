@@ -175,6 +175,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
         boolean isJoined = circleInfo.getJoined() != null;
 
         boolean isPaid = CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode());
+        boolean isPrivate = CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode());
 
         Observable<BaseJsonV2<Object>> observable;
         if (isPaid) {
@@ -197,13 +198,13 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
                         mRootView.showSnackSuccessMessage(data.getMessage().get(0));
+
                         if (isJoined) {
                             circleInfo.setJoined(null);
                             circleInfo.setUsers_count(circleInfo.getUsers_count() - 1);
                         } else {
                             // 如果是 封闭的或者 收费的 ，就不及时更新
-                            if (CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode())
-                                    || CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
+                            if (isPrivate || isPaid) {
                                 return;
                             }
                             CircleJoinedBean circleJoinedBean = new CircleJoinedBean(CircleMembers.MEMBER);

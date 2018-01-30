@@ -222,6 +222,13 @@ QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
     @Override
     public void setQuestionDetail(QAListInfoBean questionDetail, boolean isLoadMore) {
         this.mQaListInfoBean = questionDetail;
+
+
+        // 加入这两句，因为目前 问题详情不支持 id 跳转  2018-1-30 15:19:54 by tym
+        mIsMine = questionDetail.getUser_id().equals(AppApplication.getMyUserIdWithdefault());
+        mQaDetailTool.showQuestionTool(mIsMine);
+
+
         String body = questionDetail.getBody();
         questionDetail.setBody(body.replaceAll(MarkdownConfig.HTML_FORMAT, ""));
         onNetResponseSuccess(mQaListInfoBean.getAnswerInfoBeanList(), isLoadMore);

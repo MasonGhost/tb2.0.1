@@ -129,6 +129,7 @@ public class AddInfoCategoryFragment extends TSFragment<AddInfoContract.Presente
     @Override
     protected void initData() {
         mMoreCatesBeen = mPresenter.getInfoTypeBean();
+        mPresenter.getInfoType();
         mFragmentChannelContentUnsubscribe.setAdapter(initUnsubscribeAdapter());
         mPresenter.getInfoType();
     }

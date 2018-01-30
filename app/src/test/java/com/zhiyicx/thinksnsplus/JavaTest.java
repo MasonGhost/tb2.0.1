@@ -176,9 +176,19 @@ public class JavaTest {
 
     @Test
     public void testFilter() {
-        String source = "http://ddd/";
-        String urlRege = "^http://[\\s\\S]+";
-        System.out.print("testFilter = " + source.matches(urlRege));
+        String source = "<a href=\"http://www.baidu.com\" class=\"editor-link\">baidu</a>';";
+        String urlRege = "(?<!<a href=\")<{0,1}((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[#a-zA-Z0-9\\&%_\\./-~-]*)?>{0,1}";
+        Matcher matcher = Pattern.compile(urlRege).matcher(source);
+        String html="tym";
+        while (matcher.find()){
+            int count = matcher.groupCount();
+            for (int i = 0; i < count; i++) {
+                System.out.println("reg::" + i + ":::" + matcher.group(i));
+            }
+            html = "<a href=\" "+ matcher.group(0)+" \" class=\"editor-link\">网页链接</a>";
+        }
+
+        System.out.print("testFilter = " + html);
     }
 
     @Test
