@@ -287,4 +287,14 @@ public class BaseMusicRepository implements IMusicRepository {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    @Override
+    public Observable<List<MusicAlbumListBean>> getCollectMusicList(Long max_id, Long limit) {
+        return mMusicClient.getCollectMusicList(max_id, limit);
+    }
+
+    @Override
+    public List<MusicAlbumListBean> getMusicCollectAlbumFromCache(long maxId) {
+        return mMusicAlbumListDao.getMyCollectAlbum();
+    }
 }
