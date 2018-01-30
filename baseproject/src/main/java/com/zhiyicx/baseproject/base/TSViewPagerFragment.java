@@ -52,6 +52,7 @@ public abstract class TSViewPagerFragment<P extends IBasePresenter> extends TSFr
         tsViewPagerAdapter.bindData(initFragments());
         mVpFragment.setAdapter(tsViewPagerAdapter);
         mTsvToolbar.setAdjustMode(isAdjustMode());
+        mTsvToolbar.setTabSpacing(tabSpacing());
         mTsvToolbar.setIndicatorMode(setIndicatorMode());
         mTsvToolbar.initTabView(mVpFragment, initTitles());
         mTsvToolbar.setLeftClickListener(this, new TabSelectView.TabLeftRightClickListener() {
@@ -61,6 +62,10 @@ public abstract class TSViewPagerFragment<P extends IBasePresenter> extends TSFr
             }
         });
         mVpFragment.setOffscreenPageLimit(getOffsetPage());
+    }
+
+    private int tabSpacing() {
+        return getResources().getDimensionPixelOffset(R.dimen.spacing_large);
     }
 
     protected boolean isAdjustMode() {

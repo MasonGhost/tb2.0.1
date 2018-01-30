@@ -270,7 +270,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
     }
 
     /**
-     * 控制是否显示 设置（底部菜单）
+     * 控制是否显示 设置 item（底部菜单）
      *
      * @return
      */
@@ -380,6 +380,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
 
 
     protected void initListener() {
+        mRichTextView.setBottomMenuItemConfig(this);
         mRichTextView.setOnEditorClickListener(this);
         mRichTextView.setOnImageDeleteListener(this);
         mRichTextView.setOnTextLengthChangeListener(length -> {
@@ -419,7 +420,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
     }
 
     @Override
-    public void onSettingImageButtionClick() {
+    public void onSettingImageButtionClick(boolean isSelected) {
 
     }
 

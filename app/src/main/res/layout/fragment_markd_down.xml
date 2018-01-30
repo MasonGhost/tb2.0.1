@@ -65,6 +65,31 @@
         android:textSize="@dimen/size_content"
         android:visibility="gone"/>
 
+    <LinearLayout
+        android:id="@+id/ll_anony"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/qa_anonymity_height"
+        android:layout_above="@+id/lu_bottom_menu"
+        android:background="@color/qa_anonymity_color"
+        android:gravity="right|center_vertical"
+        android:orientation="horizontal"
+        android:paddingRight="@dimen/spacing_normal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_ppw_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/qa_publish_enable_anonymous"/>
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch_anony"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_normal"/>
+
+    </LinearLayout>
+
     <com.zhiyi.richtexteditorlib.view.BottomMenu
         android:id="@+id/lu_bottom_menu"
         android:layout_width="match_parent"

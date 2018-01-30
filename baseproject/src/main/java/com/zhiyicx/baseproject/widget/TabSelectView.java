@@ -64,7 +64,7 @@ public class TabSelectView extends FrameLayout {
     private CommonNavigator mCommonNavigator;
     private boolean mIsAdjustMode;
     private int mLinePagerIndicator = LinePagerIndicator.MODE_WRAP_CONTENT;
-    private float mlineWith;
+    private int mTabSpacing;
 
     public TabSelectView(Context context) {
         super(context);
@@ -88,6 +88,7 @@ public class TabSelectView extends FrameLayout {
         tvToolbarLeft = (TextView) findViewById(R.id.tv_toolbar_left);
         tvToolbarRight = (TextView) findViewById(R.id.tv_toolbar_right);
         mContext = context;
+        mTabSpacing = getResources().getDimensionPixelOffset(R.dimen.spacing_large);
         showDivider(true);// 默认展示分割线
         setLeftImg(R.mipmap.topbar_back);// 默认左边为箭头
     }
@@ -218,8 +219,7 @@ public class TabSelectView extends FrameLayout {
             public IPagerTitleView getTitleView(Context context, final int index) {
                 SimplePagerTitleView simplePagerTitleView = new ColorTransitionPagerTitleView(context);
                 simplePagerTitleView.setNormalColor(ContextCompat.getColor(context, DEFAULT_TAB_UNSELECTED_TEXTCOLOR));
-                simplePagerTitleView.setPadding(getResources().getDimensionPixelOffset(R.dimen.spacing_large), 0, getResources()
-                        .getDimensionPixelOffset(R.dimen.spacing_large), 0);
+                simplePagerTitleView.setPadding(mTabSpacing, 0, mTabSpacing, 0);
                 simplePagerTitleView.setSelectedColor(ContextCompat.getColor(context, DEFAULT_TAB_SELECTED_TEXTCOLOR));
                 simplePagerTitleView.setText(mStringList.get(index));
                 simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, context.getResources().getInteger(DEFAULT_TAB_TEXTSIZE));
@@ -236,11 +236,10 @@ public class TabSelectView extends FrameLayout {
             public IPagerIndicator getIndicator(Context context) {
                 LinePagerIndicator linePagerIndicator = new LinePagerIndicator(context);
                 linePagerIndicator.setMode(mLinePagerIndicator);// 适应文字长度
-                linePagerIndicator.setXOffset(-UIUtil.dip2px(context, context.getResources().getInteger(mTabPadding)));// 每个item边缘到指示器的边缘距离
-                if (mlineWith > 0) {
-                    linePagerIndicator.setLineWidth(mlineWith);
-                }
-                linePagerIndicator.setLineHeight(UIUtil.dip2px(context, context.getResources().getInteger(mLineHeight)));
+                try {
+                    linePagerIndicator.setXOffset(-UIUtil.dip2px(context, context.getResources().getInteger(mTabPadding)));// 每个item边缘到指示器的边缘距离
+                    linePagerIndicator.setLineHeight(UIUtil.dip2px(context, context.getResources().getInteger(mLineHeight)));
+                }catch (Exception ignored){}
                 linePagerIndicator.setColors(ContextCompat.getColor(context, DEFAULT_TAB_LINE_COLOR));
                 return linePagerIndicator;
             }
@@ -283,7 +282,7 @@ public class TabSelectView extends FrameLayout {
             ViewGroup.LayoutParams params = mMagicIndicator.getLayoutParams();
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            mMagicIndicator.setPadding(0, 0, 50, 0);
+            mMagicIndicator.setPadding(0, 0, 20, 0);
             mMagicIndicator.setLayoutParams(params);
         }
     }
@@ -292,12 +291,8 @@ public class TabSelectView extends FrameLayout {
         mLineHeight = height;
     }
 
-    public void setTabLineMarigin(int height) {
-        mTabPadding = height;
-    }
-
-    public void setTabLineWith(int with) {
-        mlineWith = with;
+    public void setTabSpacing(int spacing) {
+        mTabSpacing = spacing;
     }
 
     public void setDefaultTabLeftMargin(int defaultTabLeftMargin) {

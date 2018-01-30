@@ -920,6 +920,7 @@
     <string name="report_circle">举报圈子</string>
     <string name="publish_post">发帖</string>
     <string name="syn_to_dynamic">同步至动态</string>
+    <string name="handle_fail">操作失败！</string>
 
     <!--聊天-->
     <string name="chat_delete_conversation_failed">删除聊天失败</string>
