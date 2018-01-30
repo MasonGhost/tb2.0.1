@@ -97,6 +97,21 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
     }
 
     @Override
+    protected void setLeftClick() {
+        onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (EditeInfoDetailFragment.mInfoPublishBean != null) {
+            EditeInfoDetailFragment.mInfoPublishBean.setFrom(mTvFrom.getEditInput().getText().toString());
+            EditeInfoDetailFragment.mInfoPublishBean.setAuthor(mTvAuthor.getEditInput().getText().toString());
+            EditeInfoDetailFragment.mInfoPublishBean.setSubject(mEtInfoSummary.getInputContent());
+        }
+        mActivity.finish();
+    }
+
+    @Override
     protected int setToolBarBackgroud() {
         return R.color.white;
     }
@@ -109,18 +124,17 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
     @Override
     protected void initView(View rootView) {
         mToolbarRight.setEnabled(false);
-        initListener();
 
         if (EditeInfoDetailFragment.mInfoPublishBean.getTags() != null) {
             mUserTagBeens.addAll(EditeInfoDetailFragment.mInfoPublishBean.getTags());
         }
         if (!TextUtils.isEmpty(EditeInfoDetailFragment.mInfoPublishBean.getCategoryName())) {
             mToolbarRight.setEnabled(true);
-            mBtAddCategory.setRightText(EditeInfoDetailFragment.mInfoPublishBean.getCategoryName());
-            mTvFrom.setEditInputString(EditeInfoDetailFragment.mInfoPublishBean.getFrom());
-            mTvAuthor.setEditInputString(EditeInfoDetailFragment.mInfoPublishBean.getAuthor());
-            mEtInfoSummary.setText(EditeInfoDetailFragment.mInfoPublishBean.getSubject());
         }
+        mBtAddCategory.setRightText(EditeInfoDetailFragment.mInfoPublishBean.getCategoryName());
+        mTvFrom.setEditInputString(EditeInfoDetailFragment.mInfoPublishBean.getFrom());
+        mTvAuthor.setEditInputString(EditeInfoDetailFragment.mInfoPublishBean.getAuthor());
+        mEtInfoSummary.setText(EditeInfoDetailFragment.mInfoPublishBean.getSubject());
 
         mUserInfoTagsAdapter = new UserInfoTagsAdapter(mUserTagBeens, getContext());
         mFlTags.setAdapter(mUserInfoTagsAdapter);
@@ -134,6 +148,7 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
             AndroidBug5497Workaround.assistActivity(getActivity());
         }
+        initListener();
     }
 
     private void jumpToEditUserTag() {
@@ -160,17 +175,17 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> jumpToEditUserTag());
         // 来源
-        RxTextView.afterTextChangeEvents(mTvFrom.getEditInput())
+        RxTextView.textChanges(mTvFrom.getEditInput())
                 .compose(this.bindToLifecycle())
-                .subscribe(charSeques -> EditeInfoDetailFragment.mInfoPublishBean.setFrom(charSeques.editable().toString().trim()));
+                .subscribe(charSeques -> EditeInfoDetailFragment.mInfoPublishBean.setFrom(charSeques.toString()));
         // 作者
-        RxTextView.afterTextChangeEvents(mTvAuthor.getEditInput())
+        RxTextView.textChanges(mTvAuthor.getEditInput())
                 .compose(this.bindToLifecycle())
-                .subscribe(charSeques -> EditeInfoDetailFragment.mInfoPublishBean.setAuthor(charSeques.editable().toString().trim()));
+                .subscribe(charSeques -> EditeInfoDetailFragment.mInfoPublishBean.setAuthor(charSeques.toString()));
         // 摘要
-        RxTextView.afterTextChangeEvents(mEtInfoSummary.getEtContent())
+        RxTextView.textChanges(mEtInfoSummary.getEtContent())
                 .compose(this.bindToLifecycle())
-                .subscribe(charSeques -> EditeInfoDetailFragment.mInfoPublishBean.setSubject(charSeques.editable().toString().trim()));
+                .subscribe(charSeques -> EditeInfoDetailFragment.mInfoPublishBean.setSubject(charSeques.toString()));
 
 
     }
