@@ -54,6 +54,11 @@ public class CollectListFragment extends TSViewPagerFragment<CollectListPresente
     }
 
     @Override
+    protected int getOffsetPage() {
+        return 5;
+    }
+
+    @Override
     protected String setCenterTitle() {
         return getString(R.string.collect);
     }
