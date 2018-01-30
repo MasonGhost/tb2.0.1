@@ -67,38 +67,25 @@ class IntegrationWithdrawalsFragment : TSFragment<IntegrationWithdrawalsContract
     private val mRechargeInstructionsPopupWindow: ActionPopupWindow? = null// recharge instruction pop
 
 
-    private var mRechargeMoney: Double = 0.toDouble() // money choosed for recharge
+    private var mRechargeMoney = 0.toDouble() // money choosed for recharge
 
     private var mGoldName: String? = null
 
-    override fun useEventBus(): Boolean {
-        return true
-    }
+    override fun useEventBus() = true
 
-    override fun showToolBarDivider(): Boolean {
-        return false
-    }
+    override fun showToolBarDivider() = false
 
-    override fun setUseSatusbar(): Boolean {
-        return true
-    }
+    override fun setUseSatusbar() = true
 
-    override fun setUseStatusView(): Boolean {
-        return false
-    }
+    override fun setUseStatusView() = false
 
-    override fun showToolbar(): Boolean {
-        return false
-    }
+    override fun showToolbar() = false
 
-    override fun setStatusbarGrey(): Boolean {
-        return false
-    }
+    override fun setStatusbarGrey() = false
 
 
-    override fun getBodyLayoutId(): Int {
-        return R.layout.fragment_integration_withdrawals
-    }
+    override fun getBodyLayoutId() = R.layout.fragment_integration_withdrawals
+
 
     override fun initView(rootView: View) {
         setStatusPlaceholderViewBackgroundColor(android.R.color.transparent)
@@ -218,16 +205,12 @@ class IntegrationWithdrawalsFragment : TSFragment<IntegrationWithdrawalsContract
     /**
      * 设置自定义金额数量
      */
-    private fun setCustomMoneyDefault() {
-        mEtInput.setText("")
-    }
+    private fun setCustomMoneyDefault() = mEtInput.setText("")
 
     /**
      * 检查确认按钮是否可点击
      */
-    private fun configSureButton() {
-        setSureBtEnable(mRechargeMoney > 0)
-    }
+    private fun configSureButton() = setSureBtEnable(mRechargeMoney > 0)
 
     override fun setSureBtEnable(enable: Boolean) {
         mBtSure.isEnabled = enable

@@ -95,34 +95,20 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
 
     private var mGoldName: String? = null
 
-    override fun useEventBus(): Boolean {
-        return true
-    }
+    override fun useEventBus() = true
 
-    override fun showToolBarDivider(): Boolean {
-        return false
-    }
+    override fun showToolBarDivider() = false
 
-    override fun setUseSatusbar(): Boolean {
-        return true
-    }
+    override fun setUseSatusbar() = true
 
-    override fun setUseStatusView(): Boolean {
-        return false
-    }
+    override fun setUseStatusView() = false
 
-    override fun showToolbar(): Boolean {
-        return false
-    }
+    override fun showToolbar() = false
 
-    override fun setStatusbarGrey(): Boolean {
-        return false
-    }
+    override fun setStatusbarGrey() = false
 
+    override fun getBodyLayoutId() = R.layout.fragment_integration_recharge
 
-    override fun getBodyLayoutId(): Int {
-        return R.layout.fragment_integration_recharge
-    }
 
     override fun initView(rootView: View) {
         setStatusPlaceholderViewBackgroundColor(android.R.color.transparent)
@@ -436,9 +422,7 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
         mRechargeInstructionsPopupWindow!!.show()
     }
 
-    override fun useInputMonye(): Boolean {
-        return !mEtInput.text.toString().isEmpty()
-    }
+    override fun useInputMonye() = !mEtInput.text.toString().isEmpty()
 
     companion object {
         val BUNDLE_DATA = "data"
