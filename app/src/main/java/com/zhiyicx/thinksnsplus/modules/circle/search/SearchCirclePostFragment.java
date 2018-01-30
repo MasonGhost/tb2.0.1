@@ -257,6 +257,10 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
         }
     }
 
+    @Override
+    protected boolean isUseTouristLoadLimit() {
+        return false;
+    }
 
     @Override
     public void onEditChanged(String str) {

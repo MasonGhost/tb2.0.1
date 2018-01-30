@@ -179,6 +179,7 @@
         <FrameLayout
             android:id="@+id/fl_placeholder"
             android:layout_width="match_parent"
+            android:clickable="true"
             android:visibility="gone"
             android:layout_height="match_parent"/>
     </FrameLayout>

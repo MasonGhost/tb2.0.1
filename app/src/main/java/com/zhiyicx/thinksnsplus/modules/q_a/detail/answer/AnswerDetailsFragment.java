@@ -516,7 +516,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                     String des = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mAnswerInfoBean.getBody());
                     ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mAnswerInfoBean.getUser(), String.valueOf
                             (mAnswerInfoBean.getId()),
-                            "", img, des, ReportType.QA));
+                            "", img, des, ReportType.QA_ANSWER));
                     mDealInfoMationPopWindow.hide();
                 })
                 .bottomClickListener(() -> mDealInfoMationPopWindow.hide())

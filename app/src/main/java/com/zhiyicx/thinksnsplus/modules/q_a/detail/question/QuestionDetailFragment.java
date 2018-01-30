@@ -74,7 +74,8 @@ import static com.zhiyicx.thinksnsplus.widget.QuestionSelectListTypePopWindow.On
  * @contact email:648129313@qq.com
  */
 
-public class QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
+public class
+QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
         AnswerInfoBean> implements QuestionDetailContract.View, QuestionDetailHeader.OnActionClickListener,
         OnOrderTypeSelectListener, OnItemClickListener, OnGoToWatchClickListener, TextViewUtils.OnSpanTextClickListener {
 

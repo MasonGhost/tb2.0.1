@@ -14,6 +14,8 @@
         android:id="@+id/tv_draft_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="3"
         android:text="tym"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_primary_title"

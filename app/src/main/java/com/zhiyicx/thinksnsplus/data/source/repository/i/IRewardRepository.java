@@ -96,7 +96,7 @@ public interface IRewardRepository {
     /**
      * 问答回答打赏列表
      *
-     * @param answer_id    动态 id
+     * @param answer_id  动态 id
      * @param limit      默认 20 ，获取列表条数，修正值 1 - 30
      * @param offset     默认 0 ，数据偏移量，传递之前通过接口获取的总数。
      * @param order_type 默认值 time, time - 按照打赏时间倒序，amount - 按照金额倒序
@@ -106,4 +106,17 @@ public interface IRewardRepository {
 
 
     Observable<Object> rewardPost(long sourceId, double rewardMoney);
+
+    /**
+     * 帖子打赏列表
+     *
+     * @param post_id    帖子 id
+     * @param limit      列表返回数据条数
+     * @param offset     翻页标识 时间排序时为数据 id 金额排序时为打赏金额 amount
+     * @param order      翻页标识 排序 正序-asc 倒序 desc
+     * @param order_type 排序规则 date-按时间 amount-按金额
+     * @return
+     */
+    Observable<List<RewardsListBean>> rewardPostList(long post_id, Integer limit, Integer offset, String order, String order_type);
+
 }

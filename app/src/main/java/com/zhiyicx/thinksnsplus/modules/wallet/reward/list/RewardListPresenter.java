@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.BaseRewardRepository;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,15 +25,15 @@ import static com.zhiyicx.baseproject.base.TSListFragment.DEFAULT_PAGE_MAX_ID;
  * @Contact master.jungle68@gmail.com
  */
 
-public class RewardListPresenter extends AppBasePresenter< RewardListContract.View> implements RewardListContract
+public class RewardListPresenter extends AppBasePresenter<RewardListContract.View> implements RewardListContract
         .Presenter {
 
     @Inject
     BaseRewardRepository mRewardRepository;
 
     @Inject
-    public RewardListPresenter( RewardListContract.View rootView) {
-        super( rootView);
+    public RewardListPresenter(RewardListContract.View rootView) {
+        super(rootView);
     }
 
     /**
@@ -61,7 +62,15 @@ public class RewardListPresenter extends AppBasePresenter< RewardListContract.Vi
             case QA_ANSWER:
                 getRewardUsers(mRewardRepository.rewardQAList(mRootView.getSourceId(), TSListFragment.DEFAULT_PAGE_SIZE, since, null)
                         , isLoadMore);
+                break;
+
+            case POST:
+                getRewardUsers(mRewardRepository.rewardPostList(mRootView.getSourceId(), TSListFragment.DEFAULT_PAGE_SIZE, since, null, null)
+                        , isLoadMore);
+                break;
+
             default:
+                mRootView.onNetResponseSuccess(new ArrayList<>(), isLoadMore);
 
         }
 
@@ -90,7 +99,7 @@ public class RewardListPresenter extends AppBasePresenter< RewardListContract.Vi
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(mRootView.getCacheData(),isLoadMore);
+        mRootView.onCacheResponseSuccess(mRootView.getCacheData(), isLoadMore);
 
     }
 
