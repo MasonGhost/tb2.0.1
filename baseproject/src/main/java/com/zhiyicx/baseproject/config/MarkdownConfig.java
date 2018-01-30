@@ -38,7 +38,7 @@ public class MarkdownConfig {
     /**
      * 匹配 匹配中文，英文字母和数字
      */
-    public static final String NORMAL_FORMAT = "[^\\u4e00-\\u9fa5a-zA-Z0-9]+$";
+    public static final String NORMAL_FORMAT = "<[^\\u4e00-\\u9fa5]+>|[^\\u4e00-\\u9fa5a-zA-Z0-9]+";
 
     /**
      * 用于提取 短链接
