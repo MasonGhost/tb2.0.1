@@ -130,6 +130,8 @@ public class EditeAnswerDetailFragment extends EditeQuestionDetailFragment {
         if (draftMark != 0) {
             mark = draftMark;
         }
+        String questingTitle = getArguments().getString(BUNDLE_SOURCE_TITLE, "暂无");
+        answerDraftBean.setTitle(questingTitle);
         answerDraftBean.setMark(mark);
         answerDraftBean.setSubject(noMarkdown);
         answerDraftBean.setId(getArguments().getLong(BUNDLE_SOURCE_ID));
@@ -198,7 +200,7 @@ public class EditeAnswerDetailFragment extends EditeQuestionDetailFragment {
         bundle.putLong(BUNDLE_SOURCE_ID, realData.getId());
         bundle.putLong(BUNDLE_SOURCE_MARK, realData.getMark());
         bundle.putString(BUNDLE_SOURCE_BODY, realData.getBody());
-        bundle.putString(BUNDLE_SOURCE_TITLE, "");
+        bundle.putString(BUNDLE_SOURCE_TITLE, realData.getTitle());
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
