@@ -136,7 +136,7 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
             mChooseType = getArguments().getString(BUNDLE_CHOOSE_TYPE);
             mIntegrationConfigBean = (IntegrationConfigBean) getArguments().getSerializable(BUNDLE_INTEGRATION_CONFIG);
         }
-        mGoldName=mPresenter.getGoldName();
+        mGoldName = mPresenter.getGoldName();
     }
 
     @Override
@@ -180,9 +180,12 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
                     time.setText(TimeUtils.getTimeFriendlyForDetail(recharge.getCreated_at()));
                 }
             };
-            mToolbarCenter.setText(getString(R.string.integration_detail_format,mGoldName));
-            mTvRule.setText(getString(R.string.integration_rule_format,mGoldName));
+            mToolbarCenter.setText(getString(R.string.integration_detail_format, mGoldName));
+            mTvRule.setText(getString(R.string.integration_rule_format, mGoldName));
             mTvRule.setVisibility(View.VISIBLE);
+            /**
+             * 积分规则
+             */
             RxView.clicks(mTvRule)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .compose(bindToLifecycle())
@@ -190,8 +193,8 @@ public class IntegrationDetailListFragment extends TSListFragment<IntegrationDet
                         Intent intent = new Intent(mActivity, WalletRuleActivity.class);
                         if (mIntegrationConfigBean != null) {
                             Bundle bundle = new Bundle();
-                            bundle.putString(WalletRuleFragment.BUNDLE_RULE, mIntegrationConfigBean.getRechargerule());
-                            bundle.putString(WalletRuleFragment.BUNDLE_TITLE, getResources().getString(R.string.integration_rule_format,mGoldName));
+                            bundle.putString(WalletRuleFragment.BUNDLE_RULE, mIntegrationConfigBean.getRule());
+                            bundle.putString(WalletRuleFragment.BUNDLE_TITLE, getResources().getString(R.string.integration_rule_format, mGoldName));
                             intent.putExtras(bundle);
                         }
                         startActivity(intent);

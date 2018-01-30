@@ -153,11 +153,11 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     private void initRechargeLables() {
         String[] amount = new String[]{};
         mRechargeLables = new ArrayList<>();
-            try {
-                amount = mSystemConfigBean.getSite().getReward().getAmounts().split(",");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            amount = mSystemConfigBean.getSite().getReward().getAmounts().split(",");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (amount.length > 0) {// 配置的打赏金额
             mRechargeLables.add((float) PayConfig.realCurrencyFen2Yuan(Float.parseFloat(amount[0])));
             mRechargeLables.add((float) PayConfig.realCurrencyFen2Yuan(Float.parseFloat(amount[1])));
@@ -221,7 +221,10 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
             String mRechargeMoneyStr = charSequence.toString();
             if (mRechargeMoneyStr.replaceAll(" ", "").length() > 0) {
-                mRewardMoney = Double.parseDouble(mRechargeMoneyStr);
+                try {
+                    mRewardMoney = Double.parseDouble(mRechargeMoneyStr);
+                } catch (Exception ignored) {
+                }
                 if (mRbDaysGroup.getCheckedRadioButtonId() != -1) {
                     mRbDaysGroup.clearCheck();
                 }
@@ -244,13 +247,13 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                     }
                     switch (checkedId) {
                         case R.id.rb_one:
-                            mRewardMoney = mRechargeLables.get(0);
+                            mRewardMoney = Double.parseDouble(getString(R.string.money_format, mRechargeLables.get(0)));
                             break;
                         case R.id.rb_two:
-                            mRewardMoney = mRechargeLables.get(1);
+                            mRewardMoney = Double.parseDouble(getString(R.string.money_format, mRechargeLables.get(1)));
                             break;
                         case R.id.rb_three:
-                            mRewardMoney = mRechargeLables.get(2);
+                            mRewardMoney = Double.parseDouble(getString(R.string.money_format, mRechargeLables.get(2)));
                             break;
                         default:
                             break;
