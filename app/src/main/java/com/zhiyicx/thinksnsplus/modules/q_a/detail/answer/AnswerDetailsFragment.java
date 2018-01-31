@@ -170,8 +170,6 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
 
     @Override
     public void updateAnswerHeader(AnswerInfoBean answerInfoBean, boolean isLoadMore) {
-        String body = answerInfoBean.getBody();
-        answerInfoBean.setBody(body.replaceAll(MarkdownConfig.HTML_FORMAT, ""));
         mTvToolbarCenter.setText(answerInfoBean.getQuestion().getSubject());
         mAnswerInfoBean = answerInfoBean;
         mCoordinatorLayout.setEnabled(true);
@@ -579,7 +577,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                 mReplyUserId = infoCommentListBean.getUser_id().intValue();
                 showCommentView();
                 String contentHint = getString(R.string.default_input_hint);
-                if (infoCommentListBean.getReply_user() != infoCommentListBean.getId()) {
+                if (infoCommentListBean.getReply_user().longValue() != infoCommentListBean.getId().longValue()) {
                     contentHint = getString(R.string.reply, infoCommentListBean
                             .getFromUserInfoBean().getName());
                 }

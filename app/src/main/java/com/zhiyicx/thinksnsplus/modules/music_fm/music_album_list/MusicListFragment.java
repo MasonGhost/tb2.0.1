@@ -232,4 +232,9 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
         mPayMusicPopWindow.show();
 
     }
+
+    @Override
+    public boolean isCollection() {
+        return false;
+    }
 }

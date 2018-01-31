@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.R;
@@ -9,9 +10,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseMusicRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +40,7 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.View>
     public MusicPresenter(MusicContract.View rootView) {
         super(rootView);
     }
+
 
     @Override
     public void payNote(int position, int note) {
@@ -87,7 +87,9 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.View>
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription subscription = mBaseMusicRepository.getMusicAblumList(maxId)
+        Subscription subscription = (mRootView.isCollection() ? mBaseMusicRepository.getCollectMusicList(maxId, (long) TSListFragment
+                .DEFAULT_PAGE_SIZE) : mBaseMusicRepository
+                .getMusicAblumList(maxId))
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<List<MusicAlbumListBean>>() {
                     @Override
@@ -112,7 +114,9 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.View>
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(mBaseMusicRepository.getMusicAlbumFromCache(maxId), isLoadMore);
+        mRootView.onCacheResponseSuccess(mRootView.isCollection() ? mBaseMusicRepository.getMusicCollectAlbumFromCache(maxId) : mBaseMusicRepository
+                        .getMusicAlbumFromCache(maxId),
+                isLoadMore);
     }
 
     @Override

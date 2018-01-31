@@ -6,20 +6,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
-import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.mine.adapter.MyAnswerAdapter;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import rx.functions.Func1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -56,7 +53,8 @@ public class MyAnswerAdapterV2 extends MyAnswerAdapter {
         // 时间
         holder.setText(R.id.tv_watcher_count, TimeUtils.getTimeFriendlyNormal(answerInfoBean.getCreated_at()));
         // 正文
-        holder.setText(R.id.tv_content, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean.getBody()));
+        String content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean.getBody());
+        holder.setText(R.id.tv_content, content);
         // 点赞数量
         TextView tvLikeCount = holder.getView(R.id.tv_like_count);
         dealLikeUI(answerInfoBean, tvLikeCount);

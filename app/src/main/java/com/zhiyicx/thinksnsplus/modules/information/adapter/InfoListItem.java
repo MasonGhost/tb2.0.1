@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.information.adapter;
 
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,7 +14,6 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
@@ -25,8 +23,6 @@ import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.concurrent.TimeUnit;
-
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -73,6 +69,7 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
         holder.setVisible(R.id.ll_info, mIsShowContent ? View.GONE : View.VISIBLE);
         holder.setVisible(R.id.tv_info_content, mIsShowContent ? View.VISIBLE : View.GONE);
         String content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, realData.getContent());
+        content = content.replaceAll(MarkdownConfig.NORMAL_FORMAT, "");
 //        if (TextUtils.isEmpty(content)&&!TextUtils.isEmpty(realData.getSubject())){
 //            content = content.replaceAll(realData.getSubject(), "");// 内容中没有摘要了 10.16 16:20
 //        }
