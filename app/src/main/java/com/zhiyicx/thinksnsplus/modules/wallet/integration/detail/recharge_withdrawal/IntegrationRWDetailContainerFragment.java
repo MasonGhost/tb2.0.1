@@ -12,9 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.IntegrationDetailListFragment.CHOOSE_TYPE_CASH;
-import static com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.IntegrationDetailListFragment.CHOOSE_TYPE_RECHARGE;
-
 /**
  * @Describe
  * @Author Jungle68
@@ -59,8 +56,8 @@ public class IntegrationRWDetailContainerFragment extends TSViewPagerFragment {
     protected List<Fragment> initFragments() {
         if (mFragmentList == null) {
             mFragmentList = new ArrayList();
-            mFragmentList.add(IntegrationDetailListFragment.newInstance(CHOOSE_TYPE_RECHARGE));
-            mFragmentList.add(IntegrationDetailListFragment.newInstance(CHOOSE_TYPE_CASH));
+            mFragmentList.add(IntegrationDetailListFragment.Companion.newInstance(IntegrationDetailListFragment.CHOOSE_TYPE_RECHARGE));
+            mFragmentList.add(IntegrationDetailListFragment.Companion.newInstance(IntegrationDetailListFragment.CHOOSE_TYPE_CASH));
         }
         return mFragmentList;
     }

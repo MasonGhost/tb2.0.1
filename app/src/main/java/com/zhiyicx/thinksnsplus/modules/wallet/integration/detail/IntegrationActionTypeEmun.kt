@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.wallet.integration.detail;
+package com.zhiyicx.thinksnsplus.modules.wallet.integration.detail
 
 /**
  * @Describe 积分操作类型 doc {@see https://slimkit.github.io/plus-docs/v2/core/currency}
@@ -6,7 +6,7 @@ package com.zhiyicx.thinksnsplus.modules.wallet.integration.detail;
  * @Date 2018/1/24
  * @Contact master.jungle68@gmail.com
  */
-public class IntegrationActionTypeEmun {
+object IntegrationActionTypeEmun {
     /**
      * target_type	string	操作类型 目前有：
      * default - 默认操作、
@@ -16,10 +16,10 @@ public class IntegrationActionTypeEmun {
      * recharge - 充值、
      * cash - 积分提取
      */
-    public static final String DEFAULT = "default";
-    public static final String COMMODITY = "commodity";
-    public static final String TASK = "task";
-    public static final String RECHARGE = "recharge";
-    public static final String CASH = "cash";
+    val DEFAULT = "default"
+    val COMMODITY = "commodity"
+    val TASK = "task"
+    val RECHARGE = "recharge"
+    val CASH = "cash"
 
 }
