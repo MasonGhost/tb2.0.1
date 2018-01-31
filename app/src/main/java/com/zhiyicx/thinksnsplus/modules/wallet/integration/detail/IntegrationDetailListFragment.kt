@@ -94,7 +94,7 @@ class IntegrationDetailListFragment : TSListFragment<IntegrationDetailContract.P
                 .inject(this@IntegrationDetailListFragment)
         if (arguments != null) {
             mChooseType = arguments.getString(BUNDLE_CHOOSE_TYPE)
-            mIntegrationConfigBean = arguments.getSerializable(BUNDLE_INTEGRATION_CONFIG) as IntegrationConfigBean
+            mIntegrationConfigBean = arguments.getSerializable(BUNDLE_INTEGRATION_CONFIG) as IntegrationConfigBean?
         }
         mGoldName = mPresenter.goldName
     }
