@@ -425,10 +425,10 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
     override fun useInputMonye() = !mEtInput.text.toString().isEmpty()
 
     companion object {
-        val BUNDLE_DATA = "data"
+        const val BUNDLE_DATA = "data"
 
 
-        fun newInstance(bundle: Bundle): IntegrationRechargeFragment {
+        fun newInstance(bundle: Bundle?): IntegrationRechargeFragment {
             val integrationRechargeFragment = IntegrationRechargeFragment()
             integrationRechargeFragment.arguments = bundle
             return integrationRechargeFragment
