@@ -375,13 +375,13 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
                     showSnackErrorMessage(getString(id))
                 }
                 if (result == "success") {
-                    mPresenter.rechargeSuccess(mPayChargeId!!)
+                    mPresenter.rechargeSuccess(mPayChargeId!!,money)
                 }
             }
         }
     }
 
-    override fun payCredentialsResult(payStrBean: PayStrV2Bean) {
+    override fun payCredentialsResult(payStrBean: PayStrV2Bean,amount: Double) {
         mPayChargeId = payStrBean.order.id.toString() + ""
         LogUtils.json(ConvertUtils.object2JsonStr<PayStrV2Bean.ChargeBean>(payStrBean.pingpp_order))
         TSPayClient.pay(ConvertUtils.object2JsonStr<PayStrV2Bean.ChargeBean>(payStrBean.pingpp_order), activity)
@@ -391,12 +391,16 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
         mBtSure.isEnabled = enable
     }
 
-    override fun rechargeSuccess(rechargeSuccessBean: RechargeSuccessBean) {
+    override fun rechargeSuccess(amount: Double) {
+        showSnackSuccessMessage(getString(R.string.integration_recharge_success_tip_format,PayConfig.realCurrencyFen2Yuan(amount),(amount*
+                mIntegrationConfigBean!!
+                .rechargeratio).toLong(),mGoldName))
+
         EventBus.getDefault().post("", EventBusTagConfig.EVENT_INTEGRATION_RECHARGE)
     }
 
     override fun snackViewDismissWhenTimeOut(prompt: Prompt, message: String) {
-        if (activity != null && Prompt.SUCCESS == prompt && getString(R.string.handle_success) == message) {
+        if (activity != null && Prompt.SUCCESS == prompt && message.contains(getString(R.string.integration_recharge_success_tip_format_eques))) {
             activity.finish()
         }
     }

@@ -18,6 +18,7 @@ import rx.Subscription
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay.RETRY_INTERVAL_TIME
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay.RETRY_MAX_COUNT
 import com.zhiyicx.tspay.TSPayClient.CHANNEL_BALANCE
+import rx.android.schedulers.AndroidSchedulers
 
 /**
  * @Describe
@@ -41,15 +42,18 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
             mRootView.initmRechargeInstructionsPop()
             return
         }
-
+        /**
+         * 余额支付
+         */
         if (CHANNEL_BALANCE == channel) {
             mBillRepository.balance2Integration(amount.toLong())
-                    .flatMap { baseJsonV2 -> mUserInfoRepository!!.currentLoginUserInfo }
+                    .flatMap { mUserInfoRepository.currentLoginUserInfo }
                     .subscribe(object : BaseSubscribeForV2<UserInfoBean>() {
                         override fun onSuccess(data: UserInfoBean) {
                             try {
-                                mRootView.showSnackSuccessMessage(mContext.getString(R.string.handle_success))
+                                mRootView.rechargeSuccess(amount)
                             } catch (e: Exception) {
+                                e.printStackTrace()
                             }
 
                         }
@@ -58,7 +62,8 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
                             super.onFailure(message, code)
                             try {
                                 mRootView.showSnackErrorMessage(message)
-                            } catch (igonred: Exception) {
+                            } catch (ignored: Exception) {
+                                ignored.printStackTrace()
                             }
 
                         }
@@ -67,7 +72,8 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
                             super.onException(throwable)
                             try {
                                 mRootView.showSnackSuccessMessage(mContext.resources.getString(R.string.err_net_not_work))
-                            } catch (igonred: Exception) {
+                            } catch (ignored: Exception) {
+                                ignored.printStackTrace()
                             }
 
                         }
@@ -76,13 +82,15 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
 
 
         } else {
-
+            /**
+             * 其他支付
+             */
             mBillRepository.getIntegrationPayStr(channel, amount.toLong(), null).doOnSubscribe {
                 mRootView.configSureBtn(false)
                 mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing))
             }.subscribe(object : BaseSubscribeForV2<PayStrV2Bean>() {
                 override fun onSuccess(data: PayStrV2Bean) {
-                    mRootView.payCredentialsResult(data)
+                    mRootView.payCredentialsResult(data,amount)
                 }
 
                 override fun onFailure(message: String, code: Int) {
@@ -107,31 +115,32 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
         }
     }
 
-    override fun rechargeSuccess(charge: String) {
-        val subscribe = mBillRepository!!.integrationRechargeSuccess(charge)
+    override fun rechargeSuccess(charge: String,amount: Double) {
+        val subscribe = mBillRepository.integrationRechargeSuccess(charge)
                 .subscribe(object : BaseSubscribeForV2<RechargeSuccessV2Bean>() {
                     override fun onSuccess(data: RechargeSuccessV2Bean) {
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.handle_success))
-                        rechargeSuccessCallBack(data.id.toString() + "")
+                        rechargeSuccessCallBack(data.id.toString() + "",amount)
                     }
 
                     override fun onFailure(message: String, code: Int) {
                         super.onFailure(message, code)
+                        mRootView.showSnackErrorMessage(message)
                     }
 
                     override fun onException(throwable: Throwable) {
                         super.onException(throwable)
+                        mRootView.showSnackSuccessMessage(mContext.resources.getString(R.string.err_net_not_work))
                     }
                 })
         addSubscrebe(subscribe)
     }
 
-    override fun rechargeSuccessCallBack(charge: String) {
-        mUserInfoRepository!!.currentLoginUserInfo
+    override fun rechargeSuccessCallBack(charge: String,amount: Double) {
+        mUserInfoRepository.currentLoginUserInfo
                 .subscribe(object : BaseSubscribeForV2<UserInfoBean>() {
                     override fun onSuccess(data: UserInfoBean) {}
                 })
-        mRootView.rechargeSuccess(null!!)
+        mRootView.rechargeSuccess(amount)
         //        不需要获取详细信息
         //        BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         //        backgroundRequestTaskBean.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
@@ -163,7 +172,7 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
      */
     override fun getIntegrationConfigBean() {
         mRootView.handleLoading(true)
-        val subscribe = mBillRepository!!.integrationConfig
+        val subscribe = mBillRepository.integrationConfig
                 .retryWhen(RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .doAfterTerminate { mRootView.handleLoading(false) }
                 .subscribe(object : BaseSubscribeForV2<IntegrationConfigBean>() {

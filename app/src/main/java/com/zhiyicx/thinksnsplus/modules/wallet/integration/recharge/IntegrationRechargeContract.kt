@@ -19,9 +19,9 @@ interface IntegrationRechargeContract {
     interface View : IBaseView<Presenter> {
 
         val money: Double
-        fun payCredentialsResult(payStrV2Bean: PayStrV2Bean)
+        fun payCredentialsResult(payStrV2Bean: PayStrV2Bean,amount: Double)
         fun configSureBtn(enable: Boolean)
-        fun rechargeSuccess(rechargeSuccessBean: RechargeSuccessBean)
+        fun rechargeSuccess(amount: Double)
         fun initmRechargeInstructionsPop()
 
         fun useInputMonye(): Boolean
@@ -41,8 +41,8 @@ interface IntegrationRechargeContract {
     interface Presenter : IBaseTouristPresenter {
 
         fun getPayStr(@TSPayClient.PayKey channel: String, amount: Double)
-        fun rechargeSuccess(charge: String)
-        fun rechargeSuccessCallBack(charge: String)
-        fun getIntegrationConfigBean();
+        fun rechargeSuccess(charge: String,amount: Double)
+        fun rechargeSuccessCallBack(charge: String,amount: Double)
+        fun getIntegrationConfigBean()
     }
 }
