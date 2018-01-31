@@ -43,7 +43,7 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
         }
 
         if (CHANNEL_BALANCE == channel) {
-            mBillRepository!!.balance2Integration(amount.toLong())
+            mBillRepository.balance2Integration(amount.toLong())
                     .flatMap { baseJsonV2 -> mUserInfoRepository!!.currentLoginUserInfo }
                     .subscribe(object : BaseSubscribeForV2<UserInfoBean>() {
                         override fun onSuccess(data: UserInfoBean) {
@@ -66,7 +66,7 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
                         override fun onException(throwable: Throwable) {
                             super.onException(throwable)
                             try {
-                                mRootView.showSnackErrorMessage(throwable.message)
+                                mRootView.showSnackSuccessMessage(mContext.resources.getString(R.string.err_net_not_work))
                             } catch (igonred: Exception) {
                             }
 
@@ -77,7 +77,7 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
 
         } else {
 
-            mBillRepository!!.getIntegrationPayStr(channel, amount.toLong(), null).doOnSubscribe {
+            mBillRepository.getIntegrationPayStr(channel, amount.toLong(), null).doOnSubscribe {
                 mRootView.configSureBtn(false)
                 mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing))
             }.subscribe(object : BaseSubscribeForV2<PayStrV2Bean>() {
@@ -97,7 +97,7 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
                 override fun onException(throwable: Throwable) {
                     super.onException(throwable)
                     try {
-                        mRootView.showSnackErrorMessage(throwable.message)
+                        mRootView.showSnackSuccessMessage(mContext.resources.getString(R.string.err_net_not_work))
                     } catch (igonred: Exception) {
                     }
 
