@@ -971,10 +971,16 @@
     <string name="balance">余额</string>
     <string name="handle_success">操作成功</string>
     <string name="not_invite_expert">邀请的专家呢？</string>
+    <string name="fail_format_with_unit">%1$d%2$s</string>
     <string name="reduce_format_with_unit">-%1$d%2$s</string>
     <string name="increase_format_with_unit">+%1$d%2$s</string>
     <string name="integration_recharge_success_tip_format">共消耗%1$.2f元，获得%2$d%3$s!</string>
     <string name="integration_recharge_success_tip_format_eques">获得</string>
+    <string name="rewarding">正在审核</string>
+    <string name="withdrawals_success">提取成功</string>
+    <string name="withdrawals_fail">提取失败</string>
+    <string name="recharge_success">充值成功</string>
+    <string name="recharge_fail">充值失败</string>
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>
         <item>提取记录</item>

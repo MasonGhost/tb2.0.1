@@ -109,14 +109,36 @@ class IntegrationDetailListFragment : TSListFragment<IntegrationDetailContract.P
                     val desc = holder.getView<TextView>(R.id.withdrawals_desc)
                     val time = holder.getView<TextView>(R.id.withdrawals_time)
                     val account = holder.getView<TextView>(R.id.withdrawals_account)
-                    val statusSuccess = recharge.state == 1
+//                    state 	订单状态 0 - 等待、1 - 完成、-1 - 失败
+                    val statusSuccess = recharge.state != -1
                     val action = recharge.type
                     desc.isEnabled = statusSuccess
                     desc.text = if (statusSuccess)
                         if (action < 0) getString(R.string.reduce_format_with_unit, recharge.amount, mGoldName) else getString(R.string.increase_format_with_unit, recharge.amount, mGoldName)
                     else
-                        getString(if (recharge.state == 0) R.string.bill_doing else R.string.transaction_fail)
-                    account.text = getDes(recharge)
+                        getString(R.string.fail_format_with_unit, 0, mGoldName)
+                    when (mChooseType) {
+
+                        CHOOSE_TYPE_RECHARGE -> {
+                            when (recharge.state) {
+                                0 -> account.text = getString(R.string.rewarding)
+                                1 -> account.text = getString(R.string.recharge_success)
+                                -1 -> account.text = getString(R.string.recharge_fail)
+                                else -> account.text = getDes(recharge)
+                            }
+                        }
+                        CHOOSE_TYPE_CASH -> {
+                            when (recharge.state) {
+                                0 -> account.text = getString(R.string.rewarding)
+                                1 -> account.text = getString(R.string.withdrawals_success)
+                                -1 -> account.text = getString(R.string.withdrawals_fail)
+                                else -> account.text = getDes(recharge)
+
+                            }
+                        }
+                        else -> account.text = getDes(recharge)
+                    }
+
                     time.text = TimeUtils.getTimeFriendlyForDetail(recharge.created_at)
                 }
             }
