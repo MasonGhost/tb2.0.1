@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.hyphenate.chat.EMClient;
-import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
@@ -29,19 +28,19 @@ import com.hyphenate.easeui.ui.EaseChatFragment;
 import com.hyphenate.easeui.ui.EaseGroupListener;
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
-import com.hyphenate.easeui.widget.presenter.EaseChatVideoPresenter;
-import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.PathUtil;
+import com.tbruyelle.rxpermissions.Permission;
+import com.tbruyelle.rxpermissions.RxPermissions;
+import com.trycatch.mysnackbar.TSnackbar;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
-import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
-import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.modules.chat.call.VideoCallActivity;
@@ -51,10 +50,10 @@ import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
 import com.zhiyicx.thinksnsplus.modules.chat.location.SendLocationActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatCallPresneter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatFilePresenter;
-import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatVideoPresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatLocationPresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatPicturePresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatTextPresenter;
+import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatVideoPresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatVoicePresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.video.ImageGridActivity;
 
@@ -67,9 +66,9 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.functions.Action1;
+
 import static com.hyphenate.easeui.EaseConstant.EXTRA_CHAT_TYPE;
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_ADD_MEMBER;
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_GROUP_REMOVE_MEMBER;
 import static com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig.MESSAGE_CHAT_MEMBER_LIST;
 
 /**
@@ -106,6 +105,10 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     private TSGroupListener mTsGroupListener;
     private UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
+    private RxPermissions mRxPermissions;
+    private ActionPopupWindow mActionPopupWindow;
+    private TSnackbar mTSnackbar;
+
     public static ChatFragmentV2 instance(Bundle bundle) {
         ChatFragmentV2 fragmentV2 = new ChatFragmentV2();
         fragmentV2.setArguments(bundle);
@@ -118,6 +121,7 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     }
 
     private View getContentView(LayoutInflater inflater) {
+        mRxPermissions = new RxPermissions(getActivity());
         mUserInfoBeanGreenDao = new UserInfoBeanGreenDaoImpl(getActivity().getApplication());
         EventBus.getDefault().register(this);
         LinearLayout linearLayout = new LinearLayout(getActivity());
@@ -245,7 +249,19 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
         switch (itemId) {
             case ITEM_TAKE_PICTURE_TS:
                 // 拍照
-                selectPicFromCamera();
+                mRxPermissions
+                        .requestEach(Manifest.permission.CAMERA)
+                        .subscribe(permission -> {
+                            if (permission.granted) {
+                                // 权限被允许
+                                selectPicFromCamera();
+                            } else if (permission.shouldShowRequestPermissionRationale) {
+                                // 权限没有被彻底禁止
+                            } else {
+                                // 权限被彻底禁止
+                                initPermissionPopUpWindow(getString(com.zhiyicx.baseproject.R.string.setting_permission_hint));
+                            }
+                        });
                 break;
             case ITEM_PICTURE_TS:
                 // 相册
@@ -258,17 +274,41 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
                 startActivityForResult(intentMap, REQUEST_CODE_MAP);
                 break;
             case ITEM_VIDEO_TS:
-                // 视频
+                // 发送视频文件
                 Intent intent = new Intent(getActivity(), ImageGridActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_SELECT_VIDEO);
                 break;
             case ITEM_VIDEO_CALL_TS:
                 // 视频通话
-                startVideoCall();
+                mRxPermissions
+                        .requestEach(Manifest.permission.CAMERA)
+                        .subscribe(permission -> {
+                            if (permission.granted) {
+                                // 权限被允许
+                                startVideoCall();
+                            } else if (permission.shouldShowRequestPermissionRationale) {
+                                // 权限没有被彻底禁止
+                            } else {
+                                // 权限被彻底禁止
+                                initPermissionPopUpWindow(getString(com.zhiyicx.baseproject.R.string.setting_permission_hint));
+                            }
+                        });
                 break;
             case ITEM_VOICE_CALL_TS:
-                // 语音
-                startVoiceCall();
+                // 语音通话
+                mRxPermissions
+                        .requestEach(Manifest.permission.RECORD_AUDIO)
+                        .subscribe(permission -> {
+                            if (permission.granted) {
+                                // 权限被允许
+                                startVoiceCall();
+                            } else if (permission.shouldShowRequestPermissionRationale) {
+                                // 权限没有被彻底禁止
+                            } else {
+                                // 权限被彻底禁止
+                                initPermissionPopUpWindow(getString(com.zhiyicx.baseproject.R.string.setting_permission_hint));
+                            }
+                        });
                 break;
             default:
                 break;
@@ -294,8 +334,8 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
         inputMenu.registerExtendMenuItem(R.string.attach_picture, R.mipmap.ico_chat_picture, ITEM_PICTURE_TS, extendMenuItemClickListener);
         // 拍照
         inputMenu.registerExtendMenuItem(R.string.attach_take_pic, R.mipmap.ico_chat_takephoto, ITEM_TAKE_PICTURE_TS, extendMenuItemClickListener);
-        // 视频
-        inputMenu.registerExtendMenuItem(R.string.attach_video, R.mipmap.ico_chat_video, ITEM_VIDEO_TS, extendMenuItemClickListener);
+        // 视频 -- 需求取消  2018-1-31 15:26:14
+//        inputMenu.registerExtendMenuItem(R.string.attach_video, R.mipmap.ico_chat_video, ITEM_VIDEO_TS, extendMenuItemClickListener);
         // 位置
         inputMenu.registerExtendMenuItem(R.string.attach_location, R.mipmap.ico_chat_location, ITEM_LOCATION_TS, extendMenuItemClickListener);
         // 目前仅有单聊才有音视频通话
@@ -480,7 +520,6 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
 
     /**
      * listen the group event
-     *
      */
     public class TSGroupListener extends EaseGroupListener {
 
@@ -499,25 +538,25 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
 
         @Override
         public void onMemberExited(String groupId, String member) {
-           for (ChatUserInfoBean chatUserInfoBean : mUserInfoBeans){
-               if (member.equals(chatUserInfoBean.getUser_id()+"")){
-                   mUserInfoBeans.remove(chatUserInfoBean);
-                   messageList.refreshUserList(mUserInfoBeans);
-                   break;
-               }
-           }
+            for (ChatUserInfoBean chatUserInfoBean : mUserInfoBeans) {
+                if (member.equals(chatUserInfoBean.getUser_id() + "")) {
+                    mUserInfoBeans.remove(chatUserInfoBean);
+                    messageList.refreshUserList(mUserInfoBeans);
+                    break;
+                }
+            }
         }
 
         @Override
         public void onMemberJoined(String groupId, String member) {
             UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(member));
-            if (userInfoBean != null){
+            if (userInfoBean != null) {
                 ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
                 chatUserInfoBean.setUser_id(userInfoBean.getUser_id());
                 chatUserInfoBean.setSex(userInfoBean.getSex());
                 chatUserInfoBean.setName(userInfoBean.getName());
                 chatUserInfoBean.setAvatar(userInfoBean.getAvatar());
-                if (userInfoBean.getVerified() != null){
+                if (userInfoBean.getVerified() != null) {
                     ChatVerifiedBean chatVerifiedBean = new ChatVerifiedBean();
                     chatVerifiedBean.setType(userInfoBean.getVerified().getType());
                     chatVerifiedBean.setStatus(userInfoBean.getVerified().getStatus());
@@ -536,7 +575,6 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
         }
 
 
-
         @Override
         public void onGroupDestroyed(final String groupId, String groupName) {
             // prompt group is dismissed and finish this activity
@@ -550,5 +588,24 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
                 }
             });
         }
+    }
+
+    private void initPermissionPopUpWindow(String item1) {
+        mActionPopupWindow = PermissionPopupWindow.builder()
+                .permissionName(getString(com.zhiyicx.baseproject.R.string.camera_permission))
+                .with(getActivity())
+                .bottomStr(getString(com.zhiyicx.baseproject.R.string.cancel))
+                .item1Str(item1)
+                .item2Str(getString(com.zhiyicx.baseproject.R.string.setting_permission))
+                .item2ClickListener(() -> {
+                    DeviceUtils.openAppDetail(getContext());
+                    mActionPopupWindow.hide();
+                })
+                .bottomClickListener(() -> mActionPopupWindow.hide())
+                .isFocus(true)
+                .isOutsideTouch(true)
+                .backgroundAlpha(0.8f)
+                .build();
+        mActionPopupWindow.show();
     }
 }

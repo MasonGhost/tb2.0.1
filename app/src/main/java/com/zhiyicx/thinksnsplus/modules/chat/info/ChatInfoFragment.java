@@ -125,6 +125,11 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
     protected void initView(View rootView) {
         // 初始化图片选择器
         mPhotoSelector = DaggerPhotoSelectorImplComponent

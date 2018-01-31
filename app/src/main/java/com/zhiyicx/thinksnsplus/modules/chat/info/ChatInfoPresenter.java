@@ -190,6 +190,7 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
                     // 这里的占位文字都没提供emm
                     mRootView.showSnackLoadingMessage("创建中..");
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<ChatGroupBean>() {
                     @Override
                     protected void onSuccess(ChatGroupBean data) {
