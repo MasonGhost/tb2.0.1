@@ -87,6 +87,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                 // 群组
                 ChatGroupBean chatGroupBean = messageItemBean.getChatGroupBean();
                 EMGroup group = EMClient.getInstance().groupManager().getGroup(messageItemBean.getEmKey());
+
                 userAvatarView.getIvVerify().setVisibility(View.GONE);
                 Glide.with(mContext)
                         .load(chatGroupBean == null ? "" : chatGroupBean.getGroup_face())
@@ -191,7 +192,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
             }
         });
         RxView.clicks(holder.getView(R.id.tv_right))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     mItemManger.closeAllItems();
                     if (mOnSwipeItemClickListener != null) {
@@ -199,7 +200,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                     }
                 });
         RxView.clicks(holder.getView(R.id.rl_left))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (hasItemOpend()) {
                         closeAllItems();
@@ -272,7 +273,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
 
     private void setUserInfoClick(View v, final UserInfoBean userInfoBean) {
         RxView.clicks(v)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (hasItemOpend()) {
                         closeAllItems();

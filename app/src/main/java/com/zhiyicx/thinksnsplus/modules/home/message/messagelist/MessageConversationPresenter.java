@@ -122,8 +122,10 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
             chatUserInfoBeans.add(getChatUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault())));
             chatUserInfoBeans.add(getChatUser(mRootView.getListDatas().get(position).getUserInfo()));
         } else {
-            for (UserInfoBean userInfoBean : mRootView.getListDatas().get(position).getList()) {
-                chatUserInfoBeans.add(getChatUser(userInfoBean));
+            if (mRootView.getListDatas().get(position) != null) {
+                for (UserInfoBean userInfoBean : mRootView.getListDatas().get(position).getList()) {
+                    chatUserInfoBeans.add(getChatUser(userInfoBean));
+                }
             }
         }
         return chatUserInfoBeans;
@@ -188,12 +190,12 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                     .subscribe(messageItemBeanV2s -> {
                         List<MessageItemBeanV2> singleList = new ArrayList<>();
                         for (MessageItemBeanV2 itemBeanV2 : messageItemBeanV2s) {
-                            if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.Chat) {
+                            if (EMConversation.EMConversationType.Chat == itemBeanV2.getConversation().getType()) {
                                 singleList.add(itemBeanV2);
                             }
                         }
                         for (MessageItemBeanV2 itemBeanV2 : mRootView.getListDatas()) {
-                            if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.GroupChat) {
+                            if (EMConversation.EMConversationType.GroupChat == itemBeanV2.getConversation().getType()) {
                                 singleList.add(itemBeanV2);
                             }
                         }
@@ -265,6 +267,9 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                 boolean canAdded = true;
                 for (MessageItemBeanV2 exitItem : mRootView.getListDatas()) {
                     if (exitItem.getConversation().conversationId().equals(chatGroupBean.getId())) {
+                        exitItem.setEmKey(chatGroupBean.getId());
+                        exitItem.setList(chatGroupBean.getAffiliations());
+                        exitItem.setConversation(EMClient.getInstance().chatManager().getConversation(chatGroupBean.getId()));
                         exitItem.setChatGroupBean(chatGroupBean);
                         canAdded = false;
                         break;
@@ -374,7 +379,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
      */
     @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_DELETE_QUIT)
     public void deleteGroup(String id) {
-        if (!TextUtils.isEmpty(id)) {
+        if (TextUtils.isEmpty(id)) {
             return;
         }
         MessageItemBeanV2 deleteItem = null;

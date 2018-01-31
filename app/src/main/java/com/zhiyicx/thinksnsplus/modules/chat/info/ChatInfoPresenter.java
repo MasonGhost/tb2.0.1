@@ -64,25 +64,36 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
 
     @Override
     public void destoryOrLeaveGroup(String chatId) {
-        Observable.empty()
-                .observeOn(Schedulers.io())
-                .subscribe(new EmptySubscribe<Object>() {
-                    @Override
-                    public void onCompleted() {
-                        try {
-                            if (isGroupOwner()) {
-                                // 解散群组
-                                EMClient.getInstance().groupManager().destroyGroup(chatId);
-                            } else {
-                                // 退群
-                                EMClient.getInstance().groupManager().leaveGroup(chatId);
-                            }
-                            EventBus.getDefault().post(chatId, EVENT_IM_DELETE_QUIT);
-                            mRootView.closeCurrentActivity();
-                        } catch (HyphenateException e) {
-                            e.printStackTrace();
-                            mRootView.showSnackErrorMessage(mContext.getString(R.string.bill_doing_fialed));
+        Observable.just(chatId)
+                .subscribeOn(Schedulers.io())
+                .flatMap(id -> {
+                    try {
+                        if (isGroupOwner()) {
+                            // 解散群组
+                            EMClient.getInstance().groupManager().destroyGroup(id);
+                        } else {
+                            // 退群
+                            EMClient.getInstance().groupManager().leaveGroup(id);
                         }
+                        EventBus.getDefault().post(id, EVENT_IM_DELETE_QUIT);
+                        mRootView.closeCurrentActivity();
+                        return Observable.just(id);
+                    } catch (HyphenateException e) {
+                        e.printStackTrace();
+                        return Observable.error(null);
+                    }
+
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<String>() {
+                    @Override
+                    protected void onSuccess(String data) {
+
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.bill_doing_fialed));
                     }
                 });
     }
@@ -236,6 +247,7 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
                 }
             }
         }
+        chatGroupBean.setAffiliations_count(chatGroupBean.getAffiliations_count() - removedList.size());
         chatGroupBean.setAffiliations(originalList);
         mRootView.updateGroup(chatGroupBean);
     }
@@ -248,6 +260,7 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
         }
         ChatGroupBean chatGroupBean = mRootView.getGroupBean();
         chatGroupBean.getAffiliations().addAll(addedList);
+        chatGroupBean.setAffiliations_count(chatGroupBean.getAffiliations_count() + addedList.size());
         mRootView.updateGroup(chatGroupBean);
     }
 }

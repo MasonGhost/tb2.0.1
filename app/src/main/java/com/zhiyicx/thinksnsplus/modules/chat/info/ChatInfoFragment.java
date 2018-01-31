@@ -4,12 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -20,9 +18,7 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
-import com.hyphenate.exceptions.HyphenateException;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
@@ -35,13 +31,11 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
-import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivityV2;
 import com.zhiyicx.thinksnsplus.modules.chat.adapter.ChatMemberAdapter;
 import com.zhiyicx.thinksnsplus.modules.chat.edit.manager.GroupManagerActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.edit.name.EditGroupNameActivity;
-import com.zhiyicx.thinksnsplus.modules.chat.edit.owner.EditGroupOwnerActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
 import com.zhiyicx.thinksnsplus.modules.chat.member.GroupMemberListActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.select.SelectFriendsActivity;
@@ -49,17 +43,12 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
-import org.simple.eventbus.EventBus;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_DELETE_QUIT;
 import static com.zhiyicx.thinksnsplus.modules.chat.ChatActivityV2.BUNDLE_CHAT_DATA;
 import static com.zhiyicx.thinksnsplus.modules.chat.edit.name.EditGroupNameFragment.GROUP_ORIGINAL_NAME;
 import static com.zhiyicx.thinksnsplus.modules.chat.edit.owner.EditGroupOwnerFragment.BUNDLE_GROUP_DATA;
@@ -80,6 +69,8 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     UserAvatarView mIvUserPortrait;
     @BindView(R.id.tv_user_name)
     TextView mTvUserName;
+    @BindView(R.id.tv_group_header)
+    TextView mTvGroupHeader;
     @BindView(R.id.iv_add_user)
     ImageView mIvAddUser;
     @BindView(R.id.ll_single)
@@ -159,7 +150,6 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             // 屏蔽单聊的布局
             mLlSingle.setVisibility(View.GONE);
         }
-        initDeletePopupWindow();
         initPhotoPopupWindow();
     }
 
@@ -248,7 +238,8 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                 break;
             case R.id.tv_delete_group:
                 // （群主）删除群聊
-                mDeleteGroupPopupWindow.show();
+                initDeletePopupWindow(mPresenter.isGroupOwner() ? getString(R.string.chat_delete) : getString(R.string.chat_quit)
+                        , mPresenter.isGroupOwner() ? getString(R.string.chat_delete_group_alert) : getString(R.string.chat_quit_group_alert));
                 break;
             case R.id.ll_group_portrait:
                 // 修改群头像
@@ -275,24 +266,23 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         }
     }
 
-    private void initDeletePopupWindow() {
-        if (mDeleteGroupPopupWindow == null) {
-            mDeleteGroupPopupWindow = ActionPopupWindow.builder()
-                    .item1Str(getString(R.string.prompt))
-                    .item2Str(mPresenter.isGroupOwner() ? getString(R.string.chat_delete) : getString(R.string.chat_quit))
-                    .desStr(mPresenter.isGroupOwner() ? getString(R.string.chat_delete_group_alert) : getString(R.string.chat_quit_group_alert))
-                    .bottomStr(getString(R.string.cancel))
-                    .isOutsideTouch(true)
-                    .isFocus(true)
-                    .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
-                    .with(getActivity())
-                    .item2ClickListener(() -> {
-                        mPresenter.destoryOrLeaveGroup(mChatId);
-                        mDeleteGroupPopupWindow.hide();
-                    })
-                    .bottomClickListener(() -> mDeleteGroupPopupWindow.hide())
-                    .build();
-        }
+    private void initDeletePopupWindow(String item2, String dec) {
+        mDeleteGroupPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.prompt))
+                .item2Str(item2)
+                .desStr(dec)
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item2ClickListener(() -> {
+                    mPresenter.destoryOrLeaveGroup(mChatId);
+                    mDeleteGroupPopupWindow.hide();
+                })
+                .bottomClickListener(() -> mDeleteGroupPopupWindow.hide())
+                .build();
+        mDeleteGroupPopupWindow.show();
     }
 
     /**
@@ -344,8 +334,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         mChatGroupBean.setGroup_face(chatGroupBean.getGroup_face());
         mChatGroupBean.setOwner(chatGroupBean.getOwner());
         mChatGroupBean.setPublic(chatGroupBean.isPublic());
-        String groupName = TextUtils.isEmpty(chatGroupBean.getName()) ? chatGroupBean.getName() : chatGroupBean.getName();
-        mChatGroupBean.setName(groupName);
+        mChatGroupBean.setName(chatGroupBean.getName());
         mChatGroupBean.setDescription(chatGroupBean.getDescription());
         mChatGroupBean.setMembersonly(chatGroupBean.isMembers_only());
         mChatGroupBean.setAllowinvites(chatGroupBean.isAllowinvites());
@@ -357,7 +346,6 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         mChatGroupBean = chatGroupBean;
         mChatGroupBean.setIm_group_id(mChatId);
         setGroupData();
-        mScBlockMessage.setEnabled(chatGroupBean.getOwner() != AppApplication.getMyUserIdWithdefault());
         // 切换是否屏蔽消息
         mScBlockMessage.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (mChatType == EaseConstant.CHATTYPE_SINGLE) {
@@ -491,10 +479,16 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             // 非群主屏蔽群管理
             if (!mPresenter.isGroupOwner()) {
                 mLlManager.setVisibility(View.GONE);
+                mRlBlockMessage.setVisibility(View.VISIBLE);
+                mTvGroupHeader.setText(R.string.chat_group_portrait);
                 mTvDeleteGroup.setText(getString(R.string.chat_quit_group));
+                mScBlockMessage.setEnabled(true);
             } else {
                 // 群主无法屏蔽消息
+                mTvGroupHeader.setText(R.string.chat_set_group_portrait);
+                mTvDeleteGroup.setText(getString(R.string.chat_delete_group));
                 mRlBlockMessage.setVisibility(View.GONE);
+                mScBlockMessage.setEnabled(false);
             }
             // 群聊的信息展示
             EMGroup group = EMClient.getInstance().groupManager().getGroup(mChatId);

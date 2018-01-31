@@ -100,10 +100,11 @@ public class DeviceUtils {
      */
     public static boolean isExitsSdcard() {
         if (android.os.Environment.getExternalStorageState().equals(
-                android.os.Environment.MEDIA_MOUNTED))
+                android.os.Environment.MEDIA_MOUNTED)) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     public static int getStatuBarHeight(Context context) {
@@ -197,8 +198,9 @@ public class DeviceUtils {
         try {
             PackageInfo pckInfo = context.getPackageManager()
                     .getPackageInfo(pckName, 0);
-            if (pckInfo != null)
+            if (pckInfo != null) {
                 return true;
+            }
         } catch (PackageManager.NameNotFoundException e) {
             LogUtils.e("TDvice", e.getMessage());
         }
@@ -207,8 +209,9 @@ public class DeviceUtils {
 
     @SuppressWarnings("deprecation")
     public static void copyTextToBoard(Context context, String string) {
-        if (TextUtils.isEmpty(string))
+        if (TextUtils.isEmpty(string)) {
             return;
+        }
         ClipboardManager clip = (ClipboardManager) context
                 .getSystemService(Context.CLIPBOARD_SERVICE);
         clip.setText(string);
@@ -366,8 +369,9 @@ public class DeviceUtils {
      * @param file
      */
     public static void installAPK(Context context, File file) {
-        if (file == null || !file.exists())
+        if (file == null || !file.exists()) {
             return;
+        }
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setAction(Intent.ACTION_VIEW);
@@ -473,13 +477,15 @@ public class DeviceUtils {
      * @param view
      */
     public static void hideSoftKeyboard(Context context, View view) {
-        if (view == null)
+        if (view == null) {
             return;
+        }
         InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(
                 Context.INPUT_METHOD_SERVICE);
-        if (inputMethodManager.isActive())
+        if (inputMethodManager.isActive()) {
             inputMethodManager.hideSoftInputFromWindow(
                     view.getWindowToken(), 0);
+        }
     }
 
     /**
@@ -676,10 +682,11 @@ public class DeviceUtils {
      */
     public static boolean isLandscape(Context context) {
         boolean flag;
-        if (context.getResources().getConfiguration().orientation == 2)
+        if (context.getResources().getConfiguration().orientation == 2) {
             flag = true;
-        else
+        } else {
             flag = false;
+        }
         return flag;
     }
 
@@ -691,8 +698,9 @@ public class DeviceUtils {
      */
     public static boolean isPortrait(Context context) {
         boolean flag = true;
-        if (context.getResources().getConfiguration().orientation != 1)
+        if (context.getResources().getConfiguration().orientation != 1) {
             flag = false;
+        }
         return flag;
     }
 

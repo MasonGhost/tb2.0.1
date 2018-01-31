@@ -99,6 +99,16 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     }
 
     @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
+    }
+
+    @Override
+    protected boolean isNeedRefreshAnimation() {
+        return false;
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
         SelectFriendsAllAdapter allAdapter = new SelectFriendsAllAdapter(getContext(), mListDatas, this);
         return allAdapter;

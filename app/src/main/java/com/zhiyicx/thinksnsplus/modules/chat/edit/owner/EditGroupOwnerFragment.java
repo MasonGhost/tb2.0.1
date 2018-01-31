@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -100,6 +101,7 @@ public class EditGroupOwnerFragment extends TSListFragment<EditGroupOwnerContrac
                 // 选中当前的人 那就返回
                 if (mPresenter.checkNewOwner(mListDatas.get(position))) {
                     mNewOwner = mListDatas.get(position);
+                    DeviceUtils.hideSoftKeyboard(mActivity,mEditSearchFriends);
                     mAlertChangeOwnerPopupWindow.show();
                 }
             }
@@ -126,6 +128,7 @@ public class EditGroupOwnerFragment extends TSListFragment<EditGroupOwnerContrac
                     .item2ClickListener(() -> {
                         mChatGroupBean.setOwner(mNewOwner.getUser_id());
                         mPresenter.updateGroup(mChatGroupBean);
+                        mAlertChangeOwnerPopupWindow.hide();
                     })
                     .bottomClickListener(() -> mAlertChangeOwnerPopupWindow.hide())
                     .build();
