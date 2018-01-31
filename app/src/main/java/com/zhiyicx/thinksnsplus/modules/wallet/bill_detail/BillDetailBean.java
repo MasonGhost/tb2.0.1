@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.wallet.bill_detail;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
@@ -96,7 +97,7 @@ public class BillDetailBean implements Parcelable{
         billDetailBean.setAccount(rechargeSuccessBean.getAccount());
         billDetailBean.setAction(rechargeSuccessBean.getAction());
         billDetailBean.setAmount((int)PayConfig.realCurrency2GameCurrency(rechargeSuccessBean.getAmount(),ratio));
-        billDetailBean.setBody(rechargeSuccessBean.getBody());
+        billDetailBean.setBody(TextUtils.isEmpty(rechargeSuccessBean.getBody())?rechargeSuccessBean.getSubject():rechargeSuccessBean.getBody());
         billDetailBean.setChannel(rechargeSuccessBean.getChannel());
         billDetailBean.setCreated_at(rechargeSuccessBean.getCreated_at());
         billDetailBean.setStatus(rechargeSuccessBean.getStatus());

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import butterknife.BindView;
 
@@ -48,7 +50,7 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
     /**
      * income - 收入 expenses - 支出 默认全部
      */
-    private String[] mBillTypes = new String[]{"","income" , "expenses"};
+    private String[] mBillTypes = new String[]{"", "income", "expenses"};
 
     private String mBillType = mBillTypes[0];
 
@@ -79,8 +81,8 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                 int action = recharge.getAction();
                 desc.setEnabled(statusSuccess);
                 String moneyStr = String.format(Locale.getDefault(), getString(R.string.money_format),
-                        PayConfig.realCurrency2GameCurrency(recharge.getAmount(), mPresenter.getRatio()));
-                desc.setText(statusSuccess ? (action == 0 ? "- " + moneyStr : "+ " + moneyStr) :
+                        PayConfig.realCurrencyFen2Yuan(recharge.getAmount()));
+                desc.setText(statusSuccess ? (action < 0 ? "- " + moneyStr : "+ " + moneyStr) :
                         getString(recharge.getStatus() == 0 ? R.string.bill_doing : R.string.transaction_fail));
                 account.setText(getDes(recharge));
                 time.setText(TimeUtils.string2_ToDya_Yesterday_Week(recharge.getCreated_at()));
@@ -129,7 +131,13 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                 result = getString(R.string.apple_pay_upacp) + " " + recharge.getBody();
                 break;
             default:
-                result = recharge.getSubject();
+                if (TextUtils.isEmpty(recharge.getBody())) {
+                    result = recharge.getSubject();
+
+                } else {
+                    result = recharge.getBody();
+                }
+
 
         }
         return result;
@@ -172,7 +180,7 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
 
     @Override
     public String getBillType() {
-        return mBillType == mBillTypes[0] ? null : mBillType;
+        return mBillTypes[0].equals(mBillType) ? null : mBillType;
     }
 
     private void initTopPopWindow() {
@@ -189,22 +197,25 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                 .item2Str(getString(R.string.withdraw_out))
                 .item3Str(getString(R.string.withdraw_in))
                 .item1ClickListener(() -> {
+                    startRefrsh();
                     mToolbarCenter.setText(getString(R.string.withdraw_all));
-                    mPresenter.selectAll();
                     mBillType = mBillTypes[0];
                     mActionPopupWindow.hide();
                 })
                 .item2ClickListener(() -> {
+                    startRefrsh();
                     mToolbarCenter.setText(getString(R.string.withdraw_out));
-                    mPresenter.selectBillByAction(0);
                     mBillType = mBillTypes[2];
                     mActionPopupWindow.hide();
+                    startRefrsh();
+
                 })
                 .item3ClickListener(() -> {
+                    startRefrsh();
                     mToolbarCenter.setText(getString(R.string.withdraw_in));
-                    mPresenter.selectBillByAction(1);
                     mBillType = mBillTypes[1];
                     mActionPopupWindow.hide();
+
                 })
                 .dismissListener(new ActionPopupWindow.ActionPopupWindowShowOrDismissListener() {
                     @Override

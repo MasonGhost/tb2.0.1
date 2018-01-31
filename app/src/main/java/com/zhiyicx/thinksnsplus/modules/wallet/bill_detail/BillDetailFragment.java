@@ -92,17 +92,18 @@ public class BillDetailFragment extends TSFragment {
         }
 
         mBillStatus.setText(getString(status == 0 ? R.string.transaction_doing : (status == 1 ? R.string.transaction_success : R.string.transaction_fail)));
-        String moneyStr = (status == 1 ? (action == 0 ? "- " : "+ ") : "") + String.format(Locale.getDefault(), getString(R.string.money_format),
-                (float)mBillDetailBean.getAmount());
+        String moneyStr = (status == 1 ? (action <0 ? "- " : "+ ") : "") + String.format(Locale.getDefault(), getString(R.string.money_format),
+                PayConfig.realCurrencyFen2Yuan(mBillDetailBean.getAmount()));
         mTvMineMoney.setText(moneyStr);
         mBillUserContainer.setVisibility(is_user ? View.VISIBLE : View.GONE);
         mBillAccountContainer.setVisibility(is_user ? View.GONE : View.VISIBLE);
         mBillAccount.setText(TextUtils.isEmpty(mBillDetailBean.getAccount()) ? mBillDetailBean.getChannel() : mBillDetailBean.getAccount());
-        mBillDesc.setText(mBillDetailBean.getBody());
+        mBillDesc.setText(!TextUtils.isEmpty(mBillDetailBean.getBody())?mBillDetailBean.getBody():"");
         mBillTime.setText(TimeUtils.string2_Dya_Week_Time(mBillDetailBean.getCreated_at()));
 
-        if (!is_user)
+        if (!is_user) {
             return;
+        }
         dealUserInfo(mBillDetailBean.getUserInfoBean());
 
         RxView.clicks(mBillUserContainer).throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS).subscribe(aVoid -> {

@@ -132,7 +132,7 @@ class IntegrationDetailListFragment : TSListFragment<IntegrationDetailContract.P
                     val action = recharge.type
                     desc.isEnabled = statusSuccess
                     desc.text = if (statusSuccess)
-                        if (action < 0) getString(R.string.reduce_format_with_unit, recharge.amount, mGoldName) else getString(R.string.increase_format_with_unit, recharge.amount, mGoldName)
+                        if (action < 0) getString(R.string.reduce_format_with_unit, recharge.amount, mGoldName) else getString(R.string.increase_format_with_unit, recharge.amount, "")
                     else
                         getString(if (recharge.state == 0) R.string.bill_doing else R.string.transaction_fail)
                     account.text = getDes(recharge)

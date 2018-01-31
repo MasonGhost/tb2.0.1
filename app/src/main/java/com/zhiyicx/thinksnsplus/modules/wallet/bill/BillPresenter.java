@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -60,9 +61,9 @@ public class BillPresenter extends AppBasePresenter<BillContract.View> implement
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        List<RechargeSuccessBean> data = mRechargeSuccessBeanGreenDao.getMultiDataFromCache();
-        Collections.sort(data, new TimeStringSortClass());
-        mRootView.onCacheResponseSuccess(data, isLoadMore);
+///        List<RechargeSuccessBean> data = mRechargeSuccessBeanGreenDao.getMultiDataFromCache();
+//        Collections.sort(data, new TimeStringSortClass());
+        mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
     }
 
     @Override
@@ -70,17 +71,4 @@ public class BillPresenter extends AppBasePresenter<BillContract.View> implement
         mRechargeSuccessBeanGreenDao.saveMultiData(data);
         return true;
     }
-
-    @Override
-    public void selectBillByAction(int action) {
-        List<RechargeSuccessBean> data = mRechargeSuccessBeanGreenDao.selectBillByAction(action);
-        mRootView.onNetResponseSuccess(data, false);
-    }
-
-    @Override
-    public void selectAll() {
-        requestCacheData(1L, false);
-    }
-
-
 }

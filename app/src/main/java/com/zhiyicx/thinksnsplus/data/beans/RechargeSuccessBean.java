@@ -50,6 +50,7 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable {
     @SerializedName("title")
     private String subject;
     private String body;
+    @SerializedName("state")
     private int status;
     private String created_at;
     private String updated_at;

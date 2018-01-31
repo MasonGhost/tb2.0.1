@@ -24,11 +24,6 @@ public interface BillContract {
     }
 
     interface Presenter extends ITSListPresenter<RechargeSuccessBean> {
-        void selectBillByAction(int action);
-
-        void selectAll();
-
-
     }
 
 }

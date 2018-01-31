@@ -60,26 +60,23 @@ public class BillRepository implements IBillRepository {
 
         return data
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<List<RechargeSuccessBean>, Observable<List<RechargeSuccessBean>>>() {
-                    @Override
-                    public Observable<List<RechargeSuccessBean>> call(List<RechargeSuccessBean> rechargeListBeen) {
-                        final List<Object> user_ids = new ArrayList<>();
-                        for (RechargeSuccessBean rechargeSuccessBean : rechargeListBeen) {
-                            if (rechargeSuccessBean.getChannel().equals("user") || rechargeSuccessBean.getChannel().equals("system")) //
-                            // @see{https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/wallet/charge.md}
-                            {
-                                user_ids.add(rechargeSuccessBean.getAccount());
-                                try {
-                                    rechargeSuccessBean.setUser_id(Long.valueOf(rechargeSuccessBean.getAccount()));
-                                } catch (Exception e) {
-                                }
-                            } else {
-                                user_ids.add(rechargeSuccessBean.getUser_id());
+                .flatMap(rechargeListBeen -> {
+                    final List<Object> user_ids = new ArrayList<>();
+                    for (RechargeSuccessBean rechargeSuccessBean : rechargeListBeen) {
+                        if (rechargeSuccessBean.getChannel().equals("user") || rechargeSuccessBean.getChannel().equals("system")) //
+                        // @see{https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/wallet/charge.md}
+                        {
+                            user_ids.add(rechargeSuccessBean.getAccount());
+                            try {
+                                rechargeSuccessBean.setUser_id(Long.valueOf(rechargeSuccessBean.getAccount()));
+                            } catch (Exception e) {
                             }
-
+                        } else {
+                            user_ids.add(rechargeSuccessBean.getUser_id());
                         }
-                        return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> rechargeListBeen);
+
                     }
+                    return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> rechargeListBeen);
                 }).subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
