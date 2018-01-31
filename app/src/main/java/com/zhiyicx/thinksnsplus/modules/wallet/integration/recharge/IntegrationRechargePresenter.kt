@@ -48,6 +48,7 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
         if (CHANNEL_BALANCE == channel) {
             mBillRepository.balance2Integration(amount.toLong())
                     .flatMap { mUserInfoRepository.currentLoginUserInfo }
+                    .doAfterTerminate { mRootView.configSureBtn(true) }
                     .subscribe(object : BaseSubscribeForV2<UserInfoBean>() {
                         override fun onSuccess(data: UserInfoBean) {
                             try {
@@ -88,38 +89,39 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
             mBillRepository.getIntegrationPayStr(channel, amount.toLong(), null).doOnSubscribe {
                 mRootView.configSureBtn(false)
                 mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing))
-            }.subscribe(object : BaseSubscribeForV2<PayStrV2Bean>() {
-                override fun onSuccess(data: PayStrV2Bean) {
-                    mRootView.payCredentialsResult(data,amount)
-                }
+            }.doAfterTerminate { mRootView.configSureBtn(true) }
+                    .subscribe(object : BaseSubscribeForV2<PayStrV2Bean>() {
+                        override fun onSuccess(data: PayStrV2Bean) {
+                            mRootView.payCredentialsResult(data, amount)
+                        }
 
-                override fun onFailure(message: String, code: Int) {
-                    super.onFailure(message, code)
-                    try {
-                        mRootView.showSnackErrorMessage(message)
-                    } catch (igonred: Exception) {
-                    }
+                        override fun onFailure(message: String, code: Int) {
+                            super.onFailure(message, code)
+                            try {
+                                mRootView.showSnackErrorMessage(message)
+                            } catch (igonred: Exception) {
+                            }
 
-                }
+                        }
 
-                override fun onException(throwable: Throwable) {
-                    super.onException(throwable)
-                    try {
-                        mRootView.showSnackSuccessMessage(mContext.resources.getString(R.string.err_net_not_work))
-                    } catch (igonred: Exception) {
-                    }
+                        override fun onException(throwable: Throwable) {
+                            super.onException(throwable)
+                            try {
+                                mRootView.showSnackSuccessMessage(mContext.resources.getString(R.string.err_net_not_work))
+                            } catch (igonred: Exception) {
+                            }
 
-                }
+                        }
 
-            })
+                    })
         }
     }
 
-    override fun rechargeSuccess(charge: String,amount: Double) {
+    override fun rechargeSuccess(charge: String, amount: Double) {
         val subscribe = mBillRepository.integrationRechargeSuccess(charge)
                 .subscribe(object : BaseSubscribeForV2<RechargeSuccessV2Bean>() {
                     override fun onSuccess(data: RechargeSuccessV2Bean) {
-                        rechargeSuccessCallBack(data.id.toString() + "",amount)
+                        rechargeSuccessCallBack(data.id.toString() + "", amount)
                     }
 
                     override fun onFailure(message: String, code: Int) {
@@ -135,7 +137,7 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
         addSubscrebe(subscribe)
     }
 
-    override fun rechargeSuccessCallBack(charge: String,amount: Double) {
+    override fun rechargeSuccessCallBack(charge: String, amount: Double) {
         mUserInfoRepository.currentLoginUserInfo
                 .subscribe(object : BaseSubscribeForV2<UserInfoBean>() {
                     override fun onSuccess(data: UserInfoBean) {}

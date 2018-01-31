@@ -19,6 +19,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow
 import com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME
 import com.zhiyicx.common.utils.DeviceUtils
 import com.zhiyicx.common.utils.UIUtils
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow
 import com.zhiyicx.thinksnsplus.R
 import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean
 import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity
@@ -64,7 +65,7 @@ class IntegrationWithdrawalsFragment : TSFragment<IntegrationWithdrawalsContract
     /**
      * 充值提示规则选择弹框
      */
-    private val mRechargeInstructionsPopupWindow: ActionPopupWindow? = null// recharge instruction pop
+    private var mRechargeInstructionsPopupWindow: ActionPopupWindow? = null// recharge instruction pop
 
 
     private var mRechargeMoney = 0.toDouble() // money choosed for recharge
@@ -170,6 +171,7 @@ class IntegrationWithdrawalsFragment : TSFragment<IntegrationWithdrawalsContract
                     when {
                         mRechargeMoney < mIntegrationConfigBean!!.cashmin -> showSnackErrorMessage(getString(R.string.please_more_than_min_withdrawals_formart, mIntegrationConfigBean!!.cashmin))
                         mRechargeMoney > mIntegrationConfigBean!!.cashmax -> showSnackErrorMessage(getString(R.string.please_less_max_withdrawals_formart, mIntegrationConfigBean!!.cashmax))
+                        mRechargeMoney > mRechargeMoney.toInt() -> initmRechargeInstructionsPop()
                         else -> {
                             setSureBtEnable(false)
                             // 传入的是真实货币分单位
@@ -215,6 +217,29 @@ class IntegrationWithdrawalsFragment : TSFragment<IntegrationWithdrawalsContract
     override fun setSureBtEnable(enable: Boolean) {
         mBtSure.isEnabled = enable
     }
+
+    /**
+     * 充值说明选择弹框
+     */
+    fun initmRechargeInstructionsPop() {
+        DeviceUtils.hideSoftKeyboard(mActivity, mEtInput)
+        if (mRechargeInstructionsPopupWindow != null) {
+            mRechargeInstructionsPopupWindow!!.show()
+            return
+        }
+        mRechargeInstructionsPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.recharge_instructions))
+                .desStr(getString(R.string.recharge_instructions_detail))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(activity)
+                .bottomClickListener { mRechargeInstructionsPopupWindow!!.hide() }
+                .build()
+        mRechargeInstructionsPopupWindow!!.show()
+    }
+
 
     companion object {
 
