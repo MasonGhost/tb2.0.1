@@ -2,29 +2,20 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
     <View
-        android:id="@+id/iv_bg"
-        android:background="#aaaaaa"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-    <ImageView
-        android:layout_marginLeft="@dimen/spacing_mid"
-        android:layout_marginTop="@dimen/spacing_normal_large"
-        android:id="@+id/iv_exit_full_screen"
-        android:src="@mipmap/ico_chat_smallscreen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <RelativeLayout
+        android:id="@+id/iv_video_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/layout_surface_container">
+        android:background="@color/call_backgroup"/>
+
+    <RelativeLayout
+        android:id="@+id/layout_surface_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <!--显示对方画面控件-->
         <com.hyphenate.media.EMCallSurfaceView
@@ -38,24 +29,32 @@
             android:id="@+id/local_surface"
             android:layout_width="@dimen/chat_call_local_surface_view_width"
             android:layout_height="@dimen/chat_call_local_surface_view_height"
-            android:layout_marginTop="@dimen/spacing_normal_large"
+            android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/spacing_mid"
-            android:layout_alignParentRight="true"/>
+            android:layout_marginTop="@dimen/spacing_normal_large"/>
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/ll_btns"
+        android:id="@+id/rl_btn_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_centerHorizontal="true"
+        <ImageView
+            android:id="@+id/iv_exit_full_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginTop="@dimen/spacing_normal_large"
+            android:src="@mipmap/ico_chat_smallscreen"/>
 
-            android:layout_above="@+id/ll_bottom_container"
+        <LinearLayout
             android:id="@+id/ll_top_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_normal"
+            android:layout_above="@+id/ll_bottom_container"
+            android:layout_centerHorizontal="true"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -68,50 +67,45 @@
                 android:textSize="@dimen/size_primary_title"
                 tools:ignore="HardcodedText"/>
 
-            <TextView
-                android:id="@+id/tv_call_state"
+            <LinearLayout
+                android:layout_marginTop="@dimen/spacing_normal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/size_primary_title"
-                android:visibility="visible"
-                android:layout_marginTop="@dimen/spacing_mid"
-                tools:text="通话中"/>
+                android:orientation="horizontal">
 
-            <com.zhiyicx.thinksnsplus.widget.chat.MyChronometer
-                android:id="@+id/chronometer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Chronometer"
-                android:textColor="@color/white"
-                android:visibility="invisible"
-                tools:ignore="HardcodedText"/>
+                <TextView
+                    android:id="@+id/tv_call_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/size_primary_title"
+                    android:visibility="visible"
+                    tools:text="通话中"/>
 
-            <TextView
-                android:id="@+id/tv_is_p2p"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"/>
+                <com.zhiyicx.thinksnsplus.widget.chat.MyChronometer
+                    android:id="@+id/chronometer"
+                    android:gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chronometer"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/size_primary_title"
+                    android:visibility="gone"
+                    tools:ignore="HardcodedText"/>
+
+            </LinearLayout>
+
+
         </LinearLayout>
 
-
-        <TextView
-            android:id="@+id/tv_call_monitor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/size_icon_assist"
-            android:layout_marginBottom="6dp"
-            />
 
         <LinearLayout
             android:id="@+id/ll_bottom_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/spacing_bigger_large"
             android:layout_alignParentBottom="true"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/spacing_bigger_large">
 
             <!--静音-->
             <LinearLayout
@@ -132,10 +126,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/size_content_assist"
-                    android:textColor="@color/normal_for_assist_text"
                     android:layout_marginTop="@dimen/spacing_normal"
-                    android:text="@string/mute"/>
+                    android:text="@string/mute"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:textSize="@dimen/size_content_assist"/>
 
             </LinearLayout>
 
@@ -152,17 +146,17 @@
                     android:id="@+id/btn_refuse_call"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@null"
                     android:gravity="center"
-                    android:src="@mipmap/btn_chat_hungup"
-                    android:background="@null"/>
+                    android:src="@mipmap/btn_chat_hungup"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/size_content_assist"
-                    android:textColor="@color/normal_for_assist_text"
                     android:layout_marginTop="@dimen/spacing_normal"
-                    android:text="@string/hang_up"/>
+                    android:text="@string/hang_up"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:textSize="@dimen/size_content_assist"/>
 
             </LinearLayout>
 
@@ -173,24 +167,24 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/btn_hangup_call"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@null"
                     android:gravity="center"
-                    android:src="@mipmap/btn_chat_hungup"
-                    android:background="@null"/>
+                    android:src="@mipmap/btn_chat_hungup"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/size_content_assist"
-                    android:textColor="@color/normal_for_assist_text"
                     android:layout_marginTop="@dimen/spacing_normal"
-                    android:text="@string/hang_up"/>
+                    android:text="@string/hang_up"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:textSize="@dimen/size_content_assist"/>
 
             </LinearLayout>
 
@@ -207,17 +201,17 @@
                     android:id="@+id/btn_answer_call"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@null"
                     android:gravity="center"
-                    android:src="@mipmap/btn_chat_answer"
-                    android:background="@null"/>
+                    android:src="@mipmap/btn_chat_answer"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/size_content_assist"
-                    android:textColor="@color/normal_for_assist_text"
                     android:layout_marginTop="@dimen/spacing_normal"
-                    android:text="@string/answer"/>
+                    android:text="@string/answer"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:textSize="@dimen/size_content_assist"/>
 
             </LinearLayout>
 
@@ -241,10 +235,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/size_content_assist"
-                    android:textColor="@color/normal_for_assist_text"
                     android:layout_marginTop="@dimen/spacing_normal"
-                    android:text="@string/Hands_free"/>
+                    android:text="@string/Hands_free"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:textSize="@dimen/size_content_assist"/>
 
             </LinearLayout>
 
@@ -268,10 +262,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/size_content_assist"
-                    android:textColor="@color/normal_for_assist_text"
                     android:layout_marginTop="@dimen/spacing_normal"
-                    android:text="@string/switch_camera"/>
+                    android:text="@string/switch_camera"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:textSize="@dimen/size_content_assist"/>
 
             </LinearLayout>
 
@@ -282,9 +276,9 @@
         android:id="@+id/tv_network_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:layout_marginTop="10dp"
         android:textColor="@android:color/white"
-        android:layout_centerInParent="true"
         />
 
 </RelativeLayout>

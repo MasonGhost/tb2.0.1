@@ -50,6 +50,7 @@
 
     <!--ts+ 自定义颜色-->
     <color name="extend_btn_backgroup">#f2f2f2</color>
+    <color name="call_backgroup">#252C39</color>
 
 
 </resources>

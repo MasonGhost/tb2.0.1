@@ -273,7 +273,9 @@ public class TSEMHyphenate {
                 public void onCallStateChanged(CallState callState, CallError callError) {
 
                     TSEMCallEvent event = new TSEMCallEvent();
+                    String extraMsg = EMClient.getInstance().callManager().getCurrentCallSession().getExt();
                     event.setCallState(callState);
+                    event.setExtraMsg(extraMsg);
                     event.setCallError(callError);
                     EventBus.getDefault().post(event);
 

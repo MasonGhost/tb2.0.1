@@ -152,7 +152,7 @@ public class TSEMConstants {
     /**
      * 自己拒绝打来的通话
      */
-    public static final int ML_CALL_REFUESD_IS_INCOMING = 0x06;
+    public static final int TS_CALL_REFUESD_IS_INCOMING = 0x06;
 
     /**
      * 对方未接听
@@ -162,12 +162,12 @@ public class TSEMConstants {
     /**
      * 建立连接失败
      */
-    public static final int ML_CALL_TRANSPORT = 0x08;
+    public static final int TS_CALL_TRANSPORT = 0x08;
 
     /**
      * 双方通讯版本不同
      */
-    public static final int ML_CALL_VERSION_DIFFERENT = 0x09;
+    public static final int TS_CALL_VERSION_DIFFERENT = 0x09;
     /**-------------------------------------通话结束状态码----------------------*/
 
     /**--------------------------------------------链接状态码-----------------------*/

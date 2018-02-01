@@ -6,28 +6,20 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
-import com.hyphenate.chat.EMMessage;
 import com.jakewharton.rxbinding.view.RxView;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.imsdk.core.ChatType;
-import com.zhiyicx.imsdk.db.dao.ConversationDao;
-import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
-import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
@@ -41,7 +33,6 @@ import java.util.List;
 import butterknife.BindView;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 
@@ -51,7 +42,8 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
  * @Date 2017/01/06
  * @Contact master.jungle68@gmail.com
  */
-public class ChatFragment extends TSFragment<ChatContract.Presenter> implements ChatContract.View, InputLimitView.OnSendClickListener,
+public class ChatFragment extends TSFragment<ChatContract.Presenter> implements ChatContract
+        .View, InputLimitView.OnSendClickListener,
         OnRefreshListener, ChatMessageList.MessageListItemClickListener {
     public static final String BUNDLE_MESSAGEITEMBEAN = "MessageItemBean";
     public static final String BUNDLE_CHAT_ID = "bundle_chat_id";
@@ -148,7 +140,8 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                     //若不可视区域高度大于1/3屏幕高度，则键盘显示
                     LogUtils.i(TAG + "---RxView   " + aBoolean);
                     if (aBoolean) {
-                        if (!mKeyboradIsOpen && mMessageItemBean.getConversation() != null) {// 如果对话没有创建，不做处理
+                        if (!mKeyboradIsOpen && mMessageItemBean.getConversation() != null) {//
+                            // 如果对话没有创建，不做处理
                             scrollToBottom();
                         }
                         mKeyboradIsOpen = true;
@@ -161,7 +154,8 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
                 });
         mIlvContainer.setEtContentHint(getString(R.string.default_input_chat_hint));
-        // 软键盘异常解决方案： 1： 使用      android:fitsSystemWindows="true"  2:        AndroidBug5497Workaround.assistActivity(getActivity());
+        // 软键盘异常解决方案： 1： 使用      android:fitsSystemWindows="true"  2:
+        // AndroidBug5497Workaround.assistActivity(getActivity());
     }
 
     @Override
@@ -171,7 +165,8 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         mMessageList.setRefreshListener(this);
         if (mMessageItemBean.getConversation() == null) {
             // 先获取本地信息，如果本地信息存在，直接使用，如果没有直接创建
-            EMConversation conversation = (EMClient.getInstance().chatManager().getConversation(mMessageItemBean.getEmKey()));
+            EMConversation conversation = (EMClient.getInstance().chatManager().getConversation
+                    (mMessageItemBean.getEmKey()));
             if (conversation == null) {
                 mPresenter.createChat(mMessageItemBean.getUserInfo(), null);
             } else {
@@ -206,7 +201,8 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         }
     }
 
-    /*******************************************  聊天 item 点击事件 *********************************************/
+    /*******************************************  聊天 item 点击事件
+     * *********************************************/
 
     /**
      * 发送状态点击
@@ -360,11 +356,13 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     public void initMessageList(List<ChatItemBean> list) {
         mDatas.addAll(list);
-        mMessageList.init(mMessageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat ? mMessageItemBean.getUserInfo()
+        mMessageList.init(mMessageItemBean.getConversation().getType() == EMConversation
+                        .EMConversationType.Chat ? mMessageItemBean.getUserInfo()
                         .getName() : getString(R.string.default_message_group)
                 , mMessageItemBean.getConversation().getType(), mDatas);
         scrollToBottom();
     }
+
     @Override
     public void scrollToBottom() {
         mMessageList.scrollToBottom();

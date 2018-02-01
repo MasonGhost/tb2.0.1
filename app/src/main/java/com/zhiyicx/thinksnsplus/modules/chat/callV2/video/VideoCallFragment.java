@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.chat.callV2.video;
 
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -10,13 +11,18 @@ import android.widget.TextView;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMVideoCallHelper;
+import com.hyphenate.exceptions.EMNoActiveCallException;
 import com.hyphenate.exceptions.EMServiceNotReadyException;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.media.EMCallSurfaceView;
+import com.superrtc.sdk.VideoView;
 import com.zhiyicx.baseproject.em.manager.TSEMCallStatus;
 import com.zhiyicx.baseproject.em.manager.TSEMCameraDataProcessor;
 import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
 import com.zhiyicx.thinksnsplus.modules.chat.callV2.BaseCallFragment;
 import com.zhiyicx.thinksnsplus.widget.chat.MyChronometer;
 
@@ -31,7 +37,7 @@ import butterknife.OnClick;
  */
 public class VideoCallFragment extends BaseCallFragment {
 
-    @BindView(R.id.iv_bg)
+    @BindView(R.id.iv_video_bg)
     View mIvBg;
     @BindView(R.id.iv_exit_full_screen)
     ImageView mIvExitFullScreen;
@@ -47,12 +53,8 @@ public class VideoCallFragment extends BaseCallFragment {
     TextView mTvCallState;
     @BindView(R.id.chronometer)
     MyChronometer mChronometer;
-    @BindView(R.id.tv_is_p2p)
-    TextView mTvIsP2p;
     @BindView(R.id.ll_top_container)
     LinearLayout mLlTopContainer;
-    @BindView(R.id.tv_call_monitor)
-    TextView mTvCallMonitor;
     @BindView(R.id.iv_mute)
     ImageView mIvMute;
     @BindView(R.id.ll_mute)
@@ -79,12 +81,10 @@ public class VideoCallFragment extends BaseCallFragment {
     LinearLayout mLlSwitchCamera;
     @BindView(R.id.ll_bottom_container)
     LinearLayout mLlBottomContainer;
-    @BindView(R.id.ll_btns)
-    RelativeLayout mLlBtns;
     @BindView(R.id.tv_network_status)
     TextView mTvNetworkStatus;
-    @BindView(R.id.root_layout)
-    RelativeLayout mRootLayout;
+    @BindView(R.id.rl_btn_container)
+    RelativeLayout mRlBtnContainer;
 
     /**
      * 视频通话帮助类
@@ -95,6 +95,11 @@ public class VideoCallFragment extends BaseCallFragment {
      * 摄像头数据处理器
      */
     private TSEMCameraDataProcessor mCameraDataProcessor;
+
+    /**
+     * 切换通话界面，这里就是交换本地和远端画面控件设置，以达到通话大小画面的切换
+     */
+    private int mSurfaceState;
 
     public static VideoCallFragment getInstance(Bundle bundle) {
         VideoCallFragment videoCallFragment = new VideoCallFragment();
@@ -116,6 +121,7 @@ public class VideoCallFragment extends BaseCallFragment {
         // 设置本地预览图像显示在最上层，一定要提前设置，否则无效
         mLocalSurface.setZOrderMediaOverlay(true);
         mLocalSurface.setZOrderOnTop(true);
+        mOppositeSurface.setScaleMode(VideoView.EMCallViewScaleMode.EMCallViewScaleModeAspectFill);
 
         EMClient.getInstance().callManager().setSurfaceView(mLocalSurface, mOppositeSurface);
 
@@ -138,30 +144,50 @@ public class VideoCallFragment extends BaseCallFragment {
             if (isInComingCall) {
                 // 设置通话状态为对方申请通话
                 mTvCallState.setText(R.string.video_call_in);
+
+                mLlRefuseCall.setVisibility(View.VISIBLE);
+                mLlAnswerCall.setVisibility(View.VISIBLE);
+                mLlHangupCall.setVisibility(View.GONE);
             } else {
                 // 设置通话状态为正在呼叫中
                 mTvCallState.setText(R.string.video_call_out);
+
+                mLlRefuseCall.setVisibility(View.VISIBLE);
+                mLlAnswerCall.setVisibility(View.GONE);
+                mLlHangupCall.setVisibility(View.GONE);
+
                 // 自己是主叫方，调用呼叫方法
                 makeCall();
             }
-        } else if (TSEMCallStatus.getInstance().getCallState() == TSEMCallStatus.CALL_STATUS_CONNECTING) {
+        } else if (TSEMCallStatus.getInstance().getCallState() == TSEMCallStatus
+                .CALL_STATUS_CONNECTING) {
             // 设置通话呼入呼出状态
             isInComingCall = TSEMCallStatus.getInstance().isInComing();
             // 设置通话状态为正在呼叫中
             mTvCallState.setText(R.string.video_call_out);
+
+            mLlRefuseCall.setVisibility(View.VISIBLE);
             mLlAnswerCall.setVisibility(View.GONE);
-        } else if (TSEMCallStatus.getInstance().getCallState() == TSEMCallStatus.CALL_STATUS_CONNECTING_INCOMING) {
+            mLlHangupCall.setVisibility(View.GONE);
+        } else if (TSEMCallStatus.getInstance().getCallState() == TSEMCallStatus
+                .CALL_STATUS_CONNECTING_INCOMING) {
             // 设置通话呼入呼出状态
             isInComingCall = TSEMCallStatus.getInstance().isInComing();
             // 设置通话状态为对方申请通话
             mTvCallState.setText(R.string.video_call_in);
+
+            mLlRefuseCall.setVisibility(View.VISIBLE);
+            mLlAnswerCall.setVisibility(View.VISIBLE);
+            mLlHangupCall.setVisibility(View.GONE);
         } else {
             // 设置通话呼入呼出状态
             isInComingCall = TSEMCallStatus.getInstance().isInComing();
             // 再次打开要设置状态为正常通话状态
             mCallStatus = TSEMConstants.TS_CALL_ACCEPTED;
             mTvCallState.setText(R.string.video_call_in);
+            mLlRefuseCall.setVisibility(View.GONE);
             mLlAnswerCall.setVisibility(View.GONE);
+            mLlHangupCall.setVisibility(View.VISIBLE);
         }
     }
 
@@ -171,22 +197,30 @@ public class VideoCallFragment extends BaseCallFragment {
     }
 
     @OnClick({R.id.iv_exit_full_screen, R.id.opposite_surface,
-            R.id.iv_mute,
+            R.id.iv_mute, R.id.rl_btn_container, R.id.iv_video_bg,
             R.id.local_surface, R.id.btn_refuse_call, R.id.btn_hangup_call,
             R.id.btn_answer_call, R.id.iv_handsfree, R.id.iv_switch_camera})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.iv_exit_full_screen:
-                break;
+            case R.id.rl_btn_container:
             case R.id.opposite_surface:
+                onControlLayout();
                 break;
             case R.id.local_surface:
+                changeCallView();
+                break;
+            case R.id.iv_exit_full_screen:
+                // 预留功能，退出全屏通话
+//                exitFullScreen();
                 break;
             case R.id.btn_refuse_call:
+                rejectCall();
                 break;
             case R.id.btn_hangup_call:
+                endCall();
                 break;
             case R.id.btn_answer_call:
+                answerCall();
                 break;
             case R.id.iv_handsfree:
                 // 免提
@@ -231,7 +265,8 @@ public class VideoCallFragment extends BaseCallFragment {
      */
     private void makeCall() {
         try {
-            EMClient.getInstance().callManager().makeVideoCall(mChatId);
+            EMClient.getInstance().callManager().makeVideoCall(mChatId, AppApplication
+                    .getmCurrentLoginAuth().getUser().getName());
         } catch (EMServiceNotReadyException e) {
             e.printStackTrace();
         }
@@ -362,19 +397,144 @@ public class VideoCallFragment extends BaseCallFragment {
         mAudioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
     }
 
+    /**
+     * 控制界面的显示与隐藏
+     */
+    private void onControlLayout() {
+        if (mRlBtnContainer.isShown()) {
+            mRlBtnContainer.setVisibility(View.GONE);
+        } else {
+            mRlBtnContainer.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * @Author Jliuer
+     * @Date 2018/2/1/20:44
+     * @Email Jliuer@aliyun.com
+     * @Description 切换通话界面，这里就是交换本地和远端画面控件设置，以达到通话大小画面的切换
+     */
+    private void changeCallView() {
+        if (mSurfaceState == 0) {
+            mSurfaceState = 1;
+            EMClient.getInstance().callManager().setSurfaceView(mOppositeSurface, mLocalSurface);
+        } else {
+            mSurfaceState = 0;
+            EMClient.getInstance().callManager().setSurfaceView(mLocalSurface, mOppositeSurface);
+        }
+    }
+
+    /**
+     * @Author Jliuer
+     * @Date 2018/2/1/20:59
+     * @Email Jliuer@aliyun.com
+     * @Description 拒绝通话
+     */
+    private void rejectCall() {
+        // 振动反馈
+        vibrate();
+        // 通话结束，重置通话状态
+        TSEMCallStatus.getInstance().reset();
+        // 结束通话时取消通话状态监听
+        TSEMHyphenate.getInstance().removeCallStateChangeListener();
+        // 拒绝通话后关闭通知铃音
+        stopCallSound();
+        try {
+            // 调用 SDK 的拒绝通话方法
+            EMClient.getInstance().callManager().rejectCall();
+        } catch (EMNoActiveCallException e) {
+            e.printStackTrace();
+        }
+        // 拒绝通话设置通话状态为自己拒绝
+        mCallStatus = TSEMConstants.TS_CALL_REFUESD_IS_INCOMING;
+        // 保存一条通话消息
+        saveCallMessage();
+        // 结束界面
+        onFinish();
+    }
+
+    /**
+     * @Author Jliuer
+     * @Date 2018/2/1/21:03
+     * @Email Jliuer@aliyun.com
+     * @Description 结束通话
+     */
+    private void endCall() {
+        // 振动反馈
+        vibrate();
+        // 通话结束，重置通话状态
+        TSEMCallStatus.getInstance().reset();
+        // 结束通话时取消通话状态监听
+        TSEMHyphenate.getInstance().removeCallStateChangeListener();
+        // 结束通话后关闭通知铃音
+        stopCallSound();
+        try {
+            // 调用 SDK 的结束通话方法
+            EMClient.getInstance().callManager().endCall();
+        } catch (EMNoActiveCallException e) {
+            e.printStackTrace();
+        }
+        // 挂断电话调用保存消息方法
+        saveCallMessage();
+        // 结束界面
+        onFinish();
+    }
+
+    /**
+     * @Author Jliuer
+     * @Date 2018/2/1/21:04
+     * @Email Jliuer@aliyun.com
+     * @Description 接听通话
+     */
+    private void answerCall() {
+        // 振动反馈
+        vibrate();
+        // 做一些接听时的操作，比如隐藏按钮
+        mLlRefuseCall.setVisibility(View.GONE);
+        mLlAnswerCall.setVisibility(View.GONE);
+        mLlHangupCall.setVisibility(View.VISIBLE);
+        mLlMute.setVisibility(View.VISIBLE);
+        mLlSwitchCamera.setVisibility(View.VISIBLE);
+        // 接听通话后关闭通知铃音
+        stopCallSound();
+        // 调用接通通话方法
+        try {
+            EMClient.getInstance().callManager().answerCall();
+            // 设置通话状态为正常结束
+            mCallStatus = TSEMConstants.TS_CALL_ACCEPTED;
+            // 更新通话状态为已接通
+            TSEMCallStatus.getInstance().setCallState(TSEMCallStatus.CALL_STATUS_ACCEPTED);
+        } catch (EMNoActiveCallException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void surfaceViewProcessor() {
+        mChronometer.setVisibility(View.VISIBLE);
+        mChronometer.setBase(SystemClock.elapsedRealtime());
+        mChronometer.start();
         mOppositeSurface.setVisibility(View.VISIBLE);
     }
 
     @Override
     protected void onFinish() {
-        super.onFinish();
         // 结束通话要把 SurfaceView 释放 重置为 null
         mLocalSurface = null;
         mOppositeSurface = null;
         super.onFinish();
     }
 
+    @Override
+    protected void saveCallMessage() {
+        mChronometer.stop();
+        mCallDruationText = mChronometer.getText().toString();
+        super.saveCallMessage();
+    }
 
+    @Override
+    protected void setCallStatusText(String status) {
+        super.setCallStatusText(status);
+        mTvCallState.setText(getString(R.string.video_calling, status));
+    }
 }

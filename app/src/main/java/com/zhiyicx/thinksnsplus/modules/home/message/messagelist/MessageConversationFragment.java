@@ -11,6 +11,7 @@ import android.view.View;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.easeui.EaseConstant;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMConnectionEvent;
 import com.zhiyicx.baseproject.widget.recycleview.BlankClickRecycleView;
 import com.zhiyicx.common.base.BaseFragment;
@@ -27,6 +28,9 @@ import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageAdapterV2;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.TSSearchView;
+
+import org.simple.eventbus.Subscriber;
+import org.simple.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -205,9 +209,22 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
         refreshData();
     }
 
-    @Override
+    @Subscriber(mode = ThreadMode.MAIN)
     public void onTSEMConnectionEventBus(TSEMConnectionEvent event) {
-        LogUtils.d("TSEMConnectionEvent");
+        LogUtils.d("onTSEMConnectionEventBus");
+        switch (event.getType()) {
+            case TSEMConstants.TS_CONNECTION_USER_LOGIN_OTHER_DIVERS:
+                break;
+            case TSEMConstants.TS_CONNECTION_USER_REMOVED:
+                break;
+            case TSEMConstants.TS_CONNECTION_CONNECTED:
+                hideStickyMessage();
+                break;
+            case TSEMConstants.TS_CONNECTION_DISCONNECTED:
+                showStickyMessage(getString(R.string.chat_unconnected));
+                break;
+            default:
+        }
     }
 
     private void initListener() {

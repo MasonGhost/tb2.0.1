@@ -984,20 +984,4 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             popupWindow.dismiss();
         }
     }
-
-    @Subscriber(mode = ThreadMode.MAIN)
-    public void onTSEMConnectionEventBus(TSEMConnectionEvent event) {
-        LogUtils.d("onTSEMConnectionEventBus");
-        switch (event.getType()) {
-            case TSEMConstants.TS_CONNECTION_USER_LOGIN_OTHER_DIVERS:
-                break;
-            case TSEMConstants.TS_CONNECTION_USER_REMOVED:
-                break;
-            case TSEMConstants.TS_CONNECTION_CONNECTED:
-                break;
-            case TSEMConstants.TS_CONNECTION_DISCONNECTED:
-                break;
-            default:
-        }
-    }
 }

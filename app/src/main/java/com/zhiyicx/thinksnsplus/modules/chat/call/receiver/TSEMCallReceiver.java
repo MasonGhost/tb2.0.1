@@ -9,12 +9,15 @@ import com.hyphenate.chat.EMClient;
 import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
 import com.zhiyicx.baseproject.em.manager.TSEMCallStatus;
 import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
-import com.zhiyicx.thinksnsplus.modules.chat.call.VideoCallActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.callV2.video.VideoCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.call.VoiceCallActivity;
 
 
 /**
- * 通话呼叫监听广播实现，用来监听其他账户对自己的呼叫
+ * @Author Jliuer
+ * @Date 2018/2/1/21:08
+ * @Email Jliuer@aliyun.com
+ * @Description 监听其他账户对自己的呼叫
  */
 public class TSEMCallReceiver extends BroadcastReceiver {
 

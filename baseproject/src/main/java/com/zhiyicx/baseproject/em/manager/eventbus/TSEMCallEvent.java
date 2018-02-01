@@ -22,6 +22,8 @@ public class TSEMCallEvent {
      */
     private EMCallStateChangeListener.CallState mCallState;
 
+    private String extraMsg;
+
 
     public EMCallStateChangeListener.CallError getCallError() {
         return mCallError;
@@ -39,5 +41,11 @@ public class TSEMCallEvent {
         this.mCallState = callState;
     }
 
+    public String getExtraMsg() {
+        return extraMsg;
+    }
 
+    public void setExtraMsg(String extraMsg) {
+        this.extraMsg = extraMsg;
+    }
 }

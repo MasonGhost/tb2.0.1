@@ -1,9 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.chat.callV2.video;
 
-import android.graphics.Bitmap;
-import android.os.Build;
 import android.support.v4.app.Fragment;
-import android.view.ViewTreeObserver;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;
@@ -39,7 +36,9 @@ public class VideoCallActivity extends TSActivity {
             }
         }
         VideoCallFragment videoCallFragment = (VideoCallFragment) mContanierFragment;
-        videoCallFragment.onUserLeaveHint();
+        if (videoCallFragment != null) {
+            videoCallFragment.onUserLeaveHint();
+        }
         super.onUserLeaveHint();
     }
 
@@ -56,6 +55,8 @@ public class VideoCallActivity extends TSActivity {
             }
         }
         VideoCallFragment videoCallFragment = (VideoCallFragment) mContanierFragment;
-        videoCallFragment.onActivityResume();
+        if (videoCallFragment != null) {
+            videoCallFragment.onActivityResume();
+        }
     }
 }

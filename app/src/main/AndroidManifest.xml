@@ -23,14 +23,14 @@
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <!--环信相关permission-->
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"/>
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <!-- allowBackup =true  用于 adb backup 与 adb restore;发布后需要关闭，保证数据安全  android:persistent="true" 应用保持活与自启动 -->
     <application
@@ -619,76 +619,97 @@
         <activity
             android:name=".modules.circle.publish.PublishPostActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".modules.circle.create.rule.RuleForCreateCircleActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name=".modules.circle.manager.members.blacklist.BlackListActivity"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.create.rule.RuleForCreateCircleActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.manager.members.blacklist.BlackListActivity"
+            android:screenOrientation="portrait"/>
         <!--扫码相关页面-->
-        <activity android:name=".modules.home.mine.scan.ScanCodeActivity"
-                android:screenOrientation="portrait"/>
-        <activity android:name=".modules.home.mine.mycode.MyCodeActivity"
-                android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.home.mine.scan.ScanCodeActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.home.mine.mycode.MyCodeActivity"
+            android:screenOrientation="portrait"/>
         <!--我的好友列表-->
-        <activity android:name=".modules.home.mine.friends.MyFriendsListActivity"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.home.mine.friends.MyFriendsListActivity"
+            android:screenOrientation="portrait"/>
         <!--搜索好友-->
-        <activity android:name=".modules.home.mine.friends.search.SearchFriendsActivity"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.home.mine.friends.search.SearchFriendsActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".modules.information.publish.detail.EditeInfoDetailActivity"/>
         <activity android:name=".modules.q_a.publish.detail.EditeQuestionDetailActivity"/>
         <activity android:name=".modules.q_a.answer.EditeAnswerDetailActivity"/>
         <!--系统通知页面-->
-        <activity android:name=".modules.home.message.notifacationlist.NotificationActivity"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.home.message.notifacationlist.NotificationActivity"
+            android:screenOrientation="portrait"/>
         <!--环信的聊天页面-->
-        <activity android:name=".modules.chat.ChatActivityV2"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.chat.ChatActivityV2"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
         <!--发送位置-->
-        <activity android:name=".modules.chat.location.SendLocationActivity"
-                android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.chat.location.SendLocationActivity"
+            android:screenOrientation="portrait"/>
         <!--视频播放-->
         <activity android:name="com.hyphenate.easeui.ui.EaseShowVideoActivity"/>
         <!--选择好友-->
-        <activity android:name=".modules.chat.select.SelectFriendsActivity"
-                android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.chat.select.SelectFriendsActivity"
+            android:screenOrientation="portrait"/>
         <!--选择视频-->
-        <activity android:name=".modules.chat.video.ImageGridActivity"
-                android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.chat.video.ImageGridActivity"
+            android:screenOrientation="portrait"/>
         <!--录制视频-->
-        <activity android:name=".modules.chat.video.RecorderVideoActivity"
-                android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.chat.video.RecorderVideoActivity"
+            android:screenOrientation="portrait"/>
         <!--查看文件-->
-        <activity android:name="com.hyphenate.easeui.ui.EaseShowNormalFileActivity"
-                android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.hyphenate.easeui.ui.EaseShowNormalFileActivity"
+            android:screenOrientation="portrait"/>
         <!--语音通话页面-->
-        <activity android:name=".modules.chat.call.VoiceCallActivity"
-                android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.chat.call.VoiceCallActivity"
+            android:screenOrientation="portrait"/>
         <!--视频通话页面-->
-        <activity android:name=".modules.chat.call.VideoCallActivity"
-                android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.chat.call.VideoCallActivity"
+            android:screenOrientation="portrait"/>
         <!--单聊详情-->
-        <activity android:name=".modules.chat.info.ChatInfoActivity"
-                android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.chat.info.ChatInfoActivity"
+            android:screenOrientation="portrait"/>
         <!--修改群名称-->
-        <activity android:name=".modules.chat.edit.name.EditGroupNameActivity"
-                android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.chat.edit.name.EditGroupNameActivity"
+            android:screenOrientation="portrait"/>
         <!--修改群主-->
-        <activity android:name=".modules.chat.edit.owner.EditGroupOwnerActivity"
-                android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.chat.edit.owner.EditGroupOwnerActivity"
+            android:screenOrientation="portrait"/>
         <!--群管理页面-->
-        <activity android:name=".modules.chat.edit.manager.GroupManagerActivity"
-                android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.chat.edit.manager.GroupManagerActivity"
+            android:screenOrientation="portrait"/>
         <!--群成员列表页面-->
-        <activity android:name=".modules.chat.member.GroupMemberListActivity"
-                android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.chat.member.GroupMemberListActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".modules.chat.callV2.video.VideoCallActivity"/>
         <!-- 开机自启动服务 -->
         <receiver android:name=".modules.chat.receiver.StartServiceReceiver">
             <intent-filter android:priority="1000">
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </receiver>
     </application>

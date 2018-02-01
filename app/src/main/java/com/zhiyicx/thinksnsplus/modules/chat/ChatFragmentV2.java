@@ -33,7 +33,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.modules.chat.call.VideoCallActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.callV2.video.VideoCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.call.VoiceCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.info.ChatInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
@@ -450,7 +450,7 @@ public class ChatFragmentV2 extends TSEaseChatFragment implements TSEaseChatFrag
      */
     protected void startVideoCall() {
         if (!EMClient.getInstance().isConnected()) {
-            ToastUtils.showToast(getActivity(), R.string.not_connect_to_server, Toast.LENGTH_SHORT);
+            ToastUtils.showToast(R.string.not_connect_to_server);
         } else {
             Intent intent = new Intent(getActivity(), VideoCallActivity.class);
             Bundle bundle = new Bundle();

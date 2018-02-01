@@ -88,6 +88,16 @@ public abstract class BaseCallFragment extends TSFragment {
     private EMCallManager.EMCallPushProvider mEMCallPushProvider;
 
     @Override
+    protected boolean showToolbar() {
+        return false;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
     protected boolean useEventBus() {
         return true;
     }
@@ -302,7 +312,7 @@ public abstract class BaseCallFragment extends TSFragment {
                 // 对方不在线
                 content = mActivity.getString(R.string.The_other_is_not_online);
                 break;
-            case TSEMConstants.ML_CALL_REFUESD_IS_INCOMING:
+            case TSEMConstants.TS_CALL_REFUESD_IS_INCOMING:
                 // 自己已拒绝
                 content = mActivity.getString(R.string.Refused);
                 break;
@@ -314,11 +324,11 @@ public abstract class BaseCallFragment extends TSFragment {
                 // 对方无响应
                 content = mActivity.getString(R.string.The_other_party_did_not_answer);
                 break;
-            case TSEMConstants.ML_CALL_TRANSPORT:
+            case TSEMConstants.TS_CALL_TRANSPORT:
                 // 建立连接失败
                 content = mActivity.getString(R.string.not_connect_to_server);
                 break;
-            case TSEMConstants.ML_CALL_VERSION_DIFFERENT:
+            case TSEMConstants.TS_CALL_VERSION_DIFFERENT:
                 // 双方通话协议版本不同
                 content = mActivity.getString(R.string.version_diff);
                 break;
@@ -359,11 +369,11 @@ public abstract class BaseCallFragment extends TSFragment {
                 break;
             case CONNECTED:
                 // 正在等待对方接受呼叫申请（对方申请与你进行通话）
-                setCallStatusText(getString(R.string.video_call_out));
+                setCallStatusText(getString(R.string.video_call_connecting));
                 break;
             case ACCEPTED:
                 // 通话已接通
-                setCallStatusText(getString(R.string.video_calling));
+                setCallStatusText(getString(R.string.network_normal));
                 // 电话接通，停止播放提示音
                 stopCallSound();
                 // 通话已接通，设置通话状态为正常状态
@@ -388,15 +398,15 @@ public abstract class BaseCallFragment extends TSFragment {
                     mCallStatus = TSEMConstants.TS_CALL_NORESPONSE;
                 } else if (callError == EMCallStateChangeListener.CallError.ERROR_TRANSPORT) {
                     // 设置通话状态为建立连接失败
-                    mCallStatus = TSEMConstants.ML_CALL_TRANSPORT;
+                    mCallStatus = TSEMConstants.TS_CALL_TRANSPORT;
                 } else if (callError == EMCallStateChangeListener.CallError.ERROR_LOCAL_SDK_VERSION_OUTDATED) {
                     // 设置通话状态为双方协议不同
-                    mCallStatus = TSEMConstants.ML_CALL_VERSION_DIFFERENT;
+                    mCallStatus = TSEMConstants.TS_CALL_VERSION_DIFFERENT;
                 }else {
                     // 根据当前状态判断是正常结束，还是对方取消通话
                     if (mCallStatus == TSEMConstants.TS_CALL_CANCEL) {
                         // 设置通话状态
-                        mCallStatus = TSEMConstants.ML_CALL_REFUESD_IS_INCOMING;
+                        mCallStatus = TSEMConstants.TS_CALL_REFUESD_IS_INCOMING;
                     }
                 }
                 // 通话结束保存消息
@@ -457,7 +467,10 @@ public abstract class BaseCallFragment extends TSFragment {
      * @Email Jliuer@aliyun.com
      * @Description 结束通话关闭界面
      */
-    protected void onFinish(){}
+    protected void onFinish(){
+        stopCallSound();
+        mActivity.finish();
+    }
 
     public void onUserLeaveHint(){}
     public void onActivityResume(){}
