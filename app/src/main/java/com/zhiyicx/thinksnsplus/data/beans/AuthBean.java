@@ -22,7 +22,8 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
     private static final long REQUEST_TIME_OFFSET = 10_000;
     /**
      * {
-     * "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6Ly9wbHVzLmlvL2FwaS92Mi90b2tlbnMiLCJpYXQiOjE1MDAzNjU5MzQsImV4cCI6MTUwMTU3NTUzNCwibmJmIjoxNTAwMzY1OTM0LCJqdGkiOiJ1aXlvdTQwNnJsdU9pa3l3In0.OTM4mbH3QW7busunRsFUsheE5vysuIfrBrwjWnd0J6k",
+     * "token":
+     * "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6Ly9wbHVzLmlvL2FwaS92Mi90b2tlbnMiLCJpYXQiOjE1MDAzNjU5MzQsImV4cCI6MTUwMTU3NTUzNCwibmJmIjoxNTAwMzY1OTM0LCJqdGkiOiJ1aXlvdTQwNnJsdU9pa3l3In0.OTM4mbH3QW7busunRsFUsheE5vysuIfrBrwjWnd0J6k",
      * "user": {
      * "id": 1,
      * "name": "创始人",
@@ -42,7 +43,7 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
      * "feeds_count": 0
      * }
      * },
-     * "ttl": 20160, 用户token的有效期(单位:秒)
+     * "ttl": 20160, 用户token的有效期(单位:分)
      * "refresh_ttl": 40320
      * }
      */
@@ -55,7 +56,15 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
     private long user_id;
     private UserInfoBean user;
 
-    private long token_request_time = System.currentTimeMillis(); // 请求 token 的当前时间
+    private long token_request_time; // 请求 token 的当前时间
+
+    public long getToken_request_time() {
+        return token_request_time;
+    }
+
+    public void setToken_request_time(long token_request_time) {
+        this.token_request_time = token_request_time;
+    }
 
     public long getUser_id() {
         if (user != null) {
@@ -103,7 +112,7 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
     }
 
     public boolean getToken_is_expired() {
-        if (System.currentTimeMillis() - expires * ConstantConfig.MIN == REQUEST_TIME_OFFSET) {
+        if (System.currentTimeMillis() - expires * 60 >= REQUEST_TIME_OFFSET) {
             return true;
         } else {
             return false;
