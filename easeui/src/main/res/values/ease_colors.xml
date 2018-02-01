@@ -47,4 +47,9 @@
     <color name="recall_black">#61212121</color>
     <color name="recall_black_38">#89ffffff</color>
     <color name="recall_white_54">#89ffffff</color>
+
+    <!--ts+ 自定义颜色-->
+    <color name="extend_btn_backgroup">#f2f2f2</color>
+
+
 </resources>

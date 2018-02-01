@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.chat.manager.control;
+package com.zhiyicx.baseproject.em.manager.control;
 
 import android.content.Context;
 
@@ -13,7 +13,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
  * Created by lzan13 on 2016/3/22.
  * 消息处理工具类，主要做谢谢EMMessage对象的处理
  */
-public class MLMessageUtils {
+public class TSEMessageUtils {
 
     /**
      * 发送一条撤回消息的透传，这里需要和接收方协商定义，通过一个透传，并加上扩展去实现消息的撤回
@@ -25,11 +25,11 @@ public class MLMessageUtils {
         boolean result = false;
         // 获取当前时间，用来判断后边撤回消息的时间点是否合法，这个判断不需要在接收方做，
         // 因为如果接收方之前不在线，很久之后才收到消息，将导致撤回失败
-        long currTime = MLDateUtil.getCurrentMillisecond();
+        long currTime = TSEMDateUtil.getCurrentMillisecond();
         long msgTime = message.getMsgTime();
         // 判断当前消息的时间是否已经超过了限制时间，如果超过，则不可撤回消息
-        if (currTime < msgTime || (currTime - msgTime > MLConstants.ML_TIME_RECALL)) {
-            callBack.onError(MLConstants.ML_ERROR_I_RECALL_TIME, MLConstants.ML_ERROR_S_RECALL_TIME);
+        if (currTime < msgTime || (currTime - msgTime > TSEMConstants.ML_TIME_RECALL)) {
+            callBack.onError(TSEMConstants.ML_ERROR_I_RECALL_TIME, TSEMConstants.ML_ERROR_S_RECALL_TIME);
             return;
         }
         // 获取消息 id，作为撤回消息的参数
@@ -43,11 +43,11 @@ public class MLMessageUtils {
         // 设置消息接收者
         cmdMessage.setTo(message.getTo());
         // 创建CMD 消息的消息体 并设置 action 为 recall
-        String action = MLConstants.ML_ATTR_RECALL;
+        String action = TSEMConstants.TS_ATTR_RECALL;
         EMCmdMessageBody body = new EMCmdMessageBody(action);
         cmdMessage.addBody(body);
         // 设置消息的扩展为要撤回的 msgId
-        cmdMessage.setAttribute(MLConstants.ML_ATTR_MSG_ID, msgId);
+        cmdMessage.setAttribute(TSEMConstants.ML_ATTR_MSG_ID, msgId);
         // 确认无误，开始发送撤回消息的透传
         cmdMessage.setMessageStatusCallback(new EMCallBack() {
             @Override
@@ -77,7 +77,7 @@ public class MLMessageUtils {
     public static boolean receiveRecallMessage(Context context, EMMessage cmdMessage) {
         boolean result = false;
         // 从cmd扩展中获取要撤回消息的id
-        String msgId = cmdMessage.getStringAttribute(MLConstants.ML_ATTR_MSG_ID, null);
+        String msgId = cmdMessage.getStringAttribute(TSEMConstants.ML_ATTR_MSG_ID, null);
         if (msgId == null) {
             LogUtils.d("recall - 3 %s", msgId);
             return result;
@@ -90,7 +90,7 @@ public class MLMessageUtils {
         }
 
         // 设置扩展为撤回消息类型，是为了区分消息的显示
-        message.setAttribute(MLConstants.ML_ATTR_RECALL, true);
+        message.setAttribute(TSEMConstants.TS_ATTR_RECALL, true);
         // 更新消息
         result = EMClient.getInstance().chatManager().updateMessage(message);
         return result;
@@ -105,7 +105,7 @@ public class MLMessageUtils {
         EMMessage cmdMessage = EMMessage.createSendMessage(EMMessage.Type.CMD);
         cmdMessage.setTo(to);
         // 创建CMD 消息的消息体 并设置 action 为输入状态
-        EMCmdMessageBody body = new EMCmdMessageBody(MLConstants.ML_ATTR_INPUT_STATUS);
+        EMCmdMessageBody body = new EMCmdMessageBody(TSEMConstants.ML_ATTR_INPUT_STATUS);
         cmdMessage.addBody(body);
         // 确认无误，开始表示发送输入状态的透传
         EMClient.getInstance().chatManager().sendMessage(cmdMessage);
@@ -118,7 +118,7 @@ public class MLMessageUtils {
      * @return 返回本地路径
      */
     public static String getThumbImagePath(String fullSizePath) {
-        String thumbImageName = MLCryptoUtil.cryptoStr2SHA1(fullSizePath);
+        String thumbImageName = TSEMCryptoUtil.cryptoStr2SHA1(fullSizePath);
         String path = PathUtil.getInstance().getHistoryPath() + "/" + "thumb_" + thumbImageName;
         return path;
     }

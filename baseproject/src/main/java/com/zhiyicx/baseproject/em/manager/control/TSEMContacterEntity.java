@@ -1,10 +1,10 @@
-package com.zhiyicx.thinksnsplus.modules.chat.manager.control;
+package com.zhiyicx.baseproject.em.manager.control;
 
 /**
  * Created by lzan13 on 2015/8/21.
  * 联系人信息实体类
  */
-public class MLContacterEntity {
+public class TSEMContacterEntity {
 
     // 联系人对象的头，用来排序和根据字母查找
     public String header;
@@ -124,10 +124,10 @@ public class MLContacterEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || o instanceof MLContacterEntity) {
+        if (o == null || o instanceof TSEMContacterEntity) {
             return false;
         }
-        return userName.equals(((MLContacterEntity) o).getUserName());
+        return userName.equals(((TSEMContacterEntity) o).getUserName());
     }
 
     @Override

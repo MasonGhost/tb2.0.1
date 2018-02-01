@@ -1,10 +1,12 @@
-package com.zhiyicx.thinksnsplus.modules.chat.manager.eventbus;
+package com.zhiyicx.baseproject.em.manager.eventbus;
 
 /**
- * Created by lzan13 on 2016/6/30.
- * 刷新事件
+ * @author Jliuer
+ * @Date 18/02/01 13:55
+ * @Email Jliuer@aliyun.com
+ * @Description 刷新事件
  */
-public class MLRefreshEvent {
+public class TSEMRefreshEvent {
     // 刷新的数量
     private int count;
     // 刷新的位置

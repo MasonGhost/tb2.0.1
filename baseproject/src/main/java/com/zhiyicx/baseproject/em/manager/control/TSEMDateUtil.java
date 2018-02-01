@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.chat.manager.control;
+package com.zhiyicx.baseproject.em.manager.control;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * Created by Administrator on 2015/3/26.
  */
-public class MLDateUtil {
+public class TSEMDateUtil {
 
     /**
      * 获取最近时间字符串

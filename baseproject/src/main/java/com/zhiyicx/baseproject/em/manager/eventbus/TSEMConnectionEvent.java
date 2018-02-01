@@ -1,11 +1,14 @@
-package com.zhiyicx.thinksnsplus.modules.chat.manager.eventbus;
+package com.zhiyicx.baseproject.em.manager.eventbus;
 
 /**
  * Created by lzan13 on 2016/5/30.
  * 自定义连接监听 EventBus post 事件，传递链接变化状态
  */
-public class MLConnectionEvent {
-    // 链接状态
+public class TSEMConnectionEvent {
+
+    /**
+     * 链接状态
+     */
     private int type;
 
     public int getType() {
@@ -16,7 +19,7 @@ public class MLConnectionEvent {
         this.type = type;
     }
 
-    public MLConnectionEvent() {
+    public TSEMConnectionEvent() {
 
     }
 }

@@ -1,5 +1,6 @@
-package com.zhiyicx.thinksnsplus.modules.chat.manager;
+package com.zhiyicx.thinksnsplus.modules.chat.call;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.IntentFilter;
@@ -19,60 +20,88 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMMucSharedFile;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.chat.EMTextMessageBody;
-import com.zhiyicx.baseproject.base.TSActivity;
+import com.hyphenate.easeui.EaseUI;
+import com.zhiyicx.baseproject.em.manager.TSEMCallStatus;
+import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
+import com.zhiyicx.baseproject.em.manager.control.TSEMDateUtil;
+import com.zhiyicx.baseproject.em.manager.control.TSEmConversationExtUtils;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMApplyForEvent;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMCallEvent;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMConnectionEvent;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMMultipleMessagesEvent;
+import com.zhiyicx.common.BuildConfig;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.thinksnsplus.modules.chat.manager.control.MLContacterEntity;
-import com.zhiyicx.thinksnsplus.modules.chat.manager.control.MLConversationExtUtils;
-import com.zhiyicx.thinksnsplus.modules.chat.manager.control.MLDateUtil;
-import com.zhiyicx.thinksnsplus.modules.chat.manager.control.MLMessageUtils;
-import com.zhiyicx.thinksnsplus.modules.chat.manager.eventbus.MLApplyForEvent;
-import com.zhiyicx.thinksnsplus.modules.chat.manager.eventbus.MLCallEvent;
-import com.zhiyicx.thinksnsplus.modules.chat.manager.eventbus.MLConnectionEvent;
-import com.zhiyicx.thinksnsplus.modules.chat.manager.eventbus.MLContactsEvent;
-import com.zhiyicx.thinksnsplus.modules.chat.manager.eventbus.MLMessageEvent;
+import com.zhiyicx.baseproject.em.manager.control.TSEMContacterEntity;
+import com.zhiyicx.baseproject.em.manager.control.TSEMessageUtils;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMContactsEvent;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
+import com.zhiyicx.thinksnsplus.modules.chat.call.receiver.TSEMCallReceiver;
 
 import org.simple.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Stack;
 
 /**
- * Created by lzan13 on 2015/7/13. 自定义初始化类做一些环信sdk的初始化操作
+ * @author Jliuer
+ * @Date 18/02/01 9:14
+ * @Email Jliuer@aliyun.com
+ * @Description 自定义初始化类做一些环信sdk的初始化操作
  */
-public class MLHyphenate {
+public class TSEMHyphenate {
 
-    // 上下文对象
     private Context mContext;
 
-    // MLHyphenate 单例对象
-    private static MLHyphenate instance;
+    /**
+     * TSEMHyphenate 单例对象
+     */
+    private static TSEMHyphenate instance;
 
-    // 保存当前运行的 activity 对象，可用来判断程序是否处于前台，以及完全退出app等操作
-    private List<TSActivity> mActivityList = new ArrayList<>();
-
-
-    // 记录sdk是否初始化
+    /**
+     * 记录sdk是否初始化
+     */
     private boolean isInit;
 
-    // 通话广播监听器
-    private MLCallReceiver mCallReceiver = null;
-    // 通话状态监听
-    private EMCallStateChangeListener callStateListener;
-    // 是否正在通话中
+    /**
+     * 通话广播监听器
+     */
+    private TSEMCallReceiver mCallReceiver = null;
+
+    /**
+     * 通话状态监听
+     */
+    private EMCallStateChangeListener mCallStateListener;
+
+    /**
+     * 是否正在通话中
+     */
     public int isBus;
 
-    // 环信的消息监听器
+    /**
+     * 环信的消息监听器
+     */
     private EMMessageListener mMessageListener;
-    // 环信联系人监听
+
+    /**
+     * 环信联系人监听
+     */
     private EMContactListener mContactListener;
-    // 环信连接监听
+
+    /**
+     * 环信连接监听
+     */
     private EMConnectionListener mConnectionListener;
-    // 环信群组变化监听
+
+    /**
+     * 环信群组变化监听
+     */
     private EMGroupChangeListener mGroupChangeListener;
 
-
-    // 表示是是否解绑Token，一般离线状态都要设置为false
+    /**
+     * 表示是是否解绑Token，一般离线状态都要设置为false
+     */
     private boolean isUnbuildToken = true;
 
     /**
@@ -80,9 +109,9 @@ public class MLHyphenate {
      *
      * @return 返回当前类的实例
      */
-    public static MLHyphenate getInstance() {
+    public static TSEMHyphenate getInstance() {
         if (instance == null) {
-            instance = new MLHyphenate();
+            instance = new TSEMHyphenate();
         }
         return instance;
     }
@@ -90,18 +119,17 @@ public class MLHyphenate {
     /**
      * 私有的构造方法
      */
-    private MLHyphenate() {
+    private TSEMHyphenate() {
     }
 
     /**
      * 初始化环信的SDK
      *
      * @param context 上下文菜单
-     *
      * @return 返回初始化状态是否成功
      */
     public synchronized boolean initHyphenate(Context context) {
-        LogUtils.d("SDK init start -----");
+        LogUtils.d("EM SDK init start -----");
         mContext = context;
         // 获取当前进程 id 并取得进程名
         int pid = android.os.Process.myPid();
@@ -112,7 +140,7 @@ public class MLHyphenate {
          * 默认的app会在以包名为默认的process name下运行，如果查到的process name不是app的process name就立即返回
          */
         if (processAppName == null || !processAppName.equalsIgnoreCase(context.getPackageName())) {
-            // 则此application的onCreate 是被service 调用的，直接返回
+            // 则此 application 的 onCreate 是被service 调用的，直接返回
             return true;
         }
         if (isInit) {
@@ -121,21 +149,22 @@ public class MLHyphenate {
         mContext = context;
 
         // 调用初始化方法初始化sdk
-        EMClient.getInstance().init(mContext, initOptions());
+        EaseUI.getInstance().init(mContext, initOptions());
 
         // 设置开启debug模式
-        EMClient.getInstance().setDebugMode(true);
+        EMClient.getInstance().setDebugMode(BuildConfig.USE_DOMAIN_SWITCH);
 
         // 初始化全局监听
         initGlobalListener();
 
         // 初始化完成
         isInit = true;
-        LogUtils.d("SDK init end =====");
+        LogUtils.d("EM SDK init end =====");
         return isInit;
     }
 
     private EMOptions initOptions() {
+
         /**
          * SDK初始化的一些配置
          * 关于 EMOptions 可以参考官方的 API 文档
@@ -144,51 +173,78 @@ public class MLHyphenate {
         EMOptions options = new EMOptions();
         // 启动私有化配置
         options.enableDNSConfig(true);
+
         // 设置Appkey，如果配置文件已经配置，这里可以不用设置
-        //        options.setAppKey("lzan13#hxsdkdemo");
+        // options.setAppKey("lzan13#hxsdkdemo");
+
         // 设置自动登录
         options.setAutoLogin(true);
+
         // 设置是否按照服务器时间排序，false按照本地时间排序
         options.setSortMessageByServerTime(false);
+
         // 设置是否需要发送已读回执
         options.setRequireAck(true);
+
         // 设置是否需要发送回执
         options.setRequireDeliveryAck(true);
+
         // 收到好友申请是否自动同意，如果是自动同意就不会收到好友请求的回调，因为sdk会自动处理，默认为true
         options.setAcceptInvitationAlways(false);
+
         // 设置是否自动接收加群邀请，如果设置了当收到群邀请会自动同意加入
         options.setAutoAcceptGroupInvitation(true);
+
         // 设置（主动或被动）退出群组时，是否删除群聊聊天记录
         options.setDeleteMessagesAsExitGroup(false);
+
         // 设置是否允许聊天室的Owner 离开并删除聊天室的会话
         options.allowChatroomOwnerLeave(true);
 
+        // 是否自动将消息附件上传到环信服务器，默认为True是使用环信服务器上传下载，如果设为 false，需要开发者自己处理附件消息的上传和下载
+        options.setAutoTransferMessageAttachments(true);
+
+        // 是否自动下载附件类消息的缩略图等，默认为 true 这里和上边这个参数相关联
+        options.setAutoDownloadThumbnail(true);
+
         // 设置google GCM推送id，国内可以不用设置
-        // options.setGCMNumber(MLConstants.ML_GCM_NUMBER);
+        // options.setGCMNumber(TSEMConstants.ML_GCM_NUMBER);
 
         // 设置集成小米推送的appid和appkey
-        options.setMipushConfig(MLConstants.ML_MI_APP_ID, MLConstants.ML_MI_APP_KEY);
+        options.setMipushConfig(TSEMConstants.ML_MI_APP_ID, TSEMConstants.ML_MI_APP_KEY);
         // TODO 主动调用华为官方的注册华为推送 测试用，SDK内部已经调用
         // PushManager.requestToken(mContext);
         return options;
     }
 
     /**
-     * 初始化全局监听，其中包括： 连接监听 {@link #setConnectionListener()} 消息监听 {@link #setMessageListener()} 联系人监听
-     * {@link #setContactListener()} 群组监听 {@link #setGroupChangeListener()}
+     * @author Jliuer
+     * @Date 18/02/01 9:17
+     * @Email Jliuer@aliyun.com
+     * @Description 初始化全局监听
+     * 连接监听 {@link #setConnectionListener()}
+     * 消息监听 {@link #setMessageListener()}
+     * 联系人监听 {@link #setContactListener()}
+     * 群组监听 {@link #setGroupChangeListener()}
      */
-    public void initGlobalListener() {
+    private void initGlobalListener() {
         LogUtils.d("------- listener start --------------");
+
         // 设置通话广播监听
         setCallReceiverListener();
+
         // 通话状态监听，TODO 这里不直接调用，只需要在有通话时调用
         // setCallStateChangeListener();
+
         // 设置全局的连接监听
         setConnectionListener();
+
         // 初始化全局消息监听
         setMessageListener();
+
         // 设置全局的联系人变化监听
         setContactListener();
+
         // 设置全局的群组变化监听
         setGroupChangeListener();
         LogUtils.d("------- listener end ----------------");
@@ -201,7 +257,7 @@ public class MLHyphenate {
         // 设置通话广播监听器过滤内容
         IntentFilter callFilter = new IntentFilter(EMClient.getInstance().callManager().getIncomingCallBroadcastAction());
         if (mCallReceiver == null) {
-            mCallReceiver = new MLCallReceiver();
+            mCallReceiver = new TSEMCallReceiver();
         }
         //注册通话广播接收者
         mContext.registerReceiver(mCallReceiver, callFilter);
@@ -211,33 +267,38 @@ public class MLHyphenate {
      * 设置通话状态监听，监听通话状态，处理界面显示
      */
     public void setCallStateChangeListener() {
-        if (callStateListener == null) {
-            callStateListener = new EMCallStateChangeListener() {
+        if (mCallStateListener == null) {
+            mCallStateListener = new EMCallStateChangeListener() {
                 @Override
                 public void onCallStateChanged(CallState callState, CallError callError) {
 
-                    MLCallEvent event = new MLCallEvent();
+                    TSEMCallEvent event = new TSEMCallEvent();
                     event.setCallState(callState);
                     event.setCallError(callError);
                     EventBus.getDefault().post(event);
 
                     switch (callState) {
-                        case CONNECTING: // 正在呼叫对方
+                        // 正在呼叫对方
+                        case CONNECTING:
                             LogUtils.i("正在呼叫对方" + callError);
-                            MLCallStatus.getInstance().setCallState(MLCallStatus.CALL_STATUS_CONNECTING);
+                            TSEMCallStatus.getInstance().setCallState(TSEMCallStatus.CALL_STATUS_CONNECTING);
                             break;
-                        case CONNECTED: // 正在等待对方接受呼叫申请（对方申请与你进行通话）
+                        // 正在等待对方接受呼叫申请（对方申请与你进行通话）
+                        case CONNECTED:
                             LogUtils.i("正在等待对方接受呼叫申请" + callError);
-                            MLCallStatus.getInstance().setCallState(MLCallStatus.CALL_STATUS_CONNECTING);
+                            TSEMCallStatus.getInstance().setCallState(TSEMCallStatus.CALL_STATUS_CONNECTING);
                             break;
-                        case ACCEPTED: // 通话已接通
+                        // 通话已接通
+                        case ACCEPTED:
                             LogUtils.i("通话已接通");
-                            MLCallStatus.getInstance().setCallState(MLCallStatus.CALL_STATUS_ACCEPTED);
+                            TSEMCallStatus.getInstance().setCallState(TSEMCallStatus.CALL_STATUS_ACCEPTED);
                             break;
-                        case DISCONNECTED: // 通话已中断
+                        // 通话已中断
+
+                        case DISCONNECTED:
                             LogUtils.i("通话已结束" + callError);
                             // 通话结束，重置通话状态
-                            MLCallStatus.getInstance().reset();
+                            TSEMCallStatus.getInstance().reset();
                             if (callError == CallError.ERROR_UNAVAILABLE) {
                                 LogUtils.i("对方不在线" + callError);
                             } else if (callError == CallError.ERROR_BUSY) {
@@ -256,7 +317,7 @@ public class MLHyphenate {
                                 LogUtils.i("通话已结束，时长：%s，error %s", "10:35", callError);
                             }
                             // 结束通话时取消通话状态监听
-                            MLHyphenate.getInstance().removeCallStateChangeListener();
+                            TSEMHyphenate.getInstance().removeCallStateChangeListener();
                             break;
                         case NETWORK_UNSTABLE:
                             if (callError == EMCallStateChangeListener.CallError.ERROR_NO_DATA) {
@@ -285,17 +346,17 @@ public class MLHyphenate {
                     }
                 }
             };
-            EMClient.getInstance().callManager().addCallStateChangeListener(callStateListener);
+            EMClient.getInstance().callManager().addCallStateChangeListener(mCallStateListener);
         }
     }
 
     /**
-     * 删除通话状态监听
+     * 删除通话状态监听器
      */
     public void removeCallStateChangeListener() {
-        if (callStateListener != null) {
-            EMClient.getInstance().callManager().removeCallStateChangeListener(callStateListener);
-            callStateListener = null;
+        if (mCallStateListener != null) {
+            EMClient.getInstance().callManager().removeCallStateChangeListener(mCallStateListener);
+            mCallStateListener = null;
         }
     }
 
@@ -313,8 +374,9 @@ public class MLHyphenate {
                 LogUtils.d("onConnected");
                 isUnbuildToken = true;
                 // 设置链接监听变化状态
-                MLConnectionEvent event = new MLConnectionEvent();
-                event.setType(MLConstants.ML_CONNECTION_CONNECTED);
+                TSEMConnectionEvent event = new TSEMConnectionEvent();
+                event.setType(TSEMConstants.TS_CONNECTION_CONNECTED);
+
                 // 使用 EventBus 发布消息，可以被订阅此类型消息的订阅者监听到
                 EventBus.getDefault().post(event);
             }
@@ -327,23 +389,24 @@ public class MLHyphenate {
             @Override
             public void onDisconnected(final int errorCode) {
                 LogUtils.d("onDisconnected - %d", errorCode);
-                // 在离线状态下，退出登录的时候需要设置为false，已经登录成功的状态要改为 false，这个在使用了推送功能时，调用logout需要传递
+                // 在离线状态下，退出登录的时候需要设置为false，已经登录成功的状态要改为 false，
+                // 这个在使用了推送功能时，调用logout需要传递
                 isUnbuildToken = false;
-                MLConnectionEvent event = new MLConnectionEvent();
+                TSEMConnectionEvent event = new TSEMConnectionEvent();
                 if (errorCode == EMError.USER_LOGIN_ANOTHER_DEVICE) {
                     LogUtils.d("user login another device - " + errorCode);
                     signOut(null);
                     // 设置链接监听变化状态
-                    event.setType(MLConstants.ML_CONNECTION_USER_LOGIN_OTHER_DIVERS);
+                    event.setType(TSEMConstants.TS_CONNECTION_USER_LOGIN_OTHER_DIVERS);
                 } else if (errorCode == EMError.USER_REMOVED) {
                     LogUtils.d("user be removed - " + errorCode);
                     signOut(null);
                     // 设置链接监听变化状态
-                    event.setType(MLConstants.ML_CONNECTION_USER_REMOVED);
+                    event.setType(TSEMConstants.TS_CONNECTION_USER_REMOVED);
                 } else {
                     LogUtils.d("con't servers - " + errorCode);
                     // 设置链接监听变化状态
-                    event.setType(MLConstants.ML_CONNECTION_DISCONNECTED);
+                    event.setType(TSEMConstants.TS_CONNECTION_DISCONNECTED);
                 }
                 // 发送订阅消息，通知网络监听有变化
                 EventBus.getDefault().post(event);
@@ -361,15 +424,15 @@ public class MLHyphenate {
              * 收到新消息，离线消息也都是在这里获取
              * 这里在处理消息监听时根据收到的消息修改了会话对象的最后时间，是为了在会话列表中当清空了会话内容时，
              * 不用过滤掉空会话，并且能显示会话时间
-             * {@link MLConversationExtUtils#setConversationLastTime(EMConversation)}
+             * {@link TSEmConversationExtUtils#setConversationLastTime(EMConversation)}
              *
              * @param list 收到的新消息集合，离线和在线都是走这个监听
              */
             @Override
             public void onMessageReceived(List<EMMessage> list) {
                 // 判断当前活动界面是不是聊天界面，如果是，全局不处理消息
-                if (MLHyphenate.getInstance().getActivityList().size() > 0) {
-                    if (MLHyphenate.getInstance().getTopActivity().getClass().getSimpleName().equals("MLChatActivity")) {
+                if (TSEMHyphenate.getInstance().getActivityList().size() > 0) {
+                    if (TSEMHyphenate.getInstance().getTopActivity().getClass().getSimpleName().equals("ChatActivityV2")) {
                         return;
                     }
                 }
@@ -377,23 +440,28 @@ public class MLHyphenate {
                 for (EMMessage message : list) {
                     // 更新会话时间
                     if (message.getChatType() == EMMessage.ChatType.Chat) {
-                        MLConversationExtUtils.setConversationLastTime(EMClient.getInstance().chatManager().getConversation(message.getFrom()));
+                        TSEmConversationExtUtils.setConversationLastTime(EMClient.getInstance().chatManager().getConversation(message.getFrom()));
                     } else {
-                        MLConversationExtUtils.setConversationLastTime(EMClient.getInstance().chatManager().getConversation(message.getTo()));
+                        TSEmConversationExtUtils.setConversationLastTime(EMClient.getInstance().chatManager().getConversation(message.getTo()));
                     }
                     // 使用 EventBus 发布消息，可以被订阅此类型消息的订阅者监听到
-                    MLMessageEvent event = new MLMessageEvent();
+                    
+                    /*TSEMessageEvent event = new TSEMessageEvent();
                     event.setMessage(message);
                     event.setStatus(message.status());
-                    EventBus.getDefault().post(event);
+                    EventBus.getDefault().post(event);暂时不要单条信息处理*/
                 }
                 if (list.size() > 1) {
                     // 收到多条新消息，发送一条消息集合的通知
-//                    MLNotifier.getInstance().sendNotificationMessageList(list);
+                    // TODO  NotificationUtil.notifyAll();
                 } else {
                     // 只有一条消息，发送单条消息的通知
-//                    MLNotifier.getInstance().sendNotificationMessage(list.get(0));
+                    // TODO  NotificationUtil.notify();
                 }
+
+                TSEMMultipleMessagesEvent multipleMessagesEvent = new TSEMMultipleMessagesEvent();
+                multipleMessagesEvent.setMessages(list);
+                EventBus.getDefault().post(multipleMessagesEvent);
             }
 
             /**
@@ -404,8 +472,8 @@ public class MLHyphenate {
             @Override
             public void onCmdMessageReceived(List<EMMessage> list) {
                 // 判断当前活动界面是不是聊天界面，如果是，全局不处理消息
-                if (MLHyphenate.getInstance().getActivityList().size() > 0) {
-                    if (MLHyphenate.getInstance().getTopActivity().getClass().getSimpleName().equals("MLChatActivity")) {
+                if (TSEMHyphenate.getInstance().getActivityList().size() > 0) {
+                    if (TSEMHyphenate.getInstance().getTopActivity().getClass().getSimpleName().equals("ChatActivityV2")) {
                         return;
                     }
                 }
@@ -413,14 +481,14 @@ public class MLHyphenate {
                     EMCmdMessageBody body = (EMCmdMessageBody) cmdMessage.getBody();
 
                     // 使用 EventBus 发布消息，可以被订阅此类型消息的订阅者监听到
-                    MLMessageEvent event = new MLMessageEvent();
+                    TSEMessageEvent event = new TSEMessageEvent();
                     event.setMessage(cmdMessage);
                     event.setStatus(cmdMessage.status());
                     EventBus.getDefault().post(event);
 
                     // 判断是不是撤回消息的透传
-                    if (body.action().equals(MLConstants.ML_ATTR_RECALL)) {
-                        MLMessageUtils.receiveRecallMessage(mContext, cmdMessage);
+                    if (body.action().equals(TSEMConstants.TS_ATTR_RECALL)) {
+                        TSEMessageUtils.receiveRecallMessage(mContext, cmdMessage);
                     }
                 }
             }
@@ -469,9 +537,7 @@ public class MLHyphenate {
      * 联系人监听，用来监听联系人的请求与变化等
      */
     private void setContactListener() {
-
         mContactListener = new EMContactListener() {
-
             /**
              * 监听到添加联系人
              *
@@ -480,15 +546,15 @@ public class MLHyphenate {
             @Override
             public void onContactAdded(String username) {
                 // 创建一个新的联系人对象，并保存到本地
-                MLContacterEntity contacts = new MLContacterEntity();
+                TSEMContacterEntity contacts = new TSEMContacterEntity();
                 contacts.setUserName(username);
                 /**
-                 * 调用{@link MLContactsDao#saveContacts(MLContacterEntity)} 去保存联系人，
+                 * 调用{@link MLContactsDao#saveContacts(TSEMContacterEntity)} 去保存联系人，
                  * 这里将{@link MLContactsDao} 封装成了单例类
                  */
 //                MLContactsDao.getInstance().saveContacts(contacts);
                 // 发送可被订阅的消息，通知订阅者联系人有变化
-                EventBus.getDefault().post(new MLContactsEvent());
+                EventBus.getDefault().post(new TSEMContactsEvent());
             }
 
             /**
@@ -505,7 +571,7 @@ public class MLHyphenate {
                  */
 //                MLContactsDao.getInstance().deleteContacts(username);
                 // 发送可被订阅的消息，通知订阅者联系人有变化
-                EventBus.getDefault().post(new MLContactsEvent());
+                EventBus.getDefault().post(new TSEMContactsEvent());
             }
 
             /**
@@ -525,11 +591,11 @@ public class MLHyphenate {
                 EMMessage message = EMClient.getInstance().chatManager().getMessage(msgId);
                 if (message != null) {
                     // 申请理由
-                    message.setAttribute(MLConstants.ML_ATTR_REASON, reason);
+                    message.setAttribute(TSEMConstants.ML_ATTR_REASON, reason);
                     // 当前申请的消息状态
-                    message.setAttribute(MLConstants.ML_ATTR_STATUS, MLConstants.ML_STATUS_BE_APPLY_FOR);
+                    message.setAttribute(TSEMConstants.ML_ATTR_STATUS, TSEMConstants.ML_STATUS_BE_APPLY_FOR);
                     // 更新消息时间
-                    message.setMsgTime(MLDateUtil.getCurrentMillisecond());
+                    message.setMsgTime(TSEMDateUtil.getCurrentMillisecond());
                     message.setLocalTime(message.getMsgTime());
                     // 更新消息到本地
                     EMClient.getInstance().chatManager().updateMessage(message);
@@ -539,17 +605,17 @@ public class MLHyphenate {
                     EMTextMessageBody body = new EMTextMessageBody(username + " 申请加你好友");
                     message.addBody(body);
                     // 设置消息扩展，主要是申请信息
-                    message.setAttribute(MLConstants.ML_ATTR_APPLY_FOR, true);
+                    message.setAttribute(TSEMConstants.ML_ATTR_APPLY_FOR, true);
                     // 申请者username
-                    message.setAttribute(MLConstants.ML_ATTR_USERNAME, username);
+                    message.setAttribute(TSEMConstants.ML_ATTR_USERNAME, username);
                     // 申请理由
-                    message.setAttribute(MLConstants.ML_ATTR_REASON, reason);
+                    message.setAttribute(TSEMConstants.ML_ATTR_REASON, reason);
                     // 当前申请的消息状态
-                    message.setAttribute(MLConstants.ML_ATTR_STATUS, MLConstants.ML_STATUS_BE_APPLY_FOR);
+                    message.setAttribute(TSEMConstants.ML_ATTR_STATUS, TSEMConstants.ML_STATUS_BE_APPLY_FOR);
                     // 申请与通知类型
-                    message.setAttribute(MLConstants.ML_ATTR_TYPE, MLConstants.ML_APPLY_FOR_CONTACTS);
+                    message.setAttribute(TSEMConstants.ML_ATTR_TYPE, TSEMConstants.ML_APPLY_FOR_CONTACTS);
                     // 设置消息发送方
-                    message.setFrom(MLConstants.ML_CONVERSATION_ID_APPLY_FOR);
+                    message.setFrom(TSEMConstants.ML_CONVERSATION_ID_APPLY_FOR);
                     // 设置
                     message.setMsgId(msgId);
                     // 将消息保存到本地和内存
@@ -558,7 +624,7 @@ public class MLHyphenate {
                 // 调用发送通知栏提醒方法，提醒用户查看申请通知
 //                MLNotifier.getInstance().sendNotificationMessage(message);
                 // 使用 EventBus 发布消息，通知订阅者申请与通知信息有变化
-                MLApplyForEvent event = new MLApplyForEvent();
+                TSEMApplyForEvent event = new TSEMApplyForEvent();
                 event.setMessage(message);
                 EventBus.getDefault().post(event);
             }
@@ -578,7 +644,7 @@ public class MLHyphenate {
                 EMMessage message = EMClient.getInstance().chatManager().getMessage(msgId);
                 if (message != null) {
                     // 当前申请的消息状态
-                    message.setAttribute(MLConstants.ML_ATTR_STATUS, MLConstants.ML_STATUS_BE_AGREED);
+                    message.setAttribute(TSEMConstants.ML_ATTR_STATUS, TSEMConstants.ML_STATUS_BE_AGREED);
                     // 更新消息到本地
                     EMClient.getInstance().chatManager().updateMessage(message);
                 } else {
@@ -587,17 +653,17 @@ public class MLHyphenate {
                     EMTextMessageBody body = new EMTextMessageBody(username + " 同意了你的好友申请");
                     message.addBody(body);
                     // 设置消息扩展，主要是申请信息
-                    message.setAttribute(MLConstants.ML_ATTR_APPLY_FOR, true);
+                    message.setAttribute(TSEMConstants.ML_ATTR_APPLY_FOR, true);
                     // 申请者username
-                    message.setAttribute(MLConstants.ML_ATTR_USERNAME, username);
+                    message.setAttribute(TSEMConstants.ML_ATTR_USERNAME, username);
                     // 申请理由
-                    message.setAttribute(MLConstants.ML_ATTR_REASON, "我同意你的好友申请");
+                    message.setAttribute(TSEMConstants.ML_ATTR_REASON, "我同意你的好友申请");
                     // 当前申请的消息状态
-                    message.setAttribute(MLConstants.ML_ATTR_STATUS, MLConstants.ML_STATUS_BE_AGREED);
+                    message.setAttribute(TSEMConstants.ML_ATTR_STATUS, TSEMConstants.ML_STATUS_BE_AGREED);
                     // 申请与通知类型
-                    message.setAttribute(MLConstants.ML_ATTR_TYPE, MLConstants.ML_APPLY_FOR_CONTACTS);
+                    message.setAttribute(TSEMConstants.ML_ATTR_TYPE, TSEMConstants.ML_APPLY_FOR_CONTACTS);
                     // 设置消息发送方
-                    message.setFrom(MLConstants.ML_CONVERSATION_ID_APPLY_FOR);
+                    message.setFrom(TSEMConstants.ML_CONVERSATION_ID_APPLY_FOR);
                     // 设置
                     message.setMsgId(msgId);
                     // 将消息保存到本地和内存
@@ -606,7 +672,7 @@ public class MLHyphenate {
                 // 调用发送通知栏提醒方法，提醒用户查看申请通知
 //                MLNotifier.getInstance().sendNotificationMessage(message);
                 // 使用 EventBus 发布消息，通知订阅者申请与通知信息有变化
-                MLApplyForEvent event = new MLApplyForEvent();
+                TSEMApplyForEvent event = new TSEMApplyForEvent();
                 event.setMessage(message);
                 EventBus.getDefault().post(event);
             }
@@ -626,7 +692,7 @@ public class MLHyphenate {
                 EMMessage message = EMClient.getInstance().chatManager().getMessage(msgId);
                 if (message != null) {
                     // 当前申请的消息状态
-                    message.setAttribute(MLConstants.ML_ATTR_STATUS, MLConstants.ML_STATUS_BE_AGREED);
+                    message.setAttribute(TSEMConstants.ML_ATTR_STATUS, TSEMConstants.ML_STATUS_BE_AGREED);
                     // 更新消息到本地
                     EMClient.getInstance().chatManager().updateMessage(message);
                 } else {
@@ -635,17 +701,17 @@ public class MLHyphenate {
                     EMTextMessageBody body = new EMTextMessageBody(username + " 同意了你的好友申请");
                     message.addBody(body);
                     // 设置消息扩展，主要是申请信息
-                    message.setAttribute(MLConstants.ML_ATTR_APPLY_FOR, true);
+                    message.setAttribute(TSEMConstants.ML_ATTR_APPLY_FOR, true);
                     // 申请者username
-                    message.setAttribute(MLConstants.ML_ATTR_USERNAME, username);
+                    message.setAttribute(TSEMConstants.ML_ATTR_USERNAME, username);
                     // 申请理由
-                    message.setAttribute(MLConstants.ML_ATTR_REASON, "我同意你的好友申请");
+                    message.setAttribute(TSEMConstants.ML_ATTR_REASON, "我同意你的好友申请");
                     // 当前申请的消息状态
-                    message.setAttribute(MLConstants.ML_ATTR_STATUS, MLConstants.ML_STATUS_BE_AGREED);
+                    message.setAttribute(TSEMConstants.ML_ATTR_STATUS, TSEMConstants.ML_STATUS_BE_AGREED);
                     // 申请与通知类型
-                    message.setAttribute(MLConstants.ML_ATTR_TYPE, MLConstants.ML_APPLY_FOR_CONTACTS);
+                    message.setAttribute(TSEMConstants.ML_ATTR_TYPE, TSEMConstants.ML_APPLY_FOR_CONTACTS);
                     // 设置消息发送方
-                    message.setFrom(MLConstants.ML_CONVERSATION_ID_APPLY_FOR);
+                    message.setFrom(TSEMConstants.ML_CONVERSATION_ID_APPLY_FOR);
                     // 设置
                     message.setMsgId(msgId);
                     // 将消息保存到本地和内存
@@ -654,7 +720,7 @@ public class MLHyphenate {
                 // 调用发送通知栏提醒方法，提醒用户查看申请通知
 //                MLNotifier.getInstance().sendNotificationMessage(message);
                 // 使用 EventBus 发布消息，通知订阅者申请与通知信息有变化
-                MLApplyForEvent event = new MLApplyForEvent();
+                TSEMApplyForEvent event = new TSEMApplyForEvent();
                 event.setMessage(message);
                 EventBus.getDefault().post(event);
             }
@@ -901,12 +967,12 @@ public class MLHyphenate {
      * 根据Pid获取当前进程的名字，一般就是当前app的包名
      *
      * @param pid 进程的id
-     *
      * @return 返回进程的名字
      */
     private String getAppName(int pid) {
         String processName = null;
         ActivityManager activityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        assert activityManager != null;
         List list = activityManager.getRunningAppProcesses();
         Iterator i = list.iterator();
         while (i.hasNext()) {
@@ -931,8 +997,8 @@ public class MLHyphenate {
      *
      * @return 返回保存列表
      */
-    public List<TSActivity> getActivityList() {
-        return mActivityList;
+    public Stack<Activity> getActivityList() {
+        return ActivityHandler.getActivityStack();
     }
 
 
@@ -941,32 +1007,18 @@ public class MLHyphenate {
      *
      * @return 返回当前活动的activity
      */
-    public TSActivity getTopActivity() {
-        if (mActivityList.size() > 0) {
-            return mActivityList.get(0);
+    public Activity getTopActivity() {
+        if (getActivityList().size() > 0) {
+            return ActivityHandler.getInstance().currentActivity();
         }
         return null;
     }
 
-    /**
-     * 添加当前activity到集合
-     *
-     * @param activity 需要添加的 activity
-     */
-    public void addActivity(TSActivity activity) {
-        if (!mActivityList.contains(activity)) {
-            mActivityList.add(0, activity);
-        }
-    }
-
-    /**
-     * 从 Activity 运行列表移除当前要退出的 activity
-     *
-     * @param activity 要移除的 activity
-     */
-    public void removeActivity(TSActivity activity) {
-        if (mActivityList.contains(activity)) {
-            mActivityList.remove(activity);
-        }
+    public void replease() {
+        EMClient.getInstance().removeConnectionListener(mConnectionListener);
+        EMClient.getInstance().chatManager().removeMessageListener(mMessageListener);
+        EMClient.getInstance().groupManager().removeGroupChangeListener(mGroupChangeListener);
+        EMClient.getInstance().contactManager().removeContactListener(mContactListener);
+        EMClient.getInstance().callManager().removeCallStateChangeListener(mCallStateListener);
     }
 }

@@ -1,10 +1,10 @@
-package com.zhiyicx.thinksnsplus.modules.chat.manager;
+package com.zhiyicx.baseproject.em.manager;
 
 /**
  * Created by lzan13 on 2016/8/16.
  * 语音和视频通话状态类，这是一个单例类，因为通话同一时间只会存在一个
  */
-public class MLCallStatus {
+public class TSEMCallStatus {
 
     // 通话状态
     public static int CALL_STATUS_NORMAL = 0x00;
@@ -18,7 +18,7 @@ public class MLCallStatus {
     public static int CALL_TYPE_VOICE = 0x02;
 
     // 当前类的实例
-    private static MLCallStatus instance;
+    private static TSEMCallStatus instance;
 
     // 通话状态
     private int callState;
@@ -40,7 +40,7 @@ public class MLCallStatus {
      * 私有构造方法
      * 实例化的时候初始化一些默认值
      */
-    private MLCallStatus() {
+    private TSEMCallStatus() {
         setCallType(CALL_TYPE_NORMAL);
         setCallState(CALL_STATUS_NORMAL);
         setMic(true);
@@ -66,9 +66,9 @@ public class MLCallStatus {
      *
      * @return
      */
-    public static MLCallStatus getInstance() {
+    public static TSEMCallStatus getInstance() {
         if (instance == null) {
-            instance = new MLCallStatus();
+            instance = new TSEMCallStatus();
         }
         return instance;
     }

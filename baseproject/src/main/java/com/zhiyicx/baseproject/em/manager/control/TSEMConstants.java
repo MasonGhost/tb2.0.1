@@ -1,11 +1,11 @@
-package com.zhiyicx.thinksnsplus.modules.chat.manager;
+package com.zhiyicx.baseproject.em.manager.control;
 
 /**
  * Class ${FILE_NAME}
  * <p/>
  * Created by lzan13 on 2015/9/10 22:04.
  */
-public class MLConstants {
+public class TSEMConstants {
 
     // GCM number
     public static final String ML_GCM_NUMBER = "163141467698";
@@ -20,10 +20,7 @@ public class MLConstants {
     // TalkingData统计平台 APPID
     public static final String TD_APP_ID = "6227388DE1332BBBF47E55EB85290B58";
 
-    /**
-     * 设置自己扩展的 key，包括会话对象{@link com.hyphenate.chat.EMConversation}扩展，
-     * 以及消息{@link com.hyphenate.chat.EMMessage}扩展
-     */
+    /**--设置自己扩展的 key，包括会话对象{@link com.hyphenate.chat.EMConversation}扩展，以及消息{@link com.hyphenate.chat.EMMessage}扩展--*/
     // at(@)
     public static final String ML_ATTR_AT = "ml_attr_at";
     // 是不是申请与通知类型
@@ -38,16 +35,25 @@ public class MLConstants {
     public static final String ML_ATTR_DRAFT = "ml_attr_draft";
     // 群组id
     public static final String ML_ATTR_GROUP_ID = "ml_attr_group_id";
-    // 最后时间
-    public static final String ML_ATTR_LAST_TIME = "ml_attr_list_time";
+
+    /**
+     * 最后时间
+     */
+    public static final String TS_ATTR_LAST_TIME = "ts_attr_list_time";
     // 消息id
     public static final String ML_ATTR_MSG_ID = "ml_attr_msg_id";
-    // 置顶
-    public static final String ML_ATTR_PUSHPIN = "ml_attr_pushpin";
+
+    /**
+     * 置顶
+     */
+    public static final String TS_ATTR_PUSHPIN = "ts_attr_pushpin";
     // 理由
     public static final String ML_ATTR_REASON = "ml_attr_reason";
-    // 撤回
-    public static final String ML_ATTR_RECALL = "ml_attr_recall";
+
+    /**
+     * 撤回
+     */
+    public static final String TS_ATTR_RECALL = "ts_attr_recall";
     // 状态
     public static final String ML_ATTR_STATUS = "ml_attr_status";
     // 类型
@@ -58,6 +64,7 @@ public class MLConstants {
     public static final String ML_ATTR_USERNAME = "ml_attr_username";
     // 输入状态
     public static final String ML_ATTR_INPUT_STATUS = "ml_attr_input_status";
+    /**--设置自己扩展的 key，包括会话对象{@link com.hyphenate.chat.EMConversation}扩展，以及消息{@link com.hyphenate.chat.EMMessage}扩展--*/
 
     /**
      * 自定义一些错误码，表示一些固定的错误
@@ -71,14 +78,35 @@ public class MLConstants {
     // 输入状态检测时间
     public static final int ML_TIME_INPUT_STATUS = 5000;
 
-    // Intent 传递参数参数的 key
-    public static final String ML_EXTRA_CALL_IS_INCOMING = "ml_call_is_incoming";
-    public static final String ML_EXTRA_CHAT_MSG_ID = "ml_chat_msg_id";
-    public static final String ML_EXTRA_CHAT_ID = "ml_chat_id";
-    public static final String ML_EXTRA_FROM = "from";
-    public static final String ML_EXTRA_TO = "to";
-    public static final String ML_EXTRA_TYPE = "type";
+    /**-------------------------Intent 传递参数参数的 key-------------------------------------------------*/
 
+    /**
+     * 接入通话
+     */
+    public static final String TS_EXTRA_CALL_IS_INCOMING = "ts_call_is_incoming";
+
+    public static final String ML_EXTRA_CHAT_MSG_ID = "ml_chat_msg_id";
+
+    /**
+     * 通话呼叫方 userId
+     */
+    public static final String TS_EXTRA_CHAT_ID = "ts_chat_id";
+
+    /**
+     * 通话呼叫方
+     */
+    public static final String TS_EXTRA_FROM = "from";
+
+    /**
+     * 通话被呼叫方
+     */
+    public static final String TS_EXTRA_TO = "to";
+
+    /**
+     * 通话类型
+     */
+    public static final String TS_EXTRA_TYPE = "type";
+    /**-------------------------Intent 传递参数参数的 key-------------------------------------------------*/
 
     // 定义好友申请与通知的 Conversation Id
     public static final String ML_CONVERSATION_ID_APPLY_FOR = "ml_conversation_id_apply_for";
@@ -90,37 +118,79 @@ public class MLConstants {
     public static final String ML_SHARED_PASSWORD = "ml_password";
 
 
+    /**-------------------------------------通话结束状态码----------------------*/
     /**
-     * 通话结束状态码
+     * 正常通话
      */
-    // 正常结束通话
-    public static final int ML_CALL_ACCEPTED = 0x00;
-    // 自己取消通话
-    public static final int ML_CALL_CANCEL = 0x01;
-    // 对方取消通话
-    public static final int ML_CALL_CANCEL_IS_INCOMING = 0x02;
-    // 对方在忙
-    public static final int ML_CALL_BUSY = 0x03;
-    // 对方不在线
-    public static final int ML_CALL_OFFLINE = 0x04;
-    // 对方拒绝自己的通话申请
-    public static final int ML_CALL_REFUESD = 0x05;
-    // 自己拒绝打来的通话
-    public static final int ML_CALL_REFUESD_IS_INCOMING = 0x06;
-    // 对方未接听
-    public static final int ML_CALL_NORESPONSE = 0x07;
-    // 建立连接失败
-    public static final int ML_CALL_TRANSPORT = 0x08;
-    // 双方通讯版本不同
-    public static final int ML_CALL_VERSION_DIFFERENT = 0x09;
+    public static final int TS_CALL_ACCEPTED = 0x00;
 
     /**
-     * 链接状态码
+     * 自己取消通话
      */
-    public static final int ML_CONNECTION_USER_LOGIN_OTHER_DIVERS = 0x00;
-    public static final int ML_CONNECTION_USER_REMOVED = 0x01;
-    public static final int ML_CONNECTION_CONNECTED = 0x02;
-    public static final int ML_CONNECTION_DISCONNECTED = 0x03;
+    public static final int TS_CALL_CANCEL = 0x01;
+
+    /**
+     * 对方取消通话
+     */
+    public static final int TS_CALL_CANCEL_IS_INCOMING = 0x02;
+
+    /**
+     * 对方在忙
+     */
+    public static final int TS_CALL_BUSY = 0x03;
+
+    /**
+     * 对方不在线
+     */
+    public static final int TS_CALL_OFFLINE = 0x04;
+
+    /**
+     * 对方拒绝自己的通话申请
+     */
+    public static final int TS_CALL_REFUESD = 0x05;
+
+    /**
+     * 自己拒绝打来的通话
+     */
+    public static final int ML_CALL_REFUESD_IS_INCOMING = 0x06;
+
+    /**
+     * 对方未接听
+     */
+    public static final int TS_CALL_NORESPONSE = 0x07;
+
+    /**
+     * 建立连接失败
+     */
+    public static final int ML_CALL_TRANSPORT = 0x08;
+
+    /**
+     * 双方通讯版本不同
+     */
+    public static final int ML_CALL_VERSION_DIFFERENT = 0x09;
+    /**-------------------------------------通话结束状态码----------------------*/
+
+    /**--------------------------------------------链接状态码-----------------------*/
+    /**
+     * 他端登录
+     */
+    public static final int TS_CONNECTION_USER_LOGIN_OTHER_DIVERS = 0x00;
+
+    /**
+     * 用户移除
+     */
+    public static final int TS_CONNECTION_USER_REMOVED = 0x01;
+
+    /**
+     * 链接聊天服务器成功
+     */
+    public static final int TS_CONNECTION_CONNECTED = 0x02;
+
+    /**
+     * 链接中断
+     */
+    public static final int TS_CONNECTION_DISCONNECTED = 0x03;
+    /**--------------------------------------------链接状态码-----------------------*/
 
 
     /**

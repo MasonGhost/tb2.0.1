@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.chat.manager;
+package com.zhiyicx.baseproject.em.manager;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;

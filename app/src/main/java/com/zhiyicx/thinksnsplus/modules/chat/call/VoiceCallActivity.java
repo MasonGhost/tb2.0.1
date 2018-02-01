@@ -38,6 +38,7 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.EMLog;
+import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -127,9 +128,9 @@ public class VoiceCallActivity extends CallActivity implements OnClickListener {
         addCallStateListener();
         msgid = UUID.randomUUID().toString();
 
-        username = getIntent().getStringExtra("username");
-        isInComingCall = getIntent().getBooleanExtra("isComingCall", false);
-        userInfoBean = getIntent().getParcelableExtra("user_info");
+        username = getIntent().getExtras().getString(TSEMConstants.TS_EXTRA_CHAT_ID);
+        isInComingCall = getIntent().getExtras().getBoolean(TSEMConstants.TS_EXTRA_CALL_IS_INCOMING, false);
+
         initUserInfo();
         setButtonState(isInComingCall);
         if (!isInComingCall) {// outgoing call

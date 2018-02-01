@@ -11,8 +11,10 @@ import android.view.View;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.easeui.EaseConstant;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMConnectionEvent;
 import com.zhiyicx.baseproject.widget.recycleview.BlankClickRecycleView;
 import com.zhiyicx.common.base.BaseFragment;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -49,6 +51,11 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
     MessageConversationPresenter mConversationPresenter;
     @BindView(R.id.searchView)
     TSSearchView mSearchView;
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
 
     @Override
     protected void initView(View rootView) {
@@ -196,6 +203,11 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
     public void onRightClick(int position) {
         mPresenter.deleteConversation(position);
         refreshData();
+    }
+
+    @Override
+    public void onTSEMConnectionEventBus(TSEMConnectionEvent event) {
+        LogUtils.d("TSEMConnectionEvent");
     }
 
     private void initListener() {

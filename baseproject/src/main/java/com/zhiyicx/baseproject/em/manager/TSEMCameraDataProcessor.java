@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.chat.manager;
+package com.zhiyicx.baseproject.em.manager;
 
 import android.hardware.Camera;
 
@@ -7,7 +7,7 @@ import com.hyphenate.chat.EMCallManager;
 /**
  * Created by lzan13 on 2016/8/9.
  */
-public class MLCameraDataProcessor implements EMCallManager.EMCameraDataProcessor {
+public class TSEMCameraDataProcessor implements EMCallManager.EMCameraDataProcessor {
 
     byte yDelta = 0;
 

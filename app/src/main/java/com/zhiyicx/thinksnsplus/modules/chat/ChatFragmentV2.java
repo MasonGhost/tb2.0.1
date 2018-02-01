@@ -4,18 +4,11 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.media.ThumbnailUtils;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.content.ContextCompat;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.hyphenate.chat.EMClient;
@@ -24,21 +17,18 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.bean.ChatVerifiedBean;
-import com.hyphenate.easeui.ui.EaseChatFragment;
 import com.hyphenate.easeui.ui.EaseGroupListener;
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
 import com.hyphenate.util.PathUtil;
-import com.tbruyelle.rxpermissions.Permission;
-import com.tbruyelle.rxpermissions.RxPermissions;
-import com.trycatch.mysnackbar.TSnackbar;
+import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.TSEaseChatFragment;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -66,8 +56,6 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.functions.Action1;
-
 import static com.hyphenate.easeui.EaseConstant.EXTRA_CHAT_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig.MESSAGE_CHAT_MEMBER_LIST;
 
@@ -78,7 +66,7 @@ import static com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig.MESSAGE_CHAT
  * @contact email:648129313@qq.com
  */
 
-public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment.EaseChatFragmentHelper {
+public class ChatFragmentV2 extends TSEaseChatFragment implements TSEaseChatFragment.EaseChatFragmentHelper {
 
     private static final int REQUEST_CODE_SELECT_VIDEO = 11;
     private static final int REQUEST_CODE_SELECT_FILE = 12;
@@ -105,9 +93,7 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     private TSGroupListener mTsGroupListener;
     private UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
-    private RxPermissions mRxPermissions;
     private ActionPopupWindow mActionPopupWindow;
-    private TSnackbar mTSnackbar;
 
     public static ChatFragmentV2 instance(Bundle bundle) {
         ChatFragmentV2 fragmentV2 = new ChatFragmentV2();
@@ -116,84 +102,69 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return getContentView(inflater);
+    protected boolean useEventBus() {
+        return true;
     }
 
-    private View getContentView(LayoutInflater inflater) {
-        mRxPermissions = new RxPermissions(getActivity());
-        mUserInfoBeanGreenDao = new UserInfoBeanGreenDaoImpl(getActivity().getApplication());
-        EventBus.getDefault().register(this);
-        LinearLayout linearLayout = new LinearLayout(getActivity());
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        linearLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        // 是否添加和状态栏等高的占位 View
-        if (setUseSatusbar() && setUseStatusView()) {
-            mStatusPlaceholderView = new View(getContext());
-            mStatusPlaceholderView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    DeviceUtils.getStatuBarHeight(getContext())));
-            if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0 && ContextCompat.getColor(getContext(), R.color.white) == Color
-                    .WHITE) {
-                mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.themeColor));
-            } else {
-                mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
-            }
-            linearLayout.addView(mStatusPlaceholderView);
-        }
-        if (setUseSatusbar()) {
-            // 状态栏顶上去
-            StatusBarUtils.transparencyBar(getActivity());
-            linearLayout.setFitsSystemWindows(false);
-        } else {
-            // 状态栏不顶上去
-            StatusBarUtils.setStatusBarColor(getActivity(), R.color.white);
-            linearLayout.setFitsSystemWindows(true);
-        }
-        StatusBarUtils.statusBarLightMode(getActivity());
-        FrameLayout frameLayout = new FrameLayout(getActivity());
-        frameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        // 内容区域
-        final View bodyContainer = inflater.inflate(getBodyLayoutId(), null);
-        bodyContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        frameLayout.addView(bodyContainer);
-        linearLayout.addView(frameLayout);
-        return linearLayout;
+    @Override
+    protected boolean usePermisson() {
+        return true;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
+    protected int getToolBarLayoutId() {
+        return R.layout.ease_ts_title_bar;
+    }
+
+    @Override
+    protected int setRightImg() {
+        return R.mipmap.topbar_more_black;
+    }
+
+    @Override
+    protected int setLeftImg() {
+        return R.mipmap.topbar_back;
     }
 
     @Override
     protected void setUpView() {
         setChatFragmentHelper(this);
+        mUserInfoBeanGreenDao = new UserInfoBeanGreenDaoImpl(getActivity().getApplication());
         mUserInfoBeans = getArguments().getParcelableArrayList(MESSAGE_CHAT_MEMBER_LIST);
-        // 标题栏
-        // 背景白色
-        titleBar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
-        titleBar.setTitleColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
-        // 左边返回键
-        titleBar.setLeftImageResource(R.mipmap.topbar_back);
-        // 右边更多按钮
-        titleBar.setRightImageResource(R.mipmap.topbar_more_black);
         if (chatType == EaseConstant.CHATTYPE_SINGLE) {
-            titleBar.setTitle(mUserInfoBeans.get(1).getName());
+            setCenterText(mUserInfoBeans.get(1).getName());
 
         } else if (chatType == EaseConstant.CHATTYPE_GROUP) {
             EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatUsername);
-            titleBar.setTitle(group.getGroupName());
+            setCenterText(group.getGroupName());
             mTsGroupListener = new TSGroupListener();
             EMClient.getInstance().groupManager().addGroupChangeListener(mTsGroupListener);
         }
-        titleBar.setLeftLayoutClickListener(v -> onBackPressed());
-        titleBar.setRightLayoutClickListener(v -> toGroupDetails());
-        setRefreshLayoutListener();
         if (chatType != EaseConstant.CHATTYPE_CHATROOM) {
             onConversationInit();
             onMessageListInit();
         }
+        setRefreshLayoutListener();
         // show forward message if the message is not null
         String forward_msg_id = getArguments().getString("forward_msg_id");
         if (forward_msg_id != null) {
             forwardMessage(forward_msg_id);
         }
+    }
+
+    @Override
+    protected void setLeftClick() {
+        onBackPressed();
+    }
+
+    @Override
+    protected void setRightClick() {
+        toGroupDetails();
     }
 
     @Override
@@ -321,7 +292,8 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
         return new CustomChatRowProvider();
     }
 
-    private int getBodyLayoutId() {
+    @Override
+    protected int getBodyLayoutId() {
         return R.layout.fragment_chat_v2;
     }
 
@@ -335,7 +307,7 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
         // 拍照
         inputMenu.registerExtendMenuItem(R.string.attach_take_pic, R.mipmap.ico_chat_takephoto, ITEM_TAKE_PICTURE_TS, extendMenuItemClickListener);
         // 视频 -- 需求取消  2018-1-31 15:26:14
-//        inputMenu.registerExtendMenuItem(R.string.attach_video, R.mipmap.ico_chat_video, ITEM_VIDEO_TS, extendMenuItemClickListener);
+        inputMenu.registerExtendMenuItem(R.string.attach_video, R.mipmap.ico_chat_video, ITEM_VIDEO_TS, extendMenuItemClickListener);
         // 位置
         inputMenu.registerExtendMenuItem(R.string.attach_location, R.mipmap.ico_chat_location, ITEM_LOCATION_TS, extendMenuItemClickListener);
         // 目前仅有单聊才有音视频通话
@@ -345,22 +317,6 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
             // 视频通话
             inputMenu.registerExtendMenuItem(R.string.attach_video_call, R.mipmap.ico_chat_videocall, ITEM_VIDEO_CALL_TS, extendMenuItemClickListener);
         }
-    }
-
-    /**
-     * 状态栏是否可用
-     *
-     * @return 默认不可用
-     */
-    protected boolean setUseSatusbar() {
-        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-    }
-
-    /**
-     * 设置是否需要添加和状态栏等高的占位 view
-     */
-    protected boolean setUseStatusView() {
-        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
     private final class CustomChatRowProvider implements EaseCustomChatRowProvider {
@@ -477,8 +433,12 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
             ToastUtils.showToast(getActivity(), R.string.not_connect_to_server, Toast.LENGTH_SHORT);
         } else {
             Intent intent = new Intent(getActivity(), VoiceCallActivity.class);
-            intent.putExtra("username", toChatUsername);
-            intent.putExtra("isComingCall", false);
+            Bundle bundle = new Bundle();
+            // 设置呼叫方 username 参数
+            bundle.putString(TSEMConstants.TS_EXTRA_CHAT_ID, toChatUsername);
+            // 设置通话为对方打来
+            bundle.putBoolean(TSEMConstants.TS_EXTRA_CALL_IS_INCOMING, false);
+            intent.putExtras(bundle);
             startActivity(intent);
             // voiceCallBtn.setEnabled(false);
             inputMenu.hideExtendMenuContainer();
@@ -492,8 +452,14 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
         if (!EMClient.getInstance().isConnected()) {
             ToastUtils.showToast(getActivity(), R.string.not_connect_to_server, Toast.LENGTH_SHORT);
         } else {
-            startActivity(new Intent(getActivity(), VideoCallActivity.class).putExtra("username", toChatUsername)
-                    .putExtra("isComingCall", false));
+            Intent intent = new Intent(getActivity(), VideoCallActivity.class);
+            Bundle bundle = new Bundle();
+            // 设置呼叫方 username 参数
+            bundle.putString(TSEMConstants.TS_EXTRA_CHAT_ID, toChatUsername);
+            // 设置通话为对方打来
+            bundle.putBoolean(TSEMConstants.TS_EXTRA_CALL_IS_INCOMING, false);
+            intent.putExtras(bundle);
+            startActivity(intent);
             // videoCallBtn.setEnabled(false);
             inputMenu.hideExtendMenuContainer();
         }
@@ -514,7 +480,7 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_GROUP_UPDATE_GROUP_INFO)
     public void updateCurrent(ChatGroupBean chatGroupBean) {
         if (chatGroupBean.getIm_group_id().equals(toChatUsername)) {
-            titleBar.setTitle(chatGroupBean.getName());
+            setCenterText(chatGroupBean.getName());
         }
     }
 

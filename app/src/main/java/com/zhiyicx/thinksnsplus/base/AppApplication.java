@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.base;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -13,13 +12,11 @@ import com.github.tamir7.contacts.Contacts;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-import com.hyphenate.chat.EMClient;
-import com.hyphenate.chat.EMOptions;
-import com.hyphenate.easeui.EaseUI;
 import com.pingplusplus.android.Pingpp;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.base.TSApplication;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.base.BaseApplication;
@@ -28,11 +25,9 @@ import com.zhiyicx.common.net.HttpsSSLFactroyUtils;
 import com.zhiyicx.common.net.intercept.CommonRequestIntercept;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.ActivityHandler;
-import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.appprocess.AndroidProcess;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.imsdk.manage.ZBIMSDK;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
@@ -40,8 +35,6 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
-import com.zhiyicx.thinksnsplus.modules.chat.receiver.CallReceiver;
-import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
@@ -149,33 +142,34 @@ public class AppApplication extends TSApplication {
      * 初始化环信
      */
     private void initIm(){
-        int pid = android.os.Process.myPid();
-        String processAppName = DeviceUtils.getAppName(getContext(), pid);
-        // 如果APP启用了远程的service，此application:onCreate会被调用2次
-        // 为了防止环信SDK被初始化2次，加此判断会保证SDK被初始化1次
-        // 默认的APP会在以包名为默认的process name下运行，如果查到的process name不是APP的process name就立即返回
-        if (processAppName == null ||!processAppName.equalsIgnoreCase(getPackageName())) {
-            LogUtils.e(TAG, "enter the service process!");
-            // 则此application::onCreate 是被service 调用的，直接返回
-            return;
-        }
-        EMOptions options = new EMOptions();
-        // 默认添加好友时，是不需要验证的，改成需要验证
-        options.setAcceptInvitationAlways(false);
-        // 是否自动将消息附件上传到环信服务器，默认为True是使用环信服务器上传下载，如果设为 false，需要开发者自己处理附件消息的上传和下载
-        options.setAutoTransferMessageAttachments(true);
-        // 是否自动下载附件类消息的缩略图等，默认为 true 这里和上边这个参数相关联
-        options.setAutoDownloadThumbnail(true);
-        // 设置是否需要已读回执
-        options.setRequireAck(true);
-        // 设置是否需要已送达回执
-        options.setRequireDeliveryAck(true);
-        //初始化
-        EaseUI.getInstance().init(getApplicationContext(), options);
-        // service
-        IntentFilter callFilter = new IntentFilter(EMClient.getInstance().callManager().getIncomingCallBroadcastAction());
-        CallReceiver callReceiver = new CallReceiver();
-        getApplicationContext().registerReceiver(callReceiver, callFilter);
+        TSEMHyphenate.getInstance().initHyphenate(getContext());
+//        int pid = android.os.Process.myPid();
+//        String processAppName = DeviceUtils.getAppName(getContext(), pid);
+//        // 如果APP启用了远程的service，此application:onCreate会被调用2次
+//        // 为了防止环信SDK被初始化2次，加此判断会保证SDK被初始化1次
+//        // 默认的APP会在以包名为默认的process name下运行，如果查到的process name不是APP的process name就立即返回
+//        if (processAppName == null ||!processAppName.equalsIgnoreCase(getPackageName())) {
+//            LogUtils.e(TAG, "enter the service process!");
+//            // 则此application::onCreate 是被service 调用的，直接返回
+//            return;
+//        }
+//        EMOptions options = new EMOptions();
+//        // 默认添加好友时，是不需要验证的，改成需要验证
+//        options.setAcceptInvitationAlways(false);
+//        // 是否自动将消息附件上传到环信服务器，默认为True是使用环信服务器上传下载，如果设为 false，需要开发者自己处理附件消息的上传和下载
+//        options.setAutoTransferMessageAttachments(true);
+//        // 是否自动下载附件类消息的缩略图等，默认为 true 这里和上边这个参数相关联
+//        options.setAutoDownloadThumbnail(true);
+//        // 设置是否需要已读回执
+//        options.setRequireAck(true);
+//        // 设置是否需要已送达回执
+//        options.setRequireDeliveryAck(true);
+//        //初始化
+//        EaseUI.getInstance().init(getApplicationContext(), options);
+//        // service
+//        IntentFilter callFilter = new IntentFilter(EMClient.getInstance().callManager().getIncomingCallBroadcastAction());
+//        CallReceiver callReceiver = new CallReceiver();
+//        getApplicationContext().registerReceiver(callReceiver, callFilter);
     }
 
     /**

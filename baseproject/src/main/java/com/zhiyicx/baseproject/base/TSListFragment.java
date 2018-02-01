@@ -541,7 +541,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     public void refreshData() {
         if (mHeaderAndFooterWrapper != null) {
             setEmptyViewVisiable(mListDatas.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0);
-            mHeaderAndFooterWrapper.notifyDataSetChanged();
+            try {
+                mHeaderAndFooterWrapper.notifyDataSetChanged();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

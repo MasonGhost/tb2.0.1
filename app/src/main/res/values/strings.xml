@@ -942,10 +942,16 @@
     <string name="select_friends_center_title">选择好友</string>
     <string name="select_friends_right_title_default">聊天</string>
     <string name="select_friends_right_title">聊天(%d)</string>
+    <string name="video_call_in">邀请你进入视屏聊天</string>
+    <string name="video_call_out">等待对方接受请求</string>
+    <string name="video_call_connecting">视屏连接中&#8230;</string>
+    <string name="video_calling">通话中/%1$s</string>
+    <string name="video_call_off">通话中断</string>
 
     <string name="call_version_inconsistent">通话协议版本不一致</string>
     <string name="have_connected_with">已经和对方建立连接</string>
     <string name="network_unstable">网络不稳定</string>
+    <string name="network_normal">网络正常</string>
     <string name="no_call_data">没有通话数据</string>
     <string name="switch_camera">切换摄像头</string>
     <string name="capture_image">抓取图片</string>

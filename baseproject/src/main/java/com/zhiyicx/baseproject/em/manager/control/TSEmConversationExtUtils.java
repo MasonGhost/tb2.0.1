@@ -1,16 +1,18 @@
-package com.zhiyicx.thinksnsplus.modules.chat.manager.control;
+package com.zhiyicx.baseproject.em.manager.control;
 
 
 import android.text.TextUtils;
 
 import com.hyphenate.chat.EMConversation;
-import com.zhiyicx.thinksnsplus.modules.chat.manager.MLConstants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by lzan13 on 2015/12/14 15:27.
+ * @author Jliuer
+ * @Date 18/02/01 11:06
+ * @Email Jliuer@aliyun.com
+ * @Description
  * 会话扩展处理类，用来处理会话对象的扩展信息，
  * 包括：
  * TODO 群组@，
@@ -18,14 +20,14 @@ import org.json.JSONObject;
  * 会话最后操作时间，
  * 会话草稿，
  */
-public class MLConversationExtUtils {
+public class TSEmConversationExtUtils {
 
     /**
      * 会话实体类构造函数，根据传入的会话对象去
      *
      * @param conversation
      */
-    public MLConversationExtUtils(EMConversation conversation) {
+    public TSEmConversationExtUtils(EMConversation conversation) {
 
     }
 
@@ -47,7 +49,7 @@ public class MLConversationExtUtils {
                 jsonObject = new JSONObject(ext);
             }
             // 将扩展信息设置给外层的 JSONObject 对象
-            jsonObject.put(MLConstants.ML_ATTR_PUSHPIN, pushpin);
+            jsonObject.put(TSEMConstants.TS_ATTR_PUSHPIN, pushpin);
             // 将扩展信息保存到 Conversation 对象的扩展中去
             conversation.setExtField(jsonObject.toString());
         } catch (JSONException e) {
@@ -71,7 +73,7 @@ public class MLConversationExtUtils {
         try {
             // 根据扩展获取Json对象，然后获取置顶的属性，
             JSONObject jsonObject = new JSONObject(ext);
-            return jsonObject.optBoolean(MLConstants.ML_ATTR_PUSHPIN);
+            return jsonObject.optBoolean(TSEMConstants.TS_ATTR_PUSHPIN);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -96,9 +98,9 @@ public class MLConversationExtUtils {
             }
             // 根据当前会话消息数是否为零来设置会话的最后时间
             if (conversation.getAllMessages().size() == 0) {
-                jsonObject.put(MLConstants.ML_ATTR_LAST_TIME, System.currentTimeMillis());
+                jsonObject.put(TSEMConstants.TS_ATTR_LAST_TIME, System.currentTimeMillis());
             } else {
-                jsonObject.put(MLConstants.ML_ATTR_LAST_TIME, conversation.getLastMessage().getMsgTime());
+                jsonObject.put(TSEMConstants.TS_ATTR_LAST_TIME, conversation.getLastMessage().getMsgTime());
             }
             // 将扩展信息保存到 Conversation 对象的扩展中去
             conversation.setExtField(jsonObject.toString());
@@ -125,7 +127,7 @@ public class MLConversationExtUtils {
                 jsonObject = new JSONObject(ext);
             }
             // 根据扩展的key获取扩展的值
-            return jsonObject.optLong(MLConstants.ML_ATTR_LAST_TIME);
+            return jsonObject.optLong(TSEMConstants.TS_ATTR_LAST_TIME);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -150,7 +152,7 @@ public class MLConversationExtUtils {
                 jsonObject = new JSONObject(ext);
             }
             // 将扩展信息设置给 JSONObject 对象
-            jsonObject.put(MLConstants.ML_ATTR_DRAFT, draft);
+            jsonObject.put(TSEMConstants.ML_ATTR_DRAFT, draft);
             // 将扩展信息保存到 EMConversation 对象扩展中去
             conversation.setExtField(jsonObject.toString());
         } catch (JSONException e) {
@@ -176,7 +178,7 @@ public class MLConversationExtUtils {
                 jsonObject = new JSONObject(ext);
             }
             // 根据扩展的key获取扩展的值
-            return jsonObject.optString(MLConstants.ML_ATTR_DRAFT);
+            return jsonObject.optString(TSEMConstants.ML_ATTR_DRAFT);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -201,7 +203,7 @@ public class MLConversationExtUtils {
                 jsonObject = new JSONObject(ext);
             }
             // 将扩展信息设置给 JSONObject 对象
-            jsonObject.put(MLConstants.ML_ATTR_UNREAD, unread);
+            jsonObject.put(TSEMConstants.ML_ATTR_UNREAD, unread);
             // 将扩展信息保存到 EMConversation 对象扩展中去
             conversation.setExtField(jsonObject.toString());
         } catch (JSONException e) {
@@ -227,7 +229,7 @@ public class MLConversationExtUtils {
                 jsonObject = new JSONObject(ext);
             }
             // 根据扩展的key获取扩展的值
-            return jsonObject.optBoolean(MLConstants.ML_ATTR_UNREAD);
+            return jsonObject.optBoolean(TSEMConstants.ML_ATTR_UNREAD);
         } catch (JSONException e) {
             e.printStackTrace();
         }

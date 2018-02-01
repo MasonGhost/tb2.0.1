@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.chat.manager.control;
+package com.zhiyicx.baseproject.em.manager.control;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Created by Administrator on 2015/3/26.
  */
-public class MLCryptoUtil {
+public class TSEMCryptoUtil {
 
     private static final char[] HEX_ARRAY = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 

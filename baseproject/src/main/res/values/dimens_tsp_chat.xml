@@ -44,4 +44,6 @@
     <dimen name="chat_info_member_owner_height">16dp</dimen>
     <dimen name="chat_info_member_owner_width">36dp</dimen>
 
+    <dimen name="chat_toolbar">36dp</dimen>
+
 </resources>

@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -27,6 +26,8 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMConnectionEvent;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.baseproject.widget.dialog.LoadingDialog;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
@@ -37,6 +38,10 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
+
+import org.simple.eventbus.Subscriber;
+import org.simple.eventbus.ThreadMode;
 
 import java.util.concurrent.TimeUnit;
 
@@ -799,7 +804,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 设置左边的点击事件，默认为关闭activity，有必要重写该方法
      */
     protected void setLeftClick() {
-        DeviceUtils.hideSoftKeyboard(mActivity,mRootView);
+        DeviceUtils.hideSoftKeyboard(mActivity, mRootView);
         getActivity().finish();
     }
 
@@ -977,6 +982,22 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected void dismissPop(PopupWindow popupWindow) {
         if (popupWindow != null && popupWindow.isShowing()) {
             popupWindow.dismiss();
+        }
+    }
+
+    @Subscriber(mode = ThreadMode.MAIN)
+    public void onTSEMConnectionEventBus(TSEMConnectionEvent event) {
+        LogUtils.d("onTSEMConnectionEventBus");
+        switch (event.getType()) {
+            case TSEMConstants.TS_CONNECTION_USER_LOGIN_OTHER_DIVERS:
+                break;
+            case TSEMConstants.TS_CONNECTION_USER_REMOVED:
+                break;
+            case TSEMConstants.TS_CONNECTION_CONNECTED:
+                break;
+            case TSEMConstants.TS_CONNECTION_DISCONNECTED:
+                break;
+            default:
         }
     }
 }

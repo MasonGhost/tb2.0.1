@@ -41,6 +41,7 @@ import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.media.EMCallSurfaceView;
 import com.hyphenate.util.EMLog;
 import com.superrtc.sdk.VideoView;
+import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -180,8 +181,10 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
         mIvSwitchCamera.setOnClickListener(this);
 
         msgid = UUID.randomUUID().toString();
-        isInComingCall = getIntent().getBooleanExtra("isComingCall", false);
-        username = getIntent().getStringExtra("username");
+
+        username = getIntent().getExtras().getString(TSEMConstants.TS_EXTRA_CHAT_ID);
+        isInComingCall = getIntent().getExtras().getBoolean(TSEMConstants.TS_EXTRA_CALL_IS_INCOMING, false);
+
         // 用户信息
         initUserInfo();
         // local surfaceview
@@ -313,7 +316,7 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
                         mTvCallState.setText(R.string.In_the_call);
 //                            recordBtn.setVisibility(View.VISIBLE);
                         callingState = CallingState.NORMAL;
-                        startMonitor();
+//                        startMonitor();
                     });
                     break;
                 case NETWORK_DISCONNECTED:

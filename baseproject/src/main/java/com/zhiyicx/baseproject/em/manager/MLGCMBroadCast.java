@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.chat.manager;
+package com.zhiyicx.baseproject.em.manager;
 
 import android.app.Notification;
 import android.app.NotificationManager;
