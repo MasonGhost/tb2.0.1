@@ -103,7 +103,7 @@ class IntegrationDetailListFragment : TSListFragment<IntegrationDetailContract.P
         val adapter: CommonAdapter<*>
         // 充值与体现
         if (mChooseType != null) {
-            adapter = object : CommonAdapter<RechargeSuccessV2Bean>(activity, R.layout.item_integration_withdrawals_detail_recharge_and_cash,
+            adapter = object : CommonAdapter<RechargeSuccessV2Bean>(activity, R.layout.item_integration_withdrawals_detail,
                     mListDatas) {
                 override fun convert(holder: ViewHolder, recharge: RechargeSuccessV2Bean, position: Int) {
                     val desc = holder.getView<TextView>(R.id.withdrawals_desc)
