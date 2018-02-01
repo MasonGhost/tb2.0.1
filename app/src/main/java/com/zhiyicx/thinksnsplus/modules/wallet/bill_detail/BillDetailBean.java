@@ -15,7 +15,18 @@ import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class BillDetailBean implements Parcelable{
+public class BillDetailBean implements Parcelable {
+    /**
+     * id	int	记录id
+     * owner_id	int	所属者id
+     * channel	string	操作类型 recharge_ping_p_p - 充值, widthdraw - 提现, user - 转账, reward - 打赏
+     * account	string	账户
+     * title	string	标题
+     * body	string	内容
+     * action	int	1 - 收入 -1 - 支出
+     * amount	int	金额，分单位
+     * status	int	订单状态，0: 等待，1：成功，-1: 失败
+     */
     private int status;
     private int action;
     private int amount;
@@ -92,12 +103,12 @@ public class BillDetailBean implements Parcelable{
         this.created_at = created_at;
     }
 
-    public static BillDetailBean recharge2Bill(RechargeSuccessBean rechargeSuccessBean,int ratio) {
+    public static BillDetailBean recharge2Bill(RechargeSuccessBean rechargeSuccessBean, int ratio) {
         BillDetailBean billDetailBean = new BillDetailBean();
         billDetailBean.setAccount(rechargeSuccessBean.getAccount());
         billDetailBean.setAction(rechargeSuccessBean.getAction());
-        billDetailBean.setAmount((int)PayConfig.realCurrency2GameCurrency(rechargeSuccessBean.getAmount(),ratio));
-        billDetailBean.setBody(TextUtils.isEmpty(rechargeSuccessBean.getBody())?rechargeSuccessBean.getSubject():rechargeSuccessBean.getBody());
+        billDetailBean.setAmount((int) PayConfig.realCurrency2GameCurrency(rechargeSuccessBean.getAmount(), ratio));
+        billDetailBean.setBody(TextUtils.isEmpty(rechargeSuccessBean.getBody()) ? rechargeSuccessBean.getSubject() : rechargeSuccessBean.getBody());
         billDetailBean.setChannel(rechargeSuccessBean.getChannel());
         billDetailBean.setCreated_at(rechargeSuccessBean.getCreated_at());
         billDetailBean.setStatus(rechargeSuccessBean.getStatus());
@@ -105,11 +116,11 @@ public class BillDetailBean implements Parcelable{
         return billDetailBean;
     }
 
-    public static BillDetailBean withdrawals2Bill(WithdrawalsListBean withdrawalsListBean,int ratio) {
+    public static BillDetailBean withdrawals2Bill(WithdrawalsListBean withdrawalsListBean, int ratio) {
         BillDetailBean billDetailBean = new BillDetailBean();
         billDetailBean.setAccount(withdrawalsListBean.getAccount());
         billDetailBean.setAction(2);
-        billDetailBean.setAmount((int)PayConfig.realCurrency2GameCurrency(withdrawalsListBean.getValue(),ratio));
+        billDetailBean.setAmount((int) PayConfig.realCurrency2GameCurrency(withdrawalsListBean.getValue(), ratio));
         billDetailBean.setBody("提现");
         billDetailBean.setChannel(withdrawalsListBean.getType());
         billDetailBean.setCreated_at(withdrawalsListBean.getCreated_at());

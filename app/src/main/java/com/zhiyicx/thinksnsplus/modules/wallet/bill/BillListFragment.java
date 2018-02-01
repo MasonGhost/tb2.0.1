@@ -82,7 +82,7 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                 desc.setEnabled(statusSuccess);
                 String moneyStr = String.format(Locale.getDefault(), getString(R.string.money_format),
                         PayConfig.realCurrencyFen2Yuan(recharge.getAmount()));
-                desc.setText(statusSuccess ? (action < 0 ? "- " + moneyStr : "+ " + moneyStr) :
+                desc.setText(statusSuccess ? (action < 0 ? "-" + moneyStr : "+" + moneyStr) :
                         getString(recharge.getStatus() == 0 ? R.string.bill_doing : R.string.transaction_fail));
                 account.setText(getDes(recharge));
                 time.setText(TimeUtils.string2_ToDya_Yesterday_Week(recharge.getCreated_at()));
