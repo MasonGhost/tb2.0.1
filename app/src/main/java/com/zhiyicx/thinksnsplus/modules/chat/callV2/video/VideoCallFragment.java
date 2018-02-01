@@ -189,6 +189,12 @@ public class VideoCallFragment extends BaseCallFragment {
             mLlAnswerCall.setVisibility(View.GONE);
             mLlHangupCall.setVisibility(View.VISIBLE);
         }
+        try {
+            mTvNick.setText(getUserInfo(Long.parseLong(mChatId)).getName());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            LogUtils.d("user miss");
+        }
     }
 
     @Override

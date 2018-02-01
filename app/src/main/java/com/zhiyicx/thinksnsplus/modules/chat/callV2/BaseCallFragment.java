@@ -26,6 +26,8 @@ import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
 import com.zhiyicx.baseproject.em.manager.control.TSEMDateUtil;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMCallEvent;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
 
 import org.simple.eventbus.Subscriber;
@@ -87,6 +89,12 @@ public abstract class BaseCallFragment extends TSFragment {
 
     private EMCallManager.EMCallPushProvider mEMCallPushProvider;
 
+    /**
+     * 对方的用户信息
+     */
+    private UserInfoBean mUserInfoBean;
+    private UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
     @Override
     protected boolean showToolbar() {
         return false;
@@ -147,14 +155,17 @@ public abstract class BaseCallFragment extends TSFragment {
      * @author Jliuer
      * @Date 18/02/01 16:07
      * @Email Jliuer@aliyun.com
-     * @Description see http://www.easemob.com/apidoc/android/chat3.0/interfacecom_1_1hyphenate_1_1chat_1_1_e_m_call_manager_1_1_e_m_call_push_provider.html
+     * @Description see http://www.easemob
+     * .com/apidoc/android/chat3.0
+     * /interfacecom_1_1hyphenate_1_1chat_1_1_e_m_call_manager_1_1_e_m_call_push_provider.html
      */
     private void initPushvider() {
         mEMCallPushProvider = new EMCallManager.EMCallPushProvider() {
 
             void updateMessageText(final EMMessage oldMsg, final String to) {
                 // update local message text
-                EMConversation conv = EMClient.getInstance().chatManager().getConversation(oldMsg.getTo());
+                EMConversation conv = EMClient.getInstance().chatManager().getConversation(oldMsg
+                        .getTo());
                 conv.removeMessage(oldMsg.getMsgId());
             }
 
@@ -164,7 +175,8 @@ public abstract class BaseCallFragment extends TSFragment {
                 //this function should exposed & move to Demo
                 EMLog.d(TAG, "onRemoteOffline, to:" + to);
 
-                final EMMessage message = EMMessage.createTxtSendMessage("You have an incoming call", to);
+                final EMMessage message = EMMessage.createTxtSendMessage("You have an incoming " +
+                        "call", to);
                 // set the user-defined extension field
                 message.setAttribute("em_apns_ext", true);
 
@@ -202,9 +214,11 @@ public abstract class BaseCallFragment extends TSFragment {
     protected void createSoundPoolWithBuilder() {
         AudioAttributes attributes = new AudioAttributes.Builder()
                 // 设置音频要用在什么地方，这里选择电话通知铃音
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build();
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).setContentType
+                        (AudioAttributes.CONTENT_TYPE_SONIFICATION).build();
         // 使用 build 的方式实例化 SoundPool
-        mSoundPool = new SoundPool.Builder().setAudioAttributes(attributes).setMaxStreams(1).build();
+        mSoundPool = new SoundPool.Builder().setAudioAttributes(attributes).setMaxStreams(1)
+                .build();
     }
 
     /**
@@ -399,10 +413,11 @@ public abstract class BaseCallFragment extends TSFragment {
                 } else if (callError == EMCallStateChangeListener.CallError.ERROR_TRANSPORT) {
                     // 设置通话状态为建立连接失败
                     mCallStatus = TSEMConstants.TS_CALL_TRANSPORT;
-                } else if (callError == EMCallStateChangeListener.CallError.ERROR_LOCAL_SDK_VERSION_OUTDATED) {
+                } else if (callError == EMCallStateChangeListener.CallError
+                        .ERROR_LOCAL_SDK_VERSION_OUTDATED) {
                     // 设置通话状态为双方协议不同
                     mCallStatus = TSEMConstants.TS_CALL_VERSION_DIFFERENT;
-                }else {
+                } else {
                     // 根据当前状态判断是正常结束，还是对方取消通话
                     if (mCallStatus == TSEMConstants.TS_CALL_CANCEL) {
                         // 设置通话状态
@@ -455,9 +470,10 @@ public abstract class BaseCallFragment extends TSFragment {
 
     /**
      * 通话状态变化
+     *
      * @param status
      */
-    protected void setCallStatusText(String status){
+    protected void setCallStatusText(String status) {
 
     }
 
@@ -467,11 +483,24 @@ public abstract class BaseCallFragment extends TSFragment {
      * @Email Jliuer@aliyun.com
      * @Description 结束通话关闭界面
      */
-    protected void onFinish(){
+    protected void onFinish() {
         stopCallSound();
         mActivity.finish();
     }
 
-    public void onUserLeaveHint(){}
-    public void onActivityResume(){}
+    public void onUserLeaveHint() {
+    }
+
+    public void onActivityResume() {
+    }
+
+    protected UserInfoBean getUserInfo(long id) {
+        if (mUserInfoBean != null) {
+            return mUserInfoBean;
+        }
+        if (mUserInfoBeanGreenDao == null) {
+            mUserInfoBeanGreenDao = new UserInfoBeanGreenDaoImpl(mActivity.getApplication());
+        }
+        return mUserInfoBeanGreenDao.getSingleDataFromCache(id);
+    }
 }
