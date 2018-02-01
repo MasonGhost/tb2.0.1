@@ -27,6 +27,7 @@ import com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.recharge_withd
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.recharge_withdrawal.IntegrationRWDetailContainerFragment
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleFragment
+import kotlinx.android.synthetic.main.fragment_my_circle_container.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -98,7 +99,6 @@ class IntegrationWithdrawalsFragment : TSFragment<IntegrationWithdrawalsContract
         mTvToolbarCenter.text = getString(R.string.integration_withdrawals_format, mGoldName)
         mTvToolbarRight.text = getString(R.string.withdrawals_record)
         mTvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(context, R.mipmap.topbar_back_white), null, null, null)
-        initListener()
     }
 
     override fun initData() {
@@ -109,7 +109,7 @@ class IntegrationWithdrawalsFragment : TSFragment<IntegrationWithdrawalsContract
             return
         }
         mEtInput.hint = getString(R.string.et_input_withdrawals_integration_tip_format, mIntegrationConfigBean!!.cashmin, mGoldName)
-
+        initListener()
         // 元对应的积分比例，服务器返回的是以分为单位的比例
         setDynamicRatio(mBaseRatioNum)
         mTvRechargeRule.text = resources.getString(R.string.integration_withdrawals_rule_format, mGoldName)
@@ -212,7 +212,10 @@ class IntegrationWithdrawalsFragment : TSFragment<IntegrationWithdrawalsContract
     /**
      * 检查确认按钮是否可点击
      */
-    private fun configSureButton() = setSureBtEnable(mRechargeMoney > 0)
+    private fun configSureButton() {
+        setSureBtEnable(mRechargeMoney > 0)
+        setDynamicRatio(mRechargeMoney.toInt())
+    }
 
     override fun setSureBtEnable(enable: Boolean) {
         mBtSure.isEnabled = enable

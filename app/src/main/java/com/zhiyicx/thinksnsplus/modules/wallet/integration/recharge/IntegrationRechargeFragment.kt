@@ -109,6 +109,7 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
 
     override fun getBodyLayoutId() = R.layout.fragment_integration_recharge
 
+    private val mBaseRatioNum = 1
 
     override fun initView(rootView: View) {
         setStatusPlaceholderViewBackgroundColor(android.R.color.transparent)
@@ -121,7 +122,6 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
         mTvToolbarRight.text = getString(R.string.recharge_record)
         mTvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(context, R.mipmap.topbar_back_white), null, null, null)
 
-        initListener()
         mLlRechargeChooseMoneyItem.visibility = View.VISIBLE
     }
 
@@ -158,8 +158,9 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
 
 
     private fun updateData() {
+        initListener()
         // 元对应的积分比例，服务器返回的是以分为单位的比例
-        mTvMineIntegration.text = getString(R.string.integration_ratio_formart, 1, mIntegrationConfigBean!!.rechargeratio * 100, mGoldName)
+        setDynamicRatio(mBaseRatioNum);
         if (mIntegrationConfigBean != null && !TextUtils.isEmpty(mIntegrationConfigBean!!.rechargeoptions)) {
             val datas = ArrayList<ChooseDataBean>()
             val rechargeoptions = mIntegrationConfigBean!!.rechargeoptions.split(ConstantConfig.SPLIT_SMBOL.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
@@ -178,6 +179,15 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
         } else {
             mChooseView.visibility = View.GONE
         }
+    }
+
+    /**
+     * 动态显示提取金额
+     *
+     * @param currentIntegration
+     */
+    private fun setDynamicRatio(currentIntegration: Int) {
+        mTvMineIntegration.text = getString(R.string.integration_ratio_formart, currentIntegration, currentIntegration * mIntegrationConfigBean!!.rechargeratio * 100, mGoldName)
     }
 
     override fun setRightClick() {
@@ -270,6 +280,7 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
      */
     private fun configSureButton() {
         mBtSure.isEnabled = money > 0 && !TextUtils.isEmpty(mBtRechargeStyle.rightText)
+        setDynamicRatio(money.toInt())
     }
 
     /**
@@ -305,7 +316,7 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
                 else
                     "")
                 .item4Str(if (rechargeTypes.size == 0 && mSystemConfigBean.walletTransform == null || !mSystemConfigBean.walletTransform
-                        .isOpen)
+                                .isOpen)
                     getString(R.string.recharge_disallow)
                 else
                     "")
@@ -375,13 +386,13 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
                     showSnackErrorMessage(getString(id))
                 }
                 if (result == "success") {
-                    mPresenter.rechargeSuccess(mPayChargeId!!,money)
+                    mPresenter.rechargeSuccess(mPayChargeId!!, money)
                 }
             }
         }
     }
 
-    override fun payCredentialsResult(payStrBean: PayStrV2Bean,amount: Double) {
+    override fun payCredentialsResult(payStrBean: PayStrV2Bean, amount: Double) {
         mPayChargeId = payStrBean.order.id.toString() + ""
         LogUtils.json(ConvertUtils.object2JsonStr<PayStrV2Bean.ChargeBean>(payStrBean.pingpp_order))
         TSPayClient.pay(ConvertUtils.object2JsonStr<PayStrV2Bean.ChargeBean>(payStrBean.pingpp_order), activity)
@@ -392,9 +403,9 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
     }
 
     override fun rechargeSuccess(amount: Double) {
-        showSnackSuccessMessage(getString(R.string.integration_recharge_success_tip_format,PayConfig.realCurrencyFen2Yuan(amount),(amount*
+        showSnackSuccessMessage(getString(R.string.integration_recharge_success_tip_format, PayConfig.realCurrencyFen2Yuan(amount), (amount *
                 mIntegrationConfigBean!!
-                .rechargeratio).toLong(),mGoldName))
+                        .rechargeratio).toLong(), mGoldName))
 
         EventBus.getDefault().post("", EventBusTagConfig.EVENT_INTEGRATION_RECHARGE)
     }
