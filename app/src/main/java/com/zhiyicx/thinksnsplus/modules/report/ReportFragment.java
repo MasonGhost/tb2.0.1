@@ -18,6 +18,8 @@ import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.baseproject.widget.imageview.SquareImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.SkinUtils;
+import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.DefaultUserInfoConfig;
@@ -165,9 +167,24 @@ public class ReportFragment extends TSFragment<ReportContract.Presenter> impleme
             mTvResourceTitle.setVisibility(View.GONE);
             mTvResourceDes.setMaxLines(DEFAULT_RESOURCE_DES_MAX_LINES);
         }
-
+        /**
+         * 增加文字描述付费模糊
+         */
         if (!TextUtils.isEmpty(mReportResourceBean.getDes())) {
-            mTvResourceDes.setText(mReportResourceBean.getDes());
+            if (mReportResourceBean.isDesCanlook()) {
+                mTvResourceDes.setText(mReportResourceBean.getDes());
+            } else {
+                int startPosition = mReportResourceBean.getDes().length();
+                mReportResourceBean.setDes(mReportResourceBean.getDes() + getString(R.string.pay_blur_tip));
+                TextViewUtils.newInstance(mTvResourceDes, mReportResourceBean.getDes())
+                        .spanTextColor(SkinUtils.getColor(R
+                                .color.normal_for_assist_text))
+                        .position(startPosition, mReportResourceBean.getDes().length())
+                        .maxLines(DEFAULT_RESOURCE_DES_MAX_LINES)
+                        .disPlayText(false)
+                        .build();
+                mTvResourceDes.setVisibility(View.VISIBLE);
+            }
         }
     }
 
