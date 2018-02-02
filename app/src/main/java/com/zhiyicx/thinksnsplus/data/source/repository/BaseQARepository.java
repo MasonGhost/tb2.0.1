@@ -278,15 +278,15 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
     }
 
     @Override
-    public Observable<BaseJsonV2<AnswerInfoBean>> publishAnswer(Long question_id, String body, int anonymity) {
-        return mQAClient.publishAnswer(question_id, body, anonymity)
+    public Observable<BaseJsonV2<AnswerInfoBean>> publishAnswer(Long question_id, String body, String text_body, int anonymity) {
+        return mQAClient.publishAnswer(question_id, body,text_body, anonymity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
-    public Observable<BaseJsonV2<Object>> updateAnswer(Long answer_id, String body, int anonymity) {
-        return mQAClient.uplaodAnswer(answer_id, body, anonymity)
+    public Observable<BaseJsonV2<Object>> updateAnswer(Long answer_id, String body, String text_body, int anonymity) {
+        return mQAClient.uplaodAnswer(answer_id, body, text_body,anonymity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

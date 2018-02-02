@@ -75,7 +75,8 @@ import static com.zhiyicx.thinksnsplus.widget.QuestionSelectListTypePopWindow.On
  * @contact email:648129313@qq.com
  */
 
-public class QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
+public class
+QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
         AnswerInfoBean> implements QuestionDetailContract.View, QuestionDetailHeader.OnActionClickListener,
         OnOrderTypeSelectListener, OnItemClickListener, OnGoToWatchClickListener, TextViewUtils.OnSpanTextClickListener {
 
@@ -221,8 +222,13 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     @Override
     public void setQuestionDetail(QAListInfoBean questionDetail, boolean isLoadMore) {
         this.mQaListInfoBean = questionDetail;
-        String body = questionDetail.getBody();
-        questionDetail.setBody(body.replaceAll(MarkdownConfig.HTML_FORMAT, ""));
+
+
+        // 加入这两句，因为目前 问题详情不支持 id 跳转  2018-1-30 15:19:54 by tym
+        mIsMine = questionDetail.getUser_id().equals(AppApplication.getMyUserIdWithdefault());
+        mQaDetailTool.showQuestionTool(mIsMine);
+
+
         onNetResponseSuccess(mQaListInfoBean.getAnswerInfoBeanList(), isLoadMore);
         mQuestionDetailHeader.setDetail(questionDetail, mPresenter.getSystemConfig().getOnlookQuestion(), mPresenter.getRatio());
     }

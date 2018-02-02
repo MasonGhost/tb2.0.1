@@ -93,6 +93,7 @@ public class ManuscriptListFragment extends TSListFragment<ManuscriptListContrac
                         InfoPublishBean infoPublishBean = new InfoPublishBean();
                         infoPublishBean.setNews_id(realData.getId().intValue());
                         infoPublishBean.setSubject(realData.getSubject());
+                        infoPublishBean.setFrom(realData.getFrom());
                         infoPublishBean.setTitle(realData.getTitle());
                         infoPublishBean.setAuthor(realData.getAuthor());
                         infoPublishBean.setCategoryId(realData.getCategory().getId());

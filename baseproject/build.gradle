@@ -104,6 +104,7 @@ dependencies {
     compile project(':easeui')
     compile dataDependences.refresh
     compile dataDependences.refreshHeader
+
 }
 
 repositories {

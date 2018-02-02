@@ -21,9 +21,4 @@ public class CollectAnswerListFragment extends MyAnswerFragment {
         fragment.setArguments(bundle);
         return fragment;
     }
-
-    @Override
-    protected boolean showBottomToolMenu() {
-        return false;
-    }
 }

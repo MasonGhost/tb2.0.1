@@ -20,6 +20,7 @@ public interface MusicContract {
 
     interface View extends ITSListView<MusicAlbumListBean, Presenter> {
 
+        boolean isCollection();
     }
 
     interface Presenter extends ITSListPresenter<MusicAlbumListBean> {

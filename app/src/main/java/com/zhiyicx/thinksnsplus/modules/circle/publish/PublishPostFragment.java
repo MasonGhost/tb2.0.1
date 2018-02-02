@@ -125,8 +125,8 @@ public class PublishPostFragment extends MarkdownFragment<PostDraftBean,PublishP
     }
 
     @Override
-    protected void handlePublish(String title, String markdwon, String noMarkdown) {
-        super.handlePublish(title, markdwon, noMarkdown);
+    protected void handlePublish(String title, String markdwon, String noMarkdown,String html) {
+        super.handlePublish(title, markdwon, noMarkdown,html);
         if (TextUtils.isEmpty(title)) {
             showSnackErrorMessage(getString(R.string.post_publish_select_title));
             return;
@@ -182,6 +182,11 @@ public class PublishPostFragment extends MarkdownFragment<PostDraftBean,PublishP
         postDraftBean.setHtml("<!DOCTYPE html>\n" + html);
         postDraftBean.setIsOutCircle(isOutCirclePublish);
         mPresenter.saveDraft(postDraftBean);
+    }
+
+    @Override
+    public boolean needSetting() {
+        return false;
     }
 
     @Override

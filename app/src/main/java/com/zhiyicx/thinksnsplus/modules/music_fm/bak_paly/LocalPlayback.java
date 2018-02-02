@@ -250,7 +250,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
             } catch (IOException ex) {
                 if (mCallback != null) {
-                    mCallback.onError(ex.getMessage());
+                    mCallback.onError(ex.getMessage(),PlaybackStateCompat.STATE_PAUSED);
                 }
             }
         }
@@ -418,10 +418,10 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-        mState = PlaybackStateCompat.STATE_ERROR;
         if (mCallback != null) {
-            mCallback.onError("MediaPlayer error " + what + " (" + extra + ")");
+            mCallback.onError("MediaPlayer error " + what + " (" + extra + ")",mState);
         }
+        mState = PlaybackStateCompat.STATE_ERROR;
         return true;
     }
 

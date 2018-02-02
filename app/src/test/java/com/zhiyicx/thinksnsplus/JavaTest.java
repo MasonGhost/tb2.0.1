@@ -175,10 +175,17 @@ public class JavaTest {
     }
 
     @Test
-    public void testFilter() {
-        String source = "http://ddd/";
-        String urlRege = "^http://[\\s\\S]+";
-        System.out.print("testFilter = " + source.matches(urlRege));
+    public void testFilter() { // <(a|/a)(href="(.*)").*>
+        String source = "<ahref=\"http://rde\"class=\"editor-link\">tgfff</a>@![image](6173)";
+        Matcher matcher = Pattern.compile(MarkdownConfig.LINK_WORDS_FORMAT).matcher(source);
+        while (matcher.find()) {
+            int count = matcher.groupCount();
+            for (int i = 0; i < count; i++) {
+                System.out.println("reg::" + i + ":::" + matcher.group(i));
+            }
+            source=source.replaceFirst(MarkdownConfig.LINK_WORDS_FORMAT,matcher.group(3));
+        }
+        System.out.println(source);
     }
 
     @Test
@@ -204,15 +211,26 @@ public class JavaTest {
 
     @Test
     public void testInt() {
-        String test = "<https://www.baidu.com> 我来测试一下哟";
-//        Matcher matcher=
-        System.out.println(test.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE));
+        String test = "[对对对](57941)";//  \[(.*?)]\((.*?)\)
+//        Matcher matcher = Pattern.compile("@!\\[.*?]\\((\\d+)\\)").matcher(test);
 
-        Matcher matcher = Pattern.compile(MarkdownConfig.NETSITE_FORMAT).matcher(test);
-        int lastIndex = 0;
-        while (matcher.find()) {
-            System.out.println(test.substring(matcher.start(), matcher.end()));
+        Matcher matcher = null;
+        try {
+            matcher = Pattern.compile(MarkdownConfig.LINK_FORMAT).matcher(test);
+            while (matcher.find()) {
+                System.out.println(matcher.group(1));
+                System.out.println(matcher.group(2));
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
+
+//        while (matcher.find()) {
+//            int count = matcher.groupCount();
+//            for (int i = 0; i < count; i++) {
+//                System.out.println(matcher.group(i));
+//            }
+//        }
     }
 
     @Test

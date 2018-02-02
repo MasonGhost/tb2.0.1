@@ -73,7 +73,8 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetai
  */
 public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract.Presenter,
         AnswerCommentListBean> implements AnswerDetailsConstract.View, InputLimitView
-        .OnSendClickListener, AnswerDetailHeaderView.AnswerHeaderEventListener, BaseWebLoad.OnWebLoadListener, MultiItemTypeAdapter.OnItemClickListener {
+        .OnSendClickListener, AnswerDetailHeaderView.AnswerHeaderEventListener, BaseWebLoad.OnWebLoadListener, MultiItemTypeAdapter
+        .OnItemClickListener {
 
     public static final String BUNDLE_SOURCE_ID = "source_id";
     public static final String BUNDLE_ANSWER = "answer";
@@ -170,8 +171,6 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
 
     @Override
     public void updateAnswerHeader(AnswerInfoBean answerInfoBean, boolean isLoadMore) {
-        String body = answerInfoBean.getBody();
-        answerInfoBean.setBody(body.replaceAll(MarkdownConfig.HTML_FORMAT, ""));
         mTvToolbarCenter.setText(answerInfoBean.getQuestion().getSubject());
         mAnswerInfoBean = answerInfoBean;
         mCoordinatorLayout.setEnabled(true);
@@ -513,10 +512,13 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                                 ImageZipConfig.IMAGE_80_ZIP);
                     }
                     // 预览的文字
-                    String des = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mAnswerInfoBean.getBody());
+                    String des = mAnswerInfoBean.getText_body();
+                    if (TextUtils.isEmpty(des)) {
+                        des = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mAnswerInfoBean.getBody());
+                    }
                     ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mAnswerInfoBean.getUser(), String.valueOf
                             (mAnswerInfoBean.getId()),
-                            "", img, des, ReportType.QA));
+                            "", img, des, ReportType.QA_ANSWER));
                     mDealInfoMationPopWindow.hide();
                 })
                 .bottomClickListener(() -> mDealInfoMationPopWindow.hide())
@@ -579,7 +581,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                 mReplyUserId = infoCommentListBean.getUser_id().intValue();
                 showCommentView();
                 String contentHint = getString(R.string.default_input_hint);
-                if (infoCommentListBean.getReply_user() != infoCommentListBean.getId()) {
+                if (infoCommentListBean.getReply_user().longValue() != infoCommentListBean.getId().longValue()) {
                     contentHint = getString(R.string.reply, infoCommentListBean
                             .getFromUserInfoBean().getName());
                 }

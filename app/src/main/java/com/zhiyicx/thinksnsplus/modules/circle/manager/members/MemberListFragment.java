@@ -157,6 +157,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
                 RxView.clicks(holder.itemView)
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                        .filter(aVoid -> !mPresenter.handleTouristControl())
                         .subscribe(aVoid -> {
                             if (isAttornCircle()) {
                                 initPopWindow(more, position, circleMembers);

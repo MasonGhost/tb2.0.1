@@ -174,6 +174,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
                     @Override
                     public void onCompleted() {
                         initData();
+                        initAdvert();
                     }
 
                     @Override
@@ -191,7 +192,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     @Override
     protected void initData() {
         if (mPresenter != null) {
-            initAdvert();
             super.initData();
         }
     }

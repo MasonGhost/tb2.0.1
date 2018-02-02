@@ -9,9 +9,7 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
-import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoContract;
 import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoActivity;
-import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownContract;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
 
 import java.util.Locale;
@@ -22,8 +20,8 @@ import java.util.Locale;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class EditeInfoDetailFragment extends MarkdownFragment<PostDraftBean,EditeInfoDetailContract.Presenter>
-        implements EditeInfoDetailContract.View{
+public class EditeInfoDetailFragment extends MarkdownFragment<PostDraftBean, EditeInfoDetailContract.Presenter>
+        implements EditeInfoDetailContract.View {
 
     public static final String INFO_REFUSE = "info_refuse";
     public static InfoPublishBean mInfoPublishBean;
@@ -44,6 +42,11 @@ public class EditeInfoDetailFragment extends MarkdownFragment<PostDraftBean,Edit
         EditeInfoDetailFragment editeInfoDetailFragment = new EditeInfoDetailFragment();
         editeInfoDetailFragment.setArguments(bundle);
         return editeInfoDetailFragment;
+    }
+
+    @Override
+    public boolean needSetting() {
+        return false;
     }
 
     @Override
@@ -73,9 +76,14 @@ public class EditeInfoDetailFragment extends MarkdownFragment<PostDraftBean,Edit
     }
 
     @Override
-    protected void handlePublish(String title, String markdwon, String noMarkdown) {
-        super.handlePublish(title, markdwon, noMarkdown);
+    protected void handlePublish(String title, String markdwon, String noMarkdown,String html) {
+        super.handlePublish(title, markdwon, noMarkdown,html);
         mInfoPublishBean.setContent(markdwon);
+        mInfoPublishBean.setText_content(noMarkdown);
+        if (mPresenter == null) {
+            showSnackErrorMessage(getString(R.string.handle_fail));
+            return;
+        }
         mInfoPublishBean.setAmout(mPresenter.getSystemConfigBean().getNewsPayContribute());
 
         // 封面
@@ -94,7 +102,7 @@ public class EditeInfoDetailFragment extends MarkdownFragment<PostDraftBean,Edit
     }
 
     @Override
-    protected void initEditWarningPop(String title, String html, String noMarkdown) {
+    protected void initEditWarningPop(String title, String markdown, String noMarkdown,String html) {
         if (mCanclePopupWindow != null) {
             mCanclePopupWindow.show();
             return;

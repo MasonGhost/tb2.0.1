@@ -73,20 +73,20 @@ public class EditeAnswerDetailFragment extends EditeQuestionDetailFragment {
     }
 
     @Override
-    protected void handlePublish(String title, String markdwon, String noMarkdown) {
+    protected void handlePublish(String title, String markdwon, String noMarkdown,String html) {
 
         if (openDraft() && isBack) {
             noMarkdown = noMarkdown.replaceAll(MarkdownConfig.HTML_FORMAT, "");
-            initEditWarningPop(title, markdwon, noMarkdown);
+            initEditWarningPop(title, markdwon, noMarkdown,html);
             return;
         }
 
         if (mType == PublishType.PUBLISH_ANSWER) {
-            mPresenter.publishAnswer(getArguments().getLong(BUNDLE_SOURCE_ID), markdwon
-                    , mAnonymity);
+            mPresenter.publishAnswer(getArguments().getLong(BUNDLE_SOURCE_ID), markdwon,
+                    noMarkdown , mAnonymity);
         } else if (mType == PublishType.UPDATE_ANSWER) {
             mPresenter.updateAnswer(getArguments().getLong(BUNDLE_SOURCE_ID), markdwon,
-                    mAnonymity);
+                    noMarkdown ,mAnonymity);
         } else if (mType == PublishType.UPDATE_QUESTION) {
             mPresenter.updateQuestion(getArguments().getLong(BUNDLE_SOURCE_ID), markdwon,
                     mAnonymity);
@@ -130,6 +130,8 @@ public class EditeAnswerDetailFragment extends EditeQuestionDetailFragment {
         if (draftMark != 0) {
             mark = draftMark;
         }
+        String questingTitle = getArguments().getString(BUNDLE_SOURCE_TITLE, "暂无");
+        answerDraftBean.setTitle(questingTitle);
         answerDraftBean.setMark(mark);
         answerDraftBean.setSubject(noMarkdown);
         answerDraftBean.setId(getArguments().getLong(BUNDLE_SOURCE_ID));
@@ -198,7 +200,7 @@ public class EditeAnswerDetailFragment extends EditeQuestionDetailFragment {
         bundle.putLong(BUNDLE_SOURCE_ID, realData.getId());
         bundle.putLong(BUNDLE_SOURCE_MARK, realData.getMark());
         bundle.putString(BUNDLE_SOURCE_BODY, realData.getBody());
-        bundle.putString(BUNDLE_SOURCE_TITLE, "");
+        bundle.putString(BUNDLE_SOURCE_TITLE, realData.getTitle());
         intent.putExtras(bundle);
         context.startActivity(intent);
     }

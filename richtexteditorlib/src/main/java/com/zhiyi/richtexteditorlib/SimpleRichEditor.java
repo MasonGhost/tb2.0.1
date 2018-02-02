@@ -68,7 +68,7 @@ public class SimpleRichEditor extends RichEditor {
 
         void onAfterInitialLoad(boolean ready);
 
-        void onSettingImageButtionClick();
+        void onSettingImageButtionClick(boolean isSelected);
     }
 
     public interface BottomMenuItemConfig {
@@ -377,7 +377,18 @@ public class SimpleRichEditor extends RichEditor {
             mFreeItems.add(ItemIndex.STRIKE_THROUGH);
         }
 
-        mBottomMenu.addRootItem(getBaseItemFactory().generateItem(getContext(), ItemIndex.A))
+        mBottomMenu.addRootItem(getBaseItemFactory().generateItem(getContext(), ItemIndex.A,
+                (item, isSelected) -> {
+                    if (mBottomMenu.getBottomMenuItems().get(ItemIndex.SETTING) != null) {
+                        MenuItem menuSetting = mBottomMenu.getBottomMenuItems().get(ItemIndex.SETTING).getMenuItem();
+                        if (!isSelected && menuSetting.getSelected()) {
+                            mBottomMenu.getInnerListener().onItemClick(menuSetting);
+                        }
+                        mBottomMenu.getBottomMenuItem(item).setSelected(isSelected);
+                        mOnEditorClickListener.onSettingImageButtionClick(isSelected);
+                    }
+                    return false;
+                }))
                 .addItem(ItemIndex.A, needBold ? getBaseItemFactory().generateItem(
                         getContext(),
                         ItemIndex.BOLD,
@@ -481,8 +492,13 @@ public class SimpleRichEditor extends RichEditor {
                 getContext(),
                 ItemIndex.SETTING,
                 (item, isSelected) -> {
-                    mOnEditorClickListener.onSettingImageButtionClick();
-                    return true;
+                    MenuItem menuA = mBottomMenu.getBottomMenuItems().get(ItemIndex.A).getMenuItem();
+                    if (menuA != null && !isSelected && menuA.getSelected()) {
+                        mBottomMenu.getInnerListener().onItemClick(menuA);
+                    }
+                    mBottomMenu.getBottomMenuItem(item).setSelected(isSelected);
+                    mOnEditorClickListener.onSettingImageButtionClick(!isSelected);
+                    return false;
                 }) : null);
         return this;
     }

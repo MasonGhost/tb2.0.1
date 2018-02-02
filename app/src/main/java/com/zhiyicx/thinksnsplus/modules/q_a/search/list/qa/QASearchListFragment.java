@@ -263,6 +263,7 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
     }
 
     private void checkEmptyView() {
+        setEmptyViewVisiable(false);
         if (mListDatas.isEmpty()) {
             mLlEmpty.setVisibility(View.VISIBLE);
         } else {

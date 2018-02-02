@@ -677,6 +677,7 @@
     <string name="edit">编辑</string>
     <string name="edit_question">编辑问题</string>
     <string name="edit_answer">编辑回答</string>
+    <string name="look_question">查看问题</string>
     <string name="edit_post">编辑帖子</string>
     <string name="save_to_draft_box">保存至草稿箱</string>
     <string-array name="topic_detail_category">
@@ -923,6 +924,8 @@
     <string name="report_circle">举报圈子</string>
     <string name="publish_post">发帖</string>
     <string name="syn_to_dynamic">同步至动态</string>
+    <string name="handle_fail">操作失败！</string>
+    <string name="pay_blur_tip">这些东西是需要付费的，给了钱钱你就可以查看了，很厉害吧！！！</string>
 
     <!--聊天-->
     <string name="chat_delete_conversation_failed">删除聊天失败</string>

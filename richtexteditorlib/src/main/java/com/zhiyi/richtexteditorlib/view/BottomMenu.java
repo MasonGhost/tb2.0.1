@@ -279,6 +279,9 @@ public class BottomMenu extends ViewGroup {
         mInnerListener = new AbstractBottomMenuItem.OnItemClickListener() {
             @Override
             public void onItemClick(MenuItem menuItem) {
+                if (menuItem == null) {
+                    return;
+                }
                 onItemClickPreHandle(menuItem);
                 if (mOnItemClickListener != null) {
                     mOnItemClickListener.onItemClick(menuItem);
@@ -508,7 +511,7 @@ public class BottomMenu extends ViewGroup {
         return Math.max(height, 0);
     }
 
-    private AbstractBottomMenuItem getBottomMenuItem(MenuItem item) {
+    public AbstractBottomMenuItem getBottomMenuItem(MenuItem item) {
         return mBottomMenuItems.get(item.getId());
     }
 
@@ -870,11 +873,19 @@ public class BottomMenu extends ViewGroup {
         }
     }
 
-    public interface BottomMenuVisibleChangeListener{
+    public interface BottomMenuVisibleChangeListener {
         void onBottomMenuVisibleChange(boolean visible);
     }
 
     public void setBottomMenuVisibleChangeListener(BottomMenuVisibleChangeListener bottomMenuVisibleChangeListener) {
         mBottomMenuVisibleChangeListener = bottomMenuVisibleChangeListener;
+    }
+
+    public AbstractBottomMenuItem.OnItemClickListener getInnerListener() {
+        return mInnerListener;
+    }
+
+    public HashMap<Long, AbstractBottomMenuItem> getBottomMenuItems() {
+        return mBottomMenuItems;
     }
 }
