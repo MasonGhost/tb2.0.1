@@ -82,11 +82,11 @@ public class EditeAnswerDetailFragment extends EditeQuestionDetailFragment {
         }
 
         if (mType == PublishType.PUBLISH_ANSWER) {
-            mPresenter.publishAnswer(getArguments().getLong(BUNDLE_SOURCE_ID), markdwon
-                    , mAnonymity);
+            mPresenter.publishAnswer(getArguments().getLong(BUNDLE_SOURCE_ID), markdwon,
+                    noMarkdown , mAnonymity);
         } else if (mType == PublishType.UPDATE_ANSWER) {
             mPresenter.updateAnswer(getArguments().getLong(BUNDLE_SOURCE_ID), markdwon,
-                    mAnonymity);
+                    noMarkdown ,mAnonymity);
         } else if (mType == PublishType.UPDATE_QUESTION) {
             mPresenter.updateQuestion(getArguments().getLong(BUNDLE_SOURCE_ID), markdwon,
                     mAnonymity);
