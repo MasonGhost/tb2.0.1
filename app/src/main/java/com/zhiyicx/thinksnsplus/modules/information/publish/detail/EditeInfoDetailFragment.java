@@ -76,8 +76,8 @@ public class EditeInfoDetailFragment extends MarkdownFragment<PostDraftBean, Edi
     }
 
     @Override
-    protected void handlePublish(String title, String markdwon, String noMarkdown) {
-        super.handlePublish(title, markdwon, noMarkdown);
+    protected void handlePublish(String title, String markdwon, String noMarkdown,String html) {
+        super.handlePublish(title, markdwon, noMarkdown,html);
         mInfoPublishBean.setContent(markdwon);
         if (mPresenter == null) {
             showSnackErrorMessage(getString(R.string.handle_fail));
@@ -101,7 +101,7 @@ public class EditeInfoDetailFragment extends MarkdownFragment<PostDraftBean, Edi
     }
 
     @Override
-    protected void initEditWarningPop(String title, String html, String noMarkdown) {
+    protected void initEditWarningPop(String title, String markdown, String noMarkdown,String html) {
         if (mCanclePopupWindow != null) {
             mCanclePopupWindow.show();
             return;

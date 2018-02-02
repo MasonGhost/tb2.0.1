@@ -129,7 +129,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
      * @param markdwon   内容（含有格式）
      * @param noMarkdown 内容（不含格式）
      */
-    protected void handlePublish(String title, String markdwon, String noMarkdown) {
+    protected void handlePublish(String title, String markdwon, String noMarkdown,String html) {
     }
 
     /**
@@ -308,24 +308,24 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
      * @param markdwon   markdown 格式内容
      * @param noMarkdown 纯文字内容
      * @param isPublish  是否是发送
-     *                   如果不是发送：markdwon → 全部 html 格式内容
+     * @param html 全部 html 格式内容
      */
     @Override
-    public void onMarkdownWordResult(String title, String markdwon, String noMarkdown, boolean isPublish) {
+    public void onMarkdownWordResult(String title, String markdwon, String noMarkdown,String html ,boolean isPublish) {
         if (isPublish) {
             List<Integer> result = RegexUtils.getImageIdsFromMarkDown(MarkdownConfig.IMAGE_FORMAT, markdwon);
             if (mImages.containsAll(result)) {
                 mImages.clear();
                 mImages.addAll(result);
             }
-            handlePublish(title, markdwon, noMarkdown);
+            handlePublish(title, markdwon, noMarkdown,html);
         } else {
             boolean canSaveDraft = !contentIsNull(title, markdwon, noMarkdown);
             if (!canSaveDraft || !openDraft()) {
                 mActivity.finish();
                 return;
             }
-            initEditWarningPop(title, markdwon, noMarkdown);
+            initEditWarningPop(title, markdwon, noMarkdown,html);
             DeviceUtils.hideSoftKeyboard(mActivity.getApplication(), mRichTextView);
         }
     }
@@ -560,7 +560,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         mPhotoPopupWindow.show();
     }
 
-    protected void initEditWarningPop(String title, String html, String noMarkdown) {
+    protected void initEditWarningPop(String title, String markdown, String noMarkdown,String html) {
         if (mEditWarningPopupWindow != null) {
             mEditWarningPopupWindow.show();
             return;

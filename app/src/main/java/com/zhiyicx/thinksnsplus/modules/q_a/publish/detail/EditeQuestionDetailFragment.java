@@ -123,8 +123,8 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
     }
 
     @Override
-    protected void handlePublish(String title, String markdwon, String noMarkdown) {
-        super.handlePublish(title, markdwon, noMarkdown);
+    protected void handlePublish(String title, String markdwon, String noMarkdown,String html) {
+        super.handlePublish(title, markdwon, noMarkdown,html);
         PublishQuestionFragment.mDraftQuestion.setBody(markdwon);
         if (!isBack) {
             Intent intent = new Intent(getActivity(), AddTopicActivity.class);

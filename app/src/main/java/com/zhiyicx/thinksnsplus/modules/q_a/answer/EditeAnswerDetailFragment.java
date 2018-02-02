@@ -73,11 +73,11 @@ public class EditeAnswerDetailFragment extends EditeQuestionDetailFragment {
     }
 
     @Override
-    protected void handlePublish(String title, String markdwon, String noMarkdown) {
+    protected void handlePublish(String title, String markdwon, String noMarkdown,String html) {
 
         if (openDraft() && isBack) {
             noMarkdown = noMarkdown.replaceAll(MarkdownConfig.HTML_FORMAT, "");
-            initEditWarningPop(title, markdwon, noMarkdown);
+            initEditWarningPop(title, markdwon, noMarkdown,html);
             return;
         }
 

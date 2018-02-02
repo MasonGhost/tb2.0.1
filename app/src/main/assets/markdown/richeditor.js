@@ -196,12 +196,12 @@ var RE = {
 		//聚焦
 		var _self = this;
 		var range = document.createRange();
-		range.selectNodeContents(this.cache.editor);
+		range.selectNodeContents(this.cache.title);
 		range.collapse(false);
 		var select = window.getSelection();
 		select.removeAllRanges();
 		select.addRange(range);
-		_self.cache.editor.focus();
+		_self.cache.title.focus();
 	},
 	getHtml: function getHtml() {
 		var _self = this;
@@ -229,12 +229,7 @@ var RE = {
         var _self = this;
         var value = boolean;
         console.log("isPublish:::" + value);
-        if(value){
-            AndroidInterface.resultWords(_self.getTitle(),_self.markdownWords(),_self.noMarkdownWords(),value);
-        }else{
-            // document.documentElement.outerHTML
-            AndroidInterface.resultWords(_self.getTitle(),document.documentElement.outerHTML,_self.markdownWords(),value);
-        }
+        AndroidInterface.resultWords(_self.getTitle(),_self.markdownWords(),_self.noMarkdownWords(),document.documentElement.outerHTML,value);
     },
 
     // 暂时没用到
