@@ -111,16 +111,6 @@ public abstract class BaseCallFragment extends TSFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        // 设置通话界面属性，保持屏幕常亮，关闭输入法，以及解锁
-        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-                | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-    }
-
-    @Override
     protected void initView(View rootView) {
         // 获取通话对方的username
         mChatId = getArguments().getString(TSEMConstants.TS_EXTRA_CHAT_ID);

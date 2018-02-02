@@ -122,6 +122,9 @@ public class VideoCallFragment extends BaseCallFragment {
         mLocalSurface.setZOrderMediaOverlay(true);
         mLocalSurface.setZOrderOnTop(true);
         mOppositeSurface.setScaleMode(VideoView.EMCallViewScaleMode.EMCallViewScaleModeAspectFill);
+        if (isInComingCall){
+            mLocalSurface.setVisibility(View.INVISIBLE);
+        }
 
         EMClient.getInstance().callManager().setSurfaceView(mLocalSurface, mOppositeSurface);
 
@@ -521,6 +524,7 @@ public class VideoCallFragment extends BaseCallFragment {
         mChronometer.setBase(SystemClock.elapsedRealtime());
         mChronometer.start();
         mOppositeSurface.setVisibility(View.VISIBLE);
+        mLocalSurface.setVisibility(View.VISIBLE);
     }
 
     @Override

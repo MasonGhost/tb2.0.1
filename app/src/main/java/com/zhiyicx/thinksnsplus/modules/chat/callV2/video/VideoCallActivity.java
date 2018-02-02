@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;
-import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.em.manager.TSEMCallStatus;
+import com.zhiyicx.thinksnsplus.modules.chat.callV2.BaseCallActivity;
 
 /**
  * @Author Jliuer
@@ -13,16 +13,11 @@ import com.zhiyicx.baseproject.em.manager.TSEMCallStatus;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class VideoCallActivity extends TSActivity {
+public class VideoCallActivity extends BaseCallActivity {
 
     @Override
     protected Fragment getFragment() {
         return VideoCallFragment.getInstance(getIntent().getExtras());
-    }
-
-    @Override
-    protected void componentInject() {
-
     }
 
     @Override
