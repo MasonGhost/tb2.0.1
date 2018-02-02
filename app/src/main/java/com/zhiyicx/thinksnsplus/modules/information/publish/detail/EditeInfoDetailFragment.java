@@ -78,6 +78,7 @@ public class EditeInfoDetailFragment extends MarkdownFragment<PostDraftBean, Edi
     @Override
     protected void handlePublish(String title, String markdwon, String noMarkdown) {
         super.handlePublish(title, markdwon, noMarkdown);
+        mInfoPublishBean.setText_content(noMarkdown);
         mInfoPublishBean.setContent(markdwon);
         if (mPresenter == null) {
             showSnackErrorMessage(getString(R.string.handle_fail));
