@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
@@ -88,7 +89,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<
 
     @Inject
     AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
-    
+
     @Inject
     BaseQARepository mBaseQARepository;
 
@@ -145,7 +146,11 @@ public class AnswerDetailsPresenter extends AppBasePresenter<
         shareContent.setTitle(mContext.getString(R.string.app_name_anster, mContext.getString(R.string.app_name)));
         shareContent.setUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_QA_ANSWER_DETAIL,
                 mRootView.getAnswerInfo().getId()));
-        shareContent.setContent(mRootView.getAnswerInfo().getBody());
+        String shargeContent = mRootView.getAnswerInfo().getText_body();
+        if (TextUtils.isEmpty(shargeContent)) {
+            shargeContent = mRootView.getAnswerInfo().getBody();
+        }
+        shareContent.setContent(shargeContent);
 
         if (bitmap == null) {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));

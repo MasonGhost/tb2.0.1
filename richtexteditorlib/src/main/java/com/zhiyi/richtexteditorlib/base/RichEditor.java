@@ -99,7 +99,7 @@ public abstract class RichEditor extends WebView {
     }
 
     public interface OnMarkdownWordResultListener {
-        void onMarkdownWordResult(String title, String markdwon, String noMarkdown, boolean isPublish);
+        void onMarkdownWordResult(String title, String markdwon, String noMarkdown,String html ,boolean isPublish);
     }
 
     private static final String SETUP_HTML = "file:///android_asset/markdown/editor.html";
@@ -424,13 +424,16 @@ public abstract class RichEditor extends WebView {
 
     public void insertLink(String href, String title) {
         if (!href.matches(MarkdownConfig.SCHEME_TAG)) {
-            href = MarkdownConfig.SCHEME_ZHIYI + href;
+            href = MarkdownConfig.SCHEME_HTTP + href;
         }
         exec("javascript:RE.saveRange();");
         exec("javascript:RE.insertLink('" + title + "', '" + href + "');");
     }
 
     public void changeLink(String href, String title) {
+        if (!href.matches(MarkdownConfig.SCHEME_TAG)) {
+            href = MarkdownConfig.SCHEME_HTTP + href;
+        }
         exec("javascript:RE.saveRange();");
         exec("javascript:RE.changeLink('" + title + "', '" + href + "');");
     }
@@ -607,7 +610,7 @@ public abstract class RichEditor extends WebView {
         }
 
         @JavascriptInterface
-        public void resultWords(String title, String markdown, String noMarkdownWords, boolean isPublish) {
+        public void resultWords(String title, String markdown, String noMarkdownWords,String allHtml ,boolean isPublish) {
             Observable.just(mOnMarkdownWordResultListener)
                     .filter(onMarkdownWordResultListener -> onMarkdownWordResultListener!=null)
                     .observeOn(AndroidSchedulers.mainThread())
@@ -616,7 +619,7 @@ public abstract class RichEditor extends WebView {
                         if (noMarkdownWords.length() >= 191) {
                             result = noMarkdownWords.substring(0, 191);
                         }
-                        listener.onMarkdownWordResult(title, markdown, result, isPublish);
+                        listener.onMarkdownWordResult(title, markdown, result,allHtml, isPublish);
                     });
         }
 

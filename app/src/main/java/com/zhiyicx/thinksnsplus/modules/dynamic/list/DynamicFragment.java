@@ -847,9 +847,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                                         .getDimensionPixelOffset(R.dimen.report_resource_img),
                                 100);
                     }
-                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(dynamicBean.getUserInfoBean(), String.valueOf(dynamicBean
+                    ReportResourceBean reportResourceBean = new ReportResourceBean(dynamicBean.getUserInfoBean(), String.valueOf(dynamicBean
                             .getId()),
-                            "", img, dynamicBean.getFeed_content(), ReportType.DYNAMIC));
+                            "", img, dynamicBean.getFeed_content(), ReportType.DYNAMIC);
+                    reportResourceBean.setDesCanlook(dynamicBean.getPaid_node() == null || dynamicBean
+                            .getPaid_node().isPaid());
+                    ReportActivity.startReportActivity(mActivity, reportResourceBean);
                     mOtherDynamicPopWindow.hide();
                     showBottomView(true);
                 })

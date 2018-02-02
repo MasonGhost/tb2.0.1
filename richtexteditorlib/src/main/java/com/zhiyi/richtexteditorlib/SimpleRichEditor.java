@@ -379,12 +379,14 @@ public class SimpleRichEditor extends RichEditor {
 
         mBottomMenu.addRootItem(getBaseItemFactory().generateItem(getContext(), ItemIndex.A,
                 (item, isSelected) -> {
-                    MenuItem menuSetting = mBottomMenu.getBottomMenuItems().get(ItemIndex.SETTING).getMenuItem();
-                    if (!isSelected && menuSetting.getSelected()) {
-                        mBottomMenu.getInnerListener().onItemClick(menuSetting);
+                    if (mBottomMenu.getBottomMenuItems().get(ItemIndex.SETTING) != null) {
+                        MenuItem menuSetting = mBottomMenu.getBottomMenuItems().get(ItemIndex.SETTING).getMenuItem();
+                        if (!isSelected && menuSetting.getSelected()) {
+                            mBottomMenu.getInnerListener().onItemClick(menuSetting);
+                        }
+                        mBottomMenu.getBottomMenuItem(item).setSelected(isSelected);
+                        mOnEditorClickListener.onSettingImageButtionClick(isSelected);
                     }
-                    mBottomMenu.getBottomMenuItem(item).setSelected(isSelected);
-                    mOnEditorClickListener.onSettingImageButtionClick(isSelected);
                     return false;
                 }))
                 .addItem(ItemIndex.A, needBold ? getBaseItemFactory().generateItem(
@@ -491,7 +493,7 @@ public class SimpleRichEditor extends RichEditor {
                 ItemIndex.SETTING,
                 (item, isSelected) -> {
                     MenuItem menuA = mBottomMenu.getBottomMenuItems().get(ItemIndex.A).getMenuItem();
-                    if (menuA!=null&&!isSelected && menuA.getSelected()) {
+                    if (menuA != null && !isSelected && menuA.getSelected()) {
                         mBottomMenu.getInnerListener().onItemClick(menuA);
                     }
                     mBottomMenu.getBottomMenuItem(item).setSelected(isSelected);

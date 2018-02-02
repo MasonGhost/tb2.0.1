@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.mine.answer;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -53,7 +54,10 @@ public class MyAnswerAdapterV2 extends MyAnswerAdapter {
         // 时间
         holder.setText(R.id.tv_watcher_count, TimeUtils.getTimeFriendlyNormal(answerInfoBean.getCreated_at()));
         // 正文
-        String content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean.getBody());
+        String content = answerInfoBean.getText_body();
+        if (TextUtils.isEmpty(content)) {
+            content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean.getBody());
+        }
         holder.setText(R.id.tv_content, content);
         // 点赞数量
         TextView tvLikeCount = holder.getView(R.id.tv_like_count);

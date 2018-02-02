@@ -17,9 +17,9 @@ public interface EditeQuestionDetailContract {
         void updateSuccess();
     }
     interface Presenter extends MarkdownContract.Presenter{
-        void publishAnswer(Long questionId, String body, int anonymity);
+        void publishAnswer(Long questionId, String body,String text_body, int anonymity);
 
-        void updateAnswer(Long answerId, String body, int anonymity);
+        void updateAnswer(Long answerId, String body,String text_body,  int anonymity);
 
         void updateQuestion(Long questionId, String body, int anonymity);
 

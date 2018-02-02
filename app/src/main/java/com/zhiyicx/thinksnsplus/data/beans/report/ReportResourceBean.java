@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date 2017/12/11
  * @Contact master.jungle68@gmail.com
  */
-public class ReportResourceBean implements Serializable{
+public class ReportResourceBean implements Serializable {
     private static final long serialVersionUID = -8484328463541856394L;
     /**
      * id 要举报资源的 id
@@ -25,9 +25,10 @@ public class ReportResourceBean implements Serializable{
     private String img;
     private String des;
     private ReportType type;
+    private boolean desCanlook = true;
 
-    public ReportResourceBean(UserInfoBean user,String id, String title, String img, String des, ReportType type) {
-        this.user=user;
+    public ReportResourceBean(UserInfoBean user, String id, String title, String img, String des, ReportType type) {
+        this.user = user;
         this.id = id;
         this.title = title;
         this.img = img;
@@ -35,6 +36,13 @@ public class ReportResourceBean implements Serializable{
         this.type = type;
     }
 
+    public boolean isDesCanlook() {
+        return desCanlook;
+    }
+
+    public void setDesCanlook(boolean desCanlook) {
+        this.desCanlook = desCanlook;
+    }
 
     public UserInfoBean getUser() {
         return user;

@@ -38,8 +38,8 @@ public class EditeQuestionDetailPresenter extends MarkdownPresenter<EditeQuestio
     }
 
     @Override
-    public void publishAnswer(Long questionId, String body, int anonymity) {
-        Subscription subscribe = mBaseQARepository.publishAnswer(questionId, body, anonymity)
+    public void publishAnswer(Long questionId, String body,String text_body, int anonymity) {
+        Subscription subscribe = mBaseQARepository.publishAnswer(questionId, body,text_body, anonymity)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.publish_doing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<AnswerInfoBean>>() {
                     @Override
@@ -67,8 +67,8 @@ public class EditeQuestionDetailPresenter extends MarkdownPresenter<EditeQuestio
     }
 
     @Override
-    public void updateAnswer(Long answerId, String body, int anonymity) {
-        Subscription subscribe = mBaseQARepository.updateAnswer(answerId, body, anonymity)
+    public void updateAnswer(Long answerId, String body,String text_body,  int anonymity) {
+        Subscription subscribe = mBaseQARepository.updateAnswer(answerId, body, text_body,anonymity)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.update_ing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override

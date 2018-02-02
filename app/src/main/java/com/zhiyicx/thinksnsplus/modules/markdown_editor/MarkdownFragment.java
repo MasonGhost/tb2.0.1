@@ -11,6 +11,10 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.vladsch.flexmark.ast.Node;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.options.MutableDataSet;
 import com.zhiyi.richtexteditorlib.SimpleRichEditor;
 import com.zhiyi.richtexteditorlib.base.RichEditor;
 import com.zhiyi.richtexteditorlib.view.BottomMenu;
@@ -129,7 +133,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
      * @param markdwon   内容（含有格式）
      * @param noMarkdown 内容（不含格式）
      */
-    protected void handlePublish(String title, String markdwon, String noMarkdown) {
+    protected void handlePublish(String title, String markdwon, String noMarkdown, String html) {
     }
 
     /**
@@ -308,24 +312,24 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
      * @param markdwon   markdown 格式内容
      * @param noMarkdown 纯文字内容
      * @param isPublish  是否是发送
-     *                   如果不是发送：markdwon → 全部 html 格式内容
+     * @param html       全部 html 格式内容
      */
     @Override
-    public void onMarkdownWordResult(String title, String markdwon, String noMarkdown, boolean isPublish) {
+    public void onMarkdownWordResult(String title, String markdwon, String noMarkdown, String html, boolean isPublish) {
         if (isPublish) {
             List<Integer> result = RegexUtils.getImageIdsFromMarkDown(MarkdownConfig.IMAGE_FORMAT, markdwon);
             if (mImages.containsAll(result)) {
                 mImages.clear();
                 mImages.addAll(result);
             }
-            handlePublish(title, markdwon, noMarkdown);
+            handlePublish(title, markdwon, noMarkdown, html);
         } else {
             boolean canSaveDraft = !contentIsNull(title, markdwon, noMarkdown);
             if (!canSaveDraft || !openDraft()) {
                 mActivity.finish();
                 return;
             }
-            initEditWarningPop(title, markdwon, noMarkdown);
+            initEditWarningPop(title, markdwon, noMarkdown, html);
             DeviceUtils.hideSoftKeyboard(mActivity.getApplication(), mRichTextView);
         }
     }
@@ -561,7 +565,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         mPhotoPopupWindow.show();
     }
 
-    protected void initEditWarningPop(String title, String html, String noMarkdown) {
+    protected void initEditWarningPop(String title, String markdown, String noMarkdown, String html) {
         if (mEditWarningPopupWindow != null) {
             mEditWarningPopupWindow.show();
             return;
@@ -654,20 +658,47 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
     }
 
     protected String pareseBody(String body) {
+
+        // 兼容就连接  http://www.baidu.com
+        Matcher oldLinkMatcher = Pattern.compile(MarkdownConfig.NETSITE_A_FORMAT).matcher(body);
+        while (oldLinkMatcher.find()) {
+            int count = oldLinkMatcher.groupCount();
+            for (int i = 0; i < count; i++) {
+                System.out.println("reg::" + i + ":::" + oldLinkMatcher.group(i));
+            }
+            String html = "<a href=\" " + oldLinkMatcher.group(0) + " \" class=\"editor-link\">网页链接</a>";
+            body = body.replaceFirst(oldLinkMatcher.group(0), html);
+        }
+
+        // 还原 <img ...>
         String result;
-        String reg = "@!(\\[(.*?)])\\(((\\d+))\\)";
-        String replace = "-星星-tym-星星-";
-        Matcher matcher = Pattern.compile(reg).matcher(body);
-        result = body.replaceAll(MarkdownConfig.IMAGE_FORMAT, replace);
-        while (matcher.find()) {
-            String name = matcher.group(2);
-            int id = Integer.parseInt(matcher.group(3));
+        String imageReplace = "-星星-tym-星星-";
+        Matcher imageMatcher = Pattern.compile(MarkdownConfig.IMAGE_FORMAT_HTML).matcher(body);
+        result = body.replaceAll(MarkdownConfig.IMAGE_FORMAT, imageReplace);
+        while (imageMatcher.find()) {
+            String name = imageMatcher.group(2);
+            int id = Integer.parseInt(imageMatcher.group(3));
             mImages.add(id);
             long tagId = SystemClock.currentThreadTimeMillis();
             String imagePath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
             mInsertedImages.put(tagId, imagePath);
-            result = result.replaceFirst(replace, getImageHtml(tagId, id, name, imagePath));
+            result = result.replaceFirst(imageReplace, getImageHtml(tagId, id, name, imagePath));
         }
+
+        // 还原 <a ...></a>
+        String linkReplace = "-星星-link-星星-";
+        Matcher linkMatcher = Pattern.compile(MarkdownConfig.LINK_FORMAT).matcher(result);
+        result = result.replaceAll(MarkdownConfig.LINK_FORMAT, linkReplace);
+        while (linkMatcher.find()) {
+            result = result.replaceFirst(linkReplace, getLinkHtml(linkMatcher.group(2), linkMatcher.group(1)));
+        }
+
+        // markdown to html
+        MutableDataSet options = new MutableDataSet();
+        Parser parser = Parser.builder(options).build();
+        HtmlRenderer renderer = HtmlRenderer.builder(options).build();
+        Node document = parser.parse(result);
+        result = renderer.render(document);
         pareseBodyResult();
         return result;
     }
@@ -692,7 +723,10 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
                 "   <input class=\"dec\" type=\"text\" placeholder=\"请输入图片名字\">" +
                 "</div>" +
                 "<div><br></div>";
+    }
 
+    protected String getLinkHtml(String url, String name) {
+        return "<a href=\"" + url + "\" class=\"editor-link\">" + name + "</a>";
     }
 
     protected String getHtml(String title, String content) {

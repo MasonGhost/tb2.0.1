@@ -41,6 +41,7 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     private int is_digg_news;
     private String title;
     private String content;
+    private String text_content;
     private String from;
     private String created_at;
     private String updated_at;
@@ -70,41 +71,14 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     @Convert(converter = InfoRelateListConvert.class, columnType = String.class)
     private List<InfoListDataBean> relateInfoList;
 
-    @Override
-    public String toString() {
-        return "InfoListDataBean{" +
-                "id=" + id +
-                "user_id=" + user_id +
-                ", info_type=" + info_type +
-                ", is_collection_news=" + is_collection_news +
-                ", is_digg_news=" + is_digg_news +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", from='" + from + '\'' +
-                ", created_at='" + created_at + '\'' +
-                ", updated_at='" + updated_at + '\'' +
-                ", audit_status=" + audit_status +
-                ", is_pinned=" + is_pinned +
-                ", image=" + image +
-                ", subject='" + subject + '\'' +
-                ", has_collect=" + has_collect +
-                ", has_like=" + has_like +
-                ", category=" + category +
-                ", isTop=" + isTop +
-                ", author='" + author + '\'' +
-                ", hits=" + hits +
-                ", tags=" + tags +
-                ", digg_count=" + digg_count +
-                ", comment_count=" + comment_count +
-                ", is_recommend=" + is_recommend +
-                ", audit_count=" + audit_count +
-                ", digList=" + digList +
-                ", commentList=" + commentList +
-                ", relateInfoList=" + relateInfoList +
-                '}';
+
+    public String getText_content() {
+        return text_content;
     }
 
-
+    public void setText_content(String text_content) {
+        this.text_content = text_content;
+    }
 
     public int getIs_collection_news() {
         return is_collection_news;
@@ -466,6 +440,12 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.tags = tags;
     }
 
+
+    public boolean getIs_pinned() {
+        return this.is_pinned;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -474,13 +454,14 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeLong(this.id);
+        dest.writeValue(this.id);
         dest.writeLong(this.user_id);
         dest.writeValue(this.info_type);
         dest.writeInt(this.is_collection_news);
         dest.writeInt(this.is_digg_news);
         dest.writeString(this.title);
         dest.writeString(this.content);
+        dest.writeString(this.text_content);
         dest.writeString(this.from);
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
@@ -504,12 +485,6 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         dest.writeTypedList(this.relateInfoList);
     }
 
-    public boolean getIs_pinned() {
-        return this.is_pinned;
-    }
-
-
-
     /**
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
@@ -532,15 +507,11 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         return commentList;
     }
 
-
-
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     @Generated(hash = 1195658147)
     public synchronized void resetCommentList() {
         commentList = null;
     }
-
-
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
@@ -554,8 +525,6 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         myDao.delete(this);
     }
 
-
-
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
      * Entity must attached to an entity context.
@@ -567,8 +536,6 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         }
         myDao.refresh(this);
     }
-
-
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
@@ -582,8 +549,6 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         myDao.update(this);
     }
 
-
-
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 338806337)
     public void __setDaoSession(DaoSession daoSession) {
@@ -591,17 +556,16 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         myDao = daoSession != null ? daoSession.getInfoListDataBeanDao() : null;
     }
 
-
-
     protected InfoListDataBean(Parcel in) {
         super(in);
-        this.id = in.readLong();
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.user_id = in.readLong();
         this.info_type = (Long) in.readValue(Long.class.getClassLoader());
         this.is_collection_news = in.readInt();
         this.is_digg_news = in.readInt();
         this.title = in.readString();
         this.content = in.readString();
+        this.text_content = in.readString();
         this.from = in.readString();
         this.created_at = in.readString();
         this.updated_at = in.readString();
@@ -625,15 +589,14 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.relateInfoList = in.createTypedArrayList(InfoListDataBean.CREATOR);
     }
 
-
-
-    @Generated(hash = 197884313)
+    @Generated(hash = 169543863)
     public InfoListDataBean(Long id, long user_id, Long info_type, int is_collection_news,
-            int is_digg_news, String title, String content, String from, String created_at,
-            String updated_at, StorageBean image, int audit_status, boolean is_pinned, String subject,
-            boolean has_collect, boolean has_like, InfoCategory category, boolean isTop, String author,
-            int hits, List<UserTagBean> tags, int digg_count, int comment_count, int is_recommend,
-            int audit_count, List<InfoDigListBean> digList, List<InfoListDataBean> relateInfoList) {
+            int is_digg_news, String title, String content, String text_content, String from,
+            String created_at, String updated_at, StorageBean image, int audit_status,
+            boolean is_pinned, String subject, boolean has_collect, boolean has_like,
+            InfoCategory category, boolean isTop, String author, int hits, List<UserTagBean> tags,
+            int digg_count, int comment_count, int is_recommend, int audit_count,
+            List<InfoDigListBean> digList, List<InfoListDataBean> relateInfoList) {
         this.id = id;
         this.user_id = user_id;
         this.info_type = info_type;
@@ -641,6 +604,7 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.is_digg_news = is_digg_news;
         this.title = title;
         this.content = content;
+        this.text_content = text_content;
         this.from = from;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -680,6 +644,5 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     /** Used for active entity operations. */
     @Generated(hash = 438734104)
     private transient InfoListDataBeanDao myDao;
-
 }
 

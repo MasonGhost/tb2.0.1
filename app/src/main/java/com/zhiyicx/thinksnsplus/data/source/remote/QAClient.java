@@ -56,14 +56,16 @@ public interface QAClient {
      * 发布答案
      *
      * @param question_id
-     * @param body
-     * @param anonymity   是否匿名
+     * @param body        : 必须，回答的内容，markdown
+     * @param text_body   纯文字回答内容，用于列表显示
+     * @param anonymity   是否匿名: 0 , 1
      * @return
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_PUBLISH_ANSWER)
     Observable<BaseJsonV2<AnswerInfoBean>> publishAnswer(@Path("question") Long question_id,
                                                          @Field("body") String body,
+                                                         @Field("text_body") String text_body,
                                                          @Field("anonymity") int anonymity);
 
     /**
@@ -86,11 +88,13 @@ public interface QAClient {
 
     /**
      * @param body      如果 anonymity 不传，则本字段必须存在， 回答详情。
+     * @param text_body 纯文字回答内容，用于列表显示
      * @param anonymity 如果 body 字段不传，则本字段必须存在，是否匿名。
      */
     @FormUrlEncoded
     @PATCH(ApiConfig.APP_PATH_UPDATE_ANSWER)
-    Observable<BaseJsonV2<Object>> uplaodAnswer(@Path("answer_id") Long answer_id, @Field("body") String body, @Field("anonymity") int anonymity);
+    Observable<BaseJsonV2<Object>> uplaodAnswer(@Path("answer_id") Long answer_id, @Field("body") String body, @Field("text_body") String
+            text_body, @Field("anonymity") int anonymity);
 
     /**
      * @param name   用于搜索话题，传递话题名称关键词。

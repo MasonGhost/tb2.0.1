@@ -29,7 +29,17 @@ public class MarkdownConfig {
     /**
      * 用于 提取 markdown 格式 图片id
      */
-    public static final String IMAGE_FORMAT = "@!\\[.*?]\\((\\d+)\\)";// <div([^<>]*)>([^"]*|'[^']*'|[^'">])<\/div>
+    public static final String IMAGE_FORMAT = "@!\\[.*?]\\((\\d+)\\)";
+
+    /**
+     * 用于，编辑器内容转换
+     */
+    public static final String IMAGE_FORMAT_HTML = "@!(\\[(.*?)])\\(((\\d+))\\)";
+
+    /**
+     * 用于 提取 markdown 格式 链接
+     */
+    public static final String LINK_FORMAT = "\\[(.*?)]\\((.*?)\\)";
 
     // <(span|/span)("[^"]*"|'[^']*'|[^'">])*>    <("[^"]*"|'[^']*'|[^'">])*>
     public static final String HTML_FORMAT = "<(\"[^\"]*\"|'[^']*'|[^'\">])*>";
@@ -45,6 +55,9 @@ public class MarkdownConfig {
      */
     public static final String NETSITE_FORMAT = "<{0,1}((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[#a-zA-Z0-9\\&%_\\./-~-]*)?>{0,1}";
 
+    /**
+     * 兼容之前的 网页链接
+     */
     public static final String NETSITE_A_FORMAT = "(?<!<a href=\")<{0,1}((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[#a-zA-Z0-9\\&%_\\./-~-]*)?>{0,1}";
 
 }
