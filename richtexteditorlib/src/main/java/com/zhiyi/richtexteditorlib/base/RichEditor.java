@@ -22,6 +22,8 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -59,7 +61,7 @@ public abstract class RichEditor extends WebView {
     }
 
     public interface OnTextChangeListener {
-        void onTextChange(int titleLenght,int contentLenght);
+        void onTextChange(int titleLenght, int contentLenght);
     }
 
     public interface OnStateChangeListener {
@@ -99,7 +101,7 @@ public abstract class RichEditor extends WebView {
     }
 
     public interface OnMarkdownWordResultListener {
-        void onMarkdownWordResult(String title, String markdwon, String noMarkdown,String html ,boolean isPublish);
+        void onMarkdownWordResult(String title, String markdwon, String noMarkdown, String html, boolean isPublish);
     }
 
     private static final String SETUP_HTML = "file:///android_asset/markdown/editor.html";
@@ -213,7 +215,7 @@ public abstract class RichEditor extends WebView {
     private void callback(String text) {
         mContents = text.replaceFirst(CALLBACK_SCHEME, "");
         if (mTextChangeListener != null) {
-            mTextChangeListener.onTextChange(mContents.length(),text.length());
+            mTextChangeListener.onTextChange(mContents.length(), text.length());
         }
     }
 
@@ -488,7 +490,7 @@ public abstract class RichEditor extends WebView {
         }
     }
 
-    protected void exec(final String trigger,long delay) {
+    protected void exec(final String trigger, long delay) {
         if (isReady) {
             load(trigger);
         } else {
@@ -570,18 +572,18 @@ public abstract class RichEditor extends WebView {
         @JavascriptInterface
         public void setViewEnabled(boolean enabled) {
             Observable.just(mOnFocusChangeListener)
-                    .filter(listener -> listener!=null)
+                    .filter(listener -> listener != null)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(listener -> listener.onFocusChange(enabled));
         }
 
         @JavascriptInterface
-        public void setHtmlContent(int titleLenght,int contentLenght) {
-            mContents = titleLenght*contentLenght + "";
+        public void setHtmlContent(int titleLenght, int contentLenght) {
+            mContents = titleLenght * contentLenght + "";
             Observable.just(mTextChangeListener)
-                    .filter(listener -> listener!=null)
+                    .filter(listener -> listener != null)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(listener -> listener.onTextChange(titleLenght,contentLenght));
+                    .subscribe(listener -> listener.onTextChange(titleLenght, contentLenght));
         }
 
         @JavascriptInterface
@@ -604,22 +606,28 @@ public abstract class RichEditor extends WebView {
         @JavascriptInterface
         public void deleteImage(String tagId) {
             Observable.just(mOnImageDeleteListener)
-                    .filter(listener -> listener!=null)
+                    .filter(listener -> listener != null)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(listener -> listener.onImageDelete(Long.parseLong(tagId)));
         }
 
         @JavascriptInterface
-        public void resultWords(String title, String markdown, String noMarkdownWords,String allHtml ,boolean isPublish) {
+        public void resultWords(String title, String markdown, String noMarkdownWords, String allHtml, boolean isPublish) {
             Observable.just(mOnMarkdownWordResultListener)
-                    .filter(onMarkdownWordResultListener -> onMarkdownWordResultListener!=null)
+                    .filter(onMarkdownWordResultListener -> onMarkdownWordResultListener != null)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(listener -> {
                         String result = noMarkdownWords;
+                        Matcher matcher = Pattern.compile(MarkdownConfig.LINK_WORDS_FORMAT).matcher(result);
+                        while (matcher.find()) {
+                            result = result.replaceFirst(MarkdownConfig.LINK_WORDS_FORMAT, matcher.group(3));
+                        }
+
                         if (noMarkdownWords.length() >= 191) {
                             result = noMarkdownWords.substring(0, 191);
                         }
-                        listener.onMarkdownWordResult(title, markdown, result,allHtml, isPublish);
+
+                        listener.onMarkdownWordResult(title, markdown, result, allHtml, isPublish);
                     });
         }
 
