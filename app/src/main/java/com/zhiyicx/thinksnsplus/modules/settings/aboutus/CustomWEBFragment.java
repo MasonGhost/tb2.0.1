@@ -8,6 +8,7 @@ import com.zhiyicx.baseproject.base.TSWebFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.R;
 
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -21,9 +22,11 @@ import java.util.List;
 public class CustomWEBFragment extends TSWebFragment {
     public static final String BUNDLE_PARAMS_WEB_URL = "web_url";
     public static final String BUNDLE_PARAMS_WEB_TITLE = "web_title";
+    public static final String BUNDLE_PARAMS_WEB_HEADERS = "web_headers";
 
     private String mUrl = ApiConfig.APP_DOMAIN + ApiConfig.URL_ABOUT_US;
     private String mTitle = "";
+    private HashMap<String,String> mHeaders;
 
     public CustomWEBFragment() {
         // Required empty public constructor
@@ -44,13 +47,14 @@ public class CustomWEBFragment extends TSWebFragment {
         if (getArguments() != null) {
             mUrl = getArguments().getString(BUNDLE_PARAMS_WEB_URL);
             mTitle = getArguments().getString(BUNDLE_PARAMS_WEB_TITLE);
+            mHeaders= (HashMap<String, String>) getArguments().getSerializable(BUNDLE_PARAMS_WEB_HEADERS);
         }
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadUrl(mUrl);
+        loadUrl(mUrl,mHeaders);
     }
 
     @Override

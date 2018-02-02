@@ -12,6 +12,7 @@ import android.widget.TextView
 import butterknife.BindView
 import com.jakewharton.rxbinding.view.RxView
 import com.zhiyicx.baseproject.base.TSFragment
+import com.zhiyicx.baseproject.config.ApiConfig
 import com.zhiyicx.baseproject.widget.button.CombinationButton
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow
 import com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME
@@ -20,7 +21,9 @@ import com.zhiyicx.common.utils.UIUtils
 import com.zhiyicx.common.utils.log.LogUtils
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow
 import com.zhiyicx.thinksnsplus.R
+import com.zhiyicx.thinksnsplus.base.AppApplication
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_INTEGRATION_RECHARGE
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean
 import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean
 import com.zhiyicx.thinksnsplus.modules.develop.TSDevelopActivity
@@ -37,6 +40,7 @@ import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleFragment
 import org.simple.eventbus.Subscriber
 import org.simple.eventbus.ThreadMode
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -134,10 +138,10 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
             mBtWithdraw.visibility = View.VISIBLE
         }
 
-        mBtReCharge.setLeftText(getString(R.string.recharge_integration_foramt,mGoldName))
-        mBtWithdraw.setLeftText(getString(R.string.withdraw_integration_foramt,mGoldName))
-        mBtIntegrationShop.setLeftText(getString(R.string.integration_shop_foramt,mGoldName))
-        mTvReChargeAndWithdrawRule.text = getString(R.string.integration_rule_format,mGoldName)
+        mBtReCharge.setLeftText(getString(R.string.recharge_integration_foramt, mGoldName))
+        mBtWithdraw.setLeftText(getString(R.string.withdraw_integration_foramt, mGoldName))
+        mBtIntegrationShop.setLeftText(getString(R.string.integration_shop_foramt, mGoldName))
+        mTvReChargeAndWithdrawRule.text = getString(R.string.integration_rule_format, mGoldName)
     }
 
     override fun onResume() {
@@ -172,42 +176,49 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
         RxView.clicks(mTvToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe { _ ->
+                .subscribe {
                     mPresenter.checkIntegrationConfig(MineIntegrationPresenter.TAG_DETAIL, true)
                 }
         // 充值积分
         RxView.clicks(mBtReCharge)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe { _ ->
+                .subscribe {
                     mPresenter.checkIntegrationConfig(MineIntegrationPresenter.TAG_RECHARGE, true)
                 }
         // 提取积分
         RxView.clicks(mBtWithdraw)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe { _ -> mPresenter.checkIntegrationConfig(MineIntegrationPresenter.TAG_WITHDRAW, true) }     // 提现
+                .subscribe { mPresenter.checkIntegrationConfig(MineIntegrationPresenter.TAG_WITHDRAW, true) }     // 提现
         // 积分商城
         RxView.clicks(mBtIntegrationShop)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe { _ -> TSDevelopActivity.startDeveloperAcitvity(mActivity, getString(R.string.integration_shop_foramt,mGoldName), R.mipmap.pic_default_mall) }
+                .subscribe {
+                    val headers: HashMap<String, String> = HashMap()
+                    val authBean: AuthBean? = AppApplication.getmCurrentLoginAuth()
+                    if (authBean != null) {
+                        headers["Authorization"] = " Bearer " + authBean.token
+                    }
+                    CustomWEBActivity.startToWEBActivity(mActivity, headers, ApiConfig.APP_DOMAIN + ApiConfig.URL_INTEGRATION_SHOP, getString(R.string.integration_shop_foramt, mGoldName))
+                }
         // 积分规则
         RxView.clicks(mTvReChargeAndWithdrawRule)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe { _ -> mPresenter.checkIntegrationConfig(MineIntegrationPresenter.TAG_SHOWRULE_JUMP, true) }
+                .subscribe { mPresenter.checkIntegrationConfig(MineIntegrationPresenter.TAG_SHOWRULE_JUMP, true) }
         RxView.clicks(mTvToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe { _ -> mActivity.finish() }
+                .subscribe { mActivity.finish() }
     }
 
     private fun jumpWalletRuleActivity() {
         val intent = Intent(activity, WalletRuleActivity::class.java)
         val bundle = Bundle()
         bundle.putString(WalletRuleFragment.BUNDLE_RULE, mPresenter.tipPopRule)
-        bundle.putString(WalletRuleFragment.BUNDLE_TITLE, getString(R.string.integration_rule_format,mGoldName))
+        bundle.putString(WalletRuleFragment.BUNDLE_TITLE, getString(R.string.integration_rule_format, mGoldName))
         intent.putExtras(bundle)
         startActivity(intent)
     }
@@ -221,7 +232,7 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
             return
         }
         mRulePop = CenterInfoPopWindow.builder()
-                .titleStr(getString(R.string.integration_rule_format,mGoldName))
+                .titleStr(getString(R.string.integration_rule_format, mGoldName))
                 .desStr(mPresenter.tipPopRule)
                 .item1Str(getString(R.string.get_it))
                 .item1Color(R.color.themeColor)
