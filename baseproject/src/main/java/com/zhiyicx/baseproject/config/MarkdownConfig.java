@@ -29,7 +29,17 @@ public class MarkdownConfig {
     /**
      * 用于 提取 markdown 格式 图片id
      */
-    public static final String IMAGE_FORMAT = "@!\\[.*?]\\((\\d+)\\)";// <div([^<>]*)>([^"]*|'[^']*'|[^'">])<\/div>
+    public static final String IMAGE_FORMAT = "@!\\[.*?]\\((\\d+)\\)";
+
+    /**
+     * 用于，编辑器内容转换
+     */
+    public static final String IMAGE_FORMAT_HTML = "@!(\\[(.*?)])\\(((\\d+))\\)";
+
+    /**
+     * 用于 提取 markdown 格式 链接
+     */
+    public static final String LINK_FORMAT = "\\[(.*?)]\\((.*?)\\)";
 
     // <(span|/span)("[^"]*"|'[^']*'|[^'">])*>    <("[^"]*"|'[^']*'|[^'">])*>
     public static final String HTML_FORMAT = "<(\"[^\"]*\"|'[^']*'|[^'\">])*>";

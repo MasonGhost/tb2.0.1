@@ -424,13 +424,16 @@ public abstract class RichEditor extends WebView {
 
     public void insertLink(String href, String title) {
         if (!href.matches(MarkdownConfig.SCHEME_TAG)) {
-            href = MarkdownConfig.SCHEME_ZHIYI + href;
+            href = MarkdownConfig.SCHEME_HTTP + href;
         }
         exec("javascript:RE.saveRange();");
         exec("javascript:RE.insertLink('" + title + "', '" + href + "');");
     }
 
     public void changeLink(String href, String title) {
+        if (!href.matches(MarkdownConfig.SCHEME_TAG)) {
+            href = MarkdownConfig.SCHEME_HTTP + href;
+        }
         exec("javascript:RE.saveRange();");
         exec("javascript:RE.changeLink('" + title + "', '" + href + "');");
     }
