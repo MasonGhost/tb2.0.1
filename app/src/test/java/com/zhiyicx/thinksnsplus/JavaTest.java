@@ -175,20 +175,17 @@ public class JavaTest {
     }
 
     @Test
-    public void testFilter() {
-//        String source = "<a href=\"http://www.baidu.com\" class=\"editor-link\">baidu</a>';";
-        String source = "http://www.baidu.com";
-        Matcher matcher = Pattern.compile(MarkdownConfig.NETSITE_A_FORMAT).matcher(source);
-        String html = "tym";
+    public void testFilter() { // <(a|/a)(href="(.*)").*>
+        String source = "<ahref=\"http://rde\"class=\"editor-link\">tgfff</a>@![image](6173)";
+        Matcher matcher = Pattern.compile(MarkdownConfig.LINK_WORDS_FORMAT).matcher(source);
         while (matcher.find()) {
             int count = matcher.groupCount();
             for (int i = 0; i < count; i++) {
                 System.out.println("reg::" + i + ":::" + matcher.group(i));
             }
-            html = "<a href=\" " + matcher.group(0) + " \" class=\"editor-link\">网页链接</a>";
+            source=source.replaceFirst(MarkdownConfig.LINK_WORDS_FORMAT,matcher.group(3));
         }
-
-        System.out.print("testFilter = " + html);
+        System.out.println(source);
     }
 
     @Test
