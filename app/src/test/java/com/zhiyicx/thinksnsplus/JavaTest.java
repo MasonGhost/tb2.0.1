@@ -176,9 +176,9 @@ public class JavaTest {
 
     @Test
     public void testFilter() {
-        String source = "<a href=\"http://www.baidu.com\" class=\"editor-link\">baidu</a>';";
-        String urlRege = "(?<!<a href=\")<{0,1}((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[#a-zA-Z0-9\\&%_\\./-~-]*)?>{0,1}";
-        Matcher matcher = Pattern.compile(urlRege).matcher(source);
+//        String source = "<a href=\"http://www.baidu.com\" class=\"editor-link\">baidu</a>';";
+        String source = "http://www.baidu.com";
+        Matcher matcher = Pattern.compile(MarkdownConfig.NETSITE_A_FORMAT).matcher(source);
         String html = "tym";
         while (matcher.find()) {
             int count = matcher.groupCount();

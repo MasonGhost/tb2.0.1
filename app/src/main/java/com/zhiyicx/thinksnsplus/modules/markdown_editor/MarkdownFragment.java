@@ -657,12 +657,23 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
     }
 
     protected String pareseBody(String body) {
+
+        // 兼容就连接  http://www.baidu.com
+        Matcher oldLinkMatcher = Pattern.compile(MarkdownConfig.NETSITE_A_FORMAT).matcher(body);
+        while (oldLinkMatcher.find()) {
+            int count = oldLinkMatcher.groupCount();
+            for (int i = 0; i < count; i++) {
+                System.out.println("reg::" + i + ":::" + oldLinkMatcher.group(i));
+            }
+            String html = "<a href=\" " + oldLinkMatcher.group(0) + " \" class=\"editor-link\">网页链接</a>";
+            body = body.replaceFirst(oldLinkMatcher.group(0), html);
+        }
+
+        // 还原 <img ...>
         String result;
         String imageReplace = "-星星-tym-星星-";
         Matcher imageMatcher = Pattern.compile(MarkdownConfig.IMAGE_FORMAT_HTML).matcher(body);
-
         result = body.replaceAll(MarkdownConfig.IMAGE_FORMAT, imageReplace);
-
         while (imageMatcher.find()) {
             String name = imageMatcher.group(2);
             int id = Integer.parseInt(imageMatcher.group(3));
@@ -673,15 +684,16 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
             result = result.replaceFirst(imageReplace, getImageHtml(tagId, id, name, imagePath));
         }
 
+        // 还原 <a ...></a>
         String linkReplace = "-星星-link-星星-";
         Matcher linkMatcher = Pattern.compile(MarkdownConfig.LINK_FORMAT).matcher(result);
         result = result.replaceAll(MarkdownConfig.LINK_FORMAT, linkReplace);
-
         while (linkMatcher.find()) {
             result = result.replaceFirst(linkReplace, getLinkHtml(linkMatcher.group(2), linkMatcher.group(1)));
         }
-        MutableDataSet options = new MutableDataSet();
 
+        // markdown to html
+        MutableDataSet options = new MutableDataSet();
         Parser parser = Parser.builder(options).build();
         HtmlRenderer renderer = HtmlRenderer.builder(options).build();
         Node document = parser.parse(result);
