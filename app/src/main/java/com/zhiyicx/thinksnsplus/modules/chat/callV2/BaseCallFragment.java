@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMCallManager;
@@ -25,6 +27,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
 import com.zhiyicx.baseproject.em.manager.control.TSEMDateUtil;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMCallEvent;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -107,6 +110,19 @@ public abstract class BaseCallFragment extends TSFragment {
 
     @Override
     protected boolean useEventBus() {
+        return true;
+    }
+
+    @Override
+    protected int getstatusbarAndToolbarHeight() {
+        if (setUseSatusbar()) {
+            return 0;
+        }
+        return super.getstatusbarAndToolbarHeight();
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
         return true;
     }
 

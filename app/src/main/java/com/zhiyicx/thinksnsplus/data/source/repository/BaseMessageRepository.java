@@ -59,7 +59,7 @@ public class BaseMessageRepository implements IBaseMessageRepository{
     }
 
     @Override
-    public Observable<List<MessageItemBeanV2>> getConversationList(int user_id) {
+    public Observable<List<MessageItemBeanV2>> getConversationList(int userId) {
         Map<String, EMConversation> conversations = EMClient.getInstance().chatManager().getAllConversations();
         return Observable.just(conversations)
                 .subscribeOn(Schedulers.io())

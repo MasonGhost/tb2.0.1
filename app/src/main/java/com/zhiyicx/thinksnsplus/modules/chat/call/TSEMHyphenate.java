@@ -36,6 +36,7 @@ import com.zhiyicx.baseproject.em.manager.control.TSEMContacterEntity;
 import com.zhiyicx.baseproject.em.manager.control.TSEMessageUtils;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMContactsEvent;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.modules.chat.call.receiver.TSEMCallReceiver;
 
 import org.simple.eventbus.EventBus;
@@ -383,6 +384,11 @@ public class TSEMHyphenate {
 
                 // 使用 EventBus 发布消息，可以被订阅此类型消息的订阅者监听到
                 EventBus.getDefault().post(event);
+
+                EMClient.getInstance().groupManager().loadAllGroups();
+                EMClient.getInstance().chatManager().loadAllConversations();
+                LogUtils.d("环信 -IM-", "登录聊天服务器成功！");
+                EventBus.getDefault().post("", EventBusTagConfig.EVENT_IM_ONCONNECTED);
             }
 
             /**

@@ -122,9 +122,6 @@ public class VideoCallFragment extends BaseCallFragment {
         mLocalSurface.setZOrderMediaOverlay(true);
         mLocalSurface.setZOrderOnTop(true);
         mOppositeSurface.setScaleMode(VideoView.EMCallViewScaleMode.EMCallViewScaleModeAspectFill);
-        if (isInComingCall){
-            mLocalSurface.setVisibility(View.INVISIBLE);
-        }
 
         EMClient.getInstance().callManager().setSurfaceView(mLocalSurface, mOppositeSurface);
 
@@ -325,10 +322,9 @@ public class VideoCallFragment extends BaseCallFragment {
         vibrate();
         // 根据麦克风开关是否被激活来进行判断麦克风状态，然后进行下一步操作
         if (mIvMute.isActivated()) {
-            // 暂停语音数据的传输
-            mIvMute.setImageResource(R.mipmap.btn_chat_mute);
+            mIvMute.setImageResource(R.mipmap.btn_chat_mute_on);
             try {
-                EMClient.getInstance().callManager().pauseVoiceTransfer();
+                EMClient.getInstance().callManager().resumeVoiceTransfer();
             } catch (HyphenateException e) {
                 e.printStackTrace();
             }
@@ -337,9 +333,10 @@ public class VideoCallFragment extends BaseCallFragment {
             TSEMCallStatus.getInstance().setMic(false);
         } else {
             // 恢复语音数据的传输
-            mIvMute.setImageResource(R.mipmap.btn_chat_mute_on);
+            // 暂停语音数据的传输
+            mIvMute.setImageResource(R.mipmap.btn_chat_mute);
             try {
-                EMClient.getInstance().callManager().resumeVoiceTransfer();
+                EMClient.getInstance().callManager().pauseVoiceTransfer();
             } catch (HyphenateException e) {
                 e.printStackTrace();
             }
@@ -504,6 +501,7 @@ public class VideoCallFragment extends BaseCallFragment {
         mLlHangupCall.setVisibility(View.VISIBLE);
         mLlMute.setVisibility(View.VISIBLE);
         mLlSwitchCamera.setVisibility(View.VISIBLE);
+        openSpeaker();
         // 接听通话后关闭通知铃音
         stopCallSound();
         // 调用接通通话方法
@@ -524,7 +522,8 @@ public class VideoCallFragment extends BaseCallFragment {
         mChronometer.setBase(SystemClock.elapsedRealtime());
         mChronometer.start();
         mOppositeSurface.setVisibility(View.VISIBLE);
-        mLocalSurface.setVisibility(View.VISIBLE);
+//        mLocalSurface.setVisibility(View.VISIBLE);
+//        EMClient.getInstance().callManager().setSurfaceView(mLocalSurface, mOppositeSurface);
     }
 
     @Override
