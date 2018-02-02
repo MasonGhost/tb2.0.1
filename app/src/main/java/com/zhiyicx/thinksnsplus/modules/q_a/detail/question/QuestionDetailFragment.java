@@ -229,8 +229,6 @@ QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
         mQaDetailTool.showQuestionTool(mIsMine);
 
 
-        String body = questionDetail.getBody();
-        questionDetail.setBody(body.replaceAll(MarkdownConfig.HTML_FORMAT, ""));
         onNetResponseSuccess(mQaListInfoBean.getAnswerInfoBeanList(), isLoadMore);
         mQuestionDetailHeader.setDetail(questionDetail, mPresenter.getSystemConfig().getOnlookQuestion(), mPresenter.getRatio());
     }

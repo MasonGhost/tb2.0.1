@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.information.adapter;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -68,11 +69,11 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
         // 被驳回和投稿中只显示内容
         holder.setVisible(R.id.ll_info, mIsShowContent ? View.GONE : View.VISIBLE);
         holder.setVisible(R.id.tv_info_content, mIsShowContent ? View.VISIBLE : View.GONE);
-        String content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, realData.getContent());
-        content = content.replaceAll(MarkdownConfig.NORMAL_FORMAT, "");
-//        if (TextUtils.isEmpty(content)&&!TextUtils.isEmpty(realData.getSubject())){
-//            content = content.replaceAll(realData.getSubject(), "");// 内容中没有摘要了 10.16 16:20
-//        }
+        String content = realData.getText_content();
+        if (TextUtils.isEmpty(content)) {
+            content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, realData.getContent());
+            content = content.replaceAll(MarkdownConfig.NORMAL_FORMAT, "");
+        }
         holder.setText(R.id.tv_info_content, content);
         // 投稿来源，浏览数，时间
         String from = title.getContext().getString(R.string
@@ -113,7 +114,8 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
                     .into(imageView);
         }
         // 来自单独分开
-        String category = realData.getCategory() == null || (realData.getCategory() != null && realData.getInfo_type() != null && realData.getInfo_type() != -1) ? "" : realData.getCategory().getName();
+        String category = realData.getCategory() == null || (realData.getCategory() != null && realData.getInfo_type() != null && realData
+                .getInfo_type() != -1) ? "" : realData.getCategory().getName();
         holder.setVisible(R.id.tv_from_channel, category.isEmpty() ? View.GONE : View.VISIBLE);
         holder.setText(R.id.tv_from_channel, category);
         // 是否置顶

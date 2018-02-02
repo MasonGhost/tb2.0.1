@@ -73,7 +73,8 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetai
  */
 public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract.Presenter,
         AnswerCommentListBean> implements AnswerDetailsConstract.View, InputLimitView
-        .OnSendClickListener, AnswerDetailHeaderView.AnswerHeaderEventListener, BaseWebLoad.OnWebLoadListener, MultiItemTypeAdapter.OnItemClickListener {
+        .OnSendClickListener, AnswerDetailHeaderView.AnswerHeaderEventListener, BaseWebLoad.OnWebLoadListener, MultiItemTypeAdapter
+        .OnItemClickListener {
 
     public static final String BUNDLE_SOURCE_ID = "source_id";
     public static final String BUNDLE_ANSWER = "answer";
@@ -511,7 +512,10 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                                 ImageZipConfig.IMAGE_80_ZIP);
                     }
                     // 预览的文字
-                    String des = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mAnswerInfoBean.getBody());
+                    String des = mAnswerInfoBean.getText_body();
+                    if (TextUtils.isEmpty(des)) {
+                        des = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mAnswerInfoBean.getBody());
+                    }
                     ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mAnswerInfoBean.getUser(), String.valueOf
                             (mAnswerInfoBean.getId()),
                             "", img, des, ReportType.QA_ANSWER));

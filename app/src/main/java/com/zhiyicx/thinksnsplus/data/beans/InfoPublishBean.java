@@ -19,8 +19,17 @@ public class InfoPublishBean implements Parcelable {
     public static final String DEFALUT_SUBJECT = ">**[摘要]** ";
 
     /**
-     * {@linnk https://github.com/slimkit/plus-component-news/blob/master/docs/contribute.md}
+     * {@linnk https://slimkit.github.io/docs/api-v2-news-contribute.html}
+     * title	String	必须，标题，最长 20 个字。
+     * subject	String	主题，副标题，概述，最长 200 个字。
+     * content	String	必须，内容。
+     * image	Integer	缩略图。
+     * tags	string,array	必须 标签id，多个id以逗号隔开或传入数组形式
+     * from	String	资讯来源。
+     * author	String	作者
+     * text_content	string	纯文本字段
      */
+
 
     private String title;
     private String subject;
@@ -41,6 +50,8 @@ public class InfoPublishBean implements Parcelable {
     private int amout;
     @Expose
     private boolean isRefuse;
+    private String text_content;
+
 
     public int getNews_id() {
         return news_id;
@@ -163,20 +174,13 @@ public class InfoPublishBean implements Parcelable {
         this.image = image;
     }
 
-    @Override
-    public String toString() {
-        return "InfoPublishBean{" +
-                "title='" + title + '\'' +
-                ", subject='" + subject + '\'' +
-                ", content='" + content + '\'' +
-                ", categoryId=" + categoryId +
-                ", tags=" + tags +
-                ", from='" + from + '\'' +
-                ", author='" + author + '\'' +
-                ", image=" + image +
-                '}';
+    public String getText_content() {
+        return text_content;
     }
 
+    public void setText_content(String text_content) {
+        this.text_content = text_content;
+    }
 
     @Override
     public int describeContents() {
@@ -199,6 +203,7 @@ public class InfoPublishBean implements Parcelable {
         dest.writeInt(this.news_id);
         dest.writeInt(this.amout);
         dest.writeByte(this.isRefuse ? (byte) 1 : (byte) 0);
+        dest.writeString(this.text_content);
     }
 
     public InfoPublishBean() {
@@ -219,6 +224,7 @@ public class InfoPublishBean implements Parcelable {
         this.news_id = in.readInt();
         this.amout = in.readInt();
         this.isRefuse = in.readByte() != 0;
+        this.text_content = in.readString();
     }
 
     public static final Creator<InfoPublishBean> CREATOR = new Creator<InfoPublishBean>() {

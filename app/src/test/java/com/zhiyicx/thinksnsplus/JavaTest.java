@@ -176,16 +176,16 @@ public class JavaTest {
 
     @Test
     public void testFilter() {
-        String source = "<a href=\"http://www.baidu.com\" class=\"editor-link\">baidu</a>';";
-        String urlRege = "(?<!<a href=\")<{0,1}((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[#a-zA-Z0-9\\&%_\\./-~-]*)?>{0,1}";
-        Matcher matcher = Pattern.compile(urlRege).matcher(source);
-        String html="tym";
-        while (matcher.find()){
+//        String source = "<a href=\"http://www.baidu.com\" class=\"editor-link\">baidu</a>';";
+        String source = "http://www.baidu.com";
+        Matcher matcher = Pattern.compile(MarkdownConfig.NETSITE_A_FORMAT).matcher(source);
+        String html = "tym";
+        while (matcher.find()) {
             int count = matcher.groupCount();
             for (int i = 0; i < count; i++) {
                 System.out.println("reg::" + i + ":::" + matcher.group(i));
             }
-            html = "<a href=\" "+ matcher.group(0)+" \" class=\"editor-link\">网页链接</a>";
+            html = "<a href=\" " + matcher.group(0) + " \" class=\"editor-link\">网页链接</a>";
         }
 
         System.out.print("testFilter = " + html);
@@ -214,15 +214,26 @@ public class JavaTest {
 
     @Test
     public void testInt() {
-        String test = "<https://www.baidu.com> 我来测试一下哟";
-//        Matcher matcher=
-        System.out.println(test.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE));
+        String test = "[对对对](57941)";//  \[(.*?)]\((.*?)\)
+//        Matcher matcher = Pattern.compile("@!\\[.*?]\\((\\d+)\\)").matcher(test);
 
-        Matcher matcher = Pattern.compile(MarkdownConfig.NETSITE_FORMAT).matcher(test);
-        int lastIndex = 0;
-        while (matcher.find()) {
-            System.out.println(test.substring(matcher.start(), matcher.end()));
+        Matcher matcher = null;
+        try {
+            matcher = Pattern.compile(MarkdownConfig.LINK_FORMAT).matcher(test);
+            while (matcher.find()) {
+                System.out.println(matcher.group(1));
+                System.out.println(matcher.group(2));
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
+
+//        while (matcher.find()) {
+//            int count = matcher.groupCount();
+//            for (int i = 0; i < count; i++) {
+//                System.out.println(matcher.group(i));
+//            }
+//        }
     }
 
     @Test

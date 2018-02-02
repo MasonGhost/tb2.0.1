@@ -190,7 +190,6 @@ public class QuestionDetailContent extends FrameLayout {
      */
     private void dealContent(String content, List<ImageBean> list) {
         mMdvQuestionContent.addStyleSheet(MarkDownRule.generateStandardStyle());
-        content = content.replaceAll(MarkdownConfig.HTML_FORMAT, "");
         mMdvQuestionContent.loadMarkdown(content);
         mMdvQuestionContent.setWebViewClient(new WebViewClient() {
             @Override
