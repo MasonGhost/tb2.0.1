@@ -78,7 +78,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
 
         boolean isInvited = answerInfoBean.getInvited() == 1;// 是否被邀请回答
 
-        boolean canNotLook = mQaListInfoBean.getUser_id() != answerInfoBean.getUser_id()
+        boolean canNotLook = !mQaListInfoBean.getUser_id().equals(answerInfoBean.getUser_id())
                 && TextUtils.isEmpty(answerInfoBean.getBody());// 是否要付费才能查看
 
         // 发布者信息
@@ -122,12 +122,13 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(answerInfoBean.getCreated_at
                 ()));
         // 正文
-        holder.setText(R.id.tv_content, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT,
-                answerInfoBean.getBody()));
+        String content = answerInfoBean.getText_body();
+        if (TextUtils.isEmpty(content)) {
+            content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean
+                    .getBody());
+            content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
+        }
 
-        String content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean
-                .getBody());
-        content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
         TextView contentView = holder.getView(R.id.tv_content);
 
         if (!canNotLook) {
