@@ -656,18 +656,12 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         }
     }
 
+    /**
+     * 这个还原的 顺序不能变
+     * @param body
+     * @return
+     */
     protected String pareseBody(String body) {
-
-        // 兼容就连接  http://www.baidu.com
-        Matcher oldLinkMatcher = Pattern.compile(MarkdownConfig.NETSITE_A_FORMAT).matcher(body);
-        while (oldLinkMatcher.find()) {
-            int count = oldLinkMatcher.groupCount();
-            for (int i = 0; i < count; i++) {
-                System.out.println("reg::" + i + ":::" + oldLinkMatcher.group(i));
-            }
-            String html = "<a href=\" " + oldLinkMatcher.group(0) + " \" class=\"editor-link\">网页链接</a>";
-            body = body.replaceFirst(oldLinkMatcher.group(0), html);
-        }
 
         // 还原 <img ...>
         String result;
@@ -690,6 +684,13 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         result = result.replaceAll(MarkdownConfig.LINK_FORMAT, linkReplace);
         while (linkMatcher.find()) {
             result = result.replaceFirst(linkReplace, getLinkHtml(linkMatcher.group(2), linkMatcher.group(1)));
+        }
+
+        // 兼容就连接  http://www.baidu.com
+        Matcher oldLinkMatcher = Pattern.compile(MarkdownConfig.NETSITE_A_FORMAT).matcher(body);
+        while (oldLinkMatcher.find()) {
+            String html = "<a href=\" " + oldLinkMatcher.group(0) + " \" class=\"editor-link\">网页链接</a>";
+            body = body.replaceFirst(oldLinkMatcher.group(0), html);
         }
 
         // markdown to html

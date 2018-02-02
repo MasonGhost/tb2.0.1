@@ -41,6 +41,11 @@ public class MarkdownConfig {
      */
     public static final String LINK_FORMAT = "\\[(.*?)]\\((.*?)\\)";
 
+    /**
+     * 用于 nomarkdown 链接保留
+     */
+    public static final String LINK_WORDS_FORMAT = "<((a|/a)href=\"((.*?)))\".*>";
+
     // <(span|/span)("[^"]*"|'[^']*'|[^'">])*>    <("[^"]*"|'[^']*'|[^'">])*>
     public static final String HTML_FORMAT = "<(\"[^\"]*\"|'[^']*'|[^'\">])*>";
     public static final String TEST_HTML_FORMAT = "<((div)|/(div))(\"[^\"]*\"|'[^']*'|[^'\">])*>";
