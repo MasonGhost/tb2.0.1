@@ -34,6 +34,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -370,7 +371,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                     mRootView.refreshData();
                     // 小红点是否要显示
                     checkBottomMessageTip();
-                });
+                }, LogUtils::d);
         addSubscrebe(subscribe);
     }
 
