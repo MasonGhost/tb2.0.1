@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
@@ -95,7 +96,6 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
             , DynamicCommentBeanGreenDaoImpl dynamicCommentBeanGreenDao
             , SendDynamicDataBeanV2GreenDaoImpl sendDynamicDataBeanV2GreenDao
             , TopDynamicBeanGreenDaoImpl topDynamicBeanGreenDao
-            , SharePolicy sharePolicy
             , BaseDynamicRepository baseDynamicRepository
     ) {
         super(rootView);
@@ -104,7 +104,9 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
         mDynamicCommentBeanGreenDao = dynamicCommentBeanGreenDao;
         mSendDynamicDataBeanV2GreenDao = sendDynamicDataBeanV2GreenDao;
         mTopDynamicBeanGreenDao = topDynamicBeanGreenDao;
-        mSharePolicy = sharePolicy;
+        if (rootView instanceof Fragment) {
+            mSharePolicy = new UmengSharePolicyImpl(((Fragment) rootView).getActivity());
+        }
         mDynamicRepository = baseDynamicRepository;
     }
 
@@ -450,6 +452,13 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
 
     @Override
     public void shareDynamic(DynamicDetailBeanV2 dynamicBean, Bitmap bitmap) {
+        if (mSharePolicy == null) {
+            if (mRootView instanceof Fragment) {
+                mSharePolicy = new UmengSharePolicyImpl(((Fragment) mRootView).getActivity());
+            } else {
+                return;
+            }
+        }
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mContext.getString(R.string.share));
@@ -506,7 +515,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
             amount = mRootView.getListDatas().get(dynamicPosition).getPaid_node().getAmount();
         }
 
-        handleWalletBlance((long) amount)
+        Subscription subscribe = handleIntegrationBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
                 .flatMap(o -> mCommentRepository.paykNote(note))
@@ -569,7 +578,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        if (isBalanceCheck(throwable)) {
+                        if (isIntegrationBalanceCheck(throwable)) {
                             return;
                         }
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
@@ -581,6 +590,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
                         mRootView.hideCenterLoading();
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override

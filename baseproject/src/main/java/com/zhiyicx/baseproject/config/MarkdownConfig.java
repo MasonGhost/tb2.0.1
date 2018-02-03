@@ -32,8 +32,37 @@ public class MarkdownConfig {
     public static final String IMAGE_FORMAT = "@!\\[.*?]\\((\\d+)\\)";
 
     /**
+     * 用于，编辑器内容转换
+     */
+    public static final String IMAGE_FORMAT_HTML = "@!(\\[(.*?)])\\(((\\d+))\\)";
+
+    /**
+     * 用于 提取 markdown 格式 链接
+     */
+    public static final String LINK_FORMAT = "\\[(.*?)]\\((.*?)\\)";
+
+    /**
+     * 用于 nomarkdown 链接保留
+     */
+    public static final String LINK_WORDS_FORMAT = "<((a|/a)href=\"((.*?)))\".*>";
+
+    // <(span|/span)("[^"]*"|'[^']*'|[^'">])*>    <("[^"]*"|'[^']*'|[^'">])*>
+    public static final String HTML_FORMAT = "<(\"[^\"]*\"|'[^']*'|[^'\">])*>";
+    public static final String TEST_HTML_FORMAT = "<((div)|/(div))(\"[^\"]*\"|'[^']*'|[^'\">])*>";
+
+    /**
+     * 匹配 匹配中文，英文字母和数字
+     */
+    public static final String NORMAL_FORMAT = "<[^\\u4e00-\\u9fa5]+>|[^\\u4e00-\\u9fa5a-zA-Z0-9]+";
+
+    /**
      * 用于提取 短链接
      */
     public static final String NETSITE_FORMAT = "<{0,1}((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[#a-zA-Z0-9\\&%_\\./-~-]*)?>{0,1}";
+
+    /**
+     * 兼容之前的 网页链接
+     */
+    public static final String NETSITE_A_FORMAT = "(?<!<a href=\")<{0,1}((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[#a-zA-Z0-9\\&%_\\./-~-]*)?>{0,1}";
 
 }

@@ -72,4 +72,9 @@ public class AdvertConfig {
      * 圈子详情广告 type  image
      */
     public static final String APP_GROUP_DETAIL_ADVERT = "group:single";
+    /**
+     * 积分页广告
+     */
+    public static final String APP_WALLET_INTEGRATION_ADVERT = "currency";
+
 }

@@ -164,6 +164,7 @@ public class EventBusTagConfig {
      */
     // 钱包余额充值成功后更新钱包界面
     public static final String EVENT_WALLET_RECHARGE = "event_wallet_recharge";
+    public static final String EVENT_INTEGRATION_RECHARGE = "event_integration_recharge";
 
     // 认证相关
     public static final String EVENT_SEND_CERTIFICATION_SUCCESS = "event_send_certification_success";

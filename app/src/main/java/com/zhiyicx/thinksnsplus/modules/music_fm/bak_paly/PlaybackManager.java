@@ -177,13 +177,13 @@ public class PlaybackManager implements Playback.Callback {
     }
 
     @Override
-    public void onError(String error) {
-        if (mQueueManager.getCurrentQueueSize() == 1) {
+    public void onError(String error, int state) {
+        if (mQueueManager.getCurrentQueueSize() == 1 || state == PlaybackStateCompat.STATE_PAUSED) {
             WindowUtils.hidePopupWindow();
             updatePlaybackState(error);
         } else {
             // 如果不止一首歌，那么久播放下一个
-            EventBus.getDefault().post(orderType,EVENT_SEND_MUSIC_COMPLETE);
+            EventBus.getDefault().post(orderType, EVENT_SEND_MUSIC_COMPLETE);
             if (mQueueManager.skipQueuePosition(1)) {
                 handlePlayRequest();
                 mQueueManager.updateMetadata();
@@ -192,7 +192,6 @@ public class PlaybackManager implements Playback.Callback {
             }
 //            onCompletion();
         }
-
     }
 
     @Override

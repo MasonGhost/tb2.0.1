@@ -23,14 +23,14 @@
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <!--环信相关permission-->
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"/>
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <!-- allowBackup =true  用于 adb backup 与 adb restore;发布后需要关闭，保证数据安全  android:persistent="true" 应用保持活与自启动 -->
     <application
@@ -274,20 +274,6 @@
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
 
-        <!-- 圈子相关页面 -->
-        <activity
-            android:name=".modules.circle.group_dynamic.GroupDynamicDetailActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name=".modules.circle.group_dynamic.dig_list.GroupDigListActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name=".modules.circle.mine.MyGroupActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-
         <!-- 问答相关 -->
         <activity
             android:name=".modules.q_a.qa_main.qa_container.QA_InfoContainerActivity"
@@ -451,15 +437,6 @@
             android:screenOrientation="behind">
         </activity>
 
-        <!-- 频道 -->
-        <activity
-            android:name=".modules.circle.list.ChannelListActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity
-            android:name=".modules.circle.detail.ChannelDetailActivity"
-            android:screenOrientation="portrait">
-        </activity>
         <activity
             android:name=".modules.collect.CollectListActivity"
             android:screenOrientation="portrait"/>
@@ -509,12 +486,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan">
         </activity>
-        <activity
-            android:name=".modules.q_a.publish.detail.PublishContentActivity"
-            android:hardwareAccelerated="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden">
-        </activity>
+
         <activity
             android:name=".modules.wallet.reward.RewardActivity"
             android:hardwareAccelerated="false"
@@ -522,12 +494,8 @@
         <activity
             android:name=".modules.wallet.reward.list.RewardListActivity"
             android:screenOrientation="portrait"/>
+
         <!-- 资讯发布 -->
-        <activity
-            android:name=".modules.information.publish.PublishInfoActivity"
-            android:hardwareAccelerated="false"
-            android:screenOrientation="portrait">
-        </activity>
         <activity
             android:name=".modules.information.publish.addinfo.AddInfoActivity"
             android:screenOrientation="portrait"
@@ -546,11 +514,7 @@
             android:name=".modules.wallet.sticktop.StickTopActivity"
             android:hardwareAccelerated="false"
             android:screenOrientation="portrait"/>
-        <activity
-            android:name=".modules.q_a.answer.PublishAnswerActivity"
-            android:hardwareAccelerated="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
+
         <activity
             android:name=".modules.q_a.detail.answer.AnswerDetailsActivity"
             android:screenOrientation="portrait"
@@ -669,6 +633,35 @@
         <!--搜索好友-->
         <activity android:name=".modules.home.mine.friends.search.SearchFriendsActivity"
                   android:screenOrientation="portrait"/>
+        <activity android:name=".modules.information.publish.detail.EditeInfoDetailActivity"/>
+        <activity android:name=".modules.q_a.publish.detail.EditeQuestionDetailActivity"/>
+        <activity android:name=".modules.q_a.answer.EditeAnswerDetailActivity"/>
+        <!--我的积分-->
+        <activity
+            android:name=".modules.wallet.integration.mine.MineIntegrationActivity"
+            android:screenOrientation="portrait"/>
+        <!--开发中的默认页面-->
+        <activity
+            android:name=".modules.develop.TSDevelopActivity"
+            android:screenOrientation="portrait"/>
+        <!--积分充值-->
+        <activity
+            android:name=".modules.wallet.integration.recharge.IntegrationRechargeActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"/>
+        <!--积分详情-->
+        <activity
+            android:name=".modules.wallet.integration.detail.IntegrationDetailActivity"
+            android:screenOrientation="portrait"/>
+        <!--积分充值提现记录-->
+        <activity
+            android:name=".modules.wallet.integration.detail.recharge_withdrawal.IntegrationRWDetailActivity"
+            android:screenOrientation="portrait"/>
+        <!--积分提取-->
+        <activity
+            android:name=".modules.wallet.integration.withdrawal.IntegrationWithdrawalsActivity"
+            android:screenOrientation="portrait"/>
+
     </application>
 
 </manifest>

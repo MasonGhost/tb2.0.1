@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.mine.adapter;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -67,7 +68,11 @@ public class MyAnswerAdapter extends CommonAdapter<AnswerInfoBean> {
         // 时间
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(answerInfoBean.getCreated_at()));
         // 正文
-        holder.setText(R.id.tv_content, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean.getBody()));
+        String content = answerInfoBean.getText_body();
+        if (TextUtils.isEmpty(content)) {
+            content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean.getBody());
+        }
+        holder.setText(R.id.tv_content, content);
         // 点赞数量
         TextView tvLikeCount = holder.getView(R.id.tv_like_count);
         dealLikeUI(answerInfoBean, tvLikeCount);

@@ -10,6 +10,7 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationBean;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
 
 import org.greenrobot.greendao.annotation.Convert;
@@ -103,7 +104,14 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     @SerializedName(value = "cover", alternate = {"bg"})
     private String cover;// 封面
     @Transient
+    @SerializedName("new_wallet")
     private WalletBean wallet;
+
+    /**
+     * 积分
+     */
+    @Convert(converter = IntegrationBeanConverter.class, columnType = String.class)
+    private IntegrationBean currency;
 
     @Convert(converter = ExtraParamsConverter.class, columnType = String.class)
     private UserInfoExtraBean extra;
@@ -113,7 +121,9 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     @Convert(converter = UserTagsBeanConverter.class, columnType = String.class)
     private List<UserTagBean> tags;
 
-    /**1.5.0新增 环信登陆的密码  用户名是uid*/
+    /**
+     * 1.5.0新增 环信登陆的密码  用户名是uid
+     */
     private String im_pwd_hash;
 
     private boolean initial_password = true; // 在登陆信息中返回，用来判断是否需要设置密码，给个默认值true，false才需要设置
@@ -332,6 +342,22 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
 
     public void setIm_pwd_hash(String im_pwd_hash) {
         this.im_pwd_hash = im_pwd_hash;
+    }
+
+    /**
+     * @return 格式化后的用户积分
+     */
+    public long getFormatCurrencyNum() {
+
+        return currency == null ? 0 : currency.getSum();
+    }
+
+    public IntegrationBean getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(IntegrationBean currency) {
+        this.currency = currency;
     }
 
     public UserInfoExtraBean getExtra() {
@@ -585,6 +611,12 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
 
     }
 
+    /**
+     * IntegrationBean 转 String 形式存入数据库
+     */
+    public static class IntegrationBeanConverter extends BaseConvert<IntegrationBean> {
+
+    }
 
     @Override
     public Long getMaxId() {
@@ -616,11 +648,11 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     }
 
 
-    @Generated(hash = 703875029)
-    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
-            String location, boolean following, boolean follower, String created_at, String updated_at,
-            String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified,
-            List<UserTagBean> tags, String im_pwd_hash, boolean initial_password, boolean has_deleted) {
+    @Generated(hash = 1966286923)
+    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex, String location,
+            boolean following, boolean follower, String created_at, String updated_at, String avatar, String cover,
+            IntegrationBean currency, UserInfoExtraBean extra, VerifiedBean verified, List<UserTagBean> tags,
+            String im_pwd_hash, boolean initial_password, boolean has_deleted) {
         this.user_id = user_id;
         this.name = name;
         this.phone = phone;
@@ -634,42 +666,13 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.updated_at = updated_at;
         this.avatar = avatar;
         this.cover = cover;
+        this.currency = currency;
         this.extra = extra;
         this.verified = verified;
         this.tags = tags;
         this.im_pwd_hash = im_pwd_hash;
         this.initial_password = initial_password;
         this.has_deleted = has_deleted;
-    }
-
-    @Override
-    public String toString() {
-        return "UserInfoBean{" +
-                "user_id=" + user_id +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", intro='" + intro + '\'' +
-                ", sex=" + sex +
-                ", sexString='" + sexString + '\'' +
-                ", location='" + location + '\'' +
-                ", province='" + province + '\'' +
-                ", city='" + city + '\'' +
-                ", area='" + area + '\'' +
-                ", following=" + following +
-                ", follower=" + follower +
-                ", created_at='" + created_at + '\'' +
-                ", updated_at='" + updated_at + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", cover='" + cover + '\'' +
-                ", wallet=" + wallet +
-                ", extra=" + extra +
-                ", verified=" + verified +
-                ", tags=" + tags +
-                ", im_pwd_hash='" + im_pwd_hash + '\'' +
-                ", initial_password=" + initial_password +
-                ", has_deleted=" + has_deleted +
-                '}';
     }
 
     @Override
@@ -745,4 +748,35 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
             return new UserInfoBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "UserInfoBean{" +
+                "user_id=" + user_id +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", intro='" + intro + '\'' +
+                ", sex=" + sex +
+                ", sexString='" + sexString + '\'' +
+                ", location='" + location + '\'' +
+                ", province='" + province + '\'' +
+                ", city='" + city + '\'' +
+                ", area='" + area + '\'' +
+                ", following=" + following +
+                ", follower=" + follower +
+                ", created_at='" + created_at + '\'' +
+                ", updated_at='" + updated_at + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", cover='" + cover + '\'' +
+                ", wallet=" + wallet +
+                ", currency=" + currency +
+                ", extra=" + extra +
+                ", verified=" + verified +
+                ", tags=" + tags +
+                ", im_pwd_hash='" + im_pwd_hash + '\'' +
+                ", initial_password=" + initial_password +
+                ", has_deleted=" + has_deleted +
+                '}';
+    }
 }

@@ -81,32 +81,22 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     @BindView(R.id.iv_head_icon)
     UserAvatarView mIvHeadIcon;
-    @BindView(R.id.rl_change_head_container)
-    RelativeLayout mRlChangeHeadContainer;
     @BindView(R.id.et_user_name)
     EditText mEtUserName;
     @BindView(R.id.tv_sex)
     TextView mTvSex;
-    @BindView(R.id.ll_sex_container)
-    LinearLayout mLlSexContainer;
     @BindView(R.id.tv_city)
     TextView mTvCity;
     @BindView(R.id.ll_city_container)
     LinearLayout mLlCityContainer;
     @BindView(R.id.et_user_introduce)
     UserInfoInroduceInputView mEtUserIntroduce;
-    @BindView(R.id.ll_container)
-    LinearLayout mLlContainer;
-    @BindView(R.id.v_horizontal_line)
-    View mVHorizontalLine;
     @BindView(R.id.overscroll)
     OverScrollLayout mDvViewGroup;
     @BindView(R.id.fl_tags)
     TagFlowLayout mFlTags;
     @BindView(R.id.tv_tag_hint)
     TextView mTvTagHint;
-    @BindView(R.id.ll_tag_container)
-    LinearLayout mLlTagContainer;
 
     private TSnackbar mTSnackbarUserInfo;
     private TSnackbar mTSnackbarUploadIcon;
@@ -117,7 +107,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     private UserInfoBean mUserInfoBean;// 用户未修改前的用户信息
     private boolean userNameChanged, sexChanged, cityChanged, introduceChanged;
-    private String path;// 上传成功的图片本地路径
 
     private UserInfoTagsAdapter mUserInfoTagsAdapter;
     private List<UserTagBean> mUserTagBeens = new ArrayList<>();
@@ -463,7 +452,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         if (photoList.isEmpty()) {
             return;
         }
-        path = photoList.get(0).getImgUrl();
+        String path = photoList.get(0).getImgUrl();
         // 开始上传
         mPresenter.changeUserHeadIcon(path);
         // 加载本地图片

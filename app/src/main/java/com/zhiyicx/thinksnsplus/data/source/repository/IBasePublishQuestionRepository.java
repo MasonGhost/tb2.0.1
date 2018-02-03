@@ -67,9 +67,9 @@ public interface IBasePublishQuestionRepository {
 
     Observable<QATopicBean> getTopicDetail(String topic_id);
 
-    Observable<BaseJsonV2<AnswerInfoBean>> publishAnswer(Long question_id, String body, int anonymity);
+    Observable<BaseJsonV2<AnswerInfoBean>> publishAnswer(Long question_id, String body, String text_body, int anonymity);
 
-    Observable<BaseJsonV2<Object>> updateAnswer(Long answer_id, String body, int anonymity);
+    Observable<BaseJsonV2<Object>> updateAnswer(Long answer_id, String body, String text_body, int anonymity);
 
     Observable<BaseJsonV2<Object>> updateQuestion(Long question_id, String body, int anonymity);
 

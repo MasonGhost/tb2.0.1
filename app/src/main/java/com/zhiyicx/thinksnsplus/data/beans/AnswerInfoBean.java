@@ -34,6 +34,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
     private Long question_id;
     private Long user_id;
     private String body;
+    private String text_body;
     private int anonymity; // 是否匿名，1 代表匿名发布，匿名后不会返回任何用户信息。
     private int adoption; // 是否采纳的答案
     private int invited; // 是否该回答是被邀请的人的回答。
@@ -64,6 +65,14 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
     public static class AnswerDigListBeanConvert extends BaseConvert<List<AnswerDigListBean>> {
     }
 
+    public String getText_body() {
+        return text_body;
+    }
+
+    public void setText_body(String text_body) {
+        this.text_body = text_body;
+    }
+
     @Override
     public Long getMaxId() {
         return id;
@@ -87,36 +96,6 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
     @Keep
     public void setQuestion(QAListInfoBean question) {
         this.question = question;
-    }
-
-    @Override
-    public String toString() {
-        return "AnswerInfoBean{" +
-                "id=" + id +
-                ", question_id=" + question_id +
-                ", user_id=" + user_id +
-                ", body='" + body + '\'' +
-                ", anonymity=" + anonymity +
-                ", adoption=" + adoption +
-                ", invited=" + invited +
-                ", comments_count=" + comments_count +
-                ", rewards_amount=" + rewards_amount +
-                ", rewarder_count=" + rewarder_count +
-                ", likes_count=" + likes_count +
-                ", views_count=" + views_count +
-                ", created_at='" + created_at + '\'' +
-                ", updated_at='" + updated_at + '\'' +
-                ", user=" + user +
-                ", liked=" + liked +
-                ", collected=" + collected +
-                ", commentList=" + commentList +
-                ", rewarded=" + rewarded +
-                ", likes=" + likes +
-                ", rewarders=" + rewarders +
-                ", question=" + question +
-                ", could=" + could +
-                ", onlookers_count=" + onlookers_count +
-                '}';
     }
 
     public Long getId() {
@@ -328,6 +307,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
         return result;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -340,6 +320,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
         dest.writeValue(this.question_id);
         dest.writeValue(this.user_id);
         dest.writeString(this.body);
+        dest.writeString(this.text_body);
         dest.writeInt(this.anonymity);
         dest.writeInt(this.adoption);
         dest.writeInt(this.invited);
@@ -372,6 +353,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
         this.question_id = (Long) in.readValue(Long.class.getClassLoader());
         this.user_id = (Long) in.readValue(Long.class.getClassLoader());
         this.body = in.readString();
+        this.text_body = in.readString();
         this.anonymity = in.readInt();
         this.adoption = in.readInt();
         this.invited = in.readInt();
@@ -395,10 +377,10 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
         this.onlookers_count = in.readInt();
     }
 
-    @Generated(hash = 555183698)
-    public AnswerInfoBean(Long id, Long question_id, Long user_id, String body, int anonymity,
-            int adoption, int invited, int comments_count, double rewards_amount, int rewarder_count,
-            int likes_count, int views_count, String created_at, String updated_at,
+    @Generated(hash = 791149338)
+    public AnswerInfoBean(Long id, Long question_id, Long user_id, String body, String text_body,
+            int anonymity, int adoption, int invited, int comments_count, double rewards_amount,
+            int rewarder_count, int likes_count, int views_count, String created_at, String updated_at,
             String onlookers_total, UserInfoBean user, boolean liked, boolean collected,
             boolean rewarded, List<AnswerDigListBean> likes, List<RewardsListBean> rewarders,
             QAListInfoBean question, boolean could, int onlookers_count) {
@@ -406,6 +388,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
         this.question_id = question_id;
         this.user_id = user_id;
         this.body = body;
+        this.text_body = text_body;
         this.anonymity = anonymity;
         this.adoption = adoption;
         this.invited = invited;

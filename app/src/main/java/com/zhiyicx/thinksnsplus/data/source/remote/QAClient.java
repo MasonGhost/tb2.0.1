@@ -43,6 +43,11 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_QA_REPORT;
  */
 public interface QAClient {
 
+    /**
+     * 发布问题
+     * @param body
+     * @return
+     */
     @Headers({"Content-type:application/json;charset=UTF-8"})
     @POST(ApiConfig.APP_PATH_PUBLISH_QUESTIONS)
     Observable<Object> publishQuestion(@Body RequestBody body);
@@ -51,14 +56,16 @@ public interface QAClient {
      * 发布答案
      *
      * @param question_id
-     * @param body
-     * @param anonymity   是否匿名
+     * @param body        : 必须，回答的内容，markdown
+     * @param text_body   纯文字回答内容，用于列表显示
+     * @param anonymity   是否匿名: 0 , 1
      * @return
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_PUBLISH_ANSWER)
     Observable<BaseJsonV2<AnswerInfoBean>> publishAnswer(@Path("question") Long question_id,
                                                          @Field("body") String body,
+                                                         @Field("text_body") String text_body,
                                                          @Field("anonymity") int anonymity);
 
     /**
@@ -73,18 +80,21 @@ public interface QAClient {
     Observable<BaseJsonV2> createTopic(@Field("name") String name, @Field("description") String description);
 
     /**
+     * 更新问题
      * @param body 如果 anonymity 不传，则本字段必须存在， 回答详情。
      */
-    @PATCH(ApiConfig.APP_PATH_GET_QUESTION_DETAIL)
+    @PATCH(ApiConfig.APP_PATH_UPDATE_QUESTION_DETAIL)
     Observable<Object> uplaodQuestion(@Path("question") Long question_id, @Body RequestBody body);
 
     /**
      * @param body      如果 anonymity 不传，则本字段必须存在， 回答详情。
+     * @param text_body 纯文字回答内容，用于列表显示
      * @param anonymity 如果 body 字段不传，则本字段必须存在，是否匿名。
      */
     @FormUrlEncoded
     @PATCH(ApiConfig.APP_PATH_UPDATE_ANSWER)
-    Observable<BaseJsonV2<Object>> uplaodAnswer(@Path("answer_id") Long answer_id, @Field("body") String body, @Field("anonymity") int anonymity);
+    Observable<BaseJsonV2<Object>> uplaodAnswer(@Path("answer_id") Long answer_id, @Field("body") String body, @Field("text_body") String
+            text_body, @Field("anonymity") int anonymity);
 
     /**
      * @param name   用于搜索话题，传递话题名称关键词。
@@ -134,7 +144,7 @@ public interface QAClient {
      * @param after   获取 id 之后的数据，要获取某条问题之后的数据，传递该问题 ID。
      * @param type    默认值 new, all - 全部、new - 最新、hot - 热门、reward - 悬赏、excellent - 精选 。
      */
-    @GET(ApiConfig.APP_PATH_PUBLISH_QUESTIONS)
+    @GET(ApiConfig.APP_PATH_GET_QUESTIONS_LSIT)
     Observable<List<QAListInfoBean>> getQAQustion(@Query("subject") String subject, @Query
             ("offset") Long after, @Query("type") String type, @Query("limit") Long limit);
 
@@ -296,6 +306,12 @@ public interface QAClient {
     Observable<List<RewardsListBean>> rewardQAList(@Path("answer_id") long answer_id, @Query("limit") Integer limit
             , @Query("offset") Integer offset, @Query("type") String order_type);
 
+    /**
+     * 设置悬赏 ,在没有采纳和邀请且未设置悬赏金额时，问题作者重新设置问题的悬赏
+     * @param question_id
+     * @param amount 悬赏金额，积分
+     * @return
+     */
     @PATCH(ApiConfig.APP_PATH_UPDATE_QUESTION_REWARD)
     Observable<BaseJsonV2<Object>> updateQuestionReward(@Path("question") String question_id, @Query("amount") int amount);
 

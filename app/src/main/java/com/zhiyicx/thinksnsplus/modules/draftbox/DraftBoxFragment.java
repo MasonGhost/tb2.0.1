@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
@@ -14,19 +13,20 @@ import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.draftbox.adapter.AnswerDraftItem;
 import com.zhiyicx.thinksnsplus.modules.draftbox.adapter.PostDraftItem;
 import com.zhiyicx.thinksnsplus.modules.draftbox.adapter.QuestionDraftItem;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.EditeAnswerDetailFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
 
 /**
@@ -118,11 +118,26 @@ public class DraftBoxFragment extends TSListFragment<DraftBoxContract.Presenter,
             startActivity(intent);
         } else if (draftBean instanceof AnswerDraftBean) {
             AnswerDraftBean realData = (AnswerDraftBean) draftBean;
-            PublishAnswerFragment.startQActivity(getActivity(), PublishType
+            EditeAnswerDetailFragment.startQActivity(getActivity(), PublishType
                     .PUBLISH_ANSWER, realData);
-        }else if (draftBean instanceof PostDraftBean){
+        } else if (draftBean instanceof PostDraftBean) {
             PostDraftBean realData = (PostDraftBean) draftBean;
-            BaseMarkdownActivity.startActivityForPublishPostInDraft(mActivity,realData);
+            BaseMarkdownActivity.startActivityForPublishPostInDraft(mActivity, realData);
+        }
+    }
+
+    @Override
+    public void toQuestionDetail(BaseDraftBean draftBean) {
+        if (draftBean instanceof AnswerDraftBean) {
+            AnswerDraftBean realData = (AnswerDraftBean) draftBean;
+            QAListInfoBean data = new QAListInfoBean();
+            data.setUser_id(AppApplication.getMyUserIdWithdefault());
+            data.setId(realData.getId());
+            Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(BUNDLE_QUESTION_BEAN, data);
+            intent.putExtra(BUNDLE_QUESTION_BEAN, bundle);
+            startActivity(intent);
         }
     }
 

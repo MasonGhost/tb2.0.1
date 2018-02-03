@@ -68,6 +68,11 @@ public class CollectAlbumListFragment extends MusicListFragment {
         return false;
     }
 
+    @Override
+    public boolean isCollection() {
+        return true;
+    }
+
     public static CollectAlbumListFragment newInstance() {
         return new CollectAlbumListFragment();
     }
@@ -97,4 +102,5 @@ public class CollectAlbumListFragment extends MusicListFragment {
         });
         LogUtils.d("CollectAlbumListFragment-->EVENT_ABLUM_COLLECT");
     }
+
 }

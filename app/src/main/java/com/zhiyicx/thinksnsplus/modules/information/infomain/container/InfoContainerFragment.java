@@ -25,7 +25,11 @@ import com.zhiyicx.thinksnsplus.modules.information.infochannel.ChannelActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.infosearch.SearchActivity;
-import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.information.publish.detail.EditeInfoDetailActivity;
+
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
+
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,11 +103,6 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
     }
 
     @Override
-    protected void musicWindowsStatus(boolean isShow) {
-        super.musicWindowsStatus(isShow);
-    }
-
-    @Override
     protected void initData() {
         mPresenter.getInfoType();
         initPopWindow();
@@ -119,7 +118,7 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
                     && publishInfoConfig.hasPay())) {
                 mPayAlertPopWindow.show();
             } else {
-                startActivity(new Intent(getActivity(), PublishInfoActivity.class));
+                startActivity(new Intent(getActivity(), EditeInfoDetailActivity.class));
             }
         } else {
             mCertificationAlertPopWindow.show();
@@ -135,14 +134,16 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
         mTsvToolbar.setDefaultTabLeftMargin(com.zhiyicx.baseproject.R.integer.tab_margin_10);
         mTsvToolbar.setDefaultTabRightMargin(com.zhiyicx.baseproject.R.integer.tab_margin_10);
         mTsvToolbar.showDivider(false);
-        mTsvToolbar.setIndicatorMatchWidth(true);
-        mVpFragment = (ViewPager) rootView.findViewById(com.zhiyicx.baseproject.R.id.vp_fragment);
+        mTsvToolbar.setIndicatorMatchWidth(false);
+        mTsvToolbar.setIndicatorMode(LinePagerIndicator.MODE_MATCH_EDGE);
+        mTsvToolbar.setTabSpacing(getResources().getDimensionPixelOffset(R.dimen.info_container_tab_spacing));
+        mVpFragment = (ViewPager) rootView.findViewById(R.id.vp_fragment);
         tsViewPagerAdapter = new TSViewPagerAdapter(getChildFragmentManager());
         tsViewPagerAdapter.bindData(initFragments());
         mVpFragment.setAdapter(tsViewPagerAdapter);
-        mTsvToolbar.setAdjustMode(isAdjustMode());
+        mTsvToolbar.setAdjustMode(false);
         mTsvToolbar.initTabView(mVpFragment, initTitles());
-        mTsvToolbar.setLeftClickListener(this, () -> setLeftClick());
+        mTsvToolbar.setLeftClickListener(this, this::setLeftClick);
         mTsvToolbar.setRightClickListener(this, () -> {
             if (mPresenter.handleTouristControl()) {
                 return;
@@ -287,7 +288,7 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
                     .item6ClickListener(() -> {
                         mPayAlertPopWindow.hide();
                         mPresenter.savePayTip(false);
-                        startActivity(new Intent(getActivity(), PublishInfoActivity.class));
+                        startActivity(new Intent(getActivity(), EditeInfoDetailActivity.class));
                     })
                     .build();
         }

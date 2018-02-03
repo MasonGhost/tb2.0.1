@@ -16,13 +16,13 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
-import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.information.publish.detail.EditeInfoDetailActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import javax.inject.Inject;
 
 import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO;
-import static com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoFragment.INFO_REFUSE;
+import static com.zhiyicx.thinksnsplus.modules.information.publish.detail.EditeInfoDetailFragment.INFO_REFUSE;
 
 /**
  * @Author Jliuer
@@ -93,6 +93,7 @@ public class ManuscriptListFragment extends TSListFragment<ManuscriptListContrac
                         InfoPublishBean infoPublishBean = new InfoPublishBean();
                         infoPublishBean.setNews_id(realData.getId().intValue());
                         infoPublishBean.setSubject(realData.getSubject());
+                        infoPublishBean.setFrom(realData.getFrom());
                         infoPublishBean.setTitle(realData.getTitle());
                         infoPublishBean.setAuthor(realData.getAuthor());
                         infoPublishBean.setCategoryId(realData.getCategory().getId());
@@ -101,7 +102,7 @@ public class ManuscriptListFragment extends TSListFragment<ManuscriptListContrac
                         infoPublishBean.setCover(realData.getImage() == null ? -1 : realData.getImage().getId());
                         infoPublishBean.setRefuse(true);
                         infoPublishBean.setTags(realData.getTags());
-                        Intent intent = new Intent(getActivity(), PublishInfoActivity.class);
+                        Intent intent = new Intent(getActivity(), EditeInfoDetailActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putParcelable(INFO_REFUSE, infoPublishBean);
                         intent.putExtras(bundle);

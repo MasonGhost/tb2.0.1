@@ -1,16 +1,11 @@
 package com.zhiyicx.thinksnsplus.base;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.SparseArray;
-import android.view.Choreographer;
-import android.view.KeyEvent;
 
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.github.tamir7.contacts.Contacts;
@@ -20,9 +15,6 @@ import com.google.gson.JsonSyntaxException;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMOptions;
 import com.pingplusplus.android.Pingpp;
-import com.umeng.analytics.MobclickAgent;
-import com.umeng.socialize.UMShareAPI;
-import com.zhiyicx.appupdate.AppUpdateManager;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.base.TSApplication;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -46,7 +38,6 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
-import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
@@ -59,7 +50,6 @@ import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 import org.simple.eventbus.EventBus;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -77,7 +67,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.AUTH_FAIL;
 
@@ -217,7 +206,6 @@ public class AppApplication extends TSApplication {
                 try {
                     baseJson = new Gson().fromJson(httpResult, BaseJson.class);
                 } catch (JsonSyntaxException e) {
-//                    LogUtils.e("Invalid Json length:::"+httpResult.length());
                 }
                 if (originalResponse.code() == AUTH_FAIL) {
                     if (mAuthRepository.isNeededRefreshToken()) {

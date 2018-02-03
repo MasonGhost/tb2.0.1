@@ -10,7 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 import com.zhiyicx.thinksnsplus.modules.circle.publish.PublishPostActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.publish.PublishPostFragment;
 
-public abstract class BaseMarkdownActivity<F extends MarkdownFragment> extends TSActivity<MarkdownPresenter, F> {
+public abstract class BaseMarkdownActivity<P extends MarkdownPresenter,F extends MarkdownFragment> extends TSActivity<P, F> {
 
     @Override
     protected F getFragment() {

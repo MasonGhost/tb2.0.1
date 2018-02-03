@@ -34,6 +34,11 @@ public class QuestionDraftItem extends BaseDraftItem<QAPublishBean> {
     }
 
     @Override
+    protected String editeType() {
+        return mActivity.getString(R.string.edit_question);
+    }
+
+    @Override
     protected String setTitle(QAPublishBean draftBean) {
         return draftBean.getSubject();
     }

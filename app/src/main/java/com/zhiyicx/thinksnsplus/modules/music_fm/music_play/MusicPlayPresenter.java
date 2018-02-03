@@ -32,6 +32,8 @@ import org.simple.eventbus.EventBus;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @Author Jliuer
  * @Date 2017/02/14
@@ -42,10 +44,6 @@ import javax.inject.Inject;
 public class MusicPlayPresenter extends AppBasePresenter<
         MusicPlayContract.View> implements MusicPlayContract.Presenter, OnShareCallbackListener {
 
-    @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
-    @Inject
-    CommentRepository mCommentRepository;
     @Inject
     MusicAlbumDetailsBeanGreenDaoImpl mMusicAlbumDetailsBeanGreenDao;
 
@@ -58,14 +56,6 @@ public class MusicPlayPresenter extends AppBasePresenter<
         super(rootView);
     }
 
-    /**
-     * 将Presenter从传入fragment
-     */
-    @Inject
-    void setupListeners() {
-        mRootView.setPresenter(this);
-    }
-
     @Inject
     public SharePolicy mSharePolicy;
 
@@ -76,29 +66,12 @@ public class MusicPlayPresenter extends AppBasePresenter<
 
     @Override
     public void payNote(int position, int note) {
-        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
-        double balance = 0;
-        if (walletBean != null) {
-            balance = walletBean.getBalance();
-        }
+
         double amount;
         amount = mRootView.getListDatas().get(position).getStorage().getAmount();
-
-        if (balance < amount) {
-            mRootView.goRecharge(WalletActivity.class);
-            return;
-        }
-
-//        mRootView.getListDatas().get(position).getStorage().setPaid(true);
-//        mRootView.getCurrentAblum().getMusics().get(position).getStorage().setPaid(true);
-//        mRootView.refreshData(position);
-//        EventBus.getDefault().post(mRootView.getListDatas().get(position), EventBusTagConfig
-//                .EVENT_MUSIC_TOLL);
-//        mMusicAlbumDetailsBeanGreenDao.insertOrReplace(mRootView.getCurrentAblum());
-//        mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
-
-        mCommentRepository.paykNote(note)
+        Subscription subscribe = handleIntegrationBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
+                .flatMap(o -> mCommentRepository.paykNote(note))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<String> data) {
@@ -119,9 +92,13 @@ public class MusicPlayPresenter extends AppBasePresenter<
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
+                        if (isIntegrationBalanceCheck(throwable)) {
+                            return;
+                        }
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override

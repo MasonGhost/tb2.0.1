@@ -59,7 +59,7 @@
     <dimen name="withdrawal_detail_item_height">55dp</dimen>
     <!--账单详情-->
     <dimen name="withdrawal_detail_textsize">50sp</dimen>
-    <dimen name="withdrawal_detail_width">60dp</dimen>
+    <dimen name="withdrawal_detail_width">70dp</dimen>
 
     <!--发布动态-->
     <dimen name="send_dynamic_send_container_top">180dp</dimen>
@@ -123,4 +123,6 @@
     <dimen name="report_resource_img">42dp</dimen>
     <dimen name="typchoose_with">100dp</dimen>
     <dimen name="circle_detail_toolbar_height">48dp</dimen>
+    <dimen name="info_container_tab_spacing">13dp</dimen>
+    <dimen name="integration_withdrawals_et_padding">14dp</dimen>
 </resources>

@@ -17,6 +17,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.integration.mine.MineIntegrationActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +69,7 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
 
     @Override
     protected void initData() {
-        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f, mPresenter.getBalance()));
+        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f, mPresenter.getGoldName(), mPresenter.getBalance()));
     }
 
     @Override
@@ -98,7 +99,7 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
 
     @Override
     public void gotoRecharge() {
-        startActivity(new Intent(getActivity(), WalletActivity.class));
+        startActivity(new Intent(getActivity(), MineIntegrationActivity.class));
     }
 
     @Override

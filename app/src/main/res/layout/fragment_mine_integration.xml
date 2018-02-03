@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/pic_topbg"
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/toolbar_custom"/>
+
+            <TextView
+                android:id="@+id/tv_account_unit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/spacing_big_large"
+                android:paddingLeft="@dimen/spacing_mid"
+                android:paddingStart="@dimen/spacing_mid"
+                android:paddingTop="@dimen/spacing_big_large"
+                android:text="@string/current_integration"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_content_assist"
+                />
+
+            <TextView
+                android:id="@+id/tv_mine_money"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="left"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:paddingBottom="@dimen/spacing_large"
+                android:paddingLeft="@dimen/spacing_mid"
+                android:textColor="@color/white"
+                android:textSize="@dimen/withdrawal_detail_textsize"
+                tools:text="@string/default_mongy"
+                />
+        </LinearLayout>
+
+        <!--充值-->
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
+            android:id="@+id/bt_recharge"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/full_button_height"
+            app:dividerLeftMargin="@dimen/spacing_normal"
+            app:leftImage="@mipmap/ico_integral_recharge"
+            app:leftText="@string/recharge_integration"
+            app:leftTextLeftPadding="@dimen/spacing_mid"
+            app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+        <!--提现-->
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
+            android:id="@+id/bt_withdraw"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/full_button_height"
+            app:leftImage="@mipmap/ico_integral_extract"
+            app:leftText="@string/withdraw_integration"
+            app:leftTextLeftPadding="@dimen/spacing_mid"
+            app:rightImage="@mipmap/ic_arrow_smallgrey"
+            app:showLine="false"/>
+        <!--积分商城-->
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
+            android:id="@+id/bt_integration_shop"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/full_button_height"
+            android:layout_marginTop="@dimen/spacing_normal"
+            app:leftImage="@mipmap/ico_integral_mall"
+            app:leftText="@string/integration_shop"
+            app:leftTextLeftPadding="@dimen/spacing_mid"
+            app:rightImage="@mipmap/ic_arrow_smallgrey"
+            app:showLine="false"/>
+
+        <include
+            layout="@layout/advert_details"
+            />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_recharge_and_withdraw_rule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="bottom|center"
+        android:drawableLeft="@mipmap/ico_wallet_rules"
+        android:drawablePadding="@dimen/spacing_small"
+        android:padding="@dimen/spacing_large"
+        android:textColor="@color/rule_tip_color"
+        android:text="@string/integration_rule"
+        />
+</RelativeLayout>

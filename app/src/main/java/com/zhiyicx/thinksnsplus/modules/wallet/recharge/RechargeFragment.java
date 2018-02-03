@@ -22,11 +22,10 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
+import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.tspay.TSPayClient;
@@ -40,7 +39,6 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
-import static com.zhiyicx.baseproject.config.PayConfig.MONEY_UNIT;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -50,7 +48,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 public class RechargeFragment extends TSFragment<RechargeContract.Presenter> implements RechargeContract.View {
-    public static final String BUNDLE_DATA = "walletconfig";
+    public static final String BUNDLE_DATA = "integrationConfig";
 
     @BindView(R.id.ll_recharge_choose_money_item)
     LinearLayout mLlRechargeChooseMoneyItem;
@@ -124,14 +122,13 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     @Override
     protected void initData() {
         initRechargeLables();
-        String moneyName = mPresenter.getGoldName();
-        mCustomMoney.setText(moneyName);
+        mCustomMoney.setText(getString(R.string.yuan));
     }
 
     @Override
-    public void payCredentialsResult(PayStrBean payStrBean) {
-        mPayChargeId = payStrBean.getId() + "";
-        TSPayClient.pay(ConvertUtils.object2JsonStr(payStrBean.getCharge()), getActivity());
+    public void payCredentialsResult(PayStrV2Bean payStrBean) {
+        mPayChargeId = payStrBean.getOrder().getId() + "";
+        TSPayClient.pay(ConvertUtils.object2JsonStr(payStrBean.getPingpp_order()), getActivity());
     }
 
     @Override
@@ -193,13 +190,13 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
             case 4:
             case 3:
                 mRbThree.setVisibility(View.VISIBLE);
-                mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(2) / PayConfig.MONEY_UNIT));
+                mRbThree.setText(String.format(getString(R.string.money_format), mRechargeLables.get(2) / PayConfig.MONEY_UNIT));
             case 2:
                 mRbTwo.setVisibility(View.VISIBLE);
-                mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(1) / PayConfig.MONEY_UNIT));
+                mRbTwo.setText(String.format(getString(R.string.money_format), mRechargeLables.get(1) / PayConfig.MONEY_UNIT));
             case 1:
                 mRbOne.setVisibility(View.VISIBLE);
-                mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(0) / PayConfig.MONEY_UNIT));
+                mRbOne.setText(String.format(getString(R.string.money_format), mRechargeLables.get(0) / PayConfig.MONEY_UNIT));
                 mLlRechargeChooseMoneyItem.setVisibility(View.VISIBLE);
                 break;
             case 0:
@@ -237,7 +234,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     mBtTop.setEnabled(false);
-                    mPresenter.getPayStr(mPayType, PayConfig.gameCurrency2RealCurrency(mRechargeMoney, mPresenter.getRatio()));
+                    mPresenter.getPayStr(mPayType, PayConfig.realCurrencyYuan2Fen(mRechargeMoney));
                 });// 传入的是真实货币分单位
 
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
@@ -309,7 +306,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
         }
         mPayStylePopupWindow = ActionPopupWindow.builder()
                 .item2Str(rechargeTypes.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string.alipay)) : "")
-                .item3Str(rechargeTypes.contains(TSPayClient.CHANNEL_WXPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)) : "")
+                .item3Str(rechargeTypes.contains(TSPayClient.CHANNEL_WXPAY)||rechargeTypes.contains(TSPayClient.CHANNEL_WX) ? getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)) : "")
                 .item4Str(rechargeTypes.size() == 0 ? getString(R.string.recharge_disallow) : "")
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -323,7 +320,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                     configSureButton();
                 })
                 .item3ClickListener(() -> {
-                    mPayType = TSPayClient.CHANNEL_WXPAY;
+                    mPayType = TSPayClient.CHANNEL_WX;
                     mBtRechargeStyle.setRightText(getString(R.string.choose_recharge_style_formart, getString(R.string.wxpay)));
                     mPayStylePopupWindow.hide();
                     configSureButton();

@@ -260,6 +260,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         onNetResponseSuccess(data.getComments(), false);
         initBottomToolData(data);
         setToolBarInfo();
+        setToolBarRightFollowState(mCirclePostDetailBean.getUserInfoBean());
     }
 
     @Override
@@ -539,7 +540,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
      * 设置toolBar上面的关注状态
      */
     private void setToolBarRightFollowState(UserInfoBean userInfoBean1) {
-        mTvToolbarRight.setVisibility(View.VISIBLE);
+        mTvToolbarRight.setVisibility(userInfoBean1.getUser_id() != AppApplication.getMyUserIdWithdefault() ? View.VISIBLE : View.GONE);
         if (userInfoBean1.isFollowing() && userInfoBean1.isFollower()) {
             mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother),
                     null);
@@ -660,22 +661,24 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 })
                 .item5ClickListener(() -> {
                     // 举报
-                    String img = "";
-                    if (circlePostListBean.getImages() != null && !circlePostListBean.getImages()
-                            .isEmpty()) {
-                        img = ImageUtils.imagePathConvertV2(circlePostListBean.getImages().get(0)
-                                        .getFile_id(), getResources()
-                                        .getDimensionPixelOffset(R.dimen.report_resource_img),
-                                getResources()
-                                        .getDimensionPixelOffset(R.dimen.report_resource_img),
-                                100);
-                    }
+                    if (!mPresenter.handleTouristControl()) {
+                        String img = "";
+                        if (circlePostListBean.getImages() != null && !circlePostListBean.getImages()
+                                .isEmpty()) {
+                            img = ImageUtils.imagePathConvertV2(circlePostListBean.getImages().get(0)
+                                            .getFile_id(), getResources()
+                                            .getDimensionPixelOffset(R.dimen.report_resource_img),
+                                    getResources()
+                                            .getDimensionPixelOffset(R.dimen.report_resource_img),
+                                    100);
+                        }
 
-                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean
-                            (circlePostListBean.getUser(), String.valueOf
-                                    (circlePostListBean.getId()),
-                                    circlePostListBean.getTitle(), img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
-                    mDealPostPopWindow.hide();
+                        ReportActivity.startReportActivity(mActivity, new ReportResourceBean
+                                (circlePostListBean.getUser(), String.valueOf
+                                        (circlePostListBean.getId()),
+                                        circlePostListBean.getTitle(), img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
+                        mDealPostPopWindow.hide();
+                    }
                 })
                 .bottomClickListener(() -> mDealPostPopWindow.hide())
                 .build();

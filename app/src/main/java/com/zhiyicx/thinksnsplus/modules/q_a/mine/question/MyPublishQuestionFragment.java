@@ -2,17 +2,12 @@ package com.zhiyicx.thinksnsplus.modules.q_a.mine.question;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
-import com.zhiyicx.thinksnsplus.modules.home.mine.DaggerMinePresenterComponent;
-import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
-import com.zhiyicx.thinksnsplus.modules.home.mine.MinePresenterModule;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo.QAListInfoAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;

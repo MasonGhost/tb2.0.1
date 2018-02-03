@@ -39,19 +39,19 @@ public class StickTopRepsotory implements IStickTopRepository {
     }
 
     @Override
-    public Observable<BaseJsonV2<Integer>> stickTop(String type, long parent_id, double amount, int day) {
+    public Observable<BaseJsonV2<Integer>> stickTop(String type, long parentId, double amount, int day) {
         if (type.equals(TYPE_DYNAMIC)) {
-            return mDynamicClient.stickTopDynamic(parent_id, (long) amount, day)
+            return mDynamicClient.stickTopDynamic(parentId, (long) amount, day)
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
         } else if (type.equals(TYPE_INFO)) {
-            return mInfoMainClient.stickTopInfo(parent_id, (long) amount, day)
+            return mInfoMainClient.stickTopInfo(parentId, (long) amount, day)
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
         } else if (type.equals(TYPE_POST)) {
-            return mCircleClient.stickTopPost(parent_id, (long) amount, day)
+            return mCircleClient.stickTopPost(parentId, (long) amount, day)
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
@@ -62,19 +62,19 @@ public class StickTopRepsotory implements IStickTopRepository {
     }
 
     @Override
-    public Observable<BaseJsonV2<Integer>> stickTop(String type, long parent_id, long child_id, double amount, int day) {
+    public Observable<BaseJsonV2<Integer>> stickTop(String type, long parentId, long childId, double amount, int day) {
         if (type.equals(TYPE_DYNAMIC)) {
-            return mDynamicClient.stickTopDynamicComment(parent_id, child_id, (long) amount, day)
+            return mDynamicClient.stickTopDynamicComment(parentId, childId, (long) amount, day)
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
         } else if (type.equals(TYPE_INFO)) {
-            return mInfoMainClient.stickTopInfoComment(parent_id, child_id, (long) amount, day)
+            return mInfoMainClient.stickTopInfoComment(parentId, childId, (long) amount, day)
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
         } else if (type.equals(TYPE_POST)) {
-            return mCircleClient.stickTopPostComment(parent_id, child_id, (long) amount, day)
+            return mCircleClient.stickTopPostComment(parentId, childId, (long) amount, day)
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());

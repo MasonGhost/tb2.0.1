@@ -3,23 +3,19 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
-import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
@@ -80,7 +76,6 @@ import butterknife.BindView;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
@@ -220,13 +215,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
-    }
-
-    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         initInputView();
@@ -236,7 +224,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             DaggerDynamicComponent
                     .builder()
                     .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                    .shareModule(new ShareModule(mActivity))
                     .dynamicPresenterModule(new DynamicPresenterModule(DynamicFragment.this))
                     .build()
                     .inject(DynamicFragment.this);
@@ -248,6 +235,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     @Override
                     public void onCompleted() {
                         initData();
+                        initAdvert();
                     }
 
                     @Override
@@ -264,10 +252,24 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
+    protected boolean setUseCenterLoading() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseCenterLoadingAnimation() {
+        return true;
+    }
+
+    @Override
+    protected int getstatusbarAndToolbarHeight() {
+        return 0;
+    }
+
+    @Override
     protected void initData() {
         if (mPresenter != null) {
             mDynamicType = getArguments().getString(BUNDLE_DYNAMIC_TYPE);
-            initAdvert();
             super.initData();
         }
     }
@@ -397,6 +399,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         } catch (Exception ignore) {
         }
         super.onCacheResponseSuccess(data, isLoadMore);
+        closeLoadingView();
     }
 
     /**
@@ -844,9 +847,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                                         .getDimensionPixelOffset(R.dimen.report_resource_img),
                                 100);
                     }
-                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(dynamicBean.getUserInfoBean(), String.valueOf(dynamicBean
+                    ReportResourceBean reportResourceBean = new ReportResourceBean(dynamicBean.getUserInfoBean(), String.valueOf(dynamicBean
                             .getId()),
-                            "", img, dynamicBean.getFeed_content(), ReportType.DYNAMIC));
+                            "", img, dynamicBean.getFeed_content(), ReportType.DYNAMIC);
+                    reportResourceBean.setDesCanlook(dynamicBean.getPaid_node() == null || dynamicBean
+                            .getPaid_node().isPaid());
+                    ReportActivity.startReportActivity(mActivity, reportResourceBean);
                     mOtherDynamicPopWindow.hide();
                     showBottomView(true);
                 })
@@ -985,12 +991,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(strRes) + getString(R
-                        .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(amout, mPresenter.getRatio()), mPresenter.getGoldName()))
+                        .string.buy_pay_member), amout, mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(amout, mPresenter.getRatio())))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_integration), amout))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(dynamicPosition, imagePosition, note, isImage);
                     mPayImagePopWindow.hide();

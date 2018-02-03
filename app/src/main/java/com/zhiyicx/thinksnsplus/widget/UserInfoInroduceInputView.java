@@ -9,20 +9,14 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PictureAndTextEditorView;
 
-import static android.support.annotation.Dimension.PX;
 import static android.support.annotation.Dimension.SP;
 
 /**

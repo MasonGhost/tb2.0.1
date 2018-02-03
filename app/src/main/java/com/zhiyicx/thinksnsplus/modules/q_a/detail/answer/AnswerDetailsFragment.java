@@ -34,8 +34,8 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.EditeAnswerDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailHeaderView;
@@ -73,7 +73,8 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetai
  */
 public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract.Presenter,
         AnswerCommentListBean> implements AnswerDetailsConstract.View, InputLimitView
-        .OnSendClickListener, AnswerDetailHeaderView.AnswerHeaderEventListener, BaseWebLoad.OnWebLoadListener, MultiItemTypeAdapter.OnItemClickListener {
+        .OnSendClickListener, AnswerDetailHeaderView.AnswerHeaderEventListener, BaseWebLoad.OnWebLoadListener, MultiItemTypeAdapter
+        .OnItemClickListener {
 
     public static final String BUNDLE_SOURCE_ID = "source_id";
     public static final String BUNDLE_ANSWER = "answer";
@@ -494,7 +495,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                 .item4ClickListener(() -> {
                     // 编辑
                     mDealInfoMationPopWindow.hide();
-                    PublishAnswerFragment.startQActivity(getActivity(), PublishType
+                    EditeAnswerDetailFragment.startQActivity(getActivity(), PublishType
                                     .UPDATE_ANSWER, mAnswerInfoBean.getId(), mAnswerInfoBean.getBody(),
                             mAnswerInfoBean.getQuestion().getSubject(), mAnswerInfoBean.getAnonymity());
 
@@ -511,10 +512,13 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                                 ImageZipConfig.IMAGE_80_ZIP);
                     }
                     // 预览的文字
-                    String des = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mAnswerInfoBean.getBody());
+                    String des = mAnswerInfoBean.getText_body();
+                    if (TextUtils.isEmpty(des)) {
+                        des = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mAnswerInfoBean.getBody());
+                    }
                     ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mAnswerInfoBean.getUser(), String.valueOf
                             (mAnswerInfoBean.getId()),
-                            "", img, des, ReportType.QA));
+                            "", img, des, ReportType.QA_ANSWER));
                     mDealInfoMationPopWindow.hide();
                 })
                 .bottomClickListener(() -> mDealInfoMationPopWindow.hide())
@@ -557,6 +561,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
 
     /**
      * 评论
+     *
      * @param position
      */
     private void comment(int position) {
@@ -576,7 +581,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                 mReplyUserId = infoCommentListBean.getUser_id().intValue();
                 showCommentView();
                 String contentHint = getString(R.string.default_input_hint);
-                if (infoCommentListBean.getReply_user() != infoCommentListBean.getId()) {
+                if (infoCommentListBean.getReply_user().longValue() != infoCommentListBean.getId().longValue()) {
                     contentHint = getString(R.string.reply, infoCommentListBean
                             .getFromUserInfoBean().getName());
                 }
@@ -587,6 +592,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
 
     /**
      * 举报
+     *
      * @param position
      */
     private void goReportComment(int position) {

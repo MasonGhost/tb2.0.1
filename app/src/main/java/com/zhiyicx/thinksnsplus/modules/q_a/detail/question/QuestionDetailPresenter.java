@@ -70,9 +70,9 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     SystemRepository mSystemRepository;
     @Inject
     BaseQARepository mBaseQARepository;
-    
+
     private SystemConfigBean mSystemConfigBean;
-    
+
 
     @Inject
     public QuestionDetailPresenter(QuestionDetailContract.View rootView) {
@@ -172,7 +172,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
         shareContent.setTitle(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mRootView.getCurrentQuestion().getSubject()));
 //        shareContent.setUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_DEFAULT,
 //                mRootView.getCurrentTopicBean().getId()));
-        shareContent.setUrl(String.format(Locale.getDefault(),APP_PATH_SHARE_QA_QUESTION_DETAIL, mRootView.getCurrentQuestion().getId()));
+        shareContent.setUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_QA_QUESTION_DETAIL, mRootView.getCurrentQuestion().getId()));
         shareContent.setContent(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mRootView.getCurrentQuestion().getBody()));
 
         if (bitmap == null) {
@@ -326,7 +326,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     @Subscriber(tag = EventBusTagConfig.EVENT_PUBLISH_ANSWER)
     public void publishAnswer(AnswerInfoBean data) {
         if (data != null) {
-            if (mRootView.getListDatas().get(0).getUser() == null) {// 占位
+            if (mRootView.getListDatas().size() > 0 && mRootView.getListDatas().get(0).getUser() == null) {// 占位
                 mRootView.getListDatas().remove(0);
             }
             mRootView.getListDatas().add(data);

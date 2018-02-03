@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -93,11 +94,27 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        DaggerMessageComponent
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .messagePresenterModule(new MessagePresenterModule(this))
+                .build()
+                .inject(this);
+    }
+
+    @Override
     protected void initView(View rootView) {
-        super.initView(rootView);
+        try {
+            super.initView(rootView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         initHeaderView();
         rootView.setBackgroundResource(R.color.bgColor);
         ((BlankClickRecycleView) mRvList).setBlankListener(this);
+
     }
 
 
@@ -113,12 +130,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     protected void initData() {
-        DaggerMessageComponent
-                .builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .messagePresenterModule(new MessagePresenterModule(this))
-                .build()
-                .inject(this);
         super.initData();
     }
 

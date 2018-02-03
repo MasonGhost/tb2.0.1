@@ -343,7 +343,7 @@ public class TopicDetailFragment extends TSFragment<TopicDetailContract.Presente
 
                         startActivity(publishQaIntent);
 
-//                        Intent intent = new Intent(getActivity(), PublishQuestionActivity.class);
+//                        Intent intent = new Intent(getActivity(), EditeQuestionDetailActivity.class);
 //                        Bundle bundle = new Bundle();
 //                        bundle.putParcelable(BUNDLE_PUBLISHQA_TOPIC, mQaTopicBean);
 //                        intent.putExtras(bundle);

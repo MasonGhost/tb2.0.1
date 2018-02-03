@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.text.TextUtils;
 
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 
@@ -27,6 +28,11 @@ public class PostDraftItem extends BaseDraftItem<PostDraftBean> {
     @Override
     protected String setCreateTime(PostDraftBean draftBean) {
         return draftBean.getCreate_at();
+    }
+
+    @Override
+    protected String editeType() {
+        return mActivity.getString(R.string.edit_post);
     }
 
     @Override

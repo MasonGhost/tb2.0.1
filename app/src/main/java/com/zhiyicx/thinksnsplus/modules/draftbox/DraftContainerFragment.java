@@ -19,7 +19,7 @@ public class DraftContainerFragment extends TSViewPagerFragment {
 
     @Override
     protected List<String> initTitles() {
-        return Arrays.asList(getString(R.string.draft_type_questions), getString(R.string.draft_type_answers),getString(R.string.draft_type_circle));
+        return Arrays.asList(getString(R.string.draft_type_questions), getString(R.string.draft_type_answers),getString(R.string.post));
     }
 
     @Override

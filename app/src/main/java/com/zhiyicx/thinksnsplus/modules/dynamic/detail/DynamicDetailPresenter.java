@@ -105,8 +105,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<
 
 
     @Inject
-    public DynamicDetailPresenter(
-                                  DynamicDetailContract.View rootView) {
+    public DynamicDetailPresenter(DynamicDetailContract.View rootView) {
         super( rootView);
     }
 
@@ -624,7 +623,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<
 
         double amount = mRootView.getCurrentDynamic().getImages().get(imagePosition).getAmount();
 
-        Subscription subscribe = handleWalletBlance((long) amount)
+        Subscription subscribe = handleIntegrationBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
                 .flatMap(o -> mCommentRepository.paykNote(note))
@@ -670,7 +669,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<
                     @Override
                     public void onError(Throwable e) {
                         super.onError(e);
-                        if (isBalanceCheck(e)) {
+                        if (isIntegrationBalanceCheck(e)) {
                             return;
                         }
                         mRootView.showSnackErrorMessage(mContext.getString(R.string

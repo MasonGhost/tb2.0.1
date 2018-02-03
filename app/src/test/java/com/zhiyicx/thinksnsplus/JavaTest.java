@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus;
 
 import android.annotation.SuppressLint;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -140,10 +141,55 @@ public class JavaTest {
     }
 
     @Test
-    public void testFilter() {
-        String source = "http://ddd/";
-        String urlRege = "^http://[\\s\\S]+";
-        System.out.print("testFilter = " + source.matches(urlRege));
+    public void testCatchGroup() {
+        String src = "<span style=\"font-family: sans-serif;\">好刚刚给</span><div style=\"font-family: sans-serif;\">黄河鬼棺给</div><h1 " +
+                "style=\"font-family: sans-serif;\">好好奋斗是</h1><div style=\"font-family: sans-serif;\"><b><i>v刚发的的</i></b></div><div " +
+                "style=\"font-family: sans-serif;\"><b><i><strike>广告费多大的</strike></i></b></div><hr style=\"color: rgb(0, 0, 0);\"><div " +
+                "style=\"font-family: sans-serif;\"><br></div><h1 style=\"font-family: sans-serif;\">复方丹参</h1><div><br></div><div class=\"block\" " +
+                "contenteditable=\"false\">\n" +
+                "                                                                  \t\t\t\t<div class=\"img-block\">\n" +
+                "                                                                  \t\t\t\t\n" +
+                "                                                                  \t\t\t\t\n" +
+                "                                                                  \t\t\t\t<div class=\"delete\">\n" +
+                "                                                                  \t\t\t\t\t\n" +
+                "                                                                  \t\t\t\t\t<div class=\"tips\">图片上传失败，请点击重试</div>\n" +
+                "                                                                  \t\t\t\t\t<div class=\"markdown\">@![image](6104)</div>\n" +
+                "                                                                  \t\t\t\t</div></div>\n" +
+                "                                                                  \t\t\t\t\n" +
+                "                                                                  \t\t\t</div><h1><br></h1></div>";
+        String reg = MarkdownConfig.TEST_HTML_FORMAT;
+        Matcher matcher = Pattern.compile(reg).matcher(src);
+        String result = "";
+
+        while (matcher.find()) {
+            int count = matcher.groupCount();
+            for (int i = 0; i < count; i++) {
+                System.out.println("reg::" + i + ":::" + matcher.group(i));
+            }
+            String group2 = matcher.group(2);
+            String group3 = matcher.group(3);
+            if (TextUtils.isEmpty(group2)) {
+                result = src.replace(group2, "p");
+            }
+            if (TextUtils.isEmpty(group3)) {
+                result = result.replace(group3, "p");
+            }
+        }
+        System.out.println("result::" + result);
+    }
+
+    @Test
+    public void testFilter() { // <(a|/a)(href="(.*)").*>
+        String source = "<ahref=\"http://rde\"class=\"editor-link\">tgfff</a>@![image](6173)";
+        Matcher matcher = Pattern.compile(MarkdownConfig.LINK_WORDS_FORMAT).matcher(source);
+        while (matcher.find()) {
+            int count = matcher.groupCount();
+            for (int i = 0; i < count; i++) {
+                System.out.println("reg::" + i + ":::" + matcher.group(i));
+            }
+            source = source.replaceFirst(MarkdownConfig.LINK_WORDS_FORMAT, matcher.group(3));
+        }
+        System.out.println(source);
     }
 
     @Test
@@ -169,15 +215,26 @@ public class JavaTest {
 
     @Test
     public void testInt() {
-        String test = "<https://www.baidu.com> 我来测试一下哟";
-//        Matcher matcher=
-        System.out.println(test.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE));
+        String test = "[对对对](57941)";//  \[(.*?)]\((.*?)\)
+//        Matcher matcher = Pattern.compile("@!\\[.*?]\\((\\d+)\\)").matcher(test);
 
-        Matcher matcher = Pattern.compile(MarkdownConfig.NETSITE_FORMAT).matcher(test);
-        int lastIndex = 0;
-        while (matcher.find()) {
-            System.out.println(test.substring(matcher.start(), matcher.end()));
+        Matcher matcher = null;
+        try {
+            matcher = Pattern.compile(MarkdownConfig.LINK_FORMAT).matcher(test);
+            while (matcher.find()) {
+                System.out.println(matcher.group(1));
+                System.out.println(matcher.group(2));
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
+
+//        while (matcher.find()) {
+//            int count = matcher.groupCount();
+//            for (int i = 0; i < count; i++) {
+//                System.out.println(matcher.group(i));
+//            }
+//        }
     }
 
     @Test
@@ -215,19 +272,32 @@ public class JavaTest {
     @Test
     public void testContain() {
 
-        String str = "1号线@![image]号漕宝路";
-        String reg = "[\\s\\S]*@!\\[\\S*][\\s\\S]*";
-        if (str.matches(reg)) {
-            System.out.println("result1::" + str);
+//        String str = "1号线@![image]号漕宝路";
+//        String reg = "[\\s\\S]*@!\\[\\S*][\\s\\S]*";
+//        if (str.matches(reg)) {
+//            System.out.println("result1::" + str);
+//        }
+
+        String text = "ggfdd@![image](2537)dddd@![tym](2538)";
+
+        String reg1 = "@!(\\[(.*?)])\\(((\\d+))\\)";
+        Matcher matcher = Pattern.compile(reg1).matcher(text);
+
+
+        while (matcher.find()) {
+            int count = matcher.groupCount();
+            for (int i = 0; i < count; i++) {
+                System.out.println("reg1:::" + matcher.group(i));
+            }
         }
 
-        String text = "ggfdd@![image](2537)dddd@![image](2538)";
-        if (text.matches("\\.*@!\\[.*?]\\((\\d+)\\)\\.*")) {
-            int id = RegexUtils.getImageId(text);
-            String imagePath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
-            System.out.println("result1:id:" + id);
-            System.out.println("result2:imagePath:" + imagePath);
-        }
+
+//        if (text.matches("\\.*@!\\[.*?]\\((\\d+)\\)\\.*")) {
+//            int id = RegexUtils.getImageId(text);
+//            String imagePath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
+//            System.out.println("result1:id:" + id);
+//            System.out.println("result2:imagePath:" + imagePath);
+//        }
     }
 
     @Test
@@ -1599,6 +1669,34 @@ public class JavaTest {
         Random random = new Random();
         for (int i = 0; i < 100; i++) {
             System.out.println("random = " + random.nextInt(5) % (5));
+        }
+    }
+
+    /**
+     * 条件语句 执行顺序测试，并非是从左到右直线处理
+     */
+    @Test
+    public void testSymbol() {
+        List<Integer> rechargeTypes = new ArrayList<>();
+        rechargeTypes.add(1);
+        SystemConfigBean mSystemConfigBean = new SystemConfigBean();
+        SystemConfigBean.OpenConfig walletTransform = new SystemConfigBean.OpenConfig();
+        walletTransform.setOpen(false);
+        mSystemConfigBean.setWalletTransform(walletTransform);
+        System.out.println("rechargeTypes = " + rechargeTypes.size());
+        if (rechargeTypes.size() == 0 && mSystemConfigBean.getWalletTransform() == null || !mSystemConfigBean.getWalletTransform()
+                .isOpen()) {
+            System.out.println(" 1  = ");
+        } else {
+            System.out.println(" 2  = ");
+
+        }
+        if (rechargeTypes.size() == 0 && (mSystemConfigBean.getWalletTransform() == null || !mSystemConfigBean.getWalletTransform()
+                .isOpen())) {
+            System.out.println(" 1  = ");
+        } else {
+            System.out.println(" 2  = ");
+
         }
     }
 }

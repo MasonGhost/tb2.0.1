@@ -18,7 +18,6 @@ import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
@@ -29,6 +28,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity;
 import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 
@@ -171,9 +171,9 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         if (draft != null) {
             mWcInvite.setChecked(draft.getAutomaticity() == 1);
             mWcOnlooker.setChecked(draft.getLook() == 1);
-            double money = PayConfig.realCurrency2GameCurrency(draft.getAmount(), mPresenter.getRatio());
+            double money = draft.getAmount();
             if (money > 0) {
-                mEtInput.setText(String.valueOf(PayConfig.realCurrency2GameCurrency(draft.getAmount(), mPresenter.getRatio())));
+                mEtInput.setText(String.valueOf(draft.getAmount()));
             }
             if (draft.getInvitations() != null && !draft.getInvitations().isEmpty()) {
                 List<QAPublishBean.Invitations> typeIdsList = new ArrayList<>();
@@ -235,13 +235,13 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     private void initDefaultMoney() {
         mRewardLabels = new ArrayList<>();
         mOnLookerLabels = new ArrayList<>();
-        mRewardLabels.add(1.00f);
-        mRewardLabels.add(5.00f);
-        mRewardLabels.add(10.00f);
+        mRewardLabels.add(100f);
+        mRewardLabels.add(500f);
+        mRewardLabels.add(1000f);
 
-        mOnLookerLabels.add(1.00f);
-        mOnLookerLabels.add(5.00f);
-        mOnLookerLabels.add(10.00f);
+        mOnLookerLabels.add(100f);
+        mOnLookerLabels.add(500f);
+        mOnLookerLabels.add(1000f);
 
         setRbValue(mRbOne, mRewardLabels.get(0));
         setRbValue(mRbTwo, mRewardLabels.get(1));
@@ -429,16 +429,16 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                     try {
                         if (mQuestionId.equals(0L)) {
                             if (mWcInvite.isChecked() && (mRewardMoney <= 0 || TextUtils.isEmpty(mBtQaSelectExpert.getRightText()))) {
-                                showSnackErrorMessage("邀请的专家呢？");
+                                showSnackErrorMessage(getString(R.string.not_invite_expert));
                                 mBtPublish.setEnabled(true);
                                 return;
                             }
                             packgQuestion();
-                            mQAPublishBean.setAmount(PayConfig.gameCurrency2RealCurrency(mRewardMoney, mPresenter.getRatio()));
+                            mQAPublishBean.setAmount(mRewardMoney);
                             mPresenter.publishQuestion(mQAPublishBean);
                         } else {
                             // 已发布的资讯 重新设置悬赏金额
-                            mPresenter.resetReward(mQuestionId, PayConfig.gameCurrency2RealCurrency(mRewardMoney, mPresenter.getRatio()));
+                            mPresenter.resetReward(mQuestionId, mRewardMoney);
                         }
                     } catch (Exception e) {
                         mBtPublish.setEnabled(true);
@@ -457,7 +457,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
             return null;
         }
         if (!mQAPublishBean.isHasAgainEdite()) {// 发布成功后编辑的设置悬赏要放到最后一步
-            mQAPublishBean.setAmount(PayConfig.gameCurrency2RealCurrency(mRewardMoney, mPresenter.getRatio()));
+            mQAPublishBean.setAmount(mRewardMoney);
         }
         mQAPublishBean.setAutomaticity(mWcInvite.isChecked() ? 1 : 0);
         mQAPublishBean.setLook(mWcOnlooker.isChecked() ? 1 : 0);
@@ -549,7 +549,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     @Override
     public void resetRewardSuccess() {
         Bundle bundle = new Bundle();
-        bundle.putDouble(BUNDLE_QUESTION_ID, PayConfig.gameCurrency2RealCurrency(mRewardMoney, mPresenter.getRatio()));
+        bundle.putDouble(BUNDLE_QUESTION_ID, mRewardMoney);
         Intent intent = new Intent();
         intent.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);
@@ -564,6 +564,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     private void goToQuestionDetail() {
         if (mQaListInfoBean != null) {
             EventBus.getDefault().post(new Bundle(), EventBusTagConfig.EVENT_PUBLISH_QUESTION);
+            PublishQuestionFragment.mDraftQuestion = null;
             Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putSerializable(BUNDLE_QUESTION_BEAN, mQaListInfoBean);

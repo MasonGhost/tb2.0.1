@@ -215,8 +215,7 @@
     <string name="dynamic_send_toll_look">查看收费</string>
     <string name="dynamic_send_toll_download">下载收费</string>
     <string name="dynamic_send_toll_notes">注：超过%1$d字部分内容收费</string>
-    <string name="dynamic_send_toll_select_money">%1$.2f</string>
-    <string name="dynamic_send_toll_select_money_">%1$.2f</string>
+    <string name="dynamic_send_toll_select_money">%1$.0f</string>
     <string name="dynamic_send_toll_toll_verify">应配置至少一张图片费用</string>
     <string name="group_dynamic_send_must_has_title">请输入标题</string>
     <string name="instructions">说明</string>
@@ -265,6 +264,7 @@
     <string name="circle">圈子</string>
     <string name="circle_post">帖子</string>
     <string name="circle_member">成员</string>
+    <string name="circle_post_default_title">请输入正文</string>
     <string name="select_circle">选择圈子</string>
     <string name="create">创建</string>
     <string name="create_reviewing">已经提交申请，请等待审核</string>
@@ -411,7 +411,7 @@
     <string name="comment_top_success">申请评论置顶成功</string>
     <string name="post_top_success">帖子置顶成功</string>
     <string name="post_top_failed">帖子置顶失败</string>
-    <string name="to_top_description">当前平均置顶金额%1$.2f / 天，钱包余额%2$.2f</string>
+    <string name="to_top_description">当前平均置顶金额%1$.2f / 天，%2s余额%3$.2f</string>
 
     <!--设置评论收费-->
     <string name="apply_doing">申请中&#8230;</string>
@@ -663,14 +663,18 @@
     <!--改了改了，真的改了-问答详情页的悬赏和围观金额样式-->
     <string name="qa_show_question_followed_count">%1$s 关注</string>
     <string name="qa_show_question_followed_count_">%1$s 关注\t\t·\t</string>
-    <string name="qa_show_question_reward_count">[%1$s.0]</string>
-    <string name="qa_show_question_reward_count_">[%1$s.0]\t\t·\t</string>
+    <string name="qa_show_question_reward_count">[%1$s]</string>
+    <string name="qa_show_question_reward_count_">[%1$s]\t\t·\t</string>
     <string name="qa_show_question_look_count">%1$s</string>
-    <string name="qa_watch_amount_count">%1$.1f</string>
+    <string name="qa_watch_amount_count">%1$.0f</string>
     <!--改了改了，真的改了-问答详情页的悬赏和围观金额样式-->
 
     <string name="edit_quit">放弃编辑</string>
     <string name="edit">编辑</string>
+    <string name="edit_question">编辑问题</string>
+    <string name="edit_answer">编辑回答</string>
+    <string name="look_question">查看问题</string>
+    <string name="edit_post">编辑帖子</string>
     <string name="save_to_draft_box">保存至草稿箱</string>
     <string-array name="topic_detail_category">
         <item>热门</item>
@@ -876,7 +880,7 @@
     <string name="domain_dev">开发服</string>
     <string name="domain_swith">服务器切换</string>
     <string name="no_new_version">当前已经是最新版</string>
-    <string name="defualt_golde_name">豆子</string>
+    <string name="defualt_golde_name">积分</string>
     <string name="today_with_split">今,天</string>
     <string name="yestorday_with_split">昨,天</string>
     <string name="can_not_use_protected_name">不能使用站点预留昵称</string>
@@ -916,9 +920,71 @@
     <string name="report_circle">举报圈子</string>
     <string name="publish_post">发帖</string>
     <string name="syn_to_dynamic">同步至动态</string>
+    <string name="handle_fail">操作失败！</string>
+    <string name="pay_blur_tip">这些东西是需要付费的，给了钱钱你就可以查看了，很厉害吧！！！</string>
 
     <!--聊天-->
     <string name="chat_delete_conversation_failed">删除聊天失败</string>
     <string name="chat_unconnected">聊天服务器未连接</string>
     <string name="chat_my_friends">我的好友</string>
+
+    <!--积分-->
+    <string name="mine_integration">我的积分</string>
+    <string name="recharge_integration">充值积分</string>
+    <string name="current_integration">当前积分</string>
+    <string name="withdraw_integration">提取积分</string>
+    <string name="integration_withdrawals">积分提取</string>
+    <string name="integration_shop">积分商城</string>
+    <string name="integration_rule">积分规则</string>
+    <string name="integration_recharge">积分充值</string>
+    <string name="recharge_record">充值记录</string>
+    <string name="recharge_ratio">充值比率</string>
+    <string name="user_reharge_integration_rule">用户充值协议</string>
+    <string name="integration_config_info_get_loading_tip">积分配置信息获取中&#8230;</string>
+    <string name="integration_ratio_formart">%1$d元=%2$d%3$s</string>
+    <string name="integration_detail">积分明细</string>
+    <string name="integration_to_wallet">积分兑换余额</string>
+    <string name="withdrawals_record">提取记录</string>
+    <string name="input_withdrawals_integration">输入需提取的积分</string>
+    <string name="input_withdrawals_integration_format">输入需提取的%s</string>
+    <string name="input_withdrawals_integration_tip">提取积分须提交官方审核，审核反馈请关注系统消息！</string>
+    <string name="input_withdrawals_integration_tip_format">提取%s须提交官方审核，审核反馈请关注系统消息！</string>
+    <string name="et_input_withdrawals_integration_tip">请至少提取100积分</string>
+    <string name="et_input_withdrawals_integration_tip_format">请至少提取%1$d%2$s</string>
+    <string name="integration_withdrawals_rule">积分提取规则</string>
+    <string name="integration_2_money_ratio_formart">%1$d%2$s=%3$.2f元</string>
+    <string name="integration_withdrawals_report_success">积分提取请求已提交，待审核！</string>
+    <string name="please_more_than_min_recharge_formart">最少充值%.2f元</string>
+    <string name="please_less_min_recharge_formart">最多充值%.2f元</string>
+    <string name="please_more_than_min_withdrawals_formart">最低每次提取%d积分</string>
+    <string name="please_less_max_withdrawals_formart">单笔最高积分为%d</string>
+    <string name="current_money_not_enouph">当前余额不足！</string>
+    <string name="my_integration_name">我的%s</string>
+    <string name="integration_recharge_format">%s充值</string>
+    <string name="current_integraiton_format">当前%s</string>
+    <string name="recharge_integration_foramt">充值%s</string>
+    <string name="withdraw_integration_foramt">提取%s</string>
+    <string name="integration_shop_foramt">%s商城</string>
+    <string name="integration_rule_format">%s规则</string>
+    <string name="integration_detail_format">%s明细</string>
+    <string name="integration_withdrawals_format">%s提取</string>
+    <string name="integration_withdrawals_rule_format">%s提取规则</string>
+    <string name="balance">余额</string>
+    <string name="handle_success">操作成功</string>
+    <string name="not_invite_expert">邀请的专家呢？</string>
+    <string name="fail_format_with_unit">%1$d%2$s</string>
+    <string name="reduce_format_with_unit">-%1$d%2$s</string>
+    <string name="increase_format_with_unit">+%1$d%2$s</string>
+    <string name="integration_recharge_success_tip_format">共消耗%1$.2f元，获得%2$d%3$s!</string>
+    <string name="integration_recharge_success_tip_format_eques">获得</string>
+    <string name="rewarding">正在审核</string>
+    <string name="wait_handle">待处理</string>
+    <string name="withdrawals_success">提取成功</string>
+    <string name="withdrawals_fail">提取失败</string>
+    <string name="recharge_success">充值成功</string>
+    <string name="recharge_fail">充值失败</string>
+    <string-array name="integration_recharge_withdrawal_type">
+        <item>充值记录</item>
+        <item>提取记录</item>
+    </string-array>
 </resources>

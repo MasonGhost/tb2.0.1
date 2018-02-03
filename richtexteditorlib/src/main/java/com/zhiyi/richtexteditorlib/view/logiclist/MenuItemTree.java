@@ -26,7 +26,7 @@ public class MenuItemTree implements Parcelable {
 
     public void addRootItem(MenuItem item) {
         if (rootItem.getNextLevel() == null) {
-            rootItem.setNextLevel(new ArrayList<MenuItem>());
+            rootItem.setNextLevel(new ArrayList<>());
         }
         item.setParent(rootItem);
         rootItem.getNextLevel().add(item);
@@ -43,7 +43,7 @@ public class MenuItemTree implements Parcelable {
         MenuItem findItem = rootItem.getMenuItemById(id);
         if (findItem != null) {
             if (findItem.getNextLevel() == null) {
-                findItem.setNextLevel(new ArrayList<MenuItem>());
+                findItem.setNextLevel(new ArrayList<>());
             }
             addMenuItem.setParent(findItem);
             findItem.getNextLevel().add(addMenuItem);

@@ -130,8 +130,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     @Override
     protected void initData() {
         initRechargeLables();
-        String moneyName = mPresenter.getGoldName();
-        mCustomMoney.setText(moneyName);
+        mCustomMoney.setText(getString(R.string.yuan));
     }
 
     @Override
@@ -154,28 +153,19 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     private void initRechargeLables() {
         String[] amount = new String[]{};
         mRechargeLables = new ArrayList<>();
-// 去掉动态特殊打赏
-//        if (RewardType.DYNAMIC == mRewardType) {
-//            try {
-//                amount = Arrays.toString(mSystemConfigBean.getFeed().getItems()).split("[\\[\\]]")[1].split(", ");
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-            try {
-                amount = mSystemConfigBean.getSite().getReward().getAmounts().split(",");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-//        }
+        try {
+            amount = mSystemConfigBean.getSite().getReward().getAmounts().split(",");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (amount.length > 0) {// 配置的打赏金额
-            mRechargeLables.add((float) PayConfig.realCurrency2GameCurrency(Float.parseFloat(amount[0]), mPresenter.getRatio()));
-            mRechargeLables.add((float) PayConfig.realCurrency2GameCurrency(Float.parseFloat(amount[1]), mPresenter.getRatio()));
-            mRechargeLables.add((float) PayConfig.realCurrency2GameCurrency(Float.parseFloat(amount[2]), mPresenter.getRatio()));
+            mRechargeLables.add((float) PayConfig.realCurrencyFen2Yuan(Float.parseFloat(amount[0])));
+            mRechargeLables.add((float) PayConfig.realCurrencyFen2Yuan(Float.parseFloat(amount[1])));
+            mRechargeLables.add((float) PayConfig.realCurrencyFen2Yuan(Float.parseFloat(amount[2])));
         } else {
-            mRechargeLables.add(100f);
-            mRechargeLables.add(500f);
-            mRechargeLables.add(1000f);
+            mRechargeLables.add(1f);
+            mRechargeLables.add(5f);
+            mRechargeLables.add(10f);
         }
 
 
@@ -188,13 +178,13 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
             case 4:
             case 3:
                 mRbThree.setVisibility(View.VISIBLE);
-                mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(2)));
+                mRbThree.setText(String.format(getString(R.string.money_format), mRechargeLables.get(2)));
             case 2:
                 mRbTwo.setVisibility(View.VISIBLE);
-                mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(1)));
+                mRbTwo.setText(String.format(getString(R.string.money_format), mRechargeLables.get(1)));
             case 1:
                 mRbOne.setVisibility(View.VISIBLE);
-                mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(0)));
+                mRbOne.setText(String.format(getString(R.string.money_format), mRechargeLables.get(0)));
                 mLlRechargeChooseMoneyItem.setVisibility(View.VISIBLE);
                 break;
             case 0:
@@ -224,14 +214,17 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                         initStickTopInstructionsPop();
                     } else {
                         setSureBtEnable(false);
-                        mPresenter.reward(PayConfig.gameCurrency2RealCurrency(mRewardMoney, mPresenter.getRatio()), mRewardType, mSourceId);
+                        mPresenter.reward(PayConfig.realCurrencyYuan2Fen(mRewardMoney), mRewardType, mSourceId);
                     }
                 });// 传入的是真实货币分单位
 
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
             String mRechargeMoneyStr = charSequence.toString();
             if (mRechargeMoneyStr.replaceAll(" ", "").length() > 0) {
-                mRewardMoney = Double.parseDouble(mRechargeMoneyStr);
+                try {
+                    mRewardMoney = Double.parseDouble(mRechargeMoneyStr);
+                } catch (Exception ignored) {
+                }
                 if (mRbDaysGroup.getCheckedRadioButtonId() != -1) {
                     mRbDaysGroup.clearCheck();
                 }
@@ -254,13 +247,13 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                     }
                     switch (checkedId) {
                         case R.id.rb_one:
-                            mRewardMoney = mRechargeLables.get(0);
+                            mRewardMoney = Double.parseDouble(getString(R.string.money_format, mRechargeLables.get(0)));
                             break;
                         case R.id.rb_two:
-                            mRewardMoney = mRechargeLables.get(1);
+                            mRewardMoney = Double.parseDouble(getString(R.string.money_format, mRechargeLables.get(1)));
                             break;
                         case R.id.rb_three:
-                            mRewardMoney = mRechargeLables.get(2);
+                            mRewardMoney = Double.parseDouble(getString(R.string.money_format, mRechargeLables.get(2)));
                             break;
                         default:
                             break;

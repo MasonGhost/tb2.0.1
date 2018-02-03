@@ -22,10 +22,14 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 @SuppressWarnings({"unused"})
 public abstract class RichEditor extends WebView {
@@ -57,7 +61,7 @@ public abstract class RichEditor extends WebView {
     }
 
     public interface OnTextChangeListener {
-        void onTextChange(int textlength);
+        void onTextChange(int titleLenght, int contentLenght);
     }
 
     public interface OnStateChangeListener {
@@ -92,8 +96,12 @@ public abstract class RichEditor extends WebView {
         void onMarkdownWordChange(String markdwon);
     }
 
+    public interface OnImageDeleteListener {
+        void onImageDelete(long tagId);
+    }
+
     public interface OnMarkdownWordResultListener {
-        void onMarkdownWordResult(String title, String markdwon, String noMarkdown, boolean isPublish);
+        void onMarkdownWordResult(String title, String markdwon, String noMarkdown, String html, boolean isPublish);
     }
 
     private static final String SETUP_HTML = "file:///android_asset/markdown/editor.html";
@@ -117,6 +125,7 @@ public abstract class RichEditor extends WebView {
     private OnTextLengthChangeListener mOnTextLengthChangeListener;
 
     private OnMarkdownWordChangeListener mOnMarkdownWordChangeListener;
+    private OnImageDeleteListener mOnImageDeleteListener;
     private OnNoMarkdownWordChangeListener mOnNoMarkdownWordChangeListener;
     private OnMarkdownWordResultListener mOnMarkdownWordResultListener;
 
@@ -191,6 +200,10 @@ public abstract class RichEditor extends WebView {
         mOnMarkdownWordChangeListener = onMarkdownWordChangeListener;
     }
 
+    public void setOnImageDeleteListener(OnImageDeleteListener onImageDeleteListener) {
+        mOnImageDeleteListener = onImageDeleteListener;
+    }
+
     public void setOnNoMarkdownWordChangeListener(OnNoMarkdownWordChangeListener onNoMarkdownWordChangeListener) {
         mOnNoMarkdownWordChangeListener = onNoMarkdownWordChangeListener;
     }
@@ -202,7 +215,7 @@ public abstract class RichEditor extends WebView {
     private void callback(String text) {
         mContents = text.replaceFirst(CALLBACK_SCHEME, "");
         if (mTextChangeListener != null) {
-            mTextChangeListener.onTextChange(mContents.length());
+            mTextChangeListener.onTextChange(mContents.length(), text.length());
         }
     }
 
@@ -381,6 +394,21 @@ public abstract class RichEditor extends WebView {
         exec("javascript:RE.insertImage('" + url + "'," + id + ", " + width + "," + height + ");");
     }
 
+    public void insertHtml(String html) {
+        exec("javascript:RE.saveRange();");
+        exec("javascript:RE.insertHtml('" + html + "');");
+    }
+
+
+    public void insertHtmlDIV(String html) {
+        exec("javascript:RE.saveRange();");
+        exec("javascript:RE.insertHtmlDIV('" + html + "');");
+    }
+
+    public void hideTitle() {
+        exec("javascript:RE.hideTitle();");
+    }
+
     public void addImageClickListener(String ids) {
         exec("javascript:RE.addImageClickListener('" + ids + "');");
     }
@@ -398,13 +426,16 @@ public abstract class RichEditor extends WebView {
 
     public void insertLink(String href, String title) {
         if (!href.matches(MarkdownConfig.SCHEME_TAG)) {
-            href = MarkdownConfig.SCHEME_ZHIYI + href;
+            href = MarkdownConfig.SCHEME_HTTP + href;
         }
         exec("javascript:RE.saveRange();");
         exec("javascript:RE.insertLink('" + title + "', '" + href + "');");
     }
 
     public void changeLink(String href, String title) {
+        if (!href.matches(MarkdownConfig.SCHEME_TAG)) {
+            href = MarkdownConfig.SCHEME_HTTP + href;
+        }
         exec("javascript:RE.saveRange();");
         exec("javascript:RE.changeLink('" + title + "', '" + href + "');");
     }
@@ -456,6 +487,14 @@ public abstract class RichEditor extends WebView {
             load(trigger);
         } else {
             postDelayed(() -> exec(trigger), 100);
+        }
+    }
+
+    protected void exec(final String trigger, long delay) {
+        if (isReady) {
+            load(trigger);
+        } else {
+            postDelayed(() -> exec(trigger), delay);
         }
     }
 
@@ -532,50 +571,19 @@ public abstract class RichEditor extends WebView {
     private class Android4JsInterface {
         @JavascriptInterface
         public void setViewEnabled(boolean enabled) {
-            Observable.empty()
-                    .filter(o -> mOnFocusChangeListener != null)
+            Observable.just(mOnFocusChangeListener)
+                    .filter(listener -> listener != null)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<Object>() {
-                        @Override
-                        public void onCompleted() {
-                            mOnFocusChangeListener.onFocusChange(enabled);
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onNext(Object o) {
-
-                        }
-                    });
+                    .subscribe(listener -> listener.onFocusChange(enabled));
         }
 
         @JavascriptInterface
-        public void setHtmlContent(int htmlContentLength) {
-            mContents = htmlContentLength + "";
-            Observable.empty()
-                    .filter(o -> mTextChangeListener != null)
+        public void setHtmlContent(int titleLenght, int contentLenght) {
+            mContents = titleLenght * contentLenght + "";
+            Observable.just(mTextChangeListener)
+                    .filter(listener -> listener != null)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<Object>() {
-                        @Override
-                        public void onCompleted() {
-                            mTextChangeListener.onTextChange(htmlContentLength);
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onNext(Object o) {
-
-                        }
-                    });
-
+                    .subscribe(listener -> listener.onTextChange(titleLenght, contentLenght));
         }
 
         @JavascriptInterface
@@ -596,29 +604,30 @@ public abstract class RichEditor extends WebView {
         }
 
         @JavascriptInterface
-        public void resultWords(String title, String markdown, String noMarkdownWords, boolean isPublish) {
-            Observable.empty()
-                    .filter(o -> mOnMarkdownWordResultListener != null)
+        public void deleteImage(String tagId) {
+            Observable.just(mOnImageDeleteListener)
+                    .filter(listener -> listener != null)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<Object>() {
-                        @Override
-                        public void onCompleted() {
-                            String result = noMarkdownWords;
-                            if (noMarkdownWords.length() >= 191) {
-                                result = noMarkdownWords.substring(0, 191);
-                            }
-                            mOnMarkdownWordResultListener.onMarkdownWordResult(title, markdown, result, isPublish);
+                    .subscribe(listener -> listener.onImageDelete(Long.parseLong(tagId)));
+        }
+
+        @JavascriptInterface
+        public void resultWords(String title, String markdown, String noMarkdownWords, String allHtml, boolean isPublish) {
+            Observable.just(mOnMarkdownWordResultListener)
+                    .filter(onMarkdownWordResultListener -> onMarkdownWordResultListener != null)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(listener -> {
+                        String result = noMarkdownWords;
+                        Matcher matcher = Pattern.compile(MarkdownConfig.LINK_WORDS_FORMAT).matcher(result);
+                        while (matcher.find()) {
+                            result = result.replaceFirst(MarkdownConfig.LINK_WORDS_FORMAT, matcher.group(3));
                         }
 
-                        @Override
-                        public void onError(Throwable e) {
-
+                        if (noMarkdownWords.length() >= 191) {
+                            result = noMarkdownWords.substring(0, 191);
                         }
 
-                        @Override
-                        public void onNext(Object o) {
-
-                        }
+                        listener.onMarkdownWordResult(title, markdown, result, allHtml, isPublish);
                     });
         }
 

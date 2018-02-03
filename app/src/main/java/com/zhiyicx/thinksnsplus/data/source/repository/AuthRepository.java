@@ -127,6 +127,7 @@ public class AuthRepository implements IAuthRepository {
 
     @Override
     public boolean saveAuthBean(AuthBean authBean) {
+        authBean.setToken_request_time(System.currentTimeMillis());
         AppApplication.setmCurrentLoginAuth(authBean);
         return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN, authBean);
     }
@@ -358,10 +359,9 @@ public class AuthRepository implements IAuthRepository {
     @Override
     public boolean isNeededRefreshToken() {
         AuthBean authBean = getAuthBean();
-        if (authBean == null) {// 没有token，不需要刷新
-            return false;
-        }
-        return authBean.getToken_is_expired();
+
+        // 没有token，不需要刷新
+        return authBean != null && authBean.getToken_is_expired();
     }
 
 }

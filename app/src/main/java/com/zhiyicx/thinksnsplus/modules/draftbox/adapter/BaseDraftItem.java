@@ -44,10 +44,12 @@ public abstract class BaseDraftItem<D extends BaseDraftBean> implements ItemView
     @Override
     public void convert(ViewHolder holder, D draftBean, D lastT, int position, int itemCounts) {
         setDraftClickListener(holder.getImageViwe(R.id.iv_draft_more), holder.getConvertView(), draftBean);
-//        bindData(holder, draftBean);
         holder.setText(R.id.tv_draft_title, setTitle(draftBean));
         holder.setText(R.id.tv_draft_time, TimeUtils.getTimeFriendlyForDetail(setCreateTime(draftBean)));
+        bindData(holder, draftBean);
     }
+
+    protected void bindData(ViewHolder holder, D draftBean){}
 
     protected abstract String setCreateTime(D draftBean);
 
@@ -57,7 +59,7 @@ public abstract class BaseDraftItem<D extends BaseDraftBean> implements ItemView
         mPopupWindow = ChooseBindPopupWindow.Builder()
                 .with(mActivity)
                 .alpha(0.8f)
-                .itemlStr(mActivity.getString(R.string.edit))
+                .itemlStr(editeType())
                 .item2Str(mActivity.getString(R.string.info_delete))
                 .isOutsideTouch(true)
                 .itemListener(position -> {
@@ -94,15 +96,18 @@ public abstract class BaseDraftItem<D extends BaseDraftBean> implements ItemView
                 });
     }
 
-//    protected abstract void bindData(ViewHolder holder, D realData);
-
     public void setQuestionDraftItemEvent(QuestionDraftItemEvent questionDraftItemEvent) {
         mQuestionDraftItemEvent = questionDraftItemEvent;
     }
 
     public interface QuestionDraftItemEvent {
         void toEditDraft(BaseDraftBean draftBean);
+        void toQuestionDetail(BaseDraftBean draftBean);
 
         void deleteDraft(BaseDraftBean draftBean);
+    }
+
+    protected String editeType(){
+        return mActivity.getString(R.string.edit);
     }
 }

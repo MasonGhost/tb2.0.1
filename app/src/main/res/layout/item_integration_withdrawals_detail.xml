@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    >
+
+
+    <TextView
+        android:id="@+id/withdrawals_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_mid"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textColor="@color/important_for_content"
+        android:textSize="@dimen/size_content"
+        tools:text="hello Test"/>
+
+    <TextView
+        android:id="@+id/withdrawals_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/withdrawals_account"
+        android:layout_marginBottom="@dimen/spacing_mid"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginRight="@dimen/spacing_mid"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:textColor="@color/general_for_loading_more"
+        android:textSize="@dimen/size_icon_assist"
+        tools:text="11-12 12:00"/>
+
+    <TextView
+        android:id="@+id/withdrawals_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginRight="@dimen/spacing_mid"
+        android:enabled="false"
+        android:textColor="@color/selector_withdrawalstext_color"
+        android:textSize="@dimen/size_sub_title"
+        tools:text="-780"/>
+
+</RelativeLayout>

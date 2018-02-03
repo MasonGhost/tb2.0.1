@@ -18,7 +18,6 @@ import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.CenterAlertPopWindow;
@@ -32,9 +31,8 @@ import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
-import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.EditeAnswerDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerListItem;
@@ -53,7 +51,6 @@ import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -77,7 +74,8 @@ import static com.zhiyicx.thinksnsplus.widget.QuestionSelectListTypePopWindow.On
  * @contact email:648129313@qq.com
  */
 
-public class QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
+public class
+QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
         AnswerInfoBean> implements QuestionDetailContract.View, QuestionDetailHeader.OnActionClickListener,
         OnOrderTypeSelectListener, OnItemClickListener, OnGoToWatchClickListener, TextViewUtils.OnSpanTextClickListener {
 
@@ -223,6 +221,13 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     @Override
     public void setQuestionDetail(QAListInfoBean questionDetail, boolean isLoadMore) {
         this.mQaListInfoBean = questionDetail;
+
+
+        // 加入这两句，因为目前 问题详情不支持 id 跳转  2018-1-30 15:19:54 by tym
+        mIsMine = questionDetail.getUser_id().equals(AppApplication.getMyUserIdWithdefault());
+        mQaDetailTool.showQuestionTool(mIsMine);
+
+
         onNetResponseSuccess(mQaListInfoBean.getAnswerInfoBeanList(), isLoadMore);
         mQuestionDetailHeader.setDetail(questionDetail, mPresenter.getSystemConfig().getOnlookQuestion(), mPresenter.getRatio());
     }
@@ -322,7 +327,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
             startActivity(intent);
         } else {
             // 跳转发布回答
-            PublishAnswerFragment.startQActivity(getActivity(), PublishType
+            EditeAnswerDetailFragment.startQActivity(getActivity(), PublishType
                             .PUBLISH_ANSWER, mQaListInfoBean.getId()
                     , null, mQaListInfoBean.getSubject(), mQaListInfoBean.getAnonymity());
         }
@@ -488,16 +493,15 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .backgroundAlpha(POPUPWINDOW_ALPHA)
                     .buildDescrStr(String.format(getString(R.string.qa_pay_for_excellent_hint) + getString(R
                                     .string.buy_pay_member),
-                            mPresenter != null ? PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig().getExcellentQuestion(), mPresenter
-                                    .getRatio()) : ""
+                            mPresenter != null ? mPresenter.getSystemConfig().getExcellentQuestion() : ""
                             , mPresenter != null ? mPresenter.getGoldName() : ""))
                     .buildLinksStr(getString(R.string.qa_pay_for_excellent))
                     .buildTitleStr(getString(R.string.qa_pay_for_excellent))
                     .buildItem1Str(getString(R.string.buy_pay_in_payment))
                     .backgroundDrawable(new ColorDrawable(0x000000))
                     .buildItem2Str(getString(R.string.buy_pay_out))
-                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig()
-                            .getExcellentQuestion(), mPresenter.getRatio())))
+                    .buildMoneyStr(getString(R.string.buy_pay_integration, mPresenter.getSystemConfig()
+                            .getExcellentQuestion()))
                     .buildCenterPopWindowItem1ClickListener(() -> {
                         mPresenter.applyForExcellent(mQaListInfoBean.getId());
                         mPayImagePopWindow.hide();
@@ -530,14 +534,13 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .backgroundAlpha(POPUPWINDOW_ALPHA)
                     .buildDescrStr(String.format(getString(R.string.qa_pay_for_watch_answer_hint) + getString(R
                                     .string.buy_pay_member),
-                            PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig().getOnlookQuestion(), mPresenter.getRatio())
+                            mPresenter.getSystemConfig().getOnlookQuestion()
                             , mPresenter.getGoldName()))
                     .buildLinksStr(getString(R.string.qa_pay_for_watch))
                     .buildTitleStr(getString(R.string.qa_pay_for_watch))
                     .buildItem1Str(getString(R.string.buy_pay_in_payment))
                     .buildItem2Str(getString(R.string.buy_pay_out))
-                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig()
-                            .getOnlookQuestion(), mPresenter.getRatio())))
+                    .buildMoneyStr(getString(R.string.buy_pay_integration,mPresenter.getSystemConfig().getOnlookQuestion()))
                     .buildCenterPopWindowItem1ClickListener(() -> {
                         AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
                         if (answerInfoBean == null || answerInfoBean.getId() == null) {

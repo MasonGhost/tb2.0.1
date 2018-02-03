@@ -734,7 +734,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     protected Long getMaxId(@NotNull List<CirclePostListBean> data) {
-        int pinnedCount=mCircleZipBean==null?0:mCircleZipBean.getPinnedCount();
+        int pinnedCount = mCircleZipBean == null ? 0 : mCircleZipBean.getPinnedCount();
         return (long) mListDatas.size() - pinnedCount;
     }
 
@@ -958,18 +958,20 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 })
                 .item4ClickListener(() -> {
                     // 举报帖子
-                    String img = "";
-                    if (circlePostListBean.getImages() != null && !circlePostListBean.getImages().isEmpty()) {
-                        img = ImageUtils.imagePathConvertV2(circlePostListBean.getImages().get(0).getFile_id(), getResources()
-                                        .getDimensionPixelOffset(R.dimen.report_resource_img), getResources()
-                                        .getDimensionPixelOffset(R.dimen.report_resource_img),
-                                100);
+                    if (!mPresenter.handleTouristControl()) {
+                        String img = "";
+                        if (circlePostListBean.getImages() != null && !circlePostListBean.getImages().isEmpty()) {
+                            img = ImageUtils.imagePathConvertV2(circlePostListBean.getImages().get(0).getFile_id(), getResources()
+                                            .getDimensionPixelOffset(R.dimen.report_resource_img), getResources()
+                                            .getDimensionPixelOffset(R.dimen.report_resource_img),
+                                    100);
+                        }
+                        ReportActivity.startReportActivity(mActivity, new ReportResourceBean(circlePostListBean.getUser(), String.valueOf
+                                (circlePostListBean.getId()),
+                                circlePostListBean.getTitle(), img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
+                        mOtherPostPopWindow.hide();
+                        showBottomView(true);
                     }
-                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(circlePostListBean.getUser(), String.valueOf
-                            (circlePostListBean.getId()),
-                            circlePostListBean.getTitle(), img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
-                    mOtherPostPopWindow.hide();
-                    showBottomView(true);
                 })
                 .item3ClickListener(() -> {
                     // 管理员置顶操作
@@ -1054,6 +1056,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
          */
         RxView.clicks(mBtnSendPost)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .filter(aVoid -> !mPresenter.handleTouristControl())
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     // TODO: 2017/12/14
@@ -1106,6 +1109,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
         RxView.clicks(mTvCircleFounder)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .filter(aVoid -> !mPresenter.handleTouristControl())
                 .subscribe(aVoid -> {
                     MessageItemBeanV2 messageItemBean = new MessageItemBeanV2();
                     messageItemBean.setUserInfo(mCircleInfo.getFounder().getUser());
@@ -1298,7 +1302,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         boolean isManager = isJoined && CircleMembers.ADMINISTRATOR.equals(detail.getJoined().getRole());
 
         mLlEarningsContainer.setVisibility(!isOwner ? View.GONE : View.VISIBLE);
-        mBtReportCircle.setVisibility(isNormalMember ? View.VISIBLE : View.GONE);
+        mBtReportCircle.setVisibility((isNormalMember || mPresenter.isTourist()) ? View.VISIBLE : View.GONE);
 
         mLlPermissionContainer.setVisibility(!isOwner ? View.GONE : View.VISIBLE);
         mLlReportContainer.setVisibility(!isOwner && !isManager ? View.GONE : View.VISIBLE);
@@ -1389,6 +1393,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                  * 举报圈子
                  */
             case R.id.bt_report_circle:
+                if (mPresenter.handleTouristControl()) {
+                    return;
+                }
                 ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mCircleInfo.getFounder().getUser(), mCircleInfo.getId().toString
                         (), mCircleInfo.getName(), mCircleInfo.getAvatar(), mCircleInfo.getSummary(), ReportType.CIRCLE));
 
@@ -1522,7 +1529,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .buildTitleStr(context.getString(R.string.buy_pay))
                 .buildItem1Str(context.getString(R.string.buy_pay_in))
                 .buildItem2Str(context.getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(context.getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(amout, ratio)))
+                .buildMoneyStr(String.format(context.getString(R.string.buy_pay_integration), PayConfig.realCurrency2GameCurrency(amout, ratio)))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.dealCircleJoinOrExit(mCircleInfo);
                     mPayPopWindow.hide();

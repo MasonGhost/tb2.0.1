@@ -13,6 +13,8 @@ import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
 import com.zhiyicx.thinksnsplus.modules.guide.GuideFragment_v2;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
 
+import java.util.HashMap;
+
 /**
  * @Describe 关于我们等网页
  * @Author Jungle68
@@ -25,6 +27,11 @@ public class CustomWEBActivity extends TSActivity<RegisterPresenter, CustomWEBFr
     private static String flag = "";
 
     public static void startToWEBActivity(Context context, String... args) {
+        startToWEBActivity(context, null, args);
+
+    }
+
+    public static void startToWEBActivity(Context context, HashMap<String, String> headers, String... args) {
         flag = "";
         Intent intent = new Intent(context, CustomWEBActivity.class);
         Bundle bundle = new Bundle();
@@ -32,6 +39,9 @@ public class CustomWEBActivity extends TSActivity<RegisterPresenter, CustomWEBFr
             try {
                 bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, args[0]);
                 bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_TITLE, args[1]);
+                if (headers != null) {
+                    bundle.putSerializable(CustomWEBFragment.BUNDLE_PARAMS_WEB_HEADERS, headers);
+                }
                 flag = args[2];
             } catch (Exception e) {
             }
