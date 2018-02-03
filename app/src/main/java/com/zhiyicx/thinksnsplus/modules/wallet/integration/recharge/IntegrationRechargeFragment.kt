@@ -144,8 +144,12 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
      * @param data
      */
     override fun updateIntegrationConfig(isGetSuccess: Boolean, data: IntegrationConfigBean) {
-        mIntegrationConfigBean = data
-        updateData()
+        if (isGetSuccess) {
+            mIntegrationConfigBean = data
+            updateData()
+        } else {
+            showSnackErrorMessage(getString(R.string.err_net_not_work))
+        }
     }
 
     override fun handleLoading(isShow: Boolean) {
@@ -190,16 +194,10 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
         mTvMineIntegration.text = getString(R.string.integration_ratio_formart, currentIntegration, currentIntegration * mIntegrationConfigBean!!.rechargeratio * (100).toLong(), mGoldName)
     }
 
-    override fun setRightClick() {
-        super.setRightClick()
-        startActivity(Intent(activity, BillActivity::class.java))
-    }
-
     private fun initListener() {
         // 充值协议
         RxView.clicks(mTvRechargeRule)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
-                .compose(this.bindToLifecycle())
                 .subscribe {
                     val intent = Intent(mActivity, WalletRuleActivity::class.java)
                     val bundle = Bundle()
@@ -211,7 +209,6 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
         // 充值记录
         RxView.clicks(mTvToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
-                .compose(this.bindToLifecycle())
                 .subscribe {
                     val intent = Intent(mActivity, IntegrationRWDetailActivity::class.java)
                     intent.putExtra(IntegrationRWDetailContainerFragment.BUNDLE_DEFAULT_POSITION, IntegrationRWDetailContainerFragment.POSITION_RECHARGE_RECORD)
@@ -220,14 +217,12 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
         // 返回
         RxView.clicks(mTvToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
-                .compose(this.bindToLifecycle())
                 .subscribe { mActivity.finish() }
 
 
         // 选择充值方式
         RxView.clicks(mBtRechargeStyle)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.bindToLifecycle())
                 .subscribe {
                     DeviceUtils.hideSoftKeyboard(context, mBtRechargeStyle)
                     initPayStylePop()
@@ -235,7 +230,6 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
         // 确认
         RxView.clicks(mBtSure)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.bindToLifecycle())
                 .subscribe {
                     when {
                         PayConfig.realCurrencyYuan2Fen(money) < mIntegrationConfigBean!!.rechargemin -> showSnackErrorMessage(getString(R.string.please_more_than_min_recharge_formart, PayConfig.realCurrencyFen2Yuan(
