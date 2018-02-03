@@ -121,7 +121,7 @@ class IntegrationDetailListFragment : TSListFragment<IntegrationDetailContract.P
 
                         CHOOSE_TYPE_RECHARGE -> {
                             when (recharge.state) {
-                                0 -> account.text = getString(R.string.rewarding)
+                                0 -> account.text = getString(R.string.wait_handle)
                                 1 -> account.text = getString(R.string.recharge_success)
                                 -1 -> account.text = getString(R.string.recharge_fail)
                                 else -> account.text = getDes(recharge)

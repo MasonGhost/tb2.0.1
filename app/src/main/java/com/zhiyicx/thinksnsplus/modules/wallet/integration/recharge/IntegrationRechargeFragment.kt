@@ -315,8 +315,8 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
                             .choose_pay_style_formart, getString(R.string.balance))
                 else
                     "")
-                .item4Str(if (rechargeTypes.size == 0 && mSystemConfigBean.walletTransform == null || !mSystemConfigBean.walletTransform
-                                .isOpen)
+                .item4Str(if (rechargeTypes.size == 0 && (mSystemConfigBean.walletTransform == null || !mSystemConfigBean.walletTransform
+                                .isOpen))
                     getString(R.string.recharge_disallow)
                 else
                     "")
