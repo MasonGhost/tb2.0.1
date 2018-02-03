@@ -22,6 +22,7 @@ android {
                 AMAP_APPKEY: "e954e82021efe2f4d334879cff3880cf", // 高德三方配置
 //                EASEMOB_APPKEY: "1139171207178196#thinksns-plus", // 环信三方配置
                 EASEMOB_APPKEY: "1139171207178196#thinksns-plus-test", // 环信三方配置 测试服
+//                EASEMOB_APPKEY: "1139171207178196#thinksnsplusenterprise", // 环信三方配置 ios 适配版本
         ]
         multiDexEnabled true
     }

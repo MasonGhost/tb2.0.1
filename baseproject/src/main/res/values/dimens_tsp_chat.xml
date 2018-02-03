@@ -8,6 +8,7 @@
     <dimen name="chat_message_bubble_padding">10dp</dimen>
     <dimen name="chat_message_bubble_paddingBottom">7.5dp</dimen>// 去掉行高所占的位置
     <dimen name="chat_message_bubble_radus">10dp</dimen>
+    <dimen name="chat_extra_message_bubble_radus">5dp</dimen>
     <dimen name="chat_message_bubble_stroke_width">0.5dp</dimen>
     <dimen name="chat_message_bottom_tip_size">6dp</dimen>
 

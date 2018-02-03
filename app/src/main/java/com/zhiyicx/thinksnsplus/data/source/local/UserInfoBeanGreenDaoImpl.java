@@ -7,6 +7,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -19,6 +20,7 @@ import javax.inject.Inject;
  */
 
 public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
+
     @Inject
     public UserInfoBeanGreenDaoImpl(Application context) {
         super(context);
@@ -133,10 +135,11 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
 
     /**
      * 获取本地的互相关注列表
+     *
      * @param maxId
      * @return
      */
-    public List<UserInfoBean> getUserFriendsList(long maxId){
+    public List<UserInfoBean> getUserFriendsList(long maxId) {
         if (maxId == 0) {
             maxId = System.currentTimeMillis();
         }
@@ -146,6 +149,24 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
                 .limit(TSListFragment.DEFAULT_PAGE_SIZE)
                 .orderDesc(UserInfoBeanDao.Properties.User_id)
                 .list();
+    }
+
+    /**
+     * 获取本地的互相关注列表
+     *
+     * @param ids 用户id
+     * @return
+     */
+    public List<UserInfoBean> getUserListByIds(Long... ids) {
+        List<UserInfoBean> result = new ArrayList<>();
+        if (ids.length <= 0) {
+            return result;
+        }
+        for (Long id : ids) {
+            UserInfoBean userInfoBean = getSingleDataFromCache(id);
+            result.add(userInfoBean);
+        }
+        return result;
     }
 
 }

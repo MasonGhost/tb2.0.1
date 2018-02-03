@@ -122,4 +122,45 @@ public class TSEMessageUtils {
         String path = PathUtil.getInstance().getHistoryPath() + "/" + "thumb_" + thumbImageName;
         return path;
     }
+
+    /**
+     * 发送一条撤回消息的透传，这里需要和接收方协商定义，通过一个透传，并加上扩展去实现消息的撤回
+     *
+     * @param message  需要撤回的消息
+     * @param callBack 发送消息的回调，通知调用方发送撤回消息的结果
+     */
+    /**
+     * @author Jliuer
+     * @Date 18/02/03 11:00
+     * @Email Jliuer@aliyun.com
+     * @Description
+     */
+    public static void sendGroupMemberJoinOrExitMessage(String to,String member ,boolean isJoin, final EMCallBack callBack) {
+
+        EMMessage message = EMMessage.createTxtSendMessage(member,to);
+        message.setChatType(EMMessage.ChatType.GroupChat);
+        long currTime = TSEMDateUtil.getCurrentMillisecond();
+        message.setMsgTime(currTime);
+        // 设置消息的扩展
+        message.setAttribute(TSEMConstants.TS_ATTR_JOIN, isJoin);
+        message.setAttribute(TSEMConstants.TS_ATTR_EIXT, !isJoin);
+
+        message.setMessageStatusCallback(new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                callBack.onSuccess();
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                callBack.onError(i, s);
+            }
+
+            @Override
+            public void onProgress(int i, String s) {
+            }
+        });
+        // 准备工作完毕，发送消息
+        EMClient.getInstance().chatManager().sendMessage(message);
+    }
 }

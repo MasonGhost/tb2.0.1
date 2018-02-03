@@ -95,7 +95,7 @@ public class GroupManagerFragment extends TSFragment<GroupManagerContract.Presen
     public void updateGroup(ChatGroupBean chatGroupBean) {
         if (chatGroupBean != null){
             // emm 由于没有完全返回所有信息 再加上字段也不同 所以手动改一下
-            mChatGroupBean.setMembersonly(chatGroupBean.isMembers_only());
+            mChatGroupBean.setMembersonly(chatGroupBean.isMembersonly());
             mIsNeedChange = true;
             EventBus.getDefault().post(mChatGroupBean, EventBusTagConfig.EVENT_IM_GROUP_DATA_CHANGED);
         } else {

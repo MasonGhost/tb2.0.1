@@ -47,7 +47,7 @@ public class GroupManagerPresenter extends AppBasePresenter<GroupManagerContract
 
     @Override
     public void updateGroup(ChatGroupBean chatGroupBean) {
-        Subscription subscription = mGroupManagerRepository.updateGroup(chatGroupBean.getIm_group_id(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0, 200, chatGroupBean.isMembersonly(),
+        Subscription subscription = mGroupManagerRepository.updateGroup(chatGroupBean.getId(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0, 200, chatGroupBean.isMembersonly(),
                 0, chatGroupBean.getGroup_face(), false, chatGroupBean.getOwner() + "")
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage("修改中..."))
                 .observeOn(AndroidSchedulers.mainThread())

@@ -54,6 +54,16 @@ public class TSEMConstants {
      * 撤回
      */
     public static final String TS_ATTR_RECALL = "ts_attr_recall";
+
+    /**
+     * 用户加入群组
+     */
+    public static final String TS_ATTR_JOIN = "ts_attr_join";
+
+    /**
+     * 用户退出群组
+     */
+    public static final String TS_ATTR_EIXT = "ts_attr_exit";
     // 状态
     public static final String ML_ATTR_STATUS = "ml_attr_status";
     // 类型

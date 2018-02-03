@@ -341,7 +341,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         mChatGroupBean.setPublic(chatGroupBean.isPublic());
         mChatGroupBean.setName(chatGroupBean.getName());
         mChatGroupBean.setDescription(chatGroupBean.getDescription());
-        mChatGroupBean.setMembersonly(chatGroupBean.isMembers_only());
+        mChatGroupBean.setMembersonly(chatGroupBean.isMembersonly());
         mChatGroupBean.setAllowinvites(chatGroupBean.isAllowinvites());
         setGroupData();
     }
@@ -349,7 +349,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     @Override
     public void getGroupInfoSuccess(ChatGroupBean chatGroupBean) {
         mChatGroupBean = chatGroupBean;
-        mChatGroupBean.setIm_group_id(mChatId);
+        mChatGroupBean.setId(mChatId);
         setGroupData();
         // 切换是否屏蔽消息
         mScBlockMessage.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -384,8 +384,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
 
     @Override
     public void createGroupSuccess(ChatGroupBean chatGroupBean) {
-        String id = !TextUtils.isEmpty(chatGroupBean.getIm_group_id()) ?
-                chatGroupBean.getIm_group_id() : chatGroupBean.getId();
+        String id = chatGroupBean.getId();
         if (EMClient.getInstance().groupManager().getGroup(id) == null) {
             // 不知道为啥 有时候获取不到群组对象
             showSnackErrorMessage("创建失败");

@@ -169,7 +169,7 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                     .flatMap(groupInfo -> {
                         EMGroup group = null;
                         try {
-                            group = EMClient.getInstance().groupManager().getGroupFromServer(groupInfo.getIm_group_id());
+                            group = EMClient.getInstance().groupManager().getGroupFromServer(groupInfo.getId());
                         } catch (HyphenateException e) {
                             e.printStackTrace();
                         }
@@ -180,7 +180,7 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                         @Override
                         protected void onSuccess(ChatGroupBean data) {
                             // 创建成功 跳转聊天详情页面
-                            String id = data.getIm_group_id();
+                            String id = data.getId();
                             mRootView.createConversionResult(getChatUser(list), EMConversation.EMConversationType.GroupChat, EaseConstant.CHATTYPE_GROUP, id);
                         }
 

@@ -5,9 +5,16 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.UserInfoListBeanConvert;
+
+import org.greenrobot.greendao.annotation.Convert;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
 import java.util.List;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @author Catherine
@@ -15,7 +22,7 @@ import java.util.List;
  * @date 2018/1/15
  * @contact email:648129313@qq.com
  */
-
+@Entity
 public class ChatGroupBean extends BaseListBean implements Parcelable, Serializable {
 
     private static final long serialVersionUID = -8073135988935750687L;
@@ -50,40 +57,31 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
      *
      * */
 
-    /**
-     * 创建群组用的，更新群信息返回的也是这个
-     */
-    private String im_group_id;
-    /**
-     * 以下为获取群组的信息
-     */
+    
+    @Id(autoincrement = true)
+    private Long key;
+    @SerializedName(value = "id", alternate = {"im_group_id"})
+    @Unique
     private String id;
     @SerializedName(value = "name", alternate = {"groupname"})
     private String name;
     @SerializedName(value = "description", alternate = {"desc"})
     private String description;
-    private boolean membersonly;
     /**
-     * 更新群信息返回的权限
+     * 群信息返回的权限
      */
-    private boolean members_only;
+    @SerializedName(value = "membersonly", alternate = {"members_only"})
+    private boolean membersonly;
     private boolean allowinvites;
     private int maxusers;
     private long owner;
     private String created;
     private String group_face;
     private int affiliations_count;
+    @Convert(columnType = String.class,converter = UserInfoListBeanConvert.class)
     private List<UserInfoBean> affiliations;
     @SerializedName("public")
     private boolean isPublic;
-
-    public String getIm_group_id() {
-        return im_group_id;
-    }
-
-    public void setIm_group_id(String im_group_id) {
-        this.im_group_id = im_group_id;
-    }
 
     public String getId() {
         return id;
@@ -173,14 +171,6 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
         this.group_face = group_face;
     }
 
-    public boolean isMembers_only() {
-        return members_only;
-    }
-
-    public void setMembers_only(boolean members_only) {
-        this.members_only = members_only;
-    }
-
     public boolean isPublic() {
         return isPublic;
     }
@@ -195,12 +185,10 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
     @Override
     public String toString() {
         return "ChatGroupBean{" +
-                "im_group_id='" + im_group_id + '\'' +
                 ", id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", membersonly=" + membersonly +
-                ", members_only=" + members_only +
                 ", allowinvites=" + allowinvites +
                 ", maxusers=" + maxusers +
                 ", owner=" + owner +
@@ -221,12 +209,10 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeString(this.im_group_id);
         dest.writeString(this.id);
         dest.writeString(this.name);
         dest.writeString(this.description);
         dest.writeByte(this.membersonly ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.members_only ? (byte) 1 : (byte) 0);
         dest.writeByte(this.allowinvites ? (byte) 1 : (byte) 0);
         dest.writeInt(this.maxusers);
         dest.writeLong(this.owner);
@@ -237,14 +223,36 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
         dest.writeByte(this.isPublic ? (byte) 1 : (byte) 0);
     }
 
+    public Long getKey() {
+        return this.key;
+    }
+
+    public void setKey(Long key) {
+        this.key = key;
+    }
+
+    public boolean getMembersonly() {
+        return this.membersonly;
+    }
+
+    public boolean getAllowinvites() {
+        return this.allowinvites;
+    }
+
+    public boolean getIsPublic() {
+        return this.isPublic;
+    }
+
+    public void setIsPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
     protected ChatGroupBean(Parcel in) {
         super(in);
-        this.im_group_id = in.readString();
         this.id = in.readString();
         this.name = in.readString();
         this.description = in.readString();
         this.membersonly = in.readByte() != 0;
-        this.members_only = in.readByte() != 0;
         this.allowinvites = in.readByte() != 0;
         this.maxusers = in.readInt();
         this.owner = in.readLong();
@@ -253,6 +261,26 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
         this.affiliations_count = in.readInt();
         this.affiliations = in.createTypedArrayList(UserInfoBean.CREATOR);
         this.isPublic = in.readByte() != 0;
+    }
+
+    @Generated(hash = 2060602613)
+    public ChatGroupBean(Long key, String id, String name, String description,
+            boolean membersonly, boolean allowinvites, int maxusers, long owner,
+            String created, String group_face, int affiliations_count,
+            List<UserInfoBean> affiliations, boolean isPublic) {
+        this.key = key;
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.membersonly = membersonly;
+        this.allowinvites = allowinvites;
+        this.maxusers = maxusers;
+        this.owner = owner;
+        this.created = created;
+        this.group_face = group_face;
+        this.affiliations_count = affiliations_count;
+        this.affiliations = affiliations;
+        this.isPublic = isPublic;
     }
 
     public static final Creator<ChatGroupBean> CREATOR = new Creator<ChatGroupBean>() {

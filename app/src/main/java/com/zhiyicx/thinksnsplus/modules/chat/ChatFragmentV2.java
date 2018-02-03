@@ -472,14 +472,14 @@ public class ChatFragmentV2 extends TSEaseChatFragment implements TSEaseChatFrag
 
     @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_GROUP_CREATE_FROM_SINGLE)
     public void closeCurrent(ChatGroupBean chatGroupBean) {
-        if (!chatGroupBean.getIm_group_id().equals(toChatUsername)) {
+        if (!chatGroupBean.getId().equals(toChatUsername)) {
             getActivity().finish();
         }
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_GROUP_UPDATE_GROUP_INFO)
     public void updateCurrent(ChatGroupBean chatGroupBean) {
-        if (chatGroupBean.getIm_group_id().equals(toChatUsername)) {
+        if (chatGroupBean.getId().equals(toChatUsername)) {
             setCenterText(chatGroupBean.getName());
         }
     }

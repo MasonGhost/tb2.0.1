@@ -63,6 +63,7 @@ import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.EMLog;
 import com.hyphenate.util.PathUtil;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.File;
 import java.util.List;
@@ -551,7 +552,8 @@ public class TSEaseChatFragment extends TSEaseBaseFragment implements EMMessageL
             }
 
             // if the message is for current conversation
-            if (username.equals(toChatUsername) || message.getTo().equals(toChatUsername) || message.conversationId().equals(toChatUsername)) {
+            if (username.equals(toChatUsername) || message.getTo().equals(toChatUsername)
+                    || message.conversationId().equals(toChatUsername)) {
                 messageList.refreshSelectLast();
                 EaseUI.getInstance().getNotifier().vibrateAndPlayTone(message);
                 conversation.markMessageAsRead(message.getMsgId());
@@ -563,7 +565,7 @@ public class TSEaseChatFragment extends TSEaseBaseFragment implements EMMessageL
 
     @Override
     public void onCmdMessageReceived(List<EMMessage> messages) {
-
+        LogUtils.d("onCmdMessageReceived");
     }
 
     @Override
@@ -981,6 +983,16 @@ public class TSEaseChatFragment extends TSEaseBaseFragment implements EMMessageL
                     }
                 }
             });
+        }
+
+        @Override
+        public void onMemberJoined(String groupId, String member) {
+            super.onMemberJoined(groupId, member);
+        }
+
+        @Override
+        public void onMemberExited(String groupId, String member) {
+            super.onMemberExited(groupId, member);
         }
     }
 

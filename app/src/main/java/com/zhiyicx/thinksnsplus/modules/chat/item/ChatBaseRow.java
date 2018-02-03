@@ -104,7 +104,7 @@ public class ChatBaseRow extends EaseChatRow {
         // 用户名
         mTvChatName.setText(mUserInfoBean.getName());
         RxView.clicks(mIvChatHeadpic)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     UserInfoBean userInfoBean = new UserInfoBean();
                     userInfoBean.setUser_id(mUserInfoBean.getUser_id());

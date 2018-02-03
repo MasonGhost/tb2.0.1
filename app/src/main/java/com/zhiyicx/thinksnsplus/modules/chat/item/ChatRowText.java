@@ -9,6 +9,7 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.utils.EaseSmileUtils;
+import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
 import com.zhiyicx.thinksnsplus.R;
 
 
@@ -28,8 +29,18 @@ public class ChatRowText extends ChatBaseRow {
 
     @Override
     protected void onInflateView() {
-        inflater.inflate(message.direct() == EMMessage.Direct.SEND ?
-                R.layout.item_chat_list_send_text : R.layout.item_chat_list_receive_text, this);
+        int resId;
+        boolean isJoinOrEixt = false;
+
+//        boolean isJoinOrEixt = message.getBooleanAttribute(TSEMConstants.TS_ATTR_JOIN, false)
+//                || message.getBooleanAttribute(TSEMConstants.TS_ATTR_EIXT, false);
+        if (isJoinOrEixt) {
+            resId = R.layout.include_chat_extra;
+        } else {
+            resId = message.direct() == EMMessage.Direct.SEND ?
+                    R.layout.item_chat_list_send_text : R.layout.item_chat_list_receive_text;
+        }
+        inflater.inflate(resId, this);
     }
 
     @Override

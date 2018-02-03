@@ -6,24 +6,19 @@ import android.util.SparseArray;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
-import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
-import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.ChatGroupBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.EasemobClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +35,7 @@ import rx.schedulers.Schedulers;
  * @contact email:648129313@qq.com
  */
 
-public class BaseMessageRepository implements IBaseMessageRepository{
+public class BaseMessageRepository implements IBaseMessageRepository {
 
     @Inject
     Application mContext;
@@ -50,7 +45,8 @@ public class BaseMessageRepository implements IBaseMessageRepository{
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     SystemRepository mSystemRepository;
-
+    @Inject
+    ChatGroupBeanGreenDaoImpl mChatGroupBeanGreenDao;
     protected EasemobClient mClient;
 
     @Inject
@@ -78,8 +74,8 @@ public class BaseMessageRepository implements IBaseMessageRepository{
                     // 需要手动插入的小助手，本地查找不到会话才插入聊天信息
                     List<SystemConfigBean.ImHelperBean> needAddedHelpers = new ArrayList<>();
                     if (!tsHlepers.isEmpty()) {
-                        for (SystemConfigBean.ImHelperBean imHelperBean : tsHlepers){
-                            if (EMClient.getInstance().chatManager().getConversation(imHelperBean.getUid()) == null){
+                        for (SystemConfigBean.ImHelperBean imHelperBean : tsHlepers) {
+                            if (EMClient.getInstance().chatManager().getConversation(imHelperBean.getUid()) == null) {
                                 needAddedHelpers.add(imHelperBean);
                             }
                         }
@@ -120,56 +116,97 @@ public class BaseMessageRepository implements IBaseMessageRepository{
                 .observeOn(Schedulers.io())
                 .flatMap(list1 -> {
                     List<Object> users = new ArrayList<>();
-                    String groupIds = "";
+                    final StringBuilder groupIds = new StringBuilder();
+                    List<String> groupList = new ArrayList<>();
                     for (MessageItemBeanV2 itemBeanV2 : list1) {
                         if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.Chat) {
                             // 单聊处理用户信息，首先过滤掉环信后台的管理员有用户 admin
                             if (!itemBeanV2.getEmKey().equals("admin")) {
                                 itemBeanV2.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(itemBeanV2.getEmKey())));
-                                if (itemBeanV2.getUserInfo() == null){
+                                if (itemBeanV2.getUserInfo() == null) {
                                     users.add(itemBeanV2.getEmKey());
                                 }
                             }
-                        } else if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.GroupChat){
+                        } else if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.GroupChat) {
                             // 群聊
-                            groupIds += itemBeanV2.getConversation().conversationId() + ",";
+                            String chatGroupId = itemBeanV2.getConversation().conversationId();
+                            Long userId = Long.parseLong(itemBeanV2.getConversation().getLastMessage().getFrom());
+                            if (mUserInfoBeanGreenDao.getSingleDataFromCache(userId) == null) {
+                                users.add(itemBeanV2.getConversation().getLastMessage().getFrom());
+                            }
+                            ChatGroupBean chatGroupBean = mChatGroupBeanGreenDao.getChatGroupBeanById(chatGroupId);
+
+                            if (chatGroupBean == null) {
+                                groupList.add(chatGroupId);
+                                groupIds.append(chatGroupId);
+                                groupIds.append(",");
+                            } else {
+                                itemBeanV2.setEmKey(chatGroupBean.getId());
+                                itemBeanV2.setList(chatGroupBean.getAffiliations());
+                                itemBeanV2.setConversation(EMClient.getInstance().chatManager().getConversation(chatGroupBean.getId()));
+                                itemBeanV2.setChatGroupBean(chatGroupBean);
+                            }
+
                         }
                     }
-                    if (!TextUtils.isEmpty(groupIds)){
-                        groupIds = groupIds.substring(0, groupIds.length() - 1);
-                        BackgroundRequestTaskBean backgroundRequestTaskBean;
-                        HashMap<String, Object> params = new HashMap<>();
-                        params.put("group_ids", groupIds);
-                        // 后台处理
-                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.GET_CHAT_GROUP_INFO, params);
-                        backgroundRequestTaskBean.setPath(String.format(ApiConfig
-                                .APP_PATH_GET_GROUP_INFO, groupIds));
-                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
-                                (backgroundRequestTaskBean);
-                    }
-                    if (users.isEmpty()) {
-                        return Observable.just(list1);
-                    }
-                    return mUserInfoRepository.getUserInfo(users)
-                            .map(userInfoBeans -> {
-                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                for (UserInfoBean userInfoBean : userInfoBeans) {
-                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                    return Observable.just(users)
+                            .flatMap(objects -> {
+                                if (users.isEmpty()) {
+                                    return Observable.just(list1);
                                 }
-                                for (int i = 0; i < list1.size(); i++) {
-                                    // 只有单聊才给用户信息
-                                    if (list1.get(i).getConversation().getType() == EMConversation.EMConversationType.Chat) {
-                                        int key;
-                                        if ("admin".equals(list1.get(i).getEmKey())) {
-                                            key = 1;
-                                        } else {
-                                            key = Integer.parseInt(list1.get(i).getEmKey());
-                                        }
-                                        list1.get(i).setUserInfo(userInfoBeanSparseArray.get(key));
-                                    }
+                                return mUserInfoRepository.getUserInfo(users)
+                                        .map(userInfoBeans -> {
+                                            SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                            for (UserInfoBean userInfoBean : userInfoBeans) {
+                                                userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                            }
+                                            for (int i = 0; i < list1.size(); i++) {
+                                                // 只有单聊才给用户信息
+                                                if (list1.get(i).getConversation().getType() == EMConversation.EMConversationType.Chat) {
+                                                    int key;
+                                                    if ("admin".equals(list1.get(i).getEmKey())) {
+                                                        key = 1;
+                                                    } else {
+                                                        key = Integer.parseInt(list1.get(i).getEmKey());
+                                                    }
+                                                    list1.get(i).setUserInfo(userInfoBeanSparseArray.get(key));
+                                                }
+                                            }
+                                            return list1;
+                                        });
+                            }).flatMap(messages -> {
+                                if (TextUtils.isEmpty(groupIds.toString())) {
+                                    return Observable.just(messages);
                                 }
-                                return list1;
+                                return getGroupInfo(groupIds.deleteCharAt(groupIds.length() - 1).toString())
+                                        .flatMap(data -> {
+                                            List<MessageItemBeanV2> messageItemBeanList = new ArrayList<>();
+                                            for (ChatGroupBean chatGroupBean : data) {
+                                                // 如果列表已经有  那么就不再追加
+                                                boolean canAdded = true;
+                                                mUserInfoBeanGreenDao.saveMultiData(chatGroupBean.getAffiliations());
+                                                for (MessageItemBeanV2 exitItem : list1) {
+                                                    if (exitItem.getConversation().conversationId().equals(chatGroupBean.getId())) {
+                                                        exitItem.setEmKey(chatGroupBean.getId());
+                                                        exitItem.setList(chatGroupBean.getAffiliations());
+                                                        exitItem.setConversation(EMClient.getInstance().chatManager().getConversation(chatGroupBean.getId()));
+                                                        exitItem.setChatGroupBean(chatGroupBean);
+                                                        canAdded = false;
+                                                        break;
+                                                    }
+                                                }
+                                                if (canAdded) {
+                                                    MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
+                                                    itemBeanV2.setEmKey(chatGroupBean.getId());
+                                                    itemBeanV2.setList(chatGroupBean.getAffiliations());
+                                                    itemBeanV2.setConversation(EMClient.getInstance().chatManager().getConversation(chatGroupBean.getId()));
+                                                    itemBeanV2.setChatGroupBean(chatGroupBean);
+                                                    messageItemBeanList.add(itemBeanV2);
+                                                }
+                                            }
+                                            list1.addAll(messageItemBeanList);
+                                            return Observable.just(list1);
+                                        });
                             });
                 });
     }
