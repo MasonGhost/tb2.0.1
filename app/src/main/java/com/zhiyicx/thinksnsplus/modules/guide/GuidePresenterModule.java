@@ -1,9 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.guide;
 
 
-import com.zhiyicx.thinksnsplus.base.BaseModule;
-
 import dagger.Module;
+import dagger.Provides;
 
 /**
  * @Describe
@@ -12,9 +11,16 @@ import dagger.Module;
  * @Contact master.jungle68@gmail.com
  */
 @Module
-public class GuidePresenterModule extends BaseModule<GuideContract.View> {
+public class GuidePresenterModule {
+
+    private final GuideContract.View mView;
 
     public GuidePresenterModule(GuideContract.View view) {
-        super(view);
+        mView = view;
+    }
+
+    @Provides
+    GuideContract.View provideGuideContractView() {
+        return mView;
     }
 }

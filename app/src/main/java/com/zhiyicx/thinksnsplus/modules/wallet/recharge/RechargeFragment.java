@@ -234,7 +234,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     mBtTop.setEnabled(false);
-                    mPresenter.getPayStr(mPayType, PayConfig.gameCurrency2RealCurrency(mRechargeMoney, mPresenter.getRatio()));
+                    mPresenter.getPayStr(mPayType, PayConfig.realCurrencyYuan2Fen(mRechargeMoney));
                 });// 传入的是真实货币分单位
 
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
