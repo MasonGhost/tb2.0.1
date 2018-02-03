@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
+import android.nfc.FormatException;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
@@ -86,7 +87,8 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                             tsHelper.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(imHelperBean.getUid())));
                             // 创建会话的 conversation 要传入用户名 ts+采用用户Id作为用户名，聊天类型 单聊
                             EMConversation conversation =
-                                    EMClient.getInstance().chatManager().getConversation(tsHelper.getEmKey(), EMConversation.EMConversationType.Chat, true);
+                                    EMClient.getInstance().chatManager().getConversation(tsHelper.getEmKey(), EMConversation.EMConversationType
+                                            .Chat, true);
                             // 给这个会话插入一条自定义的消息 文本类型的
                             EMMessage welcomeMsg = EMMessage.createReceiveMessage(EMMessage.Type.TXT);
                             // 消息体
@@ -108,21 +110,31 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     * 完善回话信息
+     *
+     * @param list 回话列表，包涵单聊、群聊
+     * @return
+     */
     @Override
     public Observable<List<MessageItemBeanV2>> completeEmConversation(List<MessageItemBeanV2> list) {
 
         return Observable.just(list)
                 .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
                 .flatMap(list1 -> {
+                    // 保存数据库没有的用户 id
                     List<Object> users = new ArrayList<>();
+                    // 数据库里面没有的群信息
                     final StringBuilder groupIds = new StringBuilder();
-                    List<String> groupList = new ArrayList<>();
                     for (MessageItemBeanV2 itemBeanV2 : list1) {
+
                         if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.Chat) {
                             // 单聊处理用户信息，首先过滤掉环信后台的管理员有用户 admin
                             if (!itemBeanV2.getEmKey().equals("admin")) {
-                                itemBeanV2.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(itemBeanV2.getEmKey())));
+                                try {
+                                    itemBeanV2.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(itemBeanV2.getEmKey())));
+                                } catch (NumberFormatException ignored) {
+                                }
                                 if (itemBeanV2.getUserInfo() == null) {
                                     users.add(itemBeanV2.getEmKey());
                                 }
@@ -130,14 +142,16 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                         } else if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.GroupChat) {
                             // 群聊
                             String chatGroupId = itemBeanV2.getConversation().conversationId();
-                            Long userId = Long.parseLong(itemBeanV2.getConversation().getLastMessage().getFrom());
-                            if (mUserInfoBeanGreenDao.getSingleDataFromCache(userId) == null) {
-                                users.add(itemBeanV2.getConversation().getLastMessage().getFrom());
-                            }
+                            try {
+                                Long userId = Long.parseLong(itemBeanV2.getConversation().getLastMessage().getFrom());
+                                if (mUserInfoBeanGreenDao.getSingleDataFromCache(userId) == null) {
+                                    users.add(itemBeanV2.getConversation().getLastMessage().getFrom());
+                                }
+                            }catch (NumberFormatException ignored){}
+
                             ChatGroupBean chatGroupBean = mChatGroupBeanGreenDao.getChatGroupBeanById(chatGroupId);
 
                             if (chatGroupBean == null) {
-                                groupList.add(chatGroupId);
                                 groupIds.append(chatGroupId);
                                 groupIds.append(",");
                             } else {
@@ -147,6 +161,8 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                 itemBeanV2.setChatGroupBean(chatGroupBean);
                             }
 
+                        } else {
+                            // TODO: 2018/2/3   chatRoom 等
                         }
                     }
                     return Observable.just(users)
@@ -189,7 +205,8 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                                     if (exitItem.getConversation().conversationId().equals(chatGroupBean.getId())) {
                                                         exitItem.setEmKey(chatGroupBean.getId());
                                                         exitItem.setList(chatGroupBean.getAffiliations());
-                                                        exitItem.setConversation(EMClient.getInstance().chatManager().getConversation(chatGroupBean.getId()));
+                                                        exitItem.setConversation(EMClient.getInstance().chatManager().getConversation(chatGroupBean
+                                                                .getId()));
                                                         exitItem.setChatGroupBean(chatGroupBean);
                                                         canAdded = false;
                                                         break;
@@ -199,7 +216,8 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                                     MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
                                                     itemBeanV2.setEmKey(chatGroupBean.getId());
                                                     itemBeanV2.setList(chatGroupBean.getAffiliations());
-                                                    itemBeanV2.setConversation(EMClient.getInstance().chatManager().getConversation(chatGroupBean.getId()));
+                                                    itemBeanV2.setConversation(EMClient.getInstance().chatManager().getConversation(chatGroupBean
+                                                            .getId()));
                                                     itemBeanV2.setChatGroupBean(chatGroupBean);
                                                     messageItemBeanList.add(itemBeanV2);
                                                 }
