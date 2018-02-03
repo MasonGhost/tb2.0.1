@@ -461,6 +461,7 @@ public class SystemConfigBean implements Serializable {
         private H5Bean h5;
         private GoldBean gold;
         private RewardBean reward;
+        @SerializedName("currency_name")
         private GoldNameBean gold_name;
 
         public boolean isStatus() {
