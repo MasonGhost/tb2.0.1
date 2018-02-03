@@ -16,6 +16,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
@@ -334,7 +335,8 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                             // 居然不存在 exm？？？
                             // 那还能怎么办呢，当然新来一条的，不过这种情况目前没有遇到过的样子呢(*╹▽╹*)
                             EMConversation conversation =
-                                    EMClient.getInstance().chatManager().getConversation(emMessage.getFrom(), EMConversation.EMConversationType.Chat, true);
+                                    EMClient.getInstance().chatManager().getConversation(emMessage.getFrom(), EMConversation.EMConversationType
+                                            .Chat, true);
                             conversation.insertMessage(emMessage);
                             MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
                             itemBeanV2.setConversation(conversation);
@@ -346,19 +348,32 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                             .map(list12 -> list12);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(list1 -> {
-                    for (MessageItemBeanV2 messageItemBeanV2 : list1) {
-                        // 移除原来的
-                        if (mRootView.getListDatas().indexOf(messageItemBeanV2) != -1) {
-                            mRootView.getListDatas().remove(messageItemBeanV2);
+                .subscribe(new BaseSubscribeForV2<List<MessageItemBeanV2>>() {
+                    @Override
+                    protected void onSuccess(List<MessageItemBeanV2> data) {
+                        for (MessageItemBeanV2 messageItemBeanV2 : data) {
+                            // 移除原来的
+                            if (mRootView.getListDatas().indexOf(messageItemBeanV2) != -1) {
+                                mRootView.getListDatas().remove(messageItemBeanV2);
+                            }
                         }
+                        // 加载到第一条
+                        mRootView.getListDatas().addAll(0, data);
+                        mRootView.refreshData();
+                        // 小红点是否要显示
+                        checkBottomMessageTip();
                     }
-                    // 加载到第一条
-                    mRootView.getListDatas().addAll(0, list1);
-                    mRootView.refreshData();
-                    // 小红点是否要显示
-                    checkBottomMessageTip();
-                }, LogUtils::d);
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                    }
+                });
         addSubscrebe(subscribe);
     }
 

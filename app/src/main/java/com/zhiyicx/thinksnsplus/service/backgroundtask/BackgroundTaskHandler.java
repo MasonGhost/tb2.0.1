@@ -1451,6 +1451,7 @@ public class BackgroundTaskHandler {
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
         final String ids = (String) params.get("group_ids");
         mMessageRepository.getGroupInfo(ids)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<List<ChatGroupBean>>() {
                     @Override
                     protected void onSuccess(List<ChatGroupBean> data) {

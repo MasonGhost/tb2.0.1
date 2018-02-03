@@ -235,8 +235,8 @@ public class BaseMessageRepository implements IBaseMessageRepository {
     @Override
     public Observable<List<ChatGroupBean>> getGroupInfo(String ids) {
         return mClient.getGroupInfo(ids)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
+
     }
 
     @Override
