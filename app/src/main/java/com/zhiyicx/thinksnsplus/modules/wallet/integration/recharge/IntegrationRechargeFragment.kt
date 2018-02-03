@@ -187,7 +187,7 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
      * @param currentIntegration
      */
     private fun setDynamicRatio(currentIntegration: Int) {
-        mTvMineIntegration.text = getString(R.string.integration_ratio_formart, currentIntegration, currentIntegration * mIntegrationConfigBean!!.rechargeratio * 100, mGoldName)
+        mTvMineIntegration.text = getString(R.string.integration_ratio_formart, currentIntegration, currentIntegration * mIntegrationConfigBean!!.rechargeratio * (100).toLong(), mGoldName)
     }
 
     override fun setRightClick() {
