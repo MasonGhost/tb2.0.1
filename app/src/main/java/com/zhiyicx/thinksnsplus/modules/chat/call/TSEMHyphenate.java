@@ -883,45 +883,11 @@ public class TSEMHyphenate {
 
             @Override
             public void onMemberJoined(final String groupId,  final String member) {
-                LogUtils.i("onMemberJoined groupId:%s, member:%s", groupId, member);
-                TSEMessageUtils.sendGroupMemberJoinOrExitMessage(groupId, member, true, new EMCallBack() {
-                    @Override
-                    public void onSuccess() {
-
-                    }
-
-                    @Override
-                    public void onError(int i, String s) {
-
-                    }
-
-                    @Override
-                    public void onProgress(int i, String s) {
-
-                    }
-                });
 
             }
 
             @Override
             public void onMemberExited(final String groupId,  final String member) {
-                LogUtils.i("onMemberExited groupId:%s, member:%s", groupId, member);
-                TSEMessageUtils.sendGroupMemberJoinOrExitMessage(groupId, member, false, new EMCallBack() {
-                    @Override
-                    public void onSuccess() {
-
-                    }
-
-                    @Override
-                    public void onError(int i, String s) {
-
-                    }
-
-                    @Override
-                    public void onProgress(int i, String s) {
-
-                    }
-                });
             }
 
             @Override

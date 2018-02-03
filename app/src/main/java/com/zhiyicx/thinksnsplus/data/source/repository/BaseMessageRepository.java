@@ -10,6 +10,7 @@ import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
@@ -144,6 +145,7 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                             String chatGroupId = itemBeanV2.getConversation().conversationId();
                             try {
                                 Long userId = Long.parseLong(itemBeanV2.getConversation().getLastMessage().getFrom());
+                                LogUtils.d("lase::"+userId);
                                 if (mUserInfoBeanGreenDao.getSingleDataFromCache(userId) == null) {
                                     users.add(itemBeanV2.getConversation().getLastMessage().getFrom());
                                 }
@@ -197,6 +199,7 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                 return getGroupInfo(groupIds.deleteCharAt(groupIds.length() - 1).toString())
                                         .flatMap(data -> {
                                             List<MessageItemBeanV2> messageItemBeanList = new ArrayList<>();
+                                            mChatGroupBeanGreenDao.saveMultiData(data);
                                             for (ChatGroupBean chatGroupBean : data) {
                                                 // 如果列表已经有  那么就不再追加
                                                 boolean canAdded = true;

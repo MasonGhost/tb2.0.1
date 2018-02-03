@@ -314,7 +314,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
         LogUtils.d("Cathy", "MessagePresenter onMessageReceived" + bundle);
         List<EMMessage> list = bundle.getParcelableArrayList(EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED_V2);
         Subscription subscribe = Observable.just(list)
-                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
                 .flatMap(messageList -> {
                     LogUtils.d("Cathy", "MessagePresenter onMessageReceived -----");
                     int size = mRootView.getListDatas().size();
