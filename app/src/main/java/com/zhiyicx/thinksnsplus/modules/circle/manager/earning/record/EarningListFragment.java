@@ -99,8 +99,7 @@ public class EarningListFragment extends TSListFragment<EarningListContract.Pres
                 TextView time = holder.getView(R.id.withdrawals_time);
                 TextView account = holder.getView(R.id.withdrawals_account);
                 desc.setEnabled(true);
-                String moneyStr = String.format(Locale.getDefault(), getString(R.string.dynamic_send_toll_select_money),
-                        recharge.getAmount());
+                String moneyStr = String.valueOf(recharge.getAmount());
                 desc.setText("+ " + moneyStr);
                 account.setText(recharge.getSubject());
                 time.setText(TimeUtils.string2_ToDya_Yesterday_Week(recharge.getCreated_at()));
