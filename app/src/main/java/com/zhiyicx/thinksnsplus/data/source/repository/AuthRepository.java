@@ -75,6 +75,7 @@ public class AuthRepository implements IAuthRepository {
     public static final int MAX_RETRY_COUNTS = 2;//重试次数
     public static final int RETRY_DELAY_TIME = 1;// 重试间隔时间,单位 s
     private UserInfoClient mUserInfoClient;
+    private CommonClient mCommonClient;
 
     @Inject
     Application mContext;
@@ -122,6 +123,7 @@ public class AuthRepository implements IAuthRepository {
     @Inject
     public AuthRepository(ServiceManager serviceManager) {
         mUserInfoClient = serviceManager.getUserInfoClient();
+        mCommonClient = serviceManager.getCommonClient();
     }
 
 
@@ -156,8 +158,7 @@ public class AuthRepository implements IAuthRepository {
         if (!isNeededRefreshToken()) {
             return;
         }
-        CommonClient commonClient = AppApplication.AppComponentHolder.getAppComponent().serviceManager().getCommonClient();
-        commonClient.refreshToken(authBean.getToken())
+        mCommonClient.refreshToken(authBean.getToken())
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -318,7 +319,7 @@ public class AuthRepository implements IAuthRepository {
         // 此处替换为环信的登陆
         IMConfig config = getIMConfig();
         //回调，如果都取不出来聊天用户信息，那么则必须再去获取，如果有那么只需要再次登录即可
-        if (config != null && !TextUtils.isEmpty(config.getToken()) && !EMClient.getInstance().isConnected()){
+        if (config != null && !TextUtils.isEmpty(config.getToken()) && !EMClient.getInstance().isConnected()) {
             String imUserName = String.valueOf(getAuthBean().getUser().getUser_id());
             String imPassword = config.getToken();
             EMClient.getInstance().login(imUserName, imPassword, new EMCallBack() {
@@ -340,14 +341,15 @@ public class AuthRepository implements IAuthRepository {
                     LogUtils.d("main", "登录聊天服务器失败！error message: " + message);
                 }
             });
-        } else if (!EMClient.getInstance().isConnected()){
+        } else if (!EMClient.getInstance().isConnected()) {
             // 再次去请求聊天用户信息
             handleIMLogin();
         }
     }
 
     private void handleIMLogin() {
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig
+                .GET_IM_INFO));
     }
 
 
