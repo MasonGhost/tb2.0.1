@@ -10,6 +10,7 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationBean;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
 
 import org.greenrobot.greendao.annotation.Convert;
@@ -103,7 +104,14 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     @SerializedName(value = "cover", alternate = {"bg"})
     private String cover;// 封面
     @Transient
+    @SerializedName("new_wallet")
     private WalletBean wallet;
+
+    /**
+     * 积分
+     */
+    @Convert(converter = IntegrationBeanConverter.class, columnType = String.class)
+    private IntegrationBean currency;
 
     @Convert(converter = ExtraParamsConverter.class, columnType = String.class)
     private UserInfoExtraBean extra;
@@ -357,6 +365,22 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.isSelected = isSelected;
     }
 
+    /**
+     * @return 格式化后的用户积分
+     */
+    public long getFormatCurrencyNum() {
+
+        return currency == null ? 0 : currency.getSum();
+    }
+
+    public IntegrationBean getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(IntegrationBean currency) {
+        this.currency = currency;
+    }
+
     public UserInfoExtraBean getExtra() {
         if (extra == null) {
             extra = new UserInfoExtraBean();
@@ -608,6 +632,12 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
 
     }
 
+    /**
+     * IntegrationBean 转 String 形式存入数据库
+     */
+    public static class IntegrationBeanConverter extends BaseConvert<IntegrationBean> {
+
+    }
 
     @Override
     public Long getMaxId() {
@@ -639,65 +669,6 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     }
 
 
-    @Generated(hash = 436092144)
-    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
-            String location, boolean following, boolean follower, String created_at, String updated_at,
-            String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified,
-            List<UserTagBean> tags, String im_pwd_hash, int friends_count, boolean initial_password,
-            boolean has_deleted) {
-        this.user_id = user_id;
-        this.name = name;
-        this.phone = phone;
-        this.email = email;
-        this.intro = intro;
-        this.sex = sex;
-        this.location = location;
-        this.following = following;
-        this.follower = follower;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.avatar = avatar;
-        this.cover = cover;
-        this.extra = extra;
-        this.verified = verified;
-        this.tags = tags;
-        this.im_pwd_hash = im_pwd_hash;
-        this.friends_count = friends_count;
-        this.initial_password = initial_password;
-        this.has_deleted = has_deleted;
-    }
-
-    @Override
-    public String toString() {
-        return "UserInfoBean{" +
-                "user_id=" + user_id +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", intro='" + intro + '\'' +
-                ", sex=" + sex +
-                ", sexString='" + sexString + '\'' +
-                ", location='" + location + '\'' +
-                ", province='" + province + '\'' +
-                ", city='" + city + '\'' +
-                ", area='" + area + '\'' +
-                ", following=" + following +
-                ", follower=" + follower +
-                ", created_at='" + created_at + '\'' +
-                ", updated_at='" + updated_at + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", cover='" + cover + '\'' +
-                ", wallet=" + wallet +
-                ", extra=" + extra +
-                ", verified=" + verified +
-                ", tags=" + tags +
-                ", im_pwd_hash='" + im_pwd_hash + '\'' +
-                ", friends_count=" + friends_count +
-                ", initial_password=" + initial_password +
-                ", has_deleted=" + has_deleted +
-                '}';
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -724,11 +695,13 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         dest.writeString(this.avatar);
         dest.writeString(this.cover);
         dest.writeParcelable(this.wallet, flags);
+        dest.writeSerializable(this.currency);
         dest.writeParcelable(this.extra, flags);
         dest.writeParcelable(this.verified, flags);
         dest.writeTypedList(this.tags);
         dest.writeString(this.im_pwd_hash);
         dest.writeInt(this.friends_count);
+        dest.writeInt(this.isSelected);
         dest.writeByte(this.initial_password ? (byte) 1 : (byte) 0);
         dest.writeByte(this.has_deleted ? (byte) 1 : (byte) 0);
     }
@@ -753,13 +726,44 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.avatar = in.readString();
         this.cover = in.readString();
         this.wallet = in.readParcelable(WalletBean.class.getClassLoader());
+        this.currency = (IntegrationBean) in.readSerializable();
         this.extra = in.readParcelable(UserInfoExtraBean.class.getClassLoader());
         this.verified = in.readParcelable(VerifiedBean.class.getClassLoader());
         this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
         this.im_pwd_hash = in.readString();
         this.friends_count = in.readInt();
+        this.isSelected = in.readInt();
         this.initial_password = in.readByte() != 0;
         this.has_deleted = in.readByte() != 0;
+    }
+
+    @Generated(hash = 239481087)
+    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
+            String location, boolean following, boolean follower, String created_at, String updated_at,
+            String avatar, String cover, IntegrationBean currency, UserInfoExtraBean extra,
+            VerifiedBean verified, List<UserTagBean> tags, String im_pwd_hash, int friends_count,
+            boolean initial_password, boolean has_deleted) {
+        this.user_id = user_id;
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.intro = intro;
+        this.sex = sex;
+        this.location = location;
+        this.following = following;
+        this.follower = follower;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.avatar = avatar;
+        this.cover = cover;
+        this.currency = currency;
+        this.extra = extra;
+        this.verified = verified;
+        this.tags = tags;
+        this.im_pwd_hash = im_pwd_hash;
+        this.friends_count = friends_count;
+        this.initial_password = initial_password;
+        this.has_deleted = has_deleted;
     }
 
     public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {

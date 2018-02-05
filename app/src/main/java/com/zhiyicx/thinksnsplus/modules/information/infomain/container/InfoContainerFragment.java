@@ -29,6 +29,8 @@ import com.zhiyicx.thinksnsplus.modules.information.publish.detail.EditeInfoDeta
 
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
 
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;

@@ -611,6 +611,12 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     *
+     * @param question_id
+     * @param amount
+     * @return
+     */
     @Override
     public Observable<BaseJsonV2<Object>> resetReward(Long question_id, double amount) {
         return mQAClient.updateQuestionReward(String.valueOf(question_id), (int) amount)

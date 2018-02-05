@@ -274,6 +274,17 @@
                 app:leftText="@string/wallet"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
                 app:showLine="true"/>
+            <!--我的积分-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_mine_integration"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
+                app:leftImage="@mipmap/ico_me_integral"
+                app:leftText="@string/mine_integration"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"
+                app:showLine="true"/>
             <!--收藏-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/bt_collect"

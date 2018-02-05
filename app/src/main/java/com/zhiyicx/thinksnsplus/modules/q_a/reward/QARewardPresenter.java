@@ -34,10 +34,7 @@ import rx.Subscription;
 public class QARewardPresenter extends AppBasePresenter<QARewardContract.View>
         implements QARewardContract.Presenter {
 
-    @Inject
-    CommentRepository mCommentRepository;
-    @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
+
     @Inject
     BaseQARepository mBaseQARepository;
 
@@ -48,7 +45,7 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.View>
 
     @Override
     public void publishQuestion(final QAPublishBean qaPublishBean) {
-        Subscription subscribe = handleWalletBlance((long) qaPublishBean.getAmount())
+        Subscription subscribe = handleIntegrationBlance((long) qaPublishBean.getAmount())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.publish_doing)))
                 .flatMap(o -> qaPublishBean.isHasAgainEdite() ? mBaseQARepository.updateQuestion(qaPublishBean)
@@ -90,7 +87,7 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.View>
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        if (isBalanceCheck(throwable)) {
+                        if (isIntegrationBalanceCheck(throwable)) {
                             return;
                         }
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.bill_doing_fialed));
@@ -101,23 +98,12 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.View>
 
     @Override
     public void resetReward(Long question_id, double amount) {
-        Subscription subscription = mCommentRepository.getCurrentLoginUserInfo()
+
+
+        Subscription subscribe = handleIntegrationBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
-                .flatMap(userInfoBean -> {
-                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
-                    if (userInfoBean.getWallet() != null) {
-                        mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
-                        if (userInfoBean.getWallet().getBalance() < amount) {
-                            mRootView.goRecharge(WalletActivity.class);
-                            return Observable.error(new RuntimeException(""));
-                        }
-                    }
-                    return mBaseQARepository.resetReward(question_id, amount);
-                }, throwable -> {
-                    mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
-                    return null;
-                }, () -> null)
+                .flatMap(o -> mBaseQARepository.resetReward(question_id, amount))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
@@ -133,11 +119,13 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.View>
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        super.onException(throwable);
+                        if (isIntegrationBalanceCheck(throwable)) {
+                            return;
+                        }
                         mRootView.dismissSnackBar();
                     }
                 });
-        addSubscrebe(subscription);
+        addSubscrebe(subscribe);
     }
 
     @Override

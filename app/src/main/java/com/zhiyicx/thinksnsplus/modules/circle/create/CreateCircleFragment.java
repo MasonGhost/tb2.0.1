@@ -442,7 +442,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         } else {
             int result = 0;
             try {
-                result = (int) PayConfig.gameCurrency2RealCurrency(Integer.parseInt(mEtCircleAmount.getText().toString()), mPresenter.getRatio());
+                result = Integer.parseInt(mEtCircleAmount.getText().toString());
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }

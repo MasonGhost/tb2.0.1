@@ -142,7 +142,11 @@ public class JavaTest {
 
     @Test
     public void testCatchGroup() {
-        String src = "<span style=\"font-family: sans-serif;\">好刚刚给</span><div style=\"font-family: sans-serif;\">黄河鬼棺给</div><h1 style=\"font-family: sans-serif;\">好好奋斗是</h1><div style=\"font-family: sans-serif;\"><b><i>v刚发的的</i></b></div><div style=\"font-family: sans-serif;\"><b><i><strike>广告费多大的</strike></i></b></div><hr style=\"color: rgb(0, 0, 0);\"><div style=\"font-family: sans-serif;\"><br></div><h1 style=\"font-family: sans-serif;\">复方丹参</h1><div><br></div><div class=\"block\" contenteditable=\"false\">\n" +
+        String src = "<span style=\"font-family: sans-serif;\">好刚刚给</span><div style=\"font-family: sans-serif;\">黄河鬼棺给</div><h1 " +
+                "style=\"font-family: sans-serif;\">好好奋斗是</h1><div style=\"font-family: sans-serif;\"><b><i>v刚发的的</i></b></div><div " +
+                "style=\"font-family: sans-serif;\"><b><i><strike>广告费多大的</strike></i></b></div><hr style=\"color: rgb(0, 0, 0);\"><div " +
+                "style=\"font-family: sans-serif;\"><br></div><h1 style=\"font-family: sans-serif;\">复方丹参</h1><div><br></div><div class=\"block\" " +
+                "contenteditable=\"false\">\n" +
                 "                                                                  \t\t\t\t<div class=\"img-block\">\n" +
                 "                                                                  \t\t\t\t\n" +
                 "                                                                  \t\t\t\t\n" +
@@ -183,7 +187,7 @@ public class JavaTest {
             for (int i = 0; i < count; i++) {
                 System.out.println("reg::" + i + ":::" + matcher.group(i));
             }
-            source=source.replaceFirst(MarkdownConfig.LINK_WORDS_FORMAT,matcher.group(3));
+            source = source.replaceFirst(MarkdownConfig.LINK_WORDS_FORMAT, matcher.group(3));
         }
         System.out.println(source);
     }
@@ -1665,6 +1669,34 @@ public class JavaTest {
         Random random = new Random();
         for (int i = 0; i < 100; i++) {
             System.out.println("random = " + random.nextInt(5) % (5));
+        }
+    }
+
+    /**
+     * 条件语句 执行顺序测试，并非是从左到右直线处理
+     */
+    @Test
+    public void testSymbol() {
+        List<Integer> rechargeTypes = new ArrayList<>();
+        rechargeTypes.add(1);
+        SystemConfigBean mSystemConfigBean = new SystemConfigBean();
+        SystemConfigBean.OpenConfig walletTransform = new SystemConfigBean.OpenConfig();
+        walletTransform.setOpen(false);
+        mSystemConfigBean.setWalletTransform(walletTransform);
+        System.out.println("rechargeTypes = " + rechargeTypes.size());
+        if (rechargeTypes.size() == 0 && mSystemConfigBean.getWalletTransform() == null || !mSystemConfigBean.getWalletTransform()
+                .isOpen()) {
+            System.out.println(" 1  = ");
+        } else {
+            System.out.println(" 2  = ");
+
+        }
+        if (rechargeTypes.size() == 0 && (mSystemConfigBean.getWalletTransform() == null || !mSystemConfigBean.getWalletTransform()
+                .isOpen())) {
+            System.out.println(" 1  = ");
+        } else {
+            System.out.println(" 2  = ");
+
         }
     }
 }

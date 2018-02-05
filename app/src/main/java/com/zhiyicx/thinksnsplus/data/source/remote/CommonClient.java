@@ -1,15 +1,14 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.appupdate.AppVersionBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
-import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
@@ -36,7 +35,6 @@ import retrofit2.http.Query;
 import retrofit2.http.Url;
 import rx.Observable;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_NOTE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ADVERT_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_TAGS;
@@ -44,6 +42,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_APP_NEW_VERS
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_APP_VERSION;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_All_ADVERT_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BOOTSTRAPERS_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_NOTE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MEMBER_VERTIFYCODE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_NON_MEMBER_VERTIFYCODE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SINGLE_ADVERT_INFO;
@@ -51,7 +50,6 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SYSTEM_CONVE
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_HANDLE_BACKGROUND_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFRESH_TOKEN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REPORT_COMMON_COMMENT;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REPORT_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SEARDCH_LOCATION;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SGET_HOT_CITY;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_STORAGE_HASH;
@@ -171,12 +169,7 @@ public interface CommonClient {
     @GET(APP_PATH_GET_APP_NEW_VERSION)
     Observable<List<AppVersionBean>> getAppNewVersion(@Query("version_code") Integer version_code, @Query("type") String type);
 
-    /**
-     * 获取支付信息
-     */
-    @FormUrlEncoded
-    @POST(APP_PAHT_WALLET_RECHARGE)
-    Observable<PayStrBean> getPayStr(@Field("type") String channel, @Field("amount") long amount);
+
 
     /*******************************************  文件上传  *********************************************/
 
@@ -203,9 +196,14 @@ public interface CommonClient {
      * @param note 文件付费节点
      * @return
      */
-    @GET(APP_PATH_CHECK_NOTE)
+    @GET(APP_PATH_GET_CHECK_NOTE)
     Observable<PurChasesBean> checkNote(@Path("note") int note);
 
+    /**
+     * 付费节点支付
+     * @param note
+     * @return
+     */
     @POST(APP_PATH_CHECK_NOTE)
     Observable<BaseJsonV2<String>> payNote(@Path("note") int note);
 

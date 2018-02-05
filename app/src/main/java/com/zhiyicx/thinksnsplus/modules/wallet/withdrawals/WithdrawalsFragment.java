@@ -103,10 +103,9 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
         if (getArguments() != null) {
             mWalletConfigBean = getArguments().getParcelable(BUNDLE_DATA);
             mTvWithdrawDec.setText(String.format(getString(R.string.min_withdraw_money_limit), PayConfig.realCurrency2GameCurrency(mWalletConfigBean
-                    .getCase_min_amount(), mPresenter.getRatio()), mPresenter.getGoldName()));
+                    .getCase_min_amount(), mPresenter.getRatio()),getString(R.string.yuan)));
         }
-        String moneyName = mPresenter.getGoldName();
-        mCustomMoney.setText(moneyName);
+        mCustomMoney.setText(getString(R.string.yuan));
     }
 
     @Override
@@ -227,7 +226,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
         mActionPopupWindow = ActionPopupWindow.builder()
                 .item2Str(cash_types.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_withdrawals_style_formart, getString(R
                         .string.alipay)) : "")
-                .item3Str(cash_types.contains(TSPayClient.CHANNEL_WXPAY) ? getString(R.string.choose_withdrawals_style_formart, getString(R
+                .item3Str(cash_types.contains(TSPayClient.CHANNEL_WXPAY)||cash_types.contains(TSPayClient.CHANNEL_WX) ? getString(R.string.choose_withdrawals_style_formart, getString(R
                         .string.wxpay)) : "")
                 .item4Str(cash_types.size() == 0 ? getString(R.string.withdraw_disallow) : "")
                 .bottomStr(getString(R.string.cancel))

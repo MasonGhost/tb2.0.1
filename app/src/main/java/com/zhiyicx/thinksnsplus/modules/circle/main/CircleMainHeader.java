@@ -41,7 +41,8 @@ public class CircleMainHeader {
         int lengh = (count + "").length();
         SpannableStringBuilder countSpan = new SpannableStringBuilder(circleCount);
         countSpan.setSpan(new RelativeSizeSpan(1.66f), 0, lengh, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        countSpan.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.important_for_note)), 0, lengh, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        countSpan.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.important_for_note)), 0, lengh, Spanned
+                .SPAN_INCLUSIVE_INCLUSIVE);
         mCircleMainHeader = LayoutInflater.from(context).inflate(R.layout
                 .circle_main_header, null);
 
@@ -56,12 +57,13 @@ public class CircleMainHeader {
     }
 
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
-        mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mCircleMainHeader
-                .findViewById(R.id.ll_advert));
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts == null || adverts != null && adverts.isEmpty()) {
-            mDynamicDetailAdvertHeader.hideAdvert();
+
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts == null || adverts.isEmpty()) {
+            mCircleMainHeader.findViewById(R.id.ll_advert).setVisibility(View.GONE);
             return;
         }
+        mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mCircleMainHeader
+                .findViewById(R.id.ll_advert));
         mDynamicDetailAdvertHeader.setTitle("广告");
         mDynamicDetailAdvertHeader.setAdverts(adverts);
         mDynamicDetailAdvertHeader.setOnItemClickListener((v, position1, url) ->
@@ -75,7 +77,8 @@ public class CircleMainHeader {
         int lengh = (count + "").length();
         SpannableStringBuilder countSpan = new SpannableStringBuilder(circleCount);
         countSpan.setSpan(new RelativeSizeSpan(1.66f), 0, lengh, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        countSpan.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.important_for_note)), 0, lengh, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        countSpan.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.important_for_note)), 0, lengh, Spanned
+                .SPAN_INCLUSIVE_INCLUSIVE);
         mCircleCount.setLeftText(countSpan);
     }
 

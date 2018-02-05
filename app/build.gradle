@@ -2,7 +2,9 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'jacoco' //测试报告
 apply from: "$rootDir/jacocoCoverage.gradle"
-
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 jacoco {
     toolVersion = "0.7.8"
     reportsDir = file("$buildDir/customJacocoReportDir")
@@ -13,10 +15,15 @@ android {
     compileSdkVersion gConfig["compileSdkVersion"]
     buildToolsVersion gConfig["buildToolsVersion"]
     defaultConfig {
-
+//       this for AnnotationProcessors
+//        javaCompileOptions {
+//            kaptOptions {
+//                includeCompileClasspath true
+//            }
+//        }
         javaCompileOptions {
             annotationProcessorOptions {
-                includeCompileClasspath true
+                includeCompileClasspath false
             }
         }
         applicationId gConfig["applicationId"]
@@ -133,6 +140,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
     }
 }
+// for kotlin extension
+androidExtensions {
+    experimental = true
+}
+
 greendao {
     /**
      * daoPackage 生成的DAO，DaoMaster和DaoSession的包名。默认是实体的包名。
@@ -140,7 +152,7 @@ greendao {
      * generateTests 设置是否自动生成单元测试。
      * targetGenDirTest 生成的单元测试的根目录。
      */
-    schemaVersion 87
+    schemaVersion 89
     daoPackage 'com.zhiyicx.thinksnsplus.data.beans'
     generateTests true
     //targetGenDir 'src/main/java'
@@ -177,7 +189,6 @@ dependencies {
         exclude module: 'support-annotations'
         exclude group: 'javax.inject'
     }
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.8'
     androidTestCompile testDependences.espressoIntent
     androidTestCompile(testDependences.espressoRecyclerView) {
         exclude group: 'com.android.support', module: 'appcompat-v7'
@@ -188,15 +199,15 @@ dependencies {
     testCompile testDependences.runner
     testCompile testDependences.robolectric
     testCompile testDependences.mockito
-    annotationProcessor dataDependences.daggerCompiler
+    kapt dataDependences.daggerCompiler
     // Dagger dependencies
     compile dataDependences.dagger
     provided dataDependences.javaxAnnotation
     provided dataDependences.daggerCompiler
-    annotationProcessor dataDependences.daggerCompiler
+    kapt dataDependences.daggerCompiler
     // Butterknife
     compile dataDependences.butterknife
-    annotationProcessor dataDependences.butterknifeApt
+    kapt dataDependences.butterknifeApt
     // Project
     compile project(':baseproject')
     compile project(':media-cache')
@@ -221,4 +232,7 @@ dependencies {
     compile dataDependences.flowlayout
     //    compile dataDependences.contacts
     compile dataDependences.update
+    implementation dataDependences.kotlin
+    implementation dataDependences.ankoCommon
+
 }

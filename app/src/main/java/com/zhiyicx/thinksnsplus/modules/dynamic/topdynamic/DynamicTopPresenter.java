@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic;
 
 import android.os.Bundle;
 
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -12,13 +11,10 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import org.simple.eventbus.EventBus;
 
@@ -26,7 +22,6 @@ import javax.inject.Inject;
 
 import rx.Subscription;
 
-import static com.zhiyicx.baseproject.config.PayConfig.MONEY_UNIT;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
 
@@ -71,8 +66,8 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Vie
         if (feed_id < 0) {
             return;
         }
-        Subscription subscription = mBaseDynamicRepository.stickTop(feed_id, PayConfig.gameCurrency2RealCurrency(mRootView.getInputMoney() * mRootView
-                .getTopDyas(), getRatio()), mRootView.getTopDyas())
+        Subscription subscription = mBaseDynamicRepository.stickTop(feed_id, mRootView.getInputMoney() * mRootView
+                .getTopDyas(), mRootView.getTopDyas())
                 .doOnSubscribe(() ->
                         mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing))
                 )
@@ -110,12 +105,11 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Vie
     public double getBalance() {
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
         if (authBean != null) {
-            WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id());
-            if (walletBean == null) {
+            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(authBean.getUser_id());
+            if (userInfoBean == null || userInfoBean.getCurrency() == null) {
                 return 0;
             }
-            int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
-            return PayConfig.realCurrencyFen2Yuan(walletBean.getBalance());
+            return userInfoBean.getCurrency().getSum();
         }
         return 0;
     }

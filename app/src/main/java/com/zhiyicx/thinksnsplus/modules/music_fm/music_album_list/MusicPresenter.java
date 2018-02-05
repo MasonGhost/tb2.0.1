@@ -47,20 +47,11 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.View>
         if (handleTouristControl()) {
             return;
         }
-        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
-        double balance = 0;
-        if (walletBean != null) {
-            balance = walletBean.getBalance();
-        }
-        double amount;
-        amount = mRootView.getListDatas().get(position).getPaid_node().getAmount();
+        double amount = mRootView.getListDatas().get(position).getPaid_node().getAmount();
 
-        if (balance < amount) {
-            mRootView.goRecharge(WalletActivity.class);
-            return;
-        }
-        Subscription subscribe = mCommentRepository.paykNote(note)
+        Subscription subscribe = handleIntegrationBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
+                .flatMap(o -> mCommentRepository.paykNote(note))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<String> data) {
@@ -79,6 +70,9 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.View>
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
+                        if (isIntegrationBalanceCheck(throwable)) {
+                            return;
+                        }
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
                     }
 

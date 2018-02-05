@@ -18,7 +18,6 @@ import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.CenterAlertPopWindow;
@@ -494,16 +493,15 @@ QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
                     .backgroundAlpha(POPUPWINDOW_ALPHA)
                     .buildDescrStr(String.format(getString(R.string.qa_pay_for_excellent_hint) + getString(R
                                     .string.buy_pay_member),
-                            mPresenter != null ? PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig().getExcellentQuestion(), mPresenter
-                                    .getRatio()) : ""
+                            mPresenter != null ? mPresenter.getSystemConfig().getExcellentQuestion() : ""
                             , mPresenter != null ? mPresenter.getGoldName() : ""))
                     .buildLinksStr(getString(R.string.qa_pay_for_excellent))
                     .buildTitleStr(getString(R.string.qa_pay_for_excellent))
                     .buildItem1Str(getString(R.string.buy_pay_in_payment))
                     .backgroundDrawable(new ColorDrawable(0x000000))
                     .buildItem2Str(getString(R.string.buy_pay_out))
-                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig()
-                            .getExcellentQuestion(), mPresenter.getRatio())))
+                    .buildMoneyStr(getString(R.string.buy_pay_integration, mPresenter.getSystemConfig()
+                            .getExcellentQuestion()))
                     .buildCenterPopWindowItem1ClickListener(() -> {
                         mPresenter.applyForExcellent(mQaListInfoBean.getId());
                         mPayImagePopWindow.hide();
@@ -536,14 +534,13 @@ QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
                     .backgroundAlpha(POPUPWINDOW_ALPHA)
                     .buildDescrStr(String.format(getString(R.string.qa_pay_for_watch_answer_hint) + getString(R
                                     .string.buy_pay_member),
-                            PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig().getOnlookQuestion(), mPresenter.getRatio())
+                            mPresenter.getSystemConfig().getOnlookQuestion()
                             , mPresenter.getGoldName()))
                     .buildLinksStr(getString(R.string.qa_pay_for_watch))
                     .buildTitleStr(getString(R.string.qa_pay_for_watch))
                     .buildItem1Str(getString(R.string.buy_pay_in_payment))
                     .buildItem2Str(getString(R.string.buy_pay_out))
-                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig()
-                            .getOnlookQuestion(), mPresenter.getRatio())))
+                    .buildMoneyStr(getString(R.string.buy_pay_integration,mPresenter.getSystemConfig().getOnlookQuestion()))
                     .buildCenterPopWindowItem1ClickListener(() -> {
                         AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
                         if (answerInfoBean == null || answerInfoBean.getId() == null) {

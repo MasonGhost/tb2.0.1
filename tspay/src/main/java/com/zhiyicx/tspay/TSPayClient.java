@@ -31,8 +31,14 @@ public class TSPayClient {
     public static final String CHANNEL_ALIWAPPAY = "alipay_wap";
     /**
      * 微信 APP 支付
+     * 充值用 wx \ 提现用 wechat
      */
     public static final String CHANNEL_WXPAY = "wechat";
+    public static final String CHANNEL_WX = "wx";
+    /**
+     * 余额支付
+     */
+    public static final String CHANNEL_BALANCE = "balance";
     /**
      * 手机网页发起微信支付
      */
@@ -46,10 +52,11 @@ public class TSPayClient {
         PAY_KEYS_TYPE.put(CHANNEL_ALIQRPAY, R.string.alipay);
         PAY_KEYS_TYPE.put(CHANNEL_ALIWAPPAY, R.string.alipay);
         PAY_KEYS_TYPE.put(CHANNEL_WXPAY, R.string.wxpay);
+        PAY_KEYS_TYPE.put(CHANNEL_WX, R.string.wxpay);
         PAY_KEYS_TYPE.put(CHANNEL_WXWAPPAY, R.string.wxpay);
     }
 
-    @StringDef({CHANNEL_ALIPAY, CHANNEL_ALIQRPAY, CHANNEL_ALIWAPPAY, CHANNEL_WXPAY, CHANNEL_WXWAPPAY})
+    @StringDef({CHANNEL_ALIPAY, CHANNEL_ALIQRPAY, CHANNEL_ALIWAPPAY, CHANNEL_WXPAY,CHANNEL_WX, CHANNEL_WXWAPPAY})
     @Retention(RetentionPolicy.SOURCE)
     public @interface PayKey {
     }

@@ -553,23 +553,10 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
             amount = mRootView.getListDatas().get(dynamicPosition).getPaid_node().getAmount();
         }
 
-        mCommentRepository.getCurrentLoginUserInfo()
+        Subscription subscribe = handleIntegrationBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
-                .flatMap(userInfoBean -> {
-                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
-                    if (userInfoBean.getWallet() != null) {
-                        mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
-                        if (userInfoBean.getWallet().getBalance() < amount) {
-                            mRootView.goRecharge(WalletActivity.class);
-                            return Observable.error(new RuntimeException(""));
-                        }
-                    }
-                    return mCommentRepository.paykNote(note);
-                }, throwable -> {
-                    mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
-                    return null;
-                }, () -> null)
+                .flatMap(o -> mCommentRepository.paykNote(note))
                 .flatMap(stringBaseJsonV2 -> {
                     if (isImage) {
                         return Observable.just(stringBaseJsonV2);
@@ -594,7 +581,8 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                             mRootView.getListDatas().get(dynamicPosition).getPaid_node().setPaid(true);
                             mRootView.getListDatas().get(dynamicPosition).setFeed_content(data.getData());
                             if (data.getData() != null) {
-                                String friendlyContent = data.getData().replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
+                                String friendlyContent = data.getData().replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link
+                                        .DEFAULT_NET_SITE);
                                 if (friendlyContent.length() > DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) {
                                     friendlyContent = friendlyContent.substring(0, DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) + "...";
                                 }
@@ -615,6 +603,9 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
+                        if (isIntegrationBalanceCheck(throwable)) {
+                            return;
+                        }
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
                     }
 
@@ -624,6 +615,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                         mRootView.hideCenterLoading();
                     }
                 });
+        addSubscrebe(subscribe);
 
     }
 

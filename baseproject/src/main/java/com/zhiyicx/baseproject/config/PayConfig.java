@@ -48,7 +48,22 @@ public class PayConfig {
      */
     public static double realCurrency2GameCurrency(double d, int ratio) {
         // 转换比例是针对  元 的，所有要先把分 转成 元
-        return (realCurrencyFen2Yuan(d) * ratio / RATIO_UNIT);
+        return realCurrency2GameCurrency(d, ratio, false);
+    }
+
+    /**
+     * @param d            真实货币 分单位
+     * @param ratio        转换率，是个百分数：500  -> 500%
+     * @param isNeedChange 是否转换
+     * @return 与真实货币 分单位对应的 游戏币
+     */
+    public static double realCurrency2GameCurrency(double d, int ratio, boolean isNeedChange) {
+        // 转换比例是针对  元 的，所有要先把分 转成 元
+        if (isNeedChange) {
+            return (realCurrencyFen2Yuan(d) * ratio / RATIO_UNIT);
+        } else {
+            return d;
+        }
     }
 
     /**

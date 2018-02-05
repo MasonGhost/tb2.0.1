@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -40,9 +41,6 @@ public class BillPresenter extends AppBasePresenter<BillContract.View> implement
                 .subscribe(new BaseSubscribeForV2<List<RechargeSuccessBean>>() {
                     @Override
                     protected void onSuccess(List<RechargeSuccessBean> data) {
-//                        Collections.sort(data, new TimeStringSortClass());
-                        mRootView.setMaxId(data.isEmpty() ? 0 : data.get(data.size() - 1).getMaxId());
-                        removeAction(data, mRootView.getBillType());
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
@@ -63,38 +61,14 @@ public class BillPresenter extends AppBasePresenter<BillContract.View> implement
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        List<RechargeSuccessBean> data = mRechargeSuccessBeanGreenDao.getMultiDataFromCache();
-        Collections.sort(data, new TimeStringSortClass());
-        mRootView.onCacheResponseSuccess(data, isLoadMore);
+///        List<RechargeSuccessBean> data = mRechargeSuccessBeanGreenDao.getMultiDataFromCache();
+//        Collections.sort(data, new TimeStringSortClass());
+        mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
     }
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<RechargeSuccessBean> data, boolean isLoadMore) {
         mRechargeSuccessBeanGreenDao.saveMultiData(data);
         return true;
-    }
-
-    @Override
-    public void selectBillByAction(int action) {
-        List<RechargeSuccessBean> data = mRechargeSuccessBeanGreenDao.selectBillByAction(action);
-        mRootView.onNetResponseSuccess(data, false);
-    }
-
-    @Override
-    public void selectAll() {
-        requestCacheData(1L, false);
-    }
-
-    private void removeAction(List<RechargeSuccessBean> list, Integer action) {
-        if (action == null) {
-            return;
-        }
-        Iterator<RechargeSuccessBean> rechargesIterator = list.iterator();
-        while (rechargesIterator.hasNext()) {
-            RechargeSuccessBean data = rechargesIterator.next();
-            if (data.getAction() != action) {
-                rechargesIterator.remove();
-            }
-        }
     }
 }

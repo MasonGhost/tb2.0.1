@@ -85,24 +85,41 @@ public class BillDetailFragment extends TSFragment {
         int action = mBillDetailBean.getAction(); // action =0代表 money 增加
         int status = mBillDetailBean.getStatus();
         boolean is_user = mBillDetailBean.getUserInfoBean() != null;
-        if (mBillDetailBean.getChannel().equals("system")) {  // action ==0  -， 1 +
-            mBillUser.setText(getString(action == 0 ? R.string.account_form_name : R.string.account_to_name));
-        } else {
-            mBillUser.setText(getString(action == 0 ? R.string.account_to_name : R.string.account_form_name));
-        }
+//    channel    recharge_ping_p_p - 充值, widthdraw - 提现, user - 转账, reward - 打赏
 
-        mBillStatus.setText(getString(status == 0 ? R.string.transaction_doing : (status == 1 ? R.string.transaction_success : R.string.transaction_fail)));
-        String moneyStr = (status == 1 ? (action == 0 ? "- " : "+ ") : "") + String.format(Locale.getDefault(), getString(R.string.dynamic_send_toll_select_money_),
-                (float)mBillDetailBean.getAmount());
+        switch (mBillDetailBean.getChannel()) {
+            case "recharge_ping_p_p":
+                mBillUser.setText(getString(R.string.account_form_name));
+                break;
+            case "widthdraw":
+                mBillUser.setText(R.string.account_to_name);
+                break;
+            case "user":
+                mBillUser.setText(getString(action > 0 ? R.string.account_form_name : R.string.account_to_name));
+
+
+                break;
+            case "reward":
+                mBillUser.setText(getString(action > 0 ? R.string.account_to_name : R.string.account_form_name));
+
+                break;
+            default:
+                mBillUser.setText(getString(action > 0 ? R.string.account_to_name : R.string.account_form_name));
+        }
+        mBillStatus.setText(getString(status == 0 ? R.string.transaction_doing : (status == 1 ? R.string.transaction_success : R.string
+                .transaction_fail)));
+        String moneyStr = (status == 1 ? (action < 0 ? "-" : "+") : "") + String.format(Locale.getDefault(), getString(R.string.money_format),
+                PayConfig.realCurrencyFen2Yuan(mBillDetailBean.getAmount()));
         mTvMineMoney.setText(moneyStr);
         mBillUserContainer.setVisibility(is_user ? View.VISIBLE : View.GONE);
         mBillAccountContainer.setVisibility(is_user ? View.GONE : View.VISIBLE);
         mBillAccount.setText(TextUtils.isEmpty(mBillDetailBean.getAccount()) ? mBillDetailBean.getChannel() : mBillDetailBean.getAccount());
-        mBillDesc.setText(mBillDetailBean.getBody());
+        mBillDesc.setText(!TextUtils.isEmpty(mBillDetailBean.getBody()) ? mBillDetailBean.getBody() : "");
         mBillTime.setText(TimeUtils.string2_Dya_Week_Time(mBillDetailBean.getCreated_at()));
 
-        if (!is_user)
+        if (!is_user) {
             return;
+        }
         dealUserInfo(mBillDetailBean.getUserInfoBean());
 
         RxView.clicks(mBillUserContainer).throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS).subscribe(aVoid -> {
@@ -119,20 +136,7 @@ public class BillDetailFragment extends TSFragment {
     private void dealUserInfo(UserInfoBean userInfoBean) {
         mBillUserHead.setText(userInfoBean.getName());
         ImageUtils.loadCircleUserHeadPic(userInfoBean, mIvUserPortrait);
-//        final int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
-//
-//        Glide.with(getContext())
-//                .load(ImageUtils.getUserAvatar(userInfoBean))
-//                .bitmapTransform(new GlideCircleTransform(getContext()))
-//                .placeholder(R.mipmap.pic_default_portrait1)
-//                .error(R.mipmap.pic_default_portrait1)
-//                .into(new SimpleTarget<GlideDrawable>() {
-//                    @Override
-//                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-//                        resource.setBounds(0, 0, headIconWidth, headIconWidth);
-//                        mBillUserHead.setCompoundDrawables(resource, null, null, null);
-//                    }
-//                });
+
     }
 
 }

@@ -76,10 +76,9 @@ public class CircleEarningFragment extends TSFragment<CircleEarningContract.Pres
 
     @Override
     protected void initData() {
-        mBtMember.setRightText(PayConfig.realCurrency2GameCurrency(mCircleInfo.getJoin_income_count(), mPresenter.getRatio()) + "");
-        mBtTop.setRightText(PayConfig.realCurrency2GameCurrency(mCircleInfo.getPinned_income_count(), mPresenter.getRatio()) + "");
-        mTvMineMoney.setText(String.valueOf(PayConfig.realCurrency2GameCurrency(mCircleInfo.getJoin_income_count() + mCircleInfo.getPinned_income_count()
-                , mPresenter.getRatio())));
+        mBtMember.setRightText(mCircleInfo.getJoin_income_count() + "");
+        mBtTop.setRightText(mCircleInfo.getPinned_income_count() + "");
+        mTvMineMoney.setText(String.valueOf(mCircleInfo.getJoin_income_count() + mCircleInfo.getPinned_income_count()));
     }
 
     @Override

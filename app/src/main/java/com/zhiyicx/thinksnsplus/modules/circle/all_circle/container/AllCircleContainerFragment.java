@@ -131,6 +131,7 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
         return mFragmentList;
     }
 
+
     @Override
     protected void initViewPager(View rootView) {
         mTsvToolbar = (TabSelectView) rootView.findViewById(com.zhiyicx.baseproject.R.id.tsv_toolbar);
