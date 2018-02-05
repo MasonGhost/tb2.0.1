@@ -15,6 +15,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.pingplusplus.android.Pingpp;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
@@ -129,6 +130,14 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     public void payCredentialsResult(PayStrV2Bean payStrBean) {
         mPayChargeId = payStrBean.getOrder().getId() + "";
         TSPayClient.pay(ConvertUtils.object2JsonStr(payStrBean.getPingpp_order()), getActivity());
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt, String message) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        if (getActivity() != null && Prompt.SUCCESS == prompt && getString(R.string.recharge_success).equals(message)) {
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -305,8 +314,10 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
             return;
         }
         mPayStylePopupWindow = ActionPopupWindow.builder()
-                .item2Str(rechargeTypes.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string.alipay)) : "")
-                .item3Str(rechargeTypes.contains(TSPayClient.CHANNEL_WXPAY)||rechargeTypes.contains(TSPayClient.CHANNEL_WX) ? getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)) : "")
+                .item2Str(rechargeTypes.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string
+                        .alipay)) : "")
+                .item3Str(rechargeTypes.contains(TSPayClient.CHANNEL_WXPAY) || rechargeTypes.contains(TSPayClient.CHANNEL_WX) ? getString(R.string
+                        .choose_pay_style_formart, getString(R.string.wxpay)) : "")
                 .item4Str(rechargeTypes.size() == 0 ? getString(R.string.recharge_disallow) : "")
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)

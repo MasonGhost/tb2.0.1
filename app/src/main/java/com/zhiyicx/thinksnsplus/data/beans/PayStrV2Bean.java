@@ -56,7 +56,7 @@ public class PayStrV2Bean {
         private int id;
         private int owner_id;
         private String target_type;
-        private int target_id;
+        private String target_id;
         private String title;
         private String body;
         private int type;
@@ -89,11 +89,11 @@ public class PayStrV2Bean {
             this.target_type = target_type;
         }
 
-        public int getTarget_id() {
+        public String getTarget_id() {
             return target_id;
         }
 
-        public void setTarget_id(int target_id) {
+        public void setTarget_id(String target_id) {
             this.target_id = target_id;
         }
 
