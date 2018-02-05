@@ -163,7 +163,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                     break;
                 case FILE:
                     // 文件消息 展示[文件]
-                    content = messageItemBean.getConversation().isGroup() ? lastUserName 
+                    content = messageItemBean.getConversation().isGroup() ? lastUserName
                             + mContext.getString(R.string.chat_type_file) : mContext.getString(R.string.chat_type_file);
                     break;
                 default:

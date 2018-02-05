@@ -16,7 +16,6 @@ import com.bumptech.glide.Glide;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.easeui.EaseConstant;
-import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -30,13 +29,13 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2;
 import com.zhiyicx.thinksnsplus.modules.chat.adapter.ChatMemberAdapter;
 import com.zhiyicx.thinksnsplus.modules.chat.edit.manager.GroupManagerActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.edit.name.EditGroupNameActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
 import com.zhiyicx.thinksnsplus.modules.chat.member.GroupMemberListActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.select.SelectFriendsActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -47,12 +46,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2.BUNDLE_CHAT_DATA;
+import static com.hyphenate.easeui.EaseConstant.EXTRA_TO_USER_ID;
 import static com.zhiyicx.thinksnsplus.modules.chat.edit.name.EditGroupNameFragment.GROUP_ORIGINAL_NAME;
 import static com.zhiyicx.thinksnsplus.modules.chat.edit.owner.EditGroupOwnerFragment.BUNDLE_GROUP_DATA;
 import static com.zhiyicx.thinksnsplus.modules.chat.member.GroupMemberListFragment.BUNDLE_GROUP_MEMBER;
 import static com.zhiyicx.thinksnsplus.modules.chat.select.SelectFriendsFragment.BUNDLE_GROUP_EDIT_DATA;
 import static com.zhiyicx.thinksnsplus.modules.chat.select.SelectFriendsFragment.BUNDLE_GROUP_IS_DELETE;
+import static com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2.BUNDLE_CHAT_DATA;
 
 /**
  * @author Catherine
@@ -99,7 +99,6 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     RelativeLayout mRlBlockMessage;
 
     private int mChatType;
-    public List<ChatUserInfoBean> mUserInfoBeans;
     private String mChatId;
 
     // 删除群聊
@@ -135,9 +134,8 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .SHAPE_SQUARE))
                 .build().photoSelectorImpl();
-        mUserInfoBeans = getArguments().getParcelableArrayList(ChatConfig.MESSAGE_CHAT_MEMBER_LIST);
         mChatType = getArguments().getInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_SINGLE);
-        mChatId = getArguments().getString("id");
+        mChatId = getArguments().getString(EXTRA_TO_USER_ID);
         if (mChatType == EaseConstant.CHATTYPE_SINGLE) {
             // 屏蔽群聊的布局
             mLlGroup.setVisibility(View.GONE);
@@ -261,9 +259,12 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                 }
                 break;
             case R.id.iv_user_portrait:
-                UserInfoBean userInfoBean = new UserInfoBean();
-                userInfoBean.setUser_id(mUserInfoBeans.get(1).getUser_id());
-                PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+                try {
+                    UserInfoBean userInfoBean = new UserInfoBean();
+                    userInfoBean.setUser_id(Long.parseLong(mChatId));
+                    PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+                } catch (NumberFormatException ignore) {
+                }
                 break;
             default:
         }
@@ -377,7 +378,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
 
     @Override
     public String getToUserId() {
-        return mUserInfoBeans.size() == 2 ? mUserInfoBeans.get(1).getUser_id() + "" : "";
+        return mChatType == EaseConstant.CHATTYPE_SINGLE ? mChatId : "";
     }
 
     @Override
@@ -392,8 +393,6 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             Bundle bundle = new Bundle();
             bundle.putString(EaseConstant.EXTRA_USER_ID, id);
             bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_GROUP);
-            bundle.putParcelableArrayList(ChatConfig.MESSAGE_CHAT_MEMBER_LIST,
-                    (ArrayList<? extends Parcelable>) mUserInfoBeans);
             to.putExtra(BUNDLE_CHAT_DATA, bundle);
             startActivity(to);
             getActivity().finish();
@@ -470,13 +469,10 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     private void setGroupData() {
         if (mChatType == EaseConstant.CHATTYPE_SINGLE) {
             // 单聊处理布局
-            ImageUtils.loadUserHead(mUserInfoBeans.get(1), mIvUserPortrait, false);
-            mTvUserName.setText(mUserInfoBeans.get(1).getName());
-            mIvUserPortrait.setOnClickListener(v -> {
-                UserInfoBean userInfoBean = new UserInfoBean();
-                userInfoBean.setUser_id(mUserInfoBeans.get(1).getUser_id());
-                PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
-            });
+            UserInfoBean user = mPresenter.getUserInfoFromLocal(mChatId);
+            ImageUtils.loadUserHead(user, mIvUserPortrait, false);
+            mTvUserName.setText(user.getName());
+            mIvUserPortrait.setOnClickListener(v -> PersonalCenterFragment.startToPersonalCenter(getContext(), user));
         } else {
             // 非群主屏蔽群管理
             if (!mPresenter.isGroupOwner()) {
