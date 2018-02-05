@@ -86,10 +86,12 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
             /**
              * 其他支付
              */
-            mBillRepository.getIntegrationPayStr(channel, amount.toLong(), null).doOnSubscribe {
-                mRootView.configSureBtn(false)
-                mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing))
-            }.doAfterTerminate { mRootView.configSureBtn(true) }
+            mBillRepository.getIntegrationPayStr(channel, amount.toLong(), null)
+                    .doOnSubscribe {
+                        mRootView.configSureBtn(false)
+                        mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing))
+                    }
+                    .doAfterTerminate { mRootView.configSureBtn(true) }
                     .subscribe(object : BaseSubscribeForV2<PayStrV2Bean>() {
                         override fun onSuccess(data: PayStrV2Bean) {
                             mRootView.payCredentialsResult(data, amount)

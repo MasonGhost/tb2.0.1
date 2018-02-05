@@ -43,7 +43,8 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.View> i
             mRootView.initmRechargeInstructionsPop();
             return;
         }
-        mBillRepository.getPayStr(channel, (long) amount).doOnSubscribe(() -> {
+        mBillRepository.getPayStr(channel, (long) amount)
+                .doOnSubscribe(() -> {
             mRootView.configSureBtn(false);
             mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing));
         }).subscribe(new BaseSubscribeForV2<PayStrV2Bean>() {

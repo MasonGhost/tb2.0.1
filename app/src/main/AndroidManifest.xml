@@ -418,11 +418,14 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
-        <!-- 微信支付结果类 -->
-        <activity
-            android:name=".wxapi.WXPayEntryActivity"
+
+        <!-- 微信支付 -->
+        <!-- 1.需要将以下"替换成自己 APK 的包名"换成在微信平台上注册填写的包名 -->
+        <!-- 2.WxPayEntryActivity 这个类在 SDK 内部实现，开发者不需要额外实现该类 -->
+        <activity-alias
+            android:name="${applicationId}.wxapi.WXPayEntryActivity"
             android:exported="true"
-            android:launchMode="singleTop"/>
+            android:targetActivity="com.pingplusplus.android.PaymentActivity" />
         <!-- 支付宝 -->
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
@@ -618,21 +621,27 @@
         <activity
             android:name=".modules.circle.publish.PublishPostActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".modules.circle.create.rule.RuleForCreateCircleActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name=".modules.circle.manager.members.blacklist.BlackListActivity"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.create.rule.RuleForCreateCircleActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.manager.members.blacklist.BlackListActivity"
+            android:screenOrientation="portrait"/>
         <!--扫码相关页面-->
-        <activity android:name=".modules.home.mine.scan.ScanCodeActivity"
-                android:screenOrientation="portrait"/>
-        <activity android:name=".modules.home.mine.mycode.MyCodeActivity"
-                android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.home.mine.scan.ScanCodeActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.home.mine.mycode.MyCodeActivity"
+            android:screenOrientation="portrait"/>
         <!--我的好友列表-->
-        <activity android:name=".modules.home.mine.friends.MyFriendsListActivity"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.home.mine.friends.MyFriendsListActivity"
+            android:screenOrientation="portrait"/>
         <!--搜索好友-->
-        <activity android:name=".modules.home.mine.friends.search.SearchFriendsActivity"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.home.mine.friends.search.SearchFriendsActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".modules.information.publish.detail.EditeInfoDetailActivity"/>
         <activity android:name=".modules.q_a.publish.detail.EditeQuestionDetailActivity"/>
         <activity android:name=".modules.q_a.answer.EditeAnswerDetailActivity"/>
