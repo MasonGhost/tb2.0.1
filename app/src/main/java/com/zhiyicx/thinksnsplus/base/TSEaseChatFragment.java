@@ -62,6 +62,7 @@ import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.EMLog;
 import com.hyphenate.util.PathUtil;
+import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 
@@ -76,7 +77,7 @@ import java.util.concurrent.Executors;
  * @Email Jliuer@aliyun.com
  * @Description 环信 聊天界面 fragment 基类
  */
-public class TSEaseChatFragment extends TSEaseBaseFragment implements EMMessageListener {
+public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFragment<P> implements EMMessageListener {
     protected static final String TAG = "EaseChatFragment";
     protected static final int REQUEST_CODE_MAP = 1;
     protected static final int REQUEST_CODE_CAMERA = 2;
@@ -121,8 +122,6 @@ public class TSEaseChatFragment extends TSEaseBaseFragment implements EMMessageL
     protected MyItemClickListener extendMenuItemClickListener;
     protected boolean isRoaming = false;
     private ExecutorService fetchQueue;
-
-    protected List<ChatUserInfoBean> mUserInfoBeans;
 
     @Override
     protected int getBodyLayoutId() {
@@ -302,7 +301,7 @@ public class TSEaseChatFragment extends TSEaseBaseFragment implements EMMessageL
 
     protected void onMessageListInit(){
         messageList.init(toChatUsername, chatType, chatFragmentHelper != null ?
-                chatFragmentHelper.onSetCustomChatRowProvider() : null, mUserInfoBeans);
+                chatFragmentHelper.onSetCustomChatRowProvider() : null, null);
         setListItemClickListener();
 
         messageList.getListView().setOnTouchListener((v, event) -> {
@@ -541,26 +540,7 @@ public class TSEaseChatFragment extends TSEaseBaseFragment implements EMMessageL
     // implement methods in EMMessageListener
     @Override
     public void onMessageReceived(List<EMMessage> messages) {
-        for (EMMessage message : messages) {
-            String username = null;
-            // group message
-            if (message.getChatType() == ChatType.GroupChat || message.getChatType() == ChatType.ChatRoom) {
-                username = message.getTo();
-            } else {
-                // single chat message
-                username = message.getFrom();
-            }
 
-            // if the message is for current conversation
-            if (username.equals(toChatUsername) || message.getTo().equals(toChatUsername)
-                    || message.conversationId().equals(toChatUsername)) {
-                messageList.refreshSelectLast();
-                EaseUI.getInstance().getNotifier().vibrateAndPlayTone(message);
-                conversation.markMessageAsRead(message.getMsgId());
-            } else {
-                EaseUI.getInstance().getNotifier().onNewMsg(message);
-            }
-        }
     }
 
     @Override

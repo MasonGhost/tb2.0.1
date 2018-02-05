@@ -1,8 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
-import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMConversation;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.imsdk.entity.Conversation;

@@ -1,15 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
-import android.os.Bundle;
-import android.os.Parcelable;
-
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
-import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
+import com.zhiyicx.thinksnsplus.modules.chat.callV2.TSEMHyphenate;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMMultipleMessagesEvent;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.appprocess.BackgroundUtil;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.Message;
@@ -29,7 +25,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.ChatRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.utils.NotificationUtil;
 
-import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 import org.simple.eventbus.ThreadMode;
 
@@ -217,17 +212,7 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
     @Subscriber(mode = ThreadMode.MAIN)
     public void onMessageReceived(TSEMMultipleMessagesEvent messagesEvent) {
         List<EMMessage> list = messagesEvent.getMessages();
-        LogUtils.d("Cathy", " 收到消息 :" + list);
-        // 收到消息，更新会话列表
-        Observable.just(list)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(messageList -> {
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelableArrayList(EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED_V2, (ArrayList<? extends Parcelable>) messageList);
-                    EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED_V2);
-                    setMessageTipVisable(true);
-                });
+        setMessageTipVisable(true);
         // 应用在后台，则推送通知
         if (!BackgroundUtil.getAppIsForegroundStatus()) {
             // 手动创建聊天item，从数据库取出用户信息

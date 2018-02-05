@@ -10,6 +10,7 @@ import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.bean.ChatVerifiedBean;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMMultipleMessagesEvent;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -34,7 +35,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -189,24 +189,11 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
             Subscription subscribe = mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(messageItemBeanV2s -> {
-                        List<MessageItemBeanV2> singleList = new ArrayList<>();
-                        for (MessageItemBeanV2 itemBeanV2 : messageItemBeanV2s) {
-                            if (EMConversation.EMConversationType.Chat == itemBeanV2.getConversation().getType()) {
-                                singleList.add(itemBeanV2);
-                            }
-                        }
-                        for (MessageItemBeanV2 itemBeanV2 : mRootView.getListDatas()) {
-                            if (EMConversation.EMConversationType.GroupChat == itemBeanV2.getConversation().getType()) {
-                                singleList.add(itemBeanV2);
-                            }
-                        }
-
                         if (mCopyConversationList == null) {
                             mCopyConversationList = new ArrayList<>();
                         }
-                        mCopyConversationList = singleList;
-
-                        mRootView.onNetResponseSuccess(singleList, isLoadMore);
+                        mCopyConversationList = messageItemBeanV2s;
+                        mRootView.onNetResponseSuccess(messageItemBeanV2s, isLoadMore);
                         mRootView.hideStickyMessage();
                         checkBottomMessageTip();
                     });
@@ -304,15 +291,14 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
     /**
      * 收到聊天消息
      *
-     * @param bundle 聊天类容
+     * @param messagesEvent 聊天类容
      */
-    @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED_V2)
-    private void onNewMessageReceived(Bundle bundle) {
-        if (bundle == null) {
+    @Subscriber(mode = ThreadMode.MAIN)
+    public void onMessageReceived(TSEMMultipleMessagesEvent messagesEvent) {
+        if (messagesEvent.getMessages() == null || messagesEvent.getMessages().isEmpty()) {
             return;
         }
-        LogUtils.d("Cathy", "MessagePresenter onMessageReceived" + bundle);
-        List<EMMessage> list = bundle.getParcelableArrayList(EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED_V2);
+        List<EMMessage> list = messagesEvent.getMessages();
         Subscription subscribe = Observable.just(list)
                 .subscribeOn(Schedulers.io())
                 .flatMap(messageList -> {
@@ -337,6 +323,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                                     break;
                                 } else if (i == size - 1) {
                                     // 循环到最后一条，仍然没有会话，那则证明是需要新增一条到会话列表
+                                    LogUtils.d("msg::" + "newMsg");
                                     MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
                                     itemBeanV2.setConversation(conversationNew);
                                     itemBeanV2.setEmKey(conversationNew.conversationId());

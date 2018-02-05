@@ -649,7 +649,7 @@
             android:screenOrientation="portrait"/>
         <!--环信的聊天页面-->
         <activity
-            android:name=".modules.chat.ChatActivityV2"
+            android:name=".modules.chat.v2.ChatActivityV2"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
         <!--发送位置-->

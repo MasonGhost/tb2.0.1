@@ -75,8 +75,7 @@ public class EaseMessageAdapter extends BaseAdapter{
 	private EMConversation conversation;
 	EMMessage[] messages = null;
 	/**当前聊天的用户列表*/
-	private SparseArray<ChatUserInfoBean> mUserInfoBeanSparseArray = new SparseArray<>();
-	
+
     private String toChatUsername;
 
     private MessageListItemClickListener itemClickListener;
@@ -94,9 +93,9 @@ public class EaseMessageAdapter extends BaseAdapter{
 		this.context = context;
 		this.listView = listView;
 		toChatUsername = username;
-		for (ChatUserInfoBean chatUserInfoBean : userInfoBeans){
-			mUserInfoBeanSparseArray.put(chatUserInfoBean.getUser_id().intValue(), chatUserInfoBean);
-		}
+//		for (ChatUserInfoBean chatUserInfoBean : userInfoBeans){
+//			mUserInfoBeanSparseArray.put(chatUserInfoBean.getUser_id().intValue(), chatUserInfoBean);
+//		}
 		this.conversation = EMClient.getInstance().chatManager().getConversation(username, EaseCommonUtils.getConversationType(chatType), true);
 	}
 
@@ -104,9 +103,9 @@ public class EaseMessageAdapter extends BaseAdapter{
 	 * 更新用户信息
 	 */
 	public void refreshUserList(List<ChatUserInfoBean> userInfoBeans){
-		for (ChatUserInfoBean chatUserInfoBean : userInfoBeans){
-			mUserInfoBeanSparseArray.put(chatUserInfoBean.getUser_id().intValue(), chatUserInfoBean);
-		}
+//		for (ChatUserInfoBean chatUserInfoBean : userInfoBeans){
+//			mUserInfoBeanSparseArray.put(chatUserInfoBean.getUser_id().intValue(), chatUserInfoBean);
+//		}
 	}
 
 	Handler handler = new Handler() {
@@ -240,7 +239,8 @@ public class EaseMessageAdapter extends BaseAdapter{
 	}
 
 	protected EaseChatRowPresenter createChatRowPresenter(EMMessage message, int position) {
-		ChatUserInfoBean chatUserInfoBean = mUserInfoBeanSparseArray.get(Integer.parseInt(message.getFrom()));
+//		ChatUserInfoBean chatUserInfoBean = mUserInfoBeanSparseArray.get(Integer.parseInt(message.getFrom()));
+		ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
         if(customRowProvider != null && customRowProvider.getCustomChatRow(message, position, this, chatUserInfoBean) != null){
 			return customRowProvider.getCustomChatRow(message, position, this, chatUserInfoBean);
         }
@@ -282,7 +282,8 @@ public class EaseMessageAdapter extends BaseAdapter{
 	@SuppressLint("NewApi")
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		EMMessage message = getItem(position);
-		ChatUserInfoBean chatUserInfoBean = mUserInfoBeanSparseArray.get(Integer.parseInt(message.getFrom()));
+//		ChatUserInfoBean chatUserInfoBean = mUserInfoBeanSparseArray.get(Integer.parseInt(message.getFrom()));
+		ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
 		EaseChatRowPresenter presenter = null;
 
 		if (convertView == null) {

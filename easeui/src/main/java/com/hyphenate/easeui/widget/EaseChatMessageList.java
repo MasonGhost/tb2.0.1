@@ -33,8 +33,6 @@ public class EaseChatMessageList extends RelativeLayout{
 
     protected EaseMessageListItemStyle itemStyle;
 
-    private List<ChatUserInfoBean> mUserInfoBeans;
-
     public EaseChatMessageList(Context context, AttributeSet attrs, int defStyle) {
         this(context, attrs);
     }
@@ -66,9 +64,8 @@ public class EaseChatMessageList extends RelativeLayout{
     public void init(String toChatUsername, int chatType, EaseCustomChatRowProvider customChatRowProvider, List<ChatUserInfoBean> userInfoBeans) {
         this.chatType = chatType;
         this.toChatUsername = toChatUsername;
-        this.mUserInfoBeans = userInfoBeans;
         conversation = EMClient.getInstance().chatManager().getConversation(toChatUsername, EaseCommonUtils.getConversationType(chatType), true);
-        messageAdapter = new EaseMessageAdapter(context, toChatUsername, chatType, listView, mUserInfoBeans);
+        messageAdapter = new EaseMessageAdapter(context, toChatUsername, chatType, listView, null);
         messageAdapter.setItemStyle(itemStyle);
         messageAdapter.setCustomChatRowProvider(customChatRowProvider);
         // set message adapter
@@ -81,8 +78,8 @@ public class EaseChatMessageList extends RelativeLayout{
      * 更新用户信息
      */
     public void refreshUserList(List<ChatUserInfoBean> userInfoBeans){
-        mUserInfoBeans = userInfoBeans;
-        messageAdapter.refreshUserList(mUserInfoBeans);
+//        mUserInfoBeans = userInfoBeans;
+//        messageAdapter.refreshUserList(mUserInfoBeans);
     }
     
     protected void parseStyle(Context context, AttributeSet attrs) {

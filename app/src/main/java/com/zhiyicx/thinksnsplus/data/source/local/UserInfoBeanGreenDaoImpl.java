@@ -34,8 +34,11 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
 
     @Override
     public void saveMultiData(List<UserInfoBean> multiData) {
+        if (multiData == null) {
+            return;
+        }
         UserInfoBeanDao userInfoBeanDao = getWDaoSession().getUserInfoBeanDao();
-        userInfoBeanDao.insertInTx(multiData);
+        userInfoBeanDao.insertOrReplaceInTx(multiData);
     }
 
     @Override

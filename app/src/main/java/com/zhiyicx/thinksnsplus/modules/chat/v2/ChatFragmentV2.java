@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.chat;
+package com.zhiyicx.thinksnsplus.modules.chat.v2;
 
 import android.Manifest;
 import android.app.Activity;
@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.Toast;
@@ -15,8 +14,8 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
+import com.hyphenate.easeui.EaseUI;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
-import com.hyphenate.easeui.bean.ChatVerifiedBean;
 import com.hyphenate.easeui.ui.EaseGroupListener;
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
@@ -31,7 +30,6 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.TSEaseChatFragment;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.modules.chat.callV2.video.VideoCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.call.VoiceCallActivity;
@@ -53,11 +51,9 @@ import org.simple.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.hyphenate.easeui.EaseConstant.EXTRA_CHAT_TYPE;
-import static com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig.MESSAGE_CHAT_MEMBER_LIST;
 
 /**
  * @author Catherine
@@ -66,7 +62,8 @@ import static com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig.MESSAGE_CHAT
  * @contact email:648129313@qq.com
  */
 
-public class ChatFragmentV2 extends TSEaseChatFragment implements TSEaseChatFragment.EaseChatFragmentHelper {
+public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
+        implements TSEaseChatFragment.EaseChatFragmentHelper,ChatContractV2.View {
 
     private static final int REQUEST_CODE_SELECT_VIDEO = 11;
     private static final int REQUEST_CODE_SELECT_FILE = 12;
@@ -135,9 +132,9 @@ public class ChatFragmentV2 extends TSEaseChatFragment implements TSEaseChatFrag
     protected void setUpView() {
         setChatFragmentHelper(this);
         mUserInfoBeanGreenDao = new UserInfoBeanGreenDaoImpl(getActivity().getApplication());
-        mUserInfoBeans = getArguments().getParcelableArrayList(MESSAGE_CHAT_MEMBER_LIST);
         if (chatType == EaseConstant.CHATTYPE_SINGLE) {
-            setCenterText(mUserInfoBeans.get(1).getName());
+//            setCenterText(mUserInfoBeans.get(1).getName());
+            setCenterText("test");
 
         } else if (chatType == EaseConstant.CHATTYPE_GROUP) {
             EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatUsername);
@@ -188,7 +185,7 @@ public class ChatFragmentV2 extends TSEaseChatFragment implements TSEaseChatFrag
         Intent intent = new Intent(getActivity(), ChatInfoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("id", toChatUsername);
-        bundle.putParcelableArrayList(MESSAGE_CHAT_MEMBER_LIST, (ArrayList<? extends Parcelable>) mUserInfoBeans);
+//        bundle.putParcelableArrayList(MESSAGE_CHAT_MEMBER_LIST, (ArrayList<? extends Parcelable>) mUserInfoBeans);
         bundle.putInt(EXTRA_CHAT_TYPE, chatType);
         intent.putExtras(bundle);
         startActivity(intent);
@@ -295,6 +292,35 @@ public class ChatFragmentV2 extends TSEaseChatFragment implements TSEaseChatFrag
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_chat_v2;
+    }
+
+    @Override
+    public void onMessageReceived(List<EMMessage> messages) {
+        mPresenter.dealMessages(messages);
+    }
+
+    @Override
+    public void onMessageReceivedWithUserInfo(List<EMMessage> messages) {
+        for (EMMessage message : messages) {
+            String username = null;
+            // group message
+            if (message.getChatType() == EMMessage.ChatType.GroupChat || message.getChatType() == EMMessage.ChatType.ChatRoom) {
+                username = message.getTo();
+            } else {
+                // single chat message
+                username = message.getFrom();
+            }
+
+            // if the message is for current conversation
+            if (username.equals(toChatUsername) || message.getTo().equals(toChatUsername)
+                    || message.conversationId().equals(toChatUsername)) {
+                messageList.refreshSelectLast();
+                EaseUI.getInstance().getNotifier().vibrateAndPlayTone(message);
+                conversation.markMessageAsRead(message.getMsgId());
+            } else {
+                EaseUI.getInstance().getNotifier().onNewMsg(message);
+            }
+        }
     }
 
     @Override
@@ -504,35 +530,35 @@ public class ChatFragmentV2 extends TSEaseChatFragment implements TSEaseChatFrag
 
         @Override
         public void onMemberExited(String groupId, String member) {
-            for (ChatUserInfoBean chatUserInfoBean : mUserInfoBeans) {
-                if (member.equals(chatUserInfoBean.getUser_id() + "")) {
-                    mUserInfoBeans.remove(chatUserInfoBean);
-                    messageList.refreshUserList(mUserInfoBeans);
-                    break;
-                }
-            }
+//            for (ChatUserInfoBean chatUserInfoBean : mUserInfoBeans) {
+//                if (member.equals(chatUserInfoBean.getUser_id() + "")) {
+//                    mUserInfoBeans.remove(chatUserInfoBean);
+//                    messageList.refreshUserList(mUserInfoBeans);
+//                    break;
+//                }
+//            }
         }
 
         @Override
         public void onMemberJoined(String groupId, String member) {
-            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(member));
-            if (userInfoBean != null) {
-                ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
-                chatUserInfoBean.setUser_id(userInfoBean.getUser_id());
-                chatUserInfoBean.setSex(userInfoBean.getSex());
-                chatUserInfoBean.setName(userInfoBean.getName());
-                chatUserInfoBean.setAvatar(userInfoBean.getAvatar());
-                if (userInfoBean.getVerified() != null) {
-                    ChatVerifiedBean chatVerifiedBean = new ChatVerifiedBean();
-                    chatVerifiedBean.setType(userInfoBean.getVerified().getType());
-                    chatVerifiedBean.setStatus(userInfoBean.getVerified().getStatus());
-                    chatVerifiedBean.setIcon(userInfoBean.getVerified().getIcon());
-                    chatVerifiedBean.setDescription(userInfoBean.getVerified().getDescription());
-                    chatUserInfoBean.setVerified(chatVerifiedBean);
-                }
-                mUserInfoBeans.add(chatUserInfoBean);
-                messageList.refreshUserList(mUserInfoBeans);
-            }
+//            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(member));
+//            if (userInfoBean != null) {
+//                ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
+//                chatUserInfoBean.setUser_id(userInfoBean.getUser_id());
+//                chatUserInfoBean.setSex(userInfoBean.getSex());
+//                chatUserInfoBean.setName(userInfoBean.getName());
+//                chatUserInfoBean.setAvatar(userInfoBean.getAvatar());
+//                if (userInfoBean.getVerified() != null) {
+//                    ChatVerifiedBean chatVerifiedBean = new ChatVerifiedBean();
+//                    chatVerifiedBean.setType(userInfoBean.getVerified().getType());
+//                    chatVerifiedBean.setStatus(userInfoBean.getVerified().getStatus());
+//                    chatVerifiedBean.setIcon(userInfoBean.getVerified().getIcon());
+//                    chatVerifiedBean.setDescription(userInfoBean.getVerified().getDescription());
+//                    chatUserInfoBean.setVerified(chatVerifiedBean);
+//                }
+//                mUserInfoBeans.add(chatUserInfoBean);
+//                messageList.refreshUserList(mUserInfoBeans);
+//            }
         }
 
         @Override

@@ -45,6 +45,7 @@ public class TSSearchView extends AppCompatEditText implements View.OnKeyListene
 
     public interface OnSearchClickListener {
         void onSearchClick(View view);
+
         void onTextChanged(CharSequence s, int start, int before, int count);
     }
 
@@ -82,6 +83,9 @@ public class TSSearchView extends AppCompatEditText implements View.OnKeyListene
             this.setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, drawableDel, null);
             super.onDraw(canvas);
         } else { // 如果不是默认样式，需要将图标绘制在中间
+            if (TextUtils.isEmpty(getHint())) {
+                return;
+            }
             float textWidth = getPaint().measureText(getHint().toString());
             int drawablePadding = getCompoundDrawablePadding();
             int drawableWidth = drawableLeft.getIntrinsicWidth();
@@ -160,7 +164,7 @@ public class TSSearchView extends AppCompatEditText implements View.OnKeyListene
     @Override
     public void onTextChanged(CharSequence arg0, int arg1, int arg2,
                               int arg3) {
-        if (listener != null){
+        if (listener != null) {
             listener.onTextChanged(arg0, arg1, arg2, arg3);
         }
     }

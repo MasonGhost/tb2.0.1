@@ -10,6 +10,8 @@ import android.view.inputmethod.InputMethodManager;
 import com.hyphenate.easeui.R;
 import com.hyphenate.easeui.widget.EaseTitleBar;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.mvp.i.IBasePresenter;
+import com.zhiyicx.thinksnsplus.modules.chat.v2.ChatContractV2;
 
 /**
  * @author Jliuer
@@ -17,7 +19,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
  * @Email Jliuer@aliyun.com
  * @Description 环信 fragment 基类，继承 ts+ 基类
  */
-public abstract class TSEaseBaseFragment extends TSFragment{
+public abstract class TSEaseBaseFragment<P extends IBasePresenter> extends TSFragment<P>{
     protected InputMethodManager inputMethodManager;
 
     @Override

@@ -1,7 +1,8 @@
-package com.zhiyicx.thinksnsplus.modules.chat.call;
+package com.zhiyicx.thinksnsplus.modules.chat.callV2;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Application;
 import android.content.Context;
 import android.content.IntentFilter;
 
@@ -21,23 +22,31 @@ import com.hyphenate.chat.EMMucSharedFile;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.EaseUI;
+import com.hyphenate.easeui.bean.ChatUserInfoBean;
+import com.hyphenate.easeui.bean.ChatVerifiedBean;
+import com.hyphenate.exceptions.HyphenateException;
 import com.zhiyicx.baseproject.em.manager.TSEMCallStatus;
 import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
+import com.zhiyicx.baseproject.em.manager.control.TSEMContacterEntity;
 import com.zhiyicx.baseproject.em.manager.control.TSEMDateUtil;
+import com.zhiyicx.baseproject.em.manager.control.TSEMessageUtils;
 import com.zhiyicx.baseproject.em.manager.control.TSEmConversationExtUtils;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMApplyForEvent;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMCallEvent;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMConnectionEvent;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMContactsEvent;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMMultipleMessagesEvent;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.baseproject.em.manager.control.TSEMContacterEntity;
-import com.zhiyicx.baseproject.em.manager.control.TSEMessageUtils;
-import com.zhiyicx.baseproject.em.manager.eventbus.TSEMContactsEvent;
-import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
-import com.zhiyicx.thinksnsplus.modules.chat.call.receiver.TSEMCallReceiver;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.modules.chat.callV2.receiver.TSEMCallReceiver;
+import com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2;
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 
 import org.simple.eventbus.EventBus;
 
@@ -104,6 +113,8 @@ public class TSEMHyphenate {
      * 表示是是否解绑Token，一般离线状态都要设置为false
      */
     private boolean isUnbuildToken = true;
+
+    private UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     /**
      * 单例类，用来初始化环信的sdk
@@ -274,7 +285,7 @@ public class TSEMHyphenate {
                 public void onCallStateChanged(CallState callState, CallError callError) {
 
                     TSEMCallEvent event = new TSEMCallEvent();
-                    if (EMClient.getInstance().callManager().getCurrentCallSession()!=null){
+                    if (EMClient.getInstance().callManager().getCurrentCallSession() != null) {
                         String extraMsg = EMClient.getInstance().callManager().getCurrentCallSession().getExt();
                         event.setExtraMsg(extraMsg);
                     }
@@ -441,11 +452,11 @@ public class TSEMHyphenate {
             @Override
             public void onMessageReceived(List<EMMessage> list) {
                 // 判断当前活动界面是不是聊天界面，如果是，全局不处理消息
-//                if (TSEMHyphenate.getInstance().getActivityList().size() > 0) {
-//                    if (TSEMHyphenate.getInstance().getTopActivity().getClass().getSimpleName().equals("ChatActivityV2")) {
-//                        return;
-//                    }
-//                }
+                if (TSEMHyphenate.getInstance().getActivityList().size() > 0) {
+                    if (ChatActivityV2.class.getSimpleName().equals(TSEMHyphenate.getInstance().getTopActivity().getClass().getSimpleName())) {
+                        return;
+                    }
+                }
                 // 遍历消息集合
                 for (EMMessage message : list) {
                     // 更新会话时间
@@ -483,7 +494,7 @@ public class TSEMHyphenate {
             public void onCmdMessageReceived(List<EMMessage> list) {
                 // 判断当前活动界面是不是聊天界面，如果是，全局不处理消息
                 if (TSEMHyphenate.getInstance().getActivityList().size() > 0) {
-                    if (TSEMHyphenate.getInstance().getTopActivity().getClass().getSimpleName().equals("ChatActivityV2")) {
+                    if (HomeActivity.class.getSimpleName().equals(TSEMHyphenate.getInstance().getTopActivity().getClass().getSimpleName())) {
                         return;
                     }
                 }
@@ -499,6 +510,38 @@ public class TSEMHyphenate {
                     // 判断是不是撤回消息的透传
                     if (body.action().equals(TSEMConstants.TS_ATTR_RECALL)) {
                         TSEMessageUtils.receiveRecallMessage(mContext, cmdMessage);
+                    }
+                    String typeName = "type";
+                    String typeUID = "uid";
+                    String msgType = "";
+                    String uid = "";
+                    String content = "";
+                    try {
+                        msgType = cmdMessage.getStringAttribute(typeName);
+                        uid = cmdMessage.getStringAttribute(typeUID);
+                        LogUtils.d("Cathy", ((EMCmdMessageBody) cmdMessage.getBody()).getParams().toString());
+                        LogUtils.d("Cathy", cmdMessage.toString());
+                        LogUtils.d("Cathy", ((EMCmdMessageBody) cmdMessage.getBody()).action());
+                        LogUtils.d("Cathy", (cmdMessage.ext()));
+                        LogUtils.d("Cathy", (cmdMessage.getJSONObjectAttribute("contents")));
+
+                    } catch (HyphenateException e) {
+                        e.printStackTrace();
+                    }
+
+                    // 用户加入
+                    if (TSEMConstants.TS_ATTR_JOIN.equals(msgType)) {
+                        TSEMessageUtils.sendGroupMemberJoinOrExitMessage(uid, content, true, null);
+                    }
+
+                    // 用户退出
+                    if (TSEMConstants.TS_ATTR_EIXT.equals(msgType)) {
+
+                    }
+
+                    // 用户退出
+                    if (TSEMConstants.TS_ATTR_GROUP_CRATE.equals(msgType)) {
+
                     }
                 }
             }
@@ -882,12 +925,12 @@ public class TSEMHyphenate {
             }
 
             @Override
-            public void onMemberJoined(final String groupId,  final String member) {
+            public void onMemberJoined(final String groupId, final String member) {
 
             }
 
             @Override
-            public void onMemberExited(final String groupId,  final String member) {
+            public void onMemberExited(final String groupId, final String member) {
             }
 
             @Override
@@ -1021,6 +1064,39 @@ public class TSEMHyphenate {
             return ActivityHandler.getInstance().currentActivity();
         }
         return null;
+    }
+
+    public ChatUserInfoBean getChatUser(String userId) {
+        Long id = null;
+        try {
+            id = Long.parseLong(userId);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+        if (mUserInfoBeanGreenDao == null) {
+            mUserInfoBeanGreenDao = new UserInfoBeanGreenDaoImpl((Application) AppApplication.getContext());
+        }
+        return getChatUser(mUserInfoBeanGreenDao.getSingleDataFromCache(id));
+    }
+
+    private ChatUserInfoBean getChatUser(UserInfoBean userInfoBean) {
+        if (userInfoBean == null) {
+            return null;
+        }
+        ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
+        chatUserInfoBean.setUser_id(userInfoBean.getUser_id());
+        chatUserInfoBean.setAvatar(userInfoBean.getAvatar());
+        chatUserInfoBean.setName(userInfoBean.getName());
+        chatUserInfoBean.setSex(userInfoBean.getSex());
+        if (userInfoBean.getVerified() != null) {
+            ChatVerifiedBean verifiedBean = new ChatVerifiedBean();
+            verifiedBean.setDescription(userInfoBean.getVerified().getDescription());
+            verifiedBean.setIcon(userInfoBean.getVerified().getIcon());
+            verifiedBean.setStatus(userInfoBean.getVerified().getStatus());
+            verifiedBean.setType(userInfoBean.getVerified().getType());
+            chatUserInfoBean.setVerified(verifiedBean);
+        }
+        return chatUserInfoBean;
     }
 
     public void replease() {

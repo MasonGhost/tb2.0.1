@@ -7,13 +7,8 @@ import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.SoundPool;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.annotation.Nullable;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
 
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMCallManager;
@@ -27,11 +22,9 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
 import com.zhiyicx.baseproject.em.manager.control.TSEMDateUtil;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMCallEvent;
-import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
 
 import org.simple.eventbus.Subscriber;
 import org.simple.eventbus.ThreadMode;

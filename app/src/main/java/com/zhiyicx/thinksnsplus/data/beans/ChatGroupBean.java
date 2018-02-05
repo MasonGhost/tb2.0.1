@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
@@ -14,6 +15,7 @@ import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
 import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
 
 /**
@@ -46,18 +48,17 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
 
     /**
      * 更新群信息返回的内容
-     "groupname": "呱呱",
-     "desc": "暂无",
-     "public": false,
-     "maxusers": "200",
-     "members_only": true,
-     "allowinvites": false,
-     "group_face": "",
-     "im_group_id": "39098857357316"
-     *
-     * */
+     * "groupname": "呱呱",
+     * "desc": "暂无",
+     * "public": false,
+     * "maxusers": "200",
+     * "members_only": true,
+     * "allowinvites": false,
+     * "group_face": "",
+     * "im_group_id": "39098857357316"
+     */
 
-    
+
     @Id(autoincrement = true)
     private Long key;
     @SerializedName(value = "id", alternate = {"im_group_id"})
@@ -78,7 +79,7 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
     private String created;
     private String group_face;
     private int affiliations_count;
-    @Convert(columnType = String.class,converter = UserInfoListBeanConvert.class)
+    @Convert(columnType = String.class, converter = UserInfoListBeanConvert.class)
     private List<UserInfoBean> affiliations;
     @SerializedName("public")
     private boolean isPublic;
@@ -96,6 +97,9 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
     }
 
     public void setName(String name) {
+        if (TextUtils.isEmpty(name)) {
+            return;
+        }
         this.name = name;
     }
 
@@ -136,6 +140,9 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
     }
 
     public void setOwner(long owner) {
+        if (owner <= 0) {
+            return;
+        }
         this.owner = owner;
     }
 
@@ -168,6 +175,9 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
     }
 
     public void setGroup_face(String group_face) {
+        if (TextUtils.isEmpty(group_face)) {
+            return;
+        }
         this.group_face = group_face;
     }
 
@@ -265,9 +275,9 @@ public class ChatGroupBean extends BaseListBean implements Parcelable, Serializa
 
     @Generated(hash = 2060602613)
     public ChatGroupBean(Long key, String id, String name, String description,
-            boolean membersonly, boolean allowinvites, int maxusers, long owner,
-            String created, String group_face, int affiliations_count,
-            List<UserInfoBean> affiliations, boolean isPublic) {
+                         boolean membersonly, boolean allowinvites, int maxusers, long owner,
+                         String created, String group_face, int affiliations_count,
+                         List<UserInfoBean> affiliations, boolean isPublic) {
         this.key = key;
         this.id = id;
         this.name = name;

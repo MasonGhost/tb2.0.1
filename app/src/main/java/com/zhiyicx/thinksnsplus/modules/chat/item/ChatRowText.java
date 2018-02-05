@@ -10,7 +10,11 @@ import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.utils.EaseSmileUtils;
 import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
+import com.zhiyicx.common.config.ConstantConfig;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
+
+import static com.zhiyicx.thinksnsplus.widget.chat.MessageTextItemDelagate.MAX_SPACING_TIME;
 
 
 /**
@@ -22,6 +26,7 @@ import com.zhiyicx.thinksnsplus.R;
 
 public class ChatRowText extends ChatBaseRow {
     private TextView mTvChatContent;
+    private boolean adminMsg;
 
     public ChatRowText(Context context, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean userInfoBean) {
         super(context, message, position, adapter, userInfoBean);
@@ -30,11 +35,12 @@ public class ChatRowText extends ChatBaseRow {
     @Override
     protected void onInflateView() {
         int resId;
-        boolean isJoinOrEixt = false;
+        boolean isGroupChange = TSEMConstants.TS_ATTR_GROUP_CHANGE.equals(message.ext().get("type"))
+                || TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"))
+                || TSEMConstants.TS_ATTR_JOIN.equals(message.ext().get("type"));
 
-//        boolean isJoinOrEixt = message.getBooleanAttribute(TSEMConstants.TS_ATTR_JOIN, false)
-//                || message.getBooleanAttribute(TSEMConstants.TS_ATTR_EIXT, false);
-        if (isJoinOrEixt) {
+        adminMsg = "admin".equals(message.getUserName()) || isGroupChange;
+        if (adminMsg) {
             resId = R.layout.include_chat_extra;
         } else {
             resId = message.direct() == EMMessage.Direct.SEND ?
@@ -51,7 +57,23 @@ public class ChatRowText extends ChatBaseRow {
 
     @Override
     protected void onSetUpView() {
-        super.onSetUpView();
+        if (adminMsg) {
+            if (position == 0) {
+                mTvChatTime.setText(TimeUtils.getTimeFriendlyForChat(message.getMsgTime()));
+                mTvChatTime.setVisibility(VISIBLE);
+            } else {
+                EMMessage prevMessage = (EMMessage) adapter.getItem(position - 1);
+                if ((message.getMsgTime() - prevMessage.getMsgTime()) >= (MAX_SPACING_TIME * ConstantConfig.MIN)) {
+                    mTvChatTime.setText(TimeUtils.getTimeFriendlyForChat(message.getMsgTime()));
+                    mTvChatTime.setVisibility(VISIBLE);
+                } else {
+                    mTvChatTime.setVisibility(GONE);
+                }
+            }
+        } else {
+            super.onSetUpView();
+        }
+
         EMTextMessageBody txtBody = (EMTextMessageBody) message.getBody();
         // 正文
         Spannable span = EaseSmileUtils.getSmiledText(context, txtBody.getMessage());

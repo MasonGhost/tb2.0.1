@@ -16,7 +16,7 @@ import com.pingplusplus.android.Pingpp;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.base.TSApplication;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
+import com.zhiyicx.thinksnsplus.modules.chat.callV2.TSEMHyphenate;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.base.BaseApplication;

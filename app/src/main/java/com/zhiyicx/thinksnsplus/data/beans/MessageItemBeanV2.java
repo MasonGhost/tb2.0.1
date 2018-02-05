@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
 
+import android.os.Parcel;
+
 import com.hyphenate.chat.EMConversation;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.cache.CacheBean;
@@ -85,4 +87,5 @@ public class MessageItemBeanV2 extends BaseListBean implements Serializable {
                 ", chatGroupBean=" + chatGroupBean +
                 '}';
     }
+
 }

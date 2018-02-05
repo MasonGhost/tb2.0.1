@@ -58,12 +58,22 @@ public class TSEMConstants {
     /**
      * 用户加入群组
      */
-    public static final String TS_ATTR_JOIN = "ts_attr_join";
+    public static final String TS_ATTR_JOIN = "ts_user_join";
 
     /**
      * 用户退出群组
      */
-    public static final String TS_ATTR_EIXT = "ts_attr_exit";
+    public static final String TS_ATTR_EIXT = "ts_user_exit";
+
+    /**
+     * 用户创建群聊
+     */
+    public static final String TS_ATTR_GROUP_CRATE = "ts_group_crate";
+
+    /**
+     * 用户修改群信息
+     */
+    public static final String TS_ATTR_GROUP_CHANGE = "ts_group_change";
     // 状态
     public static final String ML_ATTR_STATUS = "ml_attr_status";
     // 类型

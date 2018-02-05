@@ -124,20 +124,14 @@ public class TSEMessageUtils {
     }
 
     /**
-     * 发送一条撤回消息的透传，这里需要和接收方协商定义，通过一个透传，并加上扩展去实现消息的撤回
-     *
-     * @param message  需要撤回的消息
-     * @param callBack 发送消息的回调，通知调用方发送撤回消息的结果
+     * @param to       发送到 ...
+     * @param content  发送的内容
+     * @param isJoin
+     * @param callBack
      */
-    /**
-     * @author Jliuer
-     * @Date 18/02/03 11:00
-     * @Email Jliuer@aliyun.com
-     * @Description
-     */
-    public static void sendGroupMemberJoinOrExitMessage(String to,String member ,boolean isJoin, final EMCallBack callBack) {
+    public static void sendGroupMemberJoinOrExitMessage(String to, String content, boolean isJoin, final EMCallBack callBack) {
 
-        EMMessage message = EMMessage.createTxtSendMessage(member,to);
+        EMMessage message = EMMessage.createTxtSendMessage(content, to);
         message.setChatType(EMMessage.ChatType.GroupChat);
         long currTime = TSEMDateUtil.getCurrentMillisecond();
         message.setMsgTime(currTime);
@@ -148,12 +142,16 @@ public class TSEMessageUtils {
         message.setMessageStatusCallback(new EMCallBack() {
             @Override
             public void onSuccess() {
-                callBack.onSuccess();
+                if (callBack != null) {
+                    callBack.onSuccess();
+                }
             }
 
             @Override
             public void onError(int i, String s) {
-                callBack.onError(i, s);
+                if (callBack != null) {
+                    callBack.onError(i, s);
+                }
             }
 
             @Override

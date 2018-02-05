@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
-import android.nfc.FormatException;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
@@ -145,11 +144,12 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                             String chatGroupId = itemBeanV2.getConversation().conversationId();
                             try {
                                 Long userId = Long.parseLong(itemBeanV2.getConversation().getLastMessage().getFrom());
-                                LogUtils.d("lase::"+userId);
+                                LogUtils.d("lastMsg::" + userId);
                                 if (mUserInfoBeanGreenDao.getSingleDataFromCache(userId) == null) {
                                     users.add(itemBeanV2.getConversation().getLastMessage().getFrom());
                                 }
-                            }catch (NumberFormatException ignored){}
+                            } catch (NumberFormatException ignored) {
+                            }
 
                             ChatGroupBean chatGroupBean = mChatGroupBeanGreenDao.getChatGroupBeanById(chatGroupId);
 
@@ -237,5 +237,10 @@ public class BaseMessageRepository implements IBaseMessageRepository {
         return mClient.getGroupInfo(ids)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<UserInfoBean> getUserInfo(String id) {
+        return null;
     }
 }
