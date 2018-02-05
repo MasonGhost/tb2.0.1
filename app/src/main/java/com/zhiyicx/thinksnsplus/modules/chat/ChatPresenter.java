@@ -21,6 +21,7 @@ import com.zhiyicx.imsdk.manage.ChatClient;
 import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.DefaultUserInfoConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
@@ -170,7 +171,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.View> implements C
             public void onSuccess() {
                 // 发送成功 需要刷新页面
                 LogUtils.d("Cathy", "发送成功" + message.getBody().toString());
-                if (mRootView.getListDatas().isEmpty()||mRootView.getListDatas().size()==1) {
+                if (mRootView.getListDatas().isEmpty() || mRootView.getListDatas().size() == 1) {
                     Observable.just("")
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(s -> {
@@ -314,12 +315,16 @@ public class ChatPresenter extends BasePresenter<ChatContract.View> implements C
         ChatItemBean chatItemBean = new ChatItemBean();
         chatItemBean.setMessage(message);
         // 消息的来源与当前用户不一致，则证明非当前用户
-        String currentUser = String.valueOf(AppApplication.getmCurrentLoginAuth() != null ? (int) AppApplication.getMyUserIdWithdefault() : 0);
-        if (!message.getFrom().equals(currentUser)) {
+        String currentUser = String.valueOf(AppApplication.getMyUserIdWithdefault());
+        if (!currentUser.equals(message.getFrom())) {
             // 当前这个版本还没有群聊呢，要快速出版本，暂时不考虑群聊的情况，后面需要根据来源查找用户信息
             currentUser = message.getFrom();
         }
-        chatItemBean.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(currentUser)));
+        try {
+            chatItemBean.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(currentUser)));
+        } catch (NumberFormatException e) {
+            chatItemBean.setUserInfo(DefaultUserInfoConfig.getDefaultDeletUserInfo(mContext, AppApplication.getMyUserIdWithdefault()));
+        }
         // 如果没有用户信息则去完善用户信息，之后如果有群聊也可以直接这样，
         // 但是有个问题，如果用户信息更新了，数据库没有更新，那么是不会更新的
         Subscription subscription = Observable.just(chatItemBean)
