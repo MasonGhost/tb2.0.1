@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.chat.presenter;
+package com.zhiyicx.thinksnsplus.modules.chat.item.presenter;
 
 import android.content.Context;
 import android.os.AsyncTask;

@@ -9,7 +9,6 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.utils.EaseSmileUtils;
-import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -24,18 +23,17 @@ import static com.zhiyicx.thinksnsplus.widget.chat.MessageTextItemDelagate.MAX_S
  * @contact email:648129313@qq.com
  */
 
-public class ChatRowText extends ChatBaseRow {
+public class ChatRowTipText extends ChatBaseRow {
     private TextView mTvChatContent;
     private boolean adminMsg;
 
-    public ChatRowText(Context context, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean userInfoBean) {
+    public ChatRowTipText(Context context, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean userInfoBean) {
         super(context, message, position, adapter, userInfoBean);
     }
 
     @Override
     protected void onInflateView() {
-        inflater.inflate(message.direct() == EMMessage.Direct.SEND ?
-                R.layout.item_chat_list_send_text : R.layout.item_chat_list_receive_text, this);
+        inflater.inflate(R.layout.include_chat_extra, this);
     }
 
     @Override
@@ -46,7 +44,19 @@ public class ChatRowText extends ChatBaseRow {
 
     @Override
     protected void onSetUpView() {
-        super.onSetUpView();
+        if (position == 0) {
+            mTvChatTime.setText(TimeUtils.getTimeFriendlyForChat(message.getMsgTime()));
+            mTvChatTime.setVisibility(VISIBLE);
+        } else {
+            EMMessage prevMessage = (EMMessage) adapter.getItem(position - 1);
+            if ((message.getMsgTime() - prevMessage.getMsgTime()) >= (MAX_SPACING_TIME * ConstantConfig.MIN)) {
+                mTvChatTime.setText(TimeUtils.getTimeFriendlyForChat(message.getMsgTime()));
+                mTvChatTime.setVisibility(VISIBLE);
+            } else {
+                mTvChatTime.setVisibility(GONE);
+            }
+        }
+
         EMTextMessageBody txtBody = (EMTextMessageBody) message.getBody();
         // 正文
         Spannable span = EaseSmileUtils.getSmiledText(context, txtBody.getMessage());

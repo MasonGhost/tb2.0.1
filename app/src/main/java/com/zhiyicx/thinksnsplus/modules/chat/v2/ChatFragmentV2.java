@@ -30,19 +30,19 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.TSEaseChatFragment;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.modules.chat.callV2.video.VideoCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.call.VoiceCallActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.callV2.video.VideoCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.info.ChatInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
+import com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatCallPresneter;
+import com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatFilePresenter;
+import com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatLocationPresenter;
+import com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatPicturePresenter;
+import com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatTextPresenter;
+import com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatTipTextPresenter;
+import com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatVideoPresenter;
+import com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatVoicePresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.location.SendLocationActivity;
-import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatCallPresneter;
-import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatFilePresenter;
-import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatLocationPresenter;
-import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatPicturePresenter;
-import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatTextPresenter;
-import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatVideoPresenter;
-import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatVoicePresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.video.ImageGridActivity;
 
 import org.simple.eventbus.EventBus;
@@ -79,6 +79,11 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
     private static final int MESSAGE_TYPE_SENT_VIDEO_CALL = 3;
     private static final int MESSAGE_TYPE_RECV_VIDEO_CALL = 4;
     private static final int MESSAGE_TYPE_RECALL = 9;
+
+    /**
+     * 群聊天室的提示消息
+     */
+    private static final int MESSAGE_TYPE_TIP = 10;
 
     static final int ITEM_TAKE_PICTURE_TS = 31;
     static final int ITEM_PICTURE_TS = 32;
@@ -351,6 +356,10 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
 
         @Override
         public int getCustomChatRowType(EMMessage message) {
+            boolean isGroupChange = TSEMConstants.TS_ATTR_GROUP_CHANGE.equals(message.ext().get("type"))
+                    || TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"))
+                    || TSEMConstants.TS_ATTR_JOIN.equals(message.ext().get("type"));
+
             if (message.getType() == EMMessage.Type.TXT) {
                 //voice call
                 if (message.getBooleanAttribute(ChatConfig.MESSAGE_ATTR_IS_VOICE_CALL, false)) {
@@ -362,6 +371,8 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
                 //messagee recall
                 else if (message.getBooleanAttribute(ChatConfig.MESSAGE_TYPE_RECALL, false)) {
                     return MESSAGE_TYPE_RECALL;
+                } else if ("admin".equals(message.getUserName()) || isGroupChange) {
+                    return MESSAGE_TYPE_TIP;
                 }
             }
             return 0;
@@ -380,32 +391,39 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
         @Override
         public EaseChatRowPresenter getCustomChatRow(EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean userInfoBean) {
             if (message.getType() == EMMessage.Type.TXT) {
+                EaseChatRowPresenter presenter;
                 // voice call or video call
                 if (message.getBooleanAttribute(EaseConstant.MESSAGE_ATTR_IS_VOICE_CALL, false) ||
                         message.getBooleanAttribute(EaseConstant.MESSAGE_ATTR_IS_VIDEO_CALL, false)) {
-                    EaseChatRowPresenter presenter = new TSChatCallPresneter();
+                    presenter = new TSChatCallPresneter();
                     return presenter;
+                } else {
+                    boolean admin;
+                    boolean isGroupChange = TSEMConstants.TS_ATTR_GROUP_CHANGE.equals(message.ext().get("type"))
+                            || TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"))
+                            || TSEMConstants.TS_ATTR_JOIN.equals(message.ext().get("type"));
+
+                    admin = "admin".equals(message.getUserName());
+                    if (admin || isGroupChange) {
+                        presenter = new TSChatTipTextPresenter();
+                    } else {
+                        presenter = new TSChatTextPresenter();
+                    }
                 }
-                EaseChatRowPresenter presenter = new TSChatTextPresenter();
                 return presenter;
-            }
-            if (message.getType() == EMMessage.Type.IMAGE) {
+            } else if (message.getType() == EMMessage.Type.IMAGE) {
                 EaseChatRowPresenter presenter = new TSChatPicturePresenter();
                 return presenter;
-            }
-            if (message.getType() == EMMessage.Type.VOICE) {
+            } else if (message.getType() == EMMessage.Type.VOICE) {
                 EaseChatRowPresenter presenter = new TSChatVoicePresenter();
                 return presenter;
-            }
-            if (message.getType() == EMMessage.Type.LOCATION) {
+            } else if (message.getType() == EMMessage.Type.LOCATION) {
                 EaseChatRowPresenter presenter = new TSChatLocationPresenter();
                 return presenter;
-            }
-            if (message.getType() == EMMessage.Type.VIDEO) {
+            } else if (message.getType() == EMMessage.Type.VIDEO) {
                 EaseChatRowPresenter presenter = new TSChatVideoPresenter();
                 return presenter;
-            }
-            if (message.getType() == EMMessage.Type.FILE) {
+            } else if (message.getType() == EMMessage.Type.FILE) {
                 EaseChatRowPresenter presenter = new TSChatFilePresenter();
                 return presenter;
             }

@@ -16,6 +16,7 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
+import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.BadgeView;
@@ -29,6 +30,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
+import com.zhiyicx.thinksnsplus.modules.chat.callV2.TSEMHyphenate;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -109,14 +111,10 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
             holder.setText(R.id.tv_content, AppApplication.getmCurrentLoginAuth().getUser().getName() + ": 出来嗨");
         } else {
             // 最新的消息的发言人，只有群组才管这个
-            String lastUserName = ": ";
-            if (messageItemBean.getList() != null) {
-                for (UserInfoBean userInfoBean : messageItemBean.getList()) {
-                    if (messageItemBean.getConversation().getLastMessage().getFrom().equals(String.valueOf(userInfoBean.getUser_id()))) {
-                        lastUserName = userInfoBean.getName();
-                        break;
-                    }
-                }
+            String lastUserName = "";
+            ChatUserInfoBean chatUserInfoBean = TSEMHyphenate.getInstance().getChatUser(messageItemBean.getConversation().getLastMessage().getFrom());
+            if (chatUserInfoBean != null) {
+                lastUserName = chatUserInfoBean.getName()+": ";
             }
             EMMessage message = messageItemBean.getConversation().getLastMessage();
             // 根据发送状态设置是否有失败icon
