@@ -971,7 +971,7 @@ public class TSEMHyphenate {
         EMClient.getInstance().logout(isUnbuildToken, new EMCallBack() {
             @Override
             public void onSuccess() {
-                isUnbuildToken = true;
+                   isUnbuildToken = true;
                 if (callback != null) {
                     callback.onSuccess();
                 }

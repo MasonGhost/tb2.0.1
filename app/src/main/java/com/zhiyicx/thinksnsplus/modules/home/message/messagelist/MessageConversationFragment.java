@@ -29,8 +29,11 @@ import com.zhiyicx.thinksnsplus.modules.home.message.MessageAdapterV2;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.TSSearchView;
 
+import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
 import org.simple.eventbus.ThreadMode;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -116,30 +119,24 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
     public void onResume() {
         super.onResume();
         // 刷新信息内容
-        Observable.just(mPresenter)
-                .flatMap((Func1<MessageConversationContract.Presenter, Observable<?>>) presenter -> {
-                    if (presenter == null) {
-                        return Observable.error(new IllegalArgumentException("presenter can not be null"));
-                    }
-                    return Observable.just(presenter);
-                })
-                .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
-                .filter(o -> mPresenter != null)
-                .subscribe(o -> {
-                    mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
-                    mPresenter.refreshConversationReadMessage();
-                });
+        if (mPresenter!=null){
+            mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
+            mPresenter.refreshConversationReadMessage();
+        }
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (TSEMHyphenate.getInstance().isConnection() && TSEMHyphenate.getInstance().isLoginedInBefore()) {
-            hideStickyMessage();
-        }
         if (mAdapter != null && ((MessageAdapterV2) mAdapter).hasItemOpend()) {
             ((MessageAdapterV2) mAdapter).closeAllItems();
         }
+    }
+
+    @Override
+    public void onNetResponseSuccess(@NotNull List<MessageItemBeanV2> data, boolean isLoadMore) {
+        super.onNetResponseSuccess(data, isLoadMore);
+        hideStickyMessage();
     }
 
     @Override
