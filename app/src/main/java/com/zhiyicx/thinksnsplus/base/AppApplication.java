@@ -288,12 +288,12 @@ public class AppApplication extends TSApplication {
                             .build();
                 } else {
                     // 过期了，重新登录
-                    if (mAuthRepository.isNeededRefreshToken()) {
+//                    if (mAuthRepository.isNeededRefreshToken()) {
                         handleAuthFail(getString(R.string.auth_fail_relogin));
-                    } else {
-                        // 挤下线，重新登录
-                        handleAuthFail(getString(R.string.code_1015));
-                    }
+//                    } else {
+//                        // 挤下线，重新登录
+//                        handleAuthFail(getString(R.string.code_1015));
+//                    }
                     return null;
                 }
 

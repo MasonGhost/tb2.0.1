@@ -104,7 +104,7 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
     }
 
     public boolean getRefresh_token_is_expired() {
-        if (System.currentTimeMillis() - token_request_time >= refresh_token*60) {
+        if (System.currentTimeMillis() - token_request_time >= refresh_token * ConstantConfig.MIN) {
             return true;
         } else {
             return false;
@@ -112,7 +112,7 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
     }
 
     public boolean getToken_is_expired() {
-        if (System.currentTimeMillis() - token_request_time >= expires * 60) {
+        if (System.currentTimeMillis() - token_request_time >= expires * ConstantConfig.MIN) {
             return true;
         } else {
             return false;
