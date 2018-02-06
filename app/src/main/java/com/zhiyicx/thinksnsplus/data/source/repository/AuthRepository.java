@@ -58,6 +58,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import retrofit2.Call;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
@@ -154,10 +155,10 @@ public class AuthRepository implements IAuthRepository {
      */
     @Override
     public void refreshToken() {
-        AuthBean authBean = getAuthBean();
         if (!isNeededRefreshToken()) {
             return;
         }
+        AuthBean authBean = getAuthBean();
         mCommonClient.refreshToken(authBean.getToken())
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
@@ -186,6 +187,16 @@ public class AuthRepository implements IAuthRepository {
                     }
                 });
     }
+
+    /**
+     * 同步刷新 token
+     */
+    @Override
+    public Call<AuthBean> refreshTokenSyn() {
+        return mCommonClient.refreshTokenSyn(getAuthBean().getToken());
+
+    }
+
 
     /**
      * 删除认证信息
@@ -366,7 +377,7 @@ public class AuthRepository implements IAuthRepository {
         AuthBean authBean = getAuthBean();
 
         // 没有token，不需要刷新
-        return authBean != null && authBean.getToken_is_expired();
+        return authBean != null && authBean.getToken_is_expired() && !authBean.getRefresh_token_is_expired();
     }
 
 }

@@ -19,6 +19,7 @@ import java.util.Set;
 
 import javax.net.ssl.SSLSocketFactory;
 
+import okhttp3.Authenticator;
 import okhttp3.Interceptor;
 import skin.support.SkinCompatManager;
 import skin.support.app.SkinCardViewInflater;
@@ -65,6 +66,7 @@ public abstract class BaseApplication extends Application {
                 .interceptors(getInterceptors())
                 .responseErroListener(getResponseErroListener())
                 .sslSocketFactory(getSSLSocketFactory())
+                .authenticator(getAuthenticator())
                 .build();
         this.mAppModule = new AppModule(this);// 提供 application
         // 换肤支持
@@ -81,6 +83,7 @@ public abstract class BaseApplication extends Application {
 
     }
 
+
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -95,6 +98,14 @@ public abstract class BaseApplication extends Application {
     protected abstract String getBaseUrl();
 
     protected abstract ImageModule getImageModule();
+
+    /**
+     * 401 认证处理
+     *
+     * @return
+     */
+    protected abstract Authenticator getAuthenticator();
+
 
     /**
      * 安装 leakCanary 检测内存泄露

@@ -134,6 +134,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         if (isVisibleToUser && mPresenter != null) {
             mPresenter.getUserInfoFromDB();
             mPresenter.updateUserInfo();
+            mPresenter.updateUserInfo();
+            mPresenter.updateUserInfo();
             mPresenter.getCertificationInfo();
         }
     }
