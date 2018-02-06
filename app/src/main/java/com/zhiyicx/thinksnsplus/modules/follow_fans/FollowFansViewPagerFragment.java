@@ -67,4 +67,8 @@ public class FollowFansViewPagerFragment extends TSViewPagerFragment<FollowFansL
         return followFansViewPagerFragment;
     }
 
+    @Override
+    protected int getOffsetPage() {
+        return 2;
+    }
 }

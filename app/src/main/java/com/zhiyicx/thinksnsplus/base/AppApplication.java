@@ -11,12 +11,10 @@ import com.danikula.videocache.HttpProxyCacheServer;
 import com.github.tamir7.contacts.Contacts;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-
 import com.pingplusplus.android.Pingpp;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.base.TSApplication;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.thinksnsplus.modules.chat.callV2.TSEMHyphenate;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.base.BaseApplication;
@@ -35,6 +33,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
+import com.zhiyicx.thinksnsplus.modules.chat.callV2.TSEMHyphenate;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
@@ -47,6 +46,7 @@ import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 import org.simple.eventbus.EventBus;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,17 +55,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.net.ssl.SSLSocketFactory;
 
 import cn.jpush.android.api.JPushInterface;
+import okhttp3.Authenticator;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.Route;
+import retrofit2.Call;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-
-import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.AUTH_FAIL;
 
 /**
  * @Describe
@@ -74,6 +76,7 @@ import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.AUTH_FAIL;
  * @Contact 335891510@qq.com
  */
 public class AppApplication extends TSApplication {
+
     /**
      * 丢帧检查设置
      */
@@ -100,7 +103,6 @@ public class AppApplication extends TSApplication {
     private static HttpProxyCacheServer mMediaProxyCacheServer;
     private static QueueManager sQueueManager;
     private static PlaybackManager sPlaybackManager;
-    private static String TOKEN = "none";
     public static List<Integer> sOverRead = new ArrayList<>();
 
     public int mActivityCount = 0;
@@ -208,13 +210,7 @@ public class AppApplication extends TSApplication {
                     baseJson = new Gson().fromJson(httpResult, BaseJson.class);
                 } catch (JsonSyntaxException e) {
                 }
-                if (originalResponse.code() == AUTH_FAIL) {
-                    if (mAuthRepository.isNeededRefreshToken()) {
-                        handleAuthFail(getString(R.string.auth_fail_relogin));
-                    } else {
-                        handleAuthFail(getString(R.string.code_1015));
-                    }
-                }
+
                 String tipStr = null;
                 if (baseJson != null) {
                     switch (baseJson.getCode()) {
@@ -259,6 +255,50 @@ public class AppApplication extends TSApplication {
                             .header("Accept", "application/json")
                             .build();
                 }
+            }
+        };
+    }
+
+    /**
+     * 401 认证处理
+     *
+     * @return
+     */
+    @Override
+    protected Authenticator getAuthenticator() {
+        return new Authenticator() {
+            @Nullable
+            @Override
+            public Request authenticate(Route route, Response response) throws IOException {
+                // 刷新 token 没过期,刷新 token
+                if (!mCurrentLoginAuth.getRefresh_token_is_expired()) {
+
+                    Call<AuthBean> call = mAuthRepository.refreshTokenSyn();
+                    try {
+                        // 丢弃多次
+                        AuthBean authBean = call.execute().body();
+                        mCurrentLoginAuth.setToken(authBean.getToken());
+                        mCurrentLoginAuth.setExpires(authBean.getExpires());
+                        mCurrentLoginAuth.setRefresh_token(authBean.getRefresh_token());
+                        mAuthRepository.saveAuthBean(mCurrentLoginAuth);
+                    } catch (Exception ignored) {
+                    }
+
+                    return response.request().newBuilder()
+                            .header("Authorization", " Bearer " + mCurrentLoginAuth.getToken())
+                            .build();
+                } else {
+                    // 过期了，重新登录
+                    if (mAuthRepository.isNeededRefreshToken()) {
+                        handleAuthFail(getString(R.string.auth_fail_relogin));
+                    } else {
+                        // 挤下线，重新登录
+                        handleAuthFail(getString(R.string.code_1015));
+                    }
+                    return null;
+                }
+
+
             }
         };
     }
