@@ -182,13 +182,22 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
 
     @Override
     public void createGroupFromSingleChat() {
-        String name = mContext.getString(R.string.chat_single_name_default, 2);
+        String name = AppApplication.getmCurrentLoginAuth().getUser().getName() + "、" + getUserInfoFromLocal(mRootView.getToUserId()).getName();
         String member = AppApplication.getMyUserIdWithdefault() + "," + mRootView.getToUserId();
         Subscription subscription = mRepository.createGroup(name, "暂无", false,
                 200, false, true, AppApplication.getMyUserIdWithdefault(), member)
                 .doOnSubscribe(() -> {
                     // 这里的占位文字都没提供emm
-                    mRootView.showSnackLoadingMessage("创建中..");
+                    mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing));
+                })
+                .flatMap(groupInfo -> {
+                    try {
+                        // 获取环信群组信息
+                        EMClient.getInstance().groupManager().getGroupFromServer(groupInfo.getId());
+                    } catch (HyphenateException e) {
+                        e.printStackTrace();
+                    }
+                    return Observable.just(groupInfo);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<ChatGroupBean>() {
@@ -263,5 +272,14 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
         chatGroupBean.getAffiliations().addAll(addedList);
         chatGroupBean.setAffiliations_count(chatGroupBean.getAffiliations_count() + addedList.size());
         mRootView.updateGroup(chatGroupBean);
+    }
+
+    @Override
+    public UserInfoBean getUserInfoFromLocal(String id) {
+        try {
+            return mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(id));
+        } catch (NumberFormatException e) {
+            return new UserInfoBean("未知用户");
+        }
     }
 }

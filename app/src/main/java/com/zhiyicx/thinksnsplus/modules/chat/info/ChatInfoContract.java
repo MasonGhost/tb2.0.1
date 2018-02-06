@@ -64,6 +64,8 @@ public interface ChatInfoContract {
          * @param chatId
          */
         void destoryOrLeaveGroup(String chatId);
+
+        UserInfoBean getUserInfoFromLocal(String id);
     }
 
     interface Repository extends IBaseFriendsRepository {

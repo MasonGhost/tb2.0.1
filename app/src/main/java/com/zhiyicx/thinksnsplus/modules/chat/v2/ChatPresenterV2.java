@@ -66,4 +66,13 @@ public class ChatPresenterV2 extends AppBasePresenter<ChatContractV2.View> imple
                     }
                 });
     }
+
+    @Override
+    public String getUserName(String id) {
+        try {
+            return mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(id)).getName();
+        } catch (NumberFormatException e) {
+            return "未知用户";
+        }
+    }
 }
