@@ -392,7 +392,7 @@ public abstract class BaseCallFragment extends TSFragment {
                 // 通话已接通，设置通话状态为正常状态
                 mCallStatus = TSEMConstants.TS_CALL_ACCEPTED;
                 // 通话接通，处理下SurfaceView的显示
-                surfaceViewProcessor();
+                callAccept();
                 break;
             case DISCONNECTED:
                 // 通话已中断
@@ -463,9 +463,9 @@ public abstract class BaseCallFragment extends TSFragment {
      * @author Jliuer
      * @Date 18/02/01 17:27
      * @Email Jliuer@aliyun.com
-     * @Description 接通了，设置显示对方图像控件显示
+     * @Description 接通了
      */
-    protected void surfaceViewProcessor(){};
+    protected void callAccept(){}
 
     /**
      * 通话状态变化

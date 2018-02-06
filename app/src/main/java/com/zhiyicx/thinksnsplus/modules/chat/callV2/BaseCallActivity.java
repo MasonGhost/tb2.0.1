@@ -9,7 +9,7 @@ import android.view.WindowManager;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
-import com.zhiyicx.thinksnsplus.modules.chat.call.VoiceCallActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.callV2.voice.VoiceCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.callV2.video.VideoCallActivity;
 
 /**
@@ -34,6 +34,12 @@ public abstract class BaseCallActivity extends TSActivity {
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
     }
 
+    /**
+     * 视频
+     * @param context
+     * @param to
+     * @param isInComming 来电
+     */
     public static void startVideoCallActivity(Context context, String to, boolean isInComming) {
         Intent intent = new Intent(context, VideoCallActivity.class);
         Bundle bundle = new Bundle();

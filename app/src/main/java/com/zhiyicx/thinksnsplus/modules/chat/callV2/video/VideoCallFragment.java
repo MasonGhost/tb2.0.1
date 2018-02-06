@@ -346,14 +346,6 @@ public class VideoCallFragment extends BaseCallFragment {
         }
     }
 
-    /**
-     * 打开扬声器
-     * 主要是通过扬声器的开关以及设置音频播放模式来实现
-     * 1、MODE_NORMAL：是正常模式，一般用于外放音频
-     * 2、MODE_IN_CALL：
-     * 3、MODE_IN_COMMUNICATION：这个和 CALL 都表示通讯模式，不过 CALL 在华为上不好使，故使用 COMMUNICATION
-     * 4、MODE_RINGTONE：铃声模式
-     */
     @Override
     protected void openSpeaker() {
         // 设置按钮状态
@@ -481,7 +473,7 @@ public class VideoCallFragment extends BaseCallFragment {
     }
 
     @Override
-    protected void surfaceViewProcessor() {
+    protected void callAccept() {
         mChronometer.setVisibility(View.VISIBLE);
         mChronometer.setBase(SystemClock.elapsedRealtime());
         mChronometer.start();

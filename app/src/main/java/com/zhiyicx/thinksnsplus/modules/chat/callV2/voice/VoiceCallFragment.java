@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.chat.callV2.voice;
 
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -249,6 +251,7 @@ public class VoiceCallFragment extends BaseCallFragment {
         mLlAnswerCall.setVisibility(View.GONE);
         mLlHangupCall.setVisibility(View.VISIBLE);
         mLlMute.setVisibility(View.VISIBLE);
+        mLlHandsfree.setVisibility(View.VISIBLE);
         // 接听通话后关闭通知铃音
         stopCallSound();
         // 调用接通通话方法
@@ -275,6 +278,48 @@ public class VoiceCallFragment extends BaseCallFragment {
             mIvHandsfree.setImageResource(R.mipmap.btn_chat_handsfree_on);
             openSpeaker();
         }
+    }
+
+    @Override
+    protected void openSpeaker() {
+        // 设置按钮状态
+        mIvHandsfree.setActivated(true);
+        TSEMCallStatus.getInstance().setSpeaker(true);
+        // 检查是否已经开启扬声器
+        if (!mAudioManager.isSpeakerphoneOn()) {
+            // 打开扬声器
+            mAudioManager.setSpeakerphoneOn(true);
+        }
+        // 设置声音模式为正常模式
+        mAudioManager.setMode(AudioManager.MODE_NORMAL);
+    }
+
+    @Override
+    protected void closeSpeaker() {
+        // 设置按钮状态
+        mIvHandsfree.setActivated(false);
+        TSEMCallStatus.getInstance().setSpeaker(false);
+        // 检查是否已经开启扬声器
+        if (mAudioManager.isSpeakerphoneOn()) {
+            // 打开扬声器
+            mAudioManager.setSpeakerphoneOn(false);
+        }
+        // 设置声音模式为通讯模式，即使用听筒播放
+        mAudioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+    }
+
+    @Override
+    protected void callAccept() {
+        mChronometer.setVisibility(View.VISIBLE);
+        mChronometer.setBase(SystemClock.elapsedRealtime());
+        mChronometer.start();
+    }
+
+    @Override
+    protected void saveCallMessage() {
+        mChronometer.stop();
+        mCallDruationText = mChronometer.getText().toString();
+        super.saveCallMessage();
     }
 
     private void setButtonState(boolean isComingCall) {
