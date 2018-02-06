@@ -94,7 +94,7 @@ public class EaseChatPrimaryMenu extends EaseChatPrimaryMenuBase implements OnCl
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!TextUtils.isEmpty(s)) {
+                if (!TextUtils.isEmpty(s.toString().trim())) {
                     buttonMore.setVisibility(View.GONE);
                     buttonSend.setVisibility(View.VISIBLE);
                 } else {
@@ -265,7 +265,7 @@ public class EaseChatPrimaryMenu extends EaseChatPrimaryMenuBase implements OnCl
         editText.requestFocus();
         // buttonSend.setVisibility(View.VISIBLE);
         buttonPressToSpeak.setVisibility(View.GONE);
-        if (TextUtils.isEmpty(editText.getText())) {
+        if (TextUtils.isEmpty(editText.getText().toString().trim())) {
             buttonMore.setVisibility(View.VISIBLE);
             buttonSend.setVisibility(View.GONE);
         } else {
