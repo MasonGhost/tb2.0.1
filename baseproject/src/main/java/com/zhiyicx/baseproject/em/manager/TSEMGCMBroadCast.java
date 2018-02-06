@@ -12,7 +12,7 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-public class MLGCMBroadCast extends BroadcastReceiver {
+public class TSEMGCMBroadCast extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {

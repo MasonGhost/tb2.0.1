@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.ChatGroupBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.ChatInfoRepository;
 
 import org.simple.eventbus.EventBus;
@@ -46,6 +47,8 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
 
     @Inject
     ChatInfoRepository mRepository;
+    @Inject
+    ChatGroupBeanGreenDaoImpl mChatGroupBeanGreenDao;
 
     @Inject
     public ChatInfoPresenter(ChatInfoContract.View rootView) {
@@ -158,6 +161,7 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
                 .subscribe(new BaseSubscribeForV2<List<ChatGroupBean>>() {
                     @Override
                     protected void onSuccess(List<ChatGroupBean> data) {
+                        mChatGroupBeanGreenDao.saveMultiData(data);
                         mRootView.getGroupInfoSuccess(data.get(0));
                         mRootView.isShowEmptyView(false, true);
                         mRootView.dismissSnackBar();

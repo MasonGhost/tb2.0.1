@@ -5,7 +5,10 @@ import android.hardware.Camera;
 import com.hyphenate.chat.EMCallManager;
 
 /**
- * Created by lzan13 on 2016/8/9.
+ * @author Jliuer
+ * @Date 18/02/06 11:42
+ * @Email Jliuer@aliyun.com
+ * @Description 视频数据解析
  */
 public class TSEMCameraDataProcessor implements EMCallManager.EMCameraDataProcessor {
 

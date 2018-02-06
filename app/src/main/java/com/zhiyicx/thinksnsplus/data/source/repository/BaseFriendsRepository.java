@@ -1,8 +1,11 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.exceptions.HyphenateException;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.ChatGroupBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.EasemobClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.FollowFansClient;
@@ -15,6 +18,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -32,6 +36,8 @@ public class BaseFriendsRepository implements IBaseFriendsRepository {
     UpLoadRepository mUpLoadRepository;
     @Inject
     protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    protected ChatGroupBeanGreenDaoImpl mChatGroupBeanGreenDao;
 
     @Inject
     public BaseFriendsRepository(ServiceManager manager) {
@@ -69,13 +75,19 @@ public class BaseFriendsRepository implements IBaseFriendsRepository {
         if (isEditGroupFace) {
             return mUpLoadRepository.upLoadSingleFileV2(groupFace, "", true, 0, 0)
                     .flatMap(integerBaseJson -> mEasemobClient.updateGroup(imGroupId, groupName, groupIntro, isPublic, maxUser, isMemberOnly, isAllowInvites, String.valueOf(integerBaseJson.getData()), newOwner)
-                            .flatMap(chatGroupBean -> Observable.just(chatGroupBean)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())));
+                    .flatMap(chatGroupBean -> {
+                        mChatGroupBeanGreenDao.updateGroupHeadImage(chatGroupBean.getId(),chatGroupBean.getGroup_face());
+                        return Observable.just(chatGroupBean);
+                    })
+                    .subscribeOn(Schedulers.io()));
         } else {
-            return mEasemobClient.updateGroup(imGroupId, groupName, groupIntro, isPublic, maxUser, isMemberOnly, isAllowInvites, "", newOwner)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
+            return mEasemobClient.updateGroup(imGroupId, groupName, groupIntro, isPublic, maxUser, isMemberOnly,
+                    isAllowInvites, "", newOwner)
+                    .flatMap(chatGroupBean -> {
+                        mChatGroupBeanGreenDao.updateGroupInfo(imGroupId,groupName,groupIntro,isPublic,maxUser,isMemberOnly,isAllowInvites,newOwner);
+                        return Observable.just(chatGroupBean);
+                    })
+                    .subscribeOn(Schedulers.io());
         }
 
     }

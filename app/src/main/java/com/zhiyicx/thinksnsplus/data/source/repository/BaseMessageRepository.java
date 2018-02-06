@@ -8,6 +8,7 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
+import com.hyphenate.exceptions.HyphenateException;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -143,6 +144,7 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                             // 群聊
                             String chatGroupId = itemBeanV2.getConversation().conversationId();
                             try {
+
                                 Long userId = Long.parseLong(itemBeanV2.getConversation().getLastMessage().getFrom());
                                 LogUtils.d("lastMsg::" + userId);
                                 if (mUserInfoBeanGreenDao.getSingleDataFromCache(userId) == null) {

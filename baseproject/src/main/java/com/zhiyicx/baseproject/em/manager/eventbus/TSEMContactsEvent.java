@@ -1,8 +1,10 @@
 package com.zhiyicx.baseproject.em.manager.eventbus;
 
 /**
- * Created by lzan13 on 2016/5/30.
- * 自定义联系人 EventBus post 事件，传递联系人变化信息
+ * @author Jliuer
+ * @Date 18/02/06 11:41
+ * @Email Jliuer@aliyun.com
+ * @Description 自定义联系人 EventBus post 事件，传递联系人变化信息
  */
 public class TSEMContactsEvent {
 

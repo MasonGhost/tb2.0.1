@@ -1,8 +1,10 @@
 package com.zhiyicx.baseproject.em.manager.control;
 
 /**
- * Created by lzan13 on 2015/8/21.
- * 联系人信息实体类
+ * @author Jliuer
+ * @Date 18/02/06 11:43
+ * @Email Jliuer@aliyun.com
+ * @Description 联系人信息实体类
  */
 public class TSEMContacterEntity {
 

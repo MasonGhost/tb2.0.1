@@ -8,7 +8,7 @@ import java.util.List;
  * @Author Jliuer
  * @Date 2018/02/01/12:45
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 接收到 消息 list
  */
 public class TSEMMultipleMessagesEvent {
     /**

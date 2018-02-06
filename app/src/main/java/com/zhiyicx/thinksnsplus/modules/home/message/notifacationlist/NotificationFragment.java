@@ -20,7 +20,6 @@ import javax.inject.Inject;
  * @date 2017/8/31
  * @contact email:648129313@qq.com
  */
-
 public class NotificationFragment extends TSListFragment<NotificationContract.Presenter, TSPNotificationBean>
         implements NotificationContract.View {
 
@@ -38,15 +37,9 @@ public class NotificationFragment extends TSListFragment<NotificationContract.Pr
         return getString(R.string.system_notification);
     }
 
-
     @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
         return false;
-    }
-
-    @Override
-    protected boolean isLayzLoad() {
-        return true;
     }
 
     @Override
@@ -60,11 +53,7 @@ public class NotificationFragment extends TSListFragment<NotificationContract.Pr
     }
     @Override
     protected boolean showToolBarDivider() {
-        return false;
-    }
-    @Override
-    protected boolean setUseStatusView() {
-        return false;
+        return true;
     }
 
     @Override

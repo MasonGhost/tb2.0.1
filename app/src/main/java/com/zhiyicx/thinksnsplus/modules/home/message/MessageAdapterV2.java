@@ -78,7 +78,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
             case Chat:
                 // 私聊
                 userAvatarView.getIvVerify().setVisibility(View.VISIBLE);
-                ImageUtils.loadCircleUserHeadPic(messageItemBean.getUserInfo(), userAvatarView);
+                ImageUtils.loadUserHead(TSEMHyphenate.getInstance().getChatUser(messageItemBean.getEmKey()), userAvatarView,false);
                 // 响应事件
                 holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());
                 setUserInfoClick(holder.getView(R.id.tv_name), messageItemBean.getUserInfo());

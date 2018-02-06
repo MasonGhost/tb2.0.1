@@ -14,22 +14,22 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Class MLEMCheck
- * <p/>
- * Created by lzan13 on 2015/12/23 18:51.
- * 主要检查在环信 SDK集成过程中的一些基本配置是否正确
+ * @author Jliuer
+ * @Date 18/02/06 11:42
+ * @Email Jliuer@aliyun.com
+ * @Description 主要检查在环信 SDK集成过程中的一些基本配置是否正确
  * 主要做了一下几项检查：
  * 权限的配置（permission）
  * Application 的 name 配置
  * Appkey 的配置
  * Service 的配置
  */
-public class MLEMCheck {
+public class TSEMCheck {
     private final String TAG = "em_check";
 
-    private static MLEMCheck instance;
+    private static TSEMCheck instance;
 
-    private MLEMCheck() {
+    private TSEMCheck() {
 
     }
 
@@ -38,9 +38,9 @@ public class MLEMCheck {
      *
      * @return
      */
-    public static MLEMCheck getInstance() {
+    public static TSEMCheck getInstance() {
         if (instance == null) {
-            instance = new MLEMCheck();
+            instance = new TSEMCheck();
         }
         return instance;
     }

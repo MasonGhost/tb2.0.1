@@ -82,6 +82,46 @@ public class ChatGroupBeanGreenDaoImpl extends CommonCacheImpl<ChatGroupBean> {
         return readDao.queryBuilder().where(ChatGroupBeanDao.Properties.Id.eq(id)).build().unique();
     }
 
+    public boolean updateGroupName(String id, String name) {
+        ChatGroupBean chatGroupBean = getChatGroupBeanById(id);
+        if (chatGroupBean == null) {
+            return false;
+        }
+        chatGroupBean.setName(name);
+        saveSingleData(chatGroupBean);
+        return true;
+    }
+
+    public boolean updateGroupHeadImage(String id, String head) {
+        ChatGroupBean chatGroupBean = getChatGroupBeanById(id);
+        if (chatGroupBean == null) {
+            return false;
+        }
+        chatGroupBean.setGroup_face(head);
+        saveSingleData(chatGroupBean);
+        return true;
+    }
+
+    public boolean updateGroupInfo(String id, String groupName, String groupIntro, int isPublic,
+                                   int maxUser, boolean isMemberOnly, int isAllowInvites, String newOwner) {
+        ChatGroupBean chatGroupBean = getChatGroupBeanById(id);
+        if (chatGroupBean == null) {
+            return false;
+        }
+        chatGroupBean.setName(groupName);
+        try {
+            chatGroupBean.setOwner(Long.parseLong(newOwner));
+        } catch (NumberFormatException ignore) {
+        }
+        chatGroupBean.setDescription(groupIntro);
+        chatGroupBean.setIsPublic(isPublic != 0);
+        chatGroupBean.setAllowinvites(isAllowInvites != 0);
+        chatGroupBean.setMaxusers(maxUser);
+        chatGroupBean.setMembersonly(isMemberOnly);
+        saveSingleData(chatGroupBean);
+        return true;
+    }
+
     public List<ChatGroupBean> getChatGroupBeanByIds(List<String> ids) {
         List<ChatGroupBean> result = new ArrayList<>();
         if (ids.size() <= 0) {

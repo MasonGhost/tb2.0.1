@@ -1,9 +1,10 @@
 package com.zhiyicx.baseproject.em.manager.control;
 
 /**
- * Class ${FILE_NAME}
- * <p/>
- * Created by lzan13 on 2015/9/10 22:04.
+ * @author Jliuer
+ * @Date 18/02/06 11:43
+ * @Email Jliuer@aliyun.com
+ * @Description 
  */
 public class TSEMConstants {
 

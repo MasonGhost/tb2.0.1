@@ -7,6 +7,7 @@ package com.zhiyicx.baseproject.em.manager.eventbus;
  * @Description 刷新事件
  */
 public class TSEMRefreshEvent {
+
     // 刷新的数量
     private int count;
     // 刷新的位置

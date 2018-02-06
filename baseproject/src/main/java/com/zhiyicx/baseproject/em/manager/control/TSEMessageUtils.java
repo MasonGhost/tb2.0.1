@@ -10,8 +10,10 @@ import com.hyphenate.util.PathUtil;
 import com.zhiyicx.common.utils.log.LogUtils;
 
 /**
- * Created by lzan13 on 2016/3/22.
- * 消息处理工具类，主要做谢谢EMMessage对象的处理
+ * @author Jliuer
+ * @Date 18/02/06 11:43
+ * @Email Jliuer@aliyun.com
+ * @Description 消息处理工具类，主要做谢谢EMMessage对象的处理
  */
 public class TSEMessageUtils {
 

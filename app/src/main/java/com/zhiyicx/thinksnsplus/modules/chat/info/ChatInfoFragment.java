@@ -121,6 +121,8 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         return fragment;
     }
 
+
+
     @Override
     protected boolean showToolBarDivider() {
         return true;
@@ -342,6 +344,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         mChatGroupBean.setDescription(chatGroupBean.getDescription());
         mChatGroupBean.setMembersonly(chatGroupBean.isMembersonly());
         mChatGroupBean.setAllowinvites(chatGroupBean.isAllowinvites());
+
         setGroupData();
     }
 

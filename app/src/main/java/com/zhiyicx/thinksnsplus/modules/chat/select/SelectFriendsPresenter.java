@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.ChatGroupBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.SelectFriendsRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -47,6 +48,8 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
 
     @Inject
     SelectFriendsRepository mRepository;
+    @Inject
+    ChatGroupBeanGreenDaoImpl mChatGroupBeanGreenDao;
 
     @Inject
     public SelectFriendsPresenter(SelectFriendsContract.View rootView) {
@@ -141,7 +144,12 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
     public void createConversation(List<UserInfoBean> list) {
         // 没有添加当前用户的情况下 添加在第一个
         if (list.get(0).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
-            list.add(0, AppApplication.getmCurrentLoginAuth().getUser());
+            UserInfoBean mySelf = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
+            if (mySelf == null) {
+                mRootView.showSnackErrorMessage("当前用户信息不存在");
+                return;
+            }
+            list.add(0, mySelf);
         }
         if (list.size() == 2) {
             String id = String.valueOf(list.get(1).getUser_id());
