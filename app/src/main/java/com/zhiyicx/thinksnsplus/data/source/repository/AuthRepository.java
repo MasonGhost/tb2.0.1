@@ -165,8 +165,11 @@ public class AuthRepository implements IAuthRepository {
                 .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
                     protected void onSuccess(AuthBean data) {
+                        authBean.setToken(data.getToken());
+                        authBean.setExpires(data.getExpires());
+                        authBean.setRefresh_token(data.getRefresh_token());
                         // 获取了最新的token，将这些信息保存起来
-                        saveAuthBean(data);
+                        saveAuthBean(authBean);
                         // 刷新im信息
 //                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean
 //                                (BackgroundTaskRequestMethodConfig.GET_IM_INFO));
