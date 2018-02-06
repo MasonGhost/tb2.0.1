@@ -534,11 +534,6 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
                     protected void onSuccess(BaseJsonV2<String> data) {
                         mRootView.hideCenterLoading();
                         mRootView.paySuccess();
-                        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getmCurrentLoginAuth().getUser_id
-                                ());
-                        walletBean.setBalance(walletBean.getBalance() - amount);
-                        mWalletBeanGreenDao.insertOrReplace(walletBean);
-
                         if (isImage) {
                             DynamicDetailBeanV2.ImagesBean imageBean = mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition);
                             imageBean.setPaid(true);
