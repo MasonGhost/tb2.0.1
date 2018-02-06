@@ -80,7 +80,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                 userAvatarView.getIvVerify().setVisibility(View.VISIBLE);
                 ImageUtils.loadUserHead(TSEMHyphenate.getInstance().getChatUser(messageItemBean.getEmKey()), userAvatarView,false);
                 // 响应事件
-                holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());
+                holder.setText(R.id.tv_name, TSEMHyphenate.getInstance().getChatUser(messageItemBean.getEmKey()).getName());
                 setUserInfoClick(holder.getView(R.id.tv_name), messageItemBean.getUserInfo());
                 setUserInfoClick(holder.getView(R.id.iv_headpic), messageItemBean.getUserInfo());
                 swipeLayout.setSwipeEnabled(true);

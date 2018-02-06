@@ -11,7 +11,7 @@ import android.os.Parcelable;
  * @contact email:648129313@qq.com
  */
 
-public class ChatUserInfoBean implements Parcelable{
+public class ChatUserInfoBean implements Parcelable {
 
     // 定义四种性别状态
     public static final int MALE = 1;
@@ -65,6 +65,10 @@ public class ChatUserInfoBean implements Parcelable{
     }
 
     public ChatUserInfoBean() {
+    }
+
+    public ChatUserInfoBean(String name) {
+        this.name = name;
     }
 
     @Override

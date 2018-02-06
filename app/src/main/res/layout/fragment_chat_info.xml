@@ -10,6 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.zhiyicx.baseproject.widget.EmptyView
+            android:id="@+id/emptyView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
         <LinearLayout
             android:id="@+id/ll_container"
             android:layout_width="match_parent"
@@ -259,10 +264,6 @@
                 android:textSize="@dimen/size_content"/>
         </LinearLayout>
 
-        <com.zhiyicx.baseproject.widget.EmptyView
-            android:id="@+id/emptyView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
     </FrameLayout>
 
 </android.support.v4.widget.NestedScrollView>

@@ -515,7 +515,7 @@ public class TSEMHyphenate {
                     String typeUID = "uid";
                     String msgType = "";
                     String uid = "";
-                    String content = "";
+                    String content = "未知操作";
                     try {
                         msgType = cmdMessage.getStringAttribute(typeName);
                         uid = cmdMessage.getStringAttribute(typeUID);
@@ -1075,7 +1075,7 @@ public class TSEMHyphenate {
         try {
             id = Long.parseLong(userId);
         } catch (NumberFormatException e) {
-            return null;
+            return new ChatUserInfoBean("未知用户");
         }
         if (mUserInfoBeanGreenDao == null) {
             mUserInfoBeanGreenDao = new UserInfoBeanGreenDaoImpl((Application) AppApplication.getContext());
@@ -1085,7 +1085,7 @@ public class TSEMHyphenate {
 
     private ChatUserInfoBean getChatUser(UserInfoBean userInfoBean) {
         if (userInfoBean == null) {
-            return null;
+            return new ChatUserInfoBean("未知用户");
         }
         ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
         chatUserInfoBean.setUser_id(userInfoBean.getUser_id());

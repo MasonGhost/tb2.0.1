@@ -50,6 +50,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IAuthRepository;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
+import com.zhiyicx.thinksnsplus.modules.chat.callV2.TSEMHyphenate;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.simple.eventbus.EventBus;
@@ -212,8 +213,7 @@ public class AuthRepository implements IAuthRepository {
         BackgroundTaskManager.getInstance(mContext).closeBackgroundTask();// 关闭后台任务
         new JpushAlias(mContext, "").setAlias(); // 注销极光
         MessageDao.getInstance(mContext).delDataBase();// 清空聊天信息、对话
-        /*退出环信*/
-        EMClient.getInstance().logout(true);
+        TSEMHyphenate.getInstance().signOut(null);
         mDynamicBeanGreenDao.clearTable();
         mAnswerDraftBeanGreenDaoImpl.clearTable();
         mQAPublishBeanGreenDaoImpl.clearTable();

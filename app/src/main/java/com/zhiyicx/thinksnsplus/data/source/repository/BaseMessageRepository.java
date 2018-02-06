@@ -148,7 +148,7 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                 if (mUserInfoBeanGreenDao.getSingleDataFromCache(userId) == null) {
                                     users.add(itemBeanV2.getConversation().getLastMessage().getFrom());
                                 }
-                            } catch (NumberFormatException ignored) {
+                            } catch (Exception ignored) {
                             }
 
                             ChatGroupBean chatGroupBean = mChatGroupBeanGreenDao.getChatGroupBeanById(chatGroupId);
@@ -181,13 +181,12 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                             for (int i = 0; i < list1.size(); i++) {
                                                 // 只有单聊才给用户信息
                                                 if (list1.get(i).getConversation().getType() == EMConversation.EMConversationType.Chat) {
-                                                    int key;
-                                                    if ("admin".equals(list1.get(i).getEmKey())) {
-                                                        key = 1;
-                                                    } else {
-                                                        key = Integer.parseInt(list1.get(i).getEmKey());
+                                                    try {
+                                                        int key = Integer.parseInt(list1.get(i).getEmKey());
+                                                        list1.get(i).setUserInfo(userInfoBeanSparseArray.get(key));
+                                                    } catch (NumberFormatException e) {
+                                                        e.printStackTrace();
                                                     }
-                                                    list1.get(i).setUserInfo(userInfoBeanSparseArray.get(key));
                                                 }
                                             }
                                             return list1;

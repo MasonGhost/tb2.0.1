@@ -16,13 +16,15 @@ import com.zhiyicx.baseproject.widget.recycleview.BlankClickRecycleView;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
+import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
-import com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
+import com.zhiyicx.thinksnsplus.modules.chat.callV2.TSEMHyphenate;
+import com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageAdapterV2;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.TSSearchView;
@@ -33,7 +35,11 @@ import org.simple.eventbus.ThreadMode;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import rx.Observable;
+import rx.functions.Func1;
 
+import static com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository.MAX_RETRY_COUNTS;
+import static com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository.RETRY_DELAY_TIME;
 import static com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2.BUNDLE_CHAT_DATA;
 
 /**
@@ -102,18 +108,35 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
     }
 
     @Override
+    protected boolean isLayzLoad() {
+        return true;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         // 刷新信息内容
-        if (mPresenter != null) {
-            mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
-            mPresenter.refreshConversationReadMessage();
-        }
+        Observable.just(mPresenter)
+                .flatMap((Func1<MessageConversationContract.Presenter, Observable<?>>) presenter -> {
+                    if (presenter == null) {
+                        return Observable.error(new IllegalArgumentException("presenter can not be null"));
+                    }
+                    return Observable.just(presenter);
+                })
+                .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
+                .filter(o -> mPresenter != null)
+                .subscribe(o -> {
+                    mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
+                    mPresenter.refreshConversationReadMessage();
+                });
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        if (TSEMHyphenate.getInstance().isConnection() && TSEMHyphenate.getInstance().isLoginedInBefore()) {
+            hideStickyMessage();
+        }
         if (mAdapter != null && ((MessageAdapterV2) mAdapter).hasItemOpend()) {
             ((MessageAdapterV2) mAdapter).closeAllItems();
         }
