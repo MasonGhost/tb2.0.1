@@ -220,6 +220,7 @@ public class VideoCallFragment extends BaseCallFragment {
 //                exitFullScreen();
                 break;
             case R.id.btn_refuse_call:
+                // 拒绝接听通话
                 rejectCall();
                 break;
             case R.id.btn_hangup_call:
@@ -263,13 +264,9 @@ public class VideoCallFragment extends BaseCallFragment {
         }
     }
 
-    /**
-     * @author Jliuer
-     * @Date 18/02/01 16:53
-     * @Email Jliuer@aliyun.com
-     * @Description 开始呼叫对方
-     */
-    private void makeCall() {
+
+    @Override
+    protected void makeCall() {
         try {
             EMClient.getInstance().callManager().makeVideoCall(mChatId, AppApplication
                     .getmCurrentLoginAuth().getUser().getName());
@@ -278,13 +275,8 @@ public class VideoCallFragment extends BaseCallFragment {
         }
     }
 
-    /**
-     * @author Jliuer
-     * @Date 18/02/01 17:11
-     * @Email Jliuer@aliyun.com
-     * @Description 退出全屏通话界面
-     */
-    private void exitFullScreen() {
+    @Override
+    protected void exitFullScreen() {
         vibrate();
         mActivity.finish();
     }
@@ -310,14 +302,8 @@ public class VideoCallFragment extends BaseCallFragment {
         }
     }
 
-    /**
-     * @author Jliuer
-     * @Date 18/02/01 17:56
-     * @Email Jliuer@aliyun.com
-     * @Description 静音
-     * 麦克风开关，主要调用环信语音数据传输方法
-     */
-    private void onMicrophone() {
+    @Override
+    protected void onMicrophone() {
         // 振动反馈
         vibrate();
         // 根据麦克风开关是否被激活来进行判断麦克风状态，然后进行下一步操作
@@ -346,13 +332,8 @@ public class VideoCallFragment extends BaseCallFragment {
         }
     }
 
-    /**
-     * @author Jliuer
-     * @Date 18/02/01 17:59
-     * @Email Jliuer@aliyun.com
-     * @Description 扬声器开关
-     */
-    private void onSpeaker() {
+    @Override
+    protected void onSpeaker() {
         // 振动反馈
         vibrate();
         // 根据按钮状态决定打开还是关闭扬声器
@@ -373,7 +354,8 @@ public class VideoCallFragment extends BaseCallFragment {
      * 3、MODE_IN_COMMUNICATION：这个和 CALL 都表示通讯模式，不过 CALL 在华为上不好使，故使用 COMMUNICATION
      * 4、MODE_RINGTONE：铃声模式
      */
-    private void openSpeaker() {
+    @Override
+    protected void openSpeaker() {
         // 设置按钮状态
         mIvHandsfree.setActivated(true);
         TSEMCallStatus.getInstance().setSpeaker(true);
@@ -386,11 +368,8 @@ public class VideoCallFragment extends BaseCallFragment {
         mAudioManager.setMode(AudioManager.MODE_NORMAL);
     }
 
-    /**
-     * 关闭扬声器，即开启听筒播放模式
-     * 同上边{@link #openSpeaker()}
-     */
-    private void closeSpeaker() {
+    @Override
+    protected void closeSpeaker() {
         // 设置按钮状态
         mIvHandsfree.setActivated(false);
         TSEMCallStatus.getInstance().setSpeaker(false);
@@ -430,13 +409,8 @@ public class VideoCallFragment extends BaseCallFragment {
         }
     }
 
-    /**
-     * @Author Jliuer
-     * @Date 2018/2/1/20:59
-     * @Email Jliuer@aliyun.com
-     * @Description 拒绝通话
-     */
-    private void rejectCall() {
+    @Override
+    protected void rejectCall() {
         // 振动反馈
         vibrate();
         // 通话结束，重置通话状态
@@ -459,13 +433,8 @@ public class VideoCallFragment extends BaseCallFragment {
         onFinish();
     }
 
-    /**
-     * @Author Jliuer
-     * @Date 2018/2/1/21:03
-     * @Email Jliuer@aliyun.com
-     * @Description 结束通话
-     */
-    private void endCall() {
+    @Override
+    protected void endCall() {
         // 振动反馈
         vibrate();
         // 通话结束，重置通话状态
@@ -486,13 +455,8 @@ public class VideoCallFragment extends BaseCallFragment {
         onFinish();
     }
 
-    /**
-     * @Author Jliuer
-     * @Date 2018/2/1/21:04
-     * @Email Jliuer@aliyun.com
-     * @Description 接听通话
-     */
-    private void answerCall() {
+    @Override
+    protected void answerCall() {
         // 振动反馈
         vibrate();
         // 做一些接听时的操作，比如隐藏按钮

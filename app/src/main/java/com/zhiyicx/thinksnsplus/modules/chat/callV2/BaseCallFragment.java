@@ -327,7 +327,7 @@ public abstract class BaseCallFragment extends TSFragment {
                 break;
             case TSEMConstants.TS_CALL_REFUESD_IS_INCOMING:
                 // 自己已拒绝
-                content = mActivity.getString(R.string.Refused);
+                content = mActivity.getString(R.string.Has_been_cancelled);
                 break;
             case TSEMConstants.TS_CALL_REFUESD:
                 // 对方拒绝
@@ -465,7 +465,7 @@ public abstract class BaseCallFragment extends TSFragment {
      * @Email Jliuer@aliyun.com
      * @Description 接通了，设置显示对方图像控件显示
      */
-    protected abstract void surfaceViewProcessor();
+    protected void surfaceViewProcessor(){};
 
     /**
      * 通话状态变化
@@ -502,4 +502,80 @@ public abstract class BaseCallFragment extends TSFragment {
         }
         return mUserInfoBeanGreenDao.getSingleDataFromCache(id);
     }
+
+    /**
+     * @author Jliuer
+     * @Date 18/02/01 16:53
+     * @Email Jliuer@aliyun.com
+     * @Description 开始呼叫对方
+     */
+    protected void makeCall(){
+
+    }
+
+    /**
+     * @author Jliuer
+     * @Date 18/02/01 17:11
+     * @Email Jliuer@aliyun.com
+     * @Description 退出全屏通话界面
+     */
+    protected void exitFullScreen() {
+    }
+
+    /**
+     * @author Jliuer
+     * @Date 18/02/01 17:56
+     * @Email Jliuer@aliyun.com
+     * @Description 静音
+     * 麦克风开关，主要调用环信语音数据传输方法
+     */
+    protected void onMicrophone(){}
+
+    /**
+     * @author Jliuer
+     * @Date 18/02/01 17:59
+     * @Email Jliuer@aliyun.com
+     * @Description 扬声器开关
+     */
+    protected void onSpeaker(){}
+
+    /**
+     * 打开扬声器
+     * 主要是通过扬声器的开关以及设置音频播放模式来实现
+     * 1、MODE_NORMAL：是正常模式，一般用于外放音频
+     * 2、MODE_IN_CALL：
+     * 3、MODE_IN_COMMUNICATION：这个和 CALL 都表示通讯模式，不过 CALL 在华为上不好使，故使用 COMMUNICATION
+     * 4、MODE_RINGTONE：铃声模式
+     */
+    protected void openSpeaker(){}
+
+    /**
+     * 关闭扬声器，即开启听筒播放模式
+     * 同上边{@link #openSpeaker()}
+     */
+    protected void closeSpeaker() {}
+
+    /**
+     * @Author Jliuer
+     * @Date 2018/2/1/20:59
+     * @Email Jliuer@aliyun.com
+     * @Description 拒绝通话
+     */
+    protected void rejectCall() {}
+
+    /**
+     * @Author Jliuer
+     * @Date 2018/2/1/21:03
+     * @Email Jliuer@aliyun.com
+     * @Description 结束通话
+     */
+    protected void endCall() {}
+
+    /**
+     * @Author Jliuer
+     * @Date 2018/2/1/21:04
+     * @Email Jliuer@aliyun.com
+     * @Description 接听通话
+     */
+    protected void answerCall() {}
 }

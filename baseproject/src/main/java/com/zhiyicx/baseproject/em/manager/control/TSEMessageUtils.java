@@ -138,6 +138,7 @@ public class TSEMessageUtils {
         long currTime = TSEMDateUtil.getCurrentMillisecond();
         message.setMsgTime(currTime);
         // 设置消息的扩展
+        message.setAttribute("type",TSEMConstants.TS_ATTR_JOIN);
         message.setAttribute(TSEMConstants.TS_ATTR_JOIN, isJoin);
         message.setAttribute(TSEMConstants.TS_ATTR_EIXT, !isJoin);
 

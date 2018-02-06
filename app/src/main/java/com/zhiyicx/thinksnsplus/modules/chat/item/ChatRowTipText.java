@@ -17,15 +17,13 @@ import static com.zhiyicx.thinksnsplus.widget.chat.MessageTextItemDelagate.MAX_S
 
 
 /**
- * @author Catherine
- * @describe 文字的item
- * @date 2018/1/2
- * @contact email:648129313@qq.com
+ * @author Jliuer
+ * @Date 18/02/06 14:01
+ * @Email Jliuer@aliyun.com
+ * @Description 文本消息，提示信息
  */
-
 public class ChatRowTipText extends ChatBaseRow {
     private TextView mTvChatContent;
-    private boolean adminMsg;
 
     public ChatRowTipText(Context context, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean userInfoBean) {
         super(context, message, position, adapter, userInfoBean);
@@ -40,6 +38,10 @@ public class ChatRowTipText extends ChatBaseRow {
     protected void onFindViewById() {
         super.onFindViewById();
         mTvChatContent = (TextView) findViewById(R.id.tv_chat_content);
+    }
+
+    @Override
+    public void updateView(EMMessage msg) {
     }
 
     @Override

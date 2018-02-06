@@ -1,68 +1,220 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/call_backgroup"
+    android:orientation="vertical"
+    android:paddingTop="120dp">
+
+    <!--对方的信息-->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:orientation="vertical"
-        android:background="#363845">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-    <!--语音电话的页面-->
-    <!--头像-->
-    <com.zhiyicx.baseproject.widget.UserAvatarView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+        <com.zhiyicx.baseproject.widget.UserAvatarView
+            android:id="@+id/swing_card"
+            android:layout_width="@dimen/chat_call_avatar_width"
+            android:layout_height="@dimen/chat_call_avatar_width"
+            android:layout_marginTop="10dp"
+            android:scaleType="fitXY"
             app:pressShape="circle"
-            app:ts_avatare_size="100dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="136dp"
-            app:layout_constraintHorizontal_bias="0.498"/>
+            app:ts_avatare_size="@dimen/chat_call_avatar_width"/>
 
-    <!--用户名-->
-    <android.support.v7.widget.AppCompatTextView
+        <TextView
+            android:id="@+id/tv_nick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="xxxxx"
-            tools:layout_editor_absoluteY="248dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"/>
+            android:layout_marginTop="@dimen/spacing_large"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/size_primary_title"
+            tools:ignore="HardcodedText"
+            tools:text="张三"/>
 
-    <android.support.v7.widget.AppCompatTextView
+        <TextView
+            android:id="@+id/tv_network_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="xxxxx"
-            tools:layout_editor_absoluteY="364dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"/>
+            android:layout_marginTop="10dp"
+            android:textColor="@android:color/white"/>
+    </LinearLayout>
 
+    <!--通话信息-->
+    <LinearLayout
+        android:id="@+id/topLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <TextView
+        <!--通话状态-->
+        <TextView
+            android:id="@+id/tv_call_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="xxxxx"
-            tools:layout_editor_absoluteY="531dp"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp"/>
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/size_primary_title"
+            android:visibility="visible"
+            tools:text="通话中"/>
 
-    <TextView
+        <com.zhiyicx.thinksnsplus.widget.chat.MyChronometer
+            android:id="@+id/chronometer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="xxxxx"
-            tools:layout_editor_absoluteY="530dp"
-            tools:layout_editor_absoluteX="188dp"/>
+            android:layout_marginTop="@dimen/spacing_mid"
+            android:text="Chronometer"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/size_primary_title"
+            android:visibility="invisible"/>
+    </LinearLayout>
 
-    <TextView
-            android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_bigger_large"
+        android:orientation="horizontal">
+
+        <!--静音-->
+        <LinearLayout
+            android:id="@+id/ll_mute"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            tools:text="xxxxx"
-            tools:layout_editor_absoluteY="530dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="8dp"/>
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_mute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitCenter"
+                android:src="@mipmap/btn_chat_mute"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:text="@string/mute"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_content_assist"/>
+
+        </LinearLayout>
+
+        <!--挂断-->
+        <LinearLayout
+            android:id="@+id/ll_refuse_call"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/btn_refuse_call"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:gravity="center"
+                android:src="@mipmap/btn_chat_hungup"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:text="@string/hang_up"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_content_assist"/>
+
+        </LinearLayout>
+
+        <!--挂断-->
+        <LinearLayout
+            android:id="@+id/ll_hangup_call"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/btn_hangup_call"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:gravity="center"
+                android:src="@mipmap/btn_chat_hungup"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:text="@string/hang_up"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_content_assist"/>
+
+        </LinearLayout>
+
+        <!--接听-->
+        <LinearLayout
+            android:id="@+id/ll_answer_call"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/btn_answer_call"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:gravity="center"
+                android:src="@mipmap/btn_chat_answer"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:text="@string/answer"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_content_assist"/>
+
+        </LinearLayout>
 
 
-</android.support.constraint.ConstraintLayout>
+        <!--免提-->
+        <LinearLayout
+            android:id="@+id/ll_handsfree"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_handsfree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitCenter"
+                android:src="@mipmap/btn_chat_handsfree"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:text="@string/Hands_free"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_content_assist"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

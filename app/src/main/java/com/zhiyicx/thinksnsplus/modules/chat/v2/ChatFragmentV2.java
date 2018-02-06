@@ -31,7 +31,7 @@ import com.zhiyicx.thinksnsplus.base.TSEaseChatFragment;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.modules.chat.call.VoiceCallActivity;
-import com.zhiyicx.thinksnsplus.modules.chat.callV2.video.VideoCallActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.callV2.BaseCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.info.ChatInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
 import com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatCallPresneter;
@@ -139,6 +139,7 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
         if (chatType == EaseConstant.CHATTYPE_SINGLE) {
             setCenterText(mPresenter.getUserName(toChatUsername));
         } else if (chatType == EaseConstant.CHATTYPE_GROUP) {
+
             EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatUsername);
             setCenterText(group.getGroupName());
             mTsGroupListener = new TSGroupListener();
@@ -400,6 +401,7 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
                 } else {
                     boolean admin;
                     boolean isGroupChange = TSEMConstants.TS_ATTR_GROUP_CHANGE.equals(message.ext().get("type"))
+                            || TSEMConstants.TS_ATTR_GROUP_CHANGE.equals(message.ext().get("type"))
                             || TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"))
                             || TSEMConstants.TS_ATTR_JOIN.equals(message.ext().get("type"));
 
@@ -472,15 +474,7 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
         if (!EMClient.getInstance().isConnected()) {
             ToastUtils.showToast(getActivity(), R.string.not_connect_to_server, Toast.LENGTH_SHORT);
         } else {
-            Intent intent = new Intent(getActivity(), VoiceCallActivity.class);
-            Bundle bundle = new Bundle();
-            // 设置呼叫方 username 参数
-            bundle.putString(TSEMConstants.TS_EXTRA_CHAT_ID, toChatUsername);
-            // 设置通话为对方打来
-            bundle.putBoolean(TSEMConstants.TS_EXTRA_CALL_IS_INCOMING, false);
-            intent.putExtras(bundle);
-            startActivity(intent);
-            // voiceCallBtn.setEnabled(false);
+            BaseCallActivity.startVoiceCallActivity(mActivity,toChatUsername,false);
             inputMenu.hideExtendMenuContainer();
         }
     }
@@ -492,15 +486,7 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
         if (!EMClient.getInstance().isConnected()) {
             ToastUtils.showToast(R.string.not_connect_to_server);
         } else {
-            Intent intent = new Intent(getActivity(), VideoCallActivity.class);
-            Bundle bundle = new Bundle();
-            // 设置呼叫方 username 参数
-            bundle.putString(TSEMConstants.TS_EXTRA_CHAT_ID, toChatUsername);
-            // 设置通话为对方打来
-            bundle.putBoolean(TSEMConstants.TS_EXTRA_CALL_IS_INCOMING, false);
-            intent.putExtras(bundle);
-            startActivity(intent);
-            // videoCallBtn.setEnabled(false);
+            BaseCallActivity.startVideoCallActivity(mActivity,toChatUsername,false);
             inputMenu.hideExtendMenuContainer();
         }
     }

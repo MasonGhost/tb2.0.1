@@ -1005,8 +1005,9 @@
     <string name="select_friends_right_title_default">聊天</string>
     <string name="select_friends_right_title">聊天(%d)</string>
     <string name="video_call_in">邀请你进入视屏聊天</string>
+    <string name="voice_call_in">邀请你进入语音聊天</string>
     <string name="video_call_out">等待对方接受请求</string>
-    <string name="video_call_connecting">视屏连接中&#8230;</string>
+    <string name="video_call_connecting">通话连接中&#8230;</string>
     <string name="video_calling">通话中/%1$s</string>
     <string name="video_call_off">通话中断</string>
 

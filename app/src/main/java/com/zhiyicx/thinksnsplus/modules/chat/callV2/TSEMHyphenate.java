@@ -525,24 +525,28 @@ public class TSEMHyphenate {
                         LogUtils.d("Cathy", (cmdMessage.ext()));
                         LogUtils.d("Cathy", (cmdMessage.getJSONObjectAttribute("contents")));
 
-                    } catch (HyphenateException e) {
-                        e.printStackTrace();
+                    } catch (HyphenateException ignore) {
                     }
 
                     // 用户加入
                     if (TSEMConstants.TS_ATTR_JOIN.equals(msgType)) {
-                        TSEMessageUtils.sendGroupMemberJoinOrExitMessage(uid, content, true, null);
+                        content = "用户加入";
                     }
 
                     // 用户退出
                     if (TSEMConstants.TS_ATTR_EIXT.equals(msgType)) {
-
+                        content = "用户退出";
                     }
 
-                    // 用户退出
+                    // 创建群
                     if (TSEMConstants.TS_ATTR_GROUP_CRATE.equals(msgType)) {
-
+                        content = "创建群";
                     }
+
+                    if (TSEMConstants.TS_ATTR_GROUP_CHANGE.equals(msgType)) {
+                        content = "修改群";
+                    }
+                    TSEMessageUtils.sendGroupMemberJoinOrExitMessage(cmdMessage.getTo(), content, true, null);
                 }
             }
 

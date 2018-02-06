@@ -731,6 +731,7 @@
             android:name=".modules.chat.member.GroupMemberListActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".modules.chat.callV2.video.VideoCallActivity"/>
+        <activity android:name=".modules.chat.callV2.voice.VoiceCallActivity"/>
         <!-- 开机自启动服务 -->
         <receiver android:name=".modules.chat.receiver.StartServiceReceiver">
             <intent-filter android:priority="1000">

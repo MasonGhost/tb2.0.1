@@ -3,14 +3,12 @@ package com.zhiyicx.thinksnsplus.modules.chat.callV2.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 
 import com.hyphenate.chat.EMClient;
-import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
 import com.zhiyicx.baseproject.em.manager.TSEMCallStatus;
+import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
+import com.zhiyicx.thinksnsplus.modules.chat.callV2.BaseCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.callV2.TSEMHyphenate;
-import com.zhiyicx.thinksnsplus.modules.chat.callV2.video.VideoCallActivity;
-import com.zhiyicx.thinksnsplus.modules.chat.call.VoiceCallActivity;
 
 
 /**
@@ -53,26 +51,16 @@ public class TSEMCallReceiver extends BroadcastReceiver {
 
         // 判断下当前被呼叫的为自己的时候才启动通话界面 TODO 这个当不同appkey下相同的username时就无效了
         if (callTo.equals(EMClient.getInstance().getCurrentUser())) {
-            Intent callIntent = new Intent();
             // 根据通话类型跳转到语音通话或视频通话界面
             if (callType.equals(TYPE_VIDEO)) {
-                callIntent.setClass(context, VideoCallActivity.class);
+                BaseCallActivity.startVideoCallActivity(context, callFrom, true);
                 // 设置当前通话类型为视频通话
                 TSEMCallStatus.getInstance().setCallType(TSEMCallStatus.CALL_TYPE_VIDEO);
             } else if (callType.equals(TYPE_VOICE)) {
-                callIntent.setClass(context, VoiceCallActivity.class);
+                BaseCallActivity.startVoiceCallActivity(context, callFrom, true);
                 // 设置当前通话类型为语音通话
                 TSEMCallStatus.getInstance().setCallType(TSEMCallStatus.CALL_TYPE_VOICE);
             }
-            // 设置 activity 启动方式
-            callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Bundle bundle=new Bundle();
-            // 设置呼叫方 username 参数
-            bundle.putString(TSEMConstants.TS_EXTRA_CHAT_ID, callFrom);
-            // 设置通话为对方打来
-            bundle.putBoolean(TSEMConstants.TS_EXTRA_CALL_IS_INCOMING, true);
-            callIntent.putExtras(bundle);
-            context.startActivity(callIntent);
         }
     }
 }
