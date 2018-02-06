@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
+import android.database.sqlite.SQLiteException;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -199,7 +200,7 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
     /**
      * 获取最新的动态列表
      */
-    public List<DynamicBean> getNewestDynamicList(Long feed_id) {
+    public List<DynamicBean> getNewestDynamicList(Long feed_id) throws SQLiteException {
         if (feed_id == null || feed_id == 0) {
             feed_id = System.currentTimeMillis();
         }

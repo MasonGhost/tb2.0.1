@@ -21,7 +21,6 @@ import com.klinker.android.link_builder.LinkMetadata;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -70,8 +69,8 @@ public class QAListBaseInfoAdapter<T extends BaseListBean> extends CommonAdapter
         holder.setText(R.id.item_info_time, TimeUtils.getTimeFriendlyNormal(infoBean.getCreated_at()));
         holder.setText(R.id.item_info_count, String.format(Locale.getDefault(), mContext.getString(R.string.qa_show_topic_followed_content)
                 , infoBean.getWatchers_count(), infoBean.getAnswers_count()) + (infoBean.getAmount() > 0 ? "  ·  " : ""));
-        double rewardMoney = PayConfig.realCurrency2GameCurrency(infoBean.getAmount(), getRatio());
-        String rewardstr = "<" + rewardMoney + ">";
+        double rewardMoney = infoBean.getAmount();
+        String rewardstr = "<" + ConvertUtils.numberConvert((int) rewardMoney) + ">";
         CharSequence chars = ColorPhrase.from(rewardstr).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(mContext, R.color.withdrawals_item_enable))
                 .outerColor(ContextCompat.getColor(mContext, R.color.general_for_hint))
@@ -172,19 +171,6 @@ public class QAListBaseInfoAdapter<T extends BaseListBean> extends CommonAdapter
                 .setHighlightAlpha(.8f)
                 .setUnderlined(false);
         links.add(followCountLink);
-        return links;
-    }
-
-    private List<Link> setLinks() {
-        List<Link> links = new ArrayList<>();
-        String reg = "\\d+\\.\\d+";
-        Link rewardMoneyLink = new Link(Pattern.compile(reg)).setTextColor(ContextCompat.getColor(getContext(), R.color
-                .withdrawals_item_enable))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
-                        .general_for_hint))
-                .setHighlightAlpha(.8f)
-                .setUnderlined(false);
-        links.add(rewardMoneyLink);
         return links;
     }
 

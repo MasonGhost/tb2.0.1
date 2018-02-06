@@ -3,22 +3,24 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
-import org.greenrobot.greendao.annotation.Generated;
 
 import java.io.Serializable;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @Describe 钱包的数据类
  * @Author Jungle68
  * @Date 2017/5/24
-  @Contact master.jungle68@gmail.com
+ * @Contact master.jungle68@gmail.com
  */
 @Entity
-public class WalletBean implements Parcelable ,Serializable{
-    private static final long serialVersionUID=123L;
+public class WalletBean implements Parcelable, Serializable {
+    private static final long serialVersionUID = 123L;
 
     /**
      * id : 1
@@ -31,11 +33,13 @@ public class WalletBean implements Parcelable ,Serializable{
     @Id
     private Long id;
     @Unique
+    @SerializedName("owner_id")
     private int user_id;
     private double balance;
+    private double total_income;
+    private double total_expenses;
     private String created_at;
     private String updated_at;
-    private String deleted_at;
 
     public Long getId() {
         return id;
@@ -77,12 +81,20 @@ public class WalletBean implements Parcelable ,Serializable{
         this.updated_at = updated_at;
     }
 
-    public String getDeleted_at() {
-        return deleted_at;
+    public double getTotal_income() {
+        return total_income;
     }
 
-    public void setDeleted_at(String deleted_at) {
-        this.deleted_at = deleted_at;
+    public void setTotal_income(double total_income) {
+        this.total_income = total_income;
+    }
+
+    public double getTotal_expenses() {
+        return total_expenses;
+    }
+
+    public void setTotal_expenses(double total_expenses) {
+        this.total_expenses = total_expenses;
     }
 
     @Override
@@ -95,9 +107,10 @@ public class WalletBean implements Parcelable ,Serializable{
         dest.writeValue(this.id);
         dest.writeInt(this.user_id);
         dest.writeDouble(this.balance);
+        dest.writeDouble(this.total_income);
+        dest.writeDouble(this.total_expenses);
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
-        dest.writeString(this.deleted_at);
     }
 
     public WalletBean() {
@@ -107,20 +120,22 @@ public class WalletBean implements Parcelable ,Serializable{
         this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.user_id = in.readInt();
         this.balance = in.readDouble();
+        this.total_income = in.readDouble();
+        this.total_expenses = in.readDouble();
         this.created_at = in.readString();
         this.updated_at = in.readString();
-        this.deleted_at = in.readString();
     }
 
-    @Generated(hash = 1325167548)
-    public WalletBean(Long id, int user_id, double balance, String created_at,
-            String updated_at, String deleted_at) {
+    @Generated(hash = 1950383149)
+    public WalletBean(Long id, int user_id, double balance, double total_income,
+            double total_expenses, String created_at, String updated_at) {
         this.id = id;
         this.user_id = user_id;
         this.balance = balance;
+        this.total_income = total_income;
+        this.total_expenses = total_expenses;
         this.created_at = created_at;
         this.updated_at = updated_at;
-        this.deleted_at = deleted_at;
     }
 
     public static final Creator<WalletBean> CREATOR = new Creator<WalletBean>() {
@@ -134,16 +149,4 @@ public class WalletBean implements Parcelable ,Serializable{
             return new WalletBean[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "WalletBean{" +
-                "id=" + id +
-                ", user_id=" + user_id +
-                ", balance=" + balance +
-                ", created_at='" + created_at + '\'' +
-                ", updated_at='" + updated_at + '\'' +
-                ", deleted_at='" + deleted_at + '\'' +
-                '}';
-    }
 }

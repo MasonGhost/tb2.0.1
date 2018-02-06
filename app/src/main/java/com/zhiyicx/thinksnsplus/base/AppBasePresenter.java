@@ -14,6 +14,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge.IntegrationRechargeActivity;
 
 import javax.inject.Inject;
 
@@ -29,6 +30,7 @@ import rx.functions.Func1;
 
 public abstract class AppBasePresenter<V extends IBaseView> extends BasePresenter<V> implements IBaseTouristPresenter {
     private static final String DEFAULT_WALLET_EXCEPTION_MESSAGE = "balance_check";
+    private static final String DEFAULT_INTEGRATION_EXCEPTION_MESSAGE = "integration_check";
     @Inject
     protected AuthRepository mAuthRepository;
     @Inject
@@ -64,6 +66,12 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
         }
     }
 
+    /**
+     * 余额检查处理
+     *
+     * @param amount
+     * @return
+     */
     protected Observable<Object> handleWalletBlance(long amount) {
         return mCommentRepository.getCurrentLoginUserInfo()
                 .flatMap(userInfoBean -> {
@@ -83,6 +91,39 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
     }
 
     /**
+     * 积分检查处理
+     *
+     * @param amount
+     * @return
+     */
+    protected Observable<Object> handleIntegrationBlance(long amount) {
+        return mCommentRepository.getCurrentLoginUserInfo()
+                .flatMap(userInfoBean -> {
+                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                    if (userInfoBean.getCurrency() != null) {
+                        if (userInfoBean.getCurrency().getSum() < amount) {
+                            if (getSystemConfigBean() != null && getSystemConfigBean().getCurrencyRecharge() != null && getSystemConfigBean()
+                                    .getCurrencyRecharge().isOpen()) {
+                                mRootView.goRecharge(IntegrationRechargeActivity.class);
+                            } else {
+                                return Observable.error(new RuntimeException(mContext.getString(R.string.handle_fail)));
+                            }
+                            return Observable.error(new RuntimeException(DEFAULT_INTEGRATION_EXCEPTION_MESSAGE));
+                        }
+                    } else {
+                        if (getSystemConfigBean() != null && getSystemConfigBean().getCurrencyRecharge() != null && getSystemConfigBean()
+                                .getCurrencyRecharge().isOpen()) {
+                            mRootView.goRecharge(IntegrationRechargeActivity.class);
+                        } else {
+                            return Observable.error(new RuntimeException(mContext.getString(R.string.handle_fail)));
+                        }
+                        return Observable.error(new RuntimeException(DEFAULT_INTEGRATION_EXCEPTION_MESSAGE));
+                    }
+                    return Observable.just(userInfoBean);
+                });
+    }
+
+    /**
      * 检查异常是否是手动抛出的余额检查异常，如果是不做处理，如果不是需要处理
      *
      * @param throwable 抛出的异常
@@ -96,7 +137,20 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
             return false;
         }
     }
-
+    /**
+     * 检查异常是否是手动抛出的余额检查异常，如果是不做处理，如果不是需要处理
+     *
+     * @param throwable 抛出的异常
+     * @return
+     */
+    protected boolean isIntegrationBalanceCheck(Throwable throwable) {
+        if (throwable != null && !TextUtils.isEmpty(throwable.getMessage()) && DEFAULT_INTEGRATION_EXCEPTION_MESSAGE.equals(throwable.getMessage())) {
+            mRootView.dismissSnackBar();
+            return true;
+        } else {
+            return false;
+        }
+    }
     @Override
     public SystemConfigBean getSystemConfigBean() {
         return mSystemRepository.getAppConfigInfoFromLocal();

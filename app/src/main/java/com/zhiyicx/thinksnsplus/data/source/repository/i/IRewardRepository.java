@@ -5,17 +5,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 
 import java.util.List;
 
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
 import rx.Observable;
-
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS_USER_LIST;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_USER;
 
 /**
  * @Describe

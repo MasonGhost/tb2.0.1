@@ -4,18 +4,13 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseRewardRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Func1;
 
 /**
  * @Describe
@@ -26,16 +21,7 @@ import rx.functions.Func1;
 
 public class RewardPresenter extends AppBasePresenter< RewardContract.View> implements RewardContract.Presenter {
 
-    public static final int DEFAULT_DELAY_TIME = 2;
 
-    @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
-
-    @Inject
-    CommentRepository mCommentRepository;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-    
     @Inject
     BaseRewardRepository mRewardRepository;
 

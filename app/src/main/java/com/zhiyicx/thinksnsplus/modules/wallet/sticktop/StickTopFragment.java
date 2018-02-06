@@ -20,6 +20,8 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.integration.mine.MineIntegrationActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge.IntegrationRechargeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,7 +131,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         child_id = getArguments().getLong(CHILD_ID, -1L);
         isManager = getArguments().getBoolean(TYPE_MANAGER);
         mBlance = mPresenter.getBalance();
-        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f, mBlance));
+        mTvDynamicTopDec.setText(getString(R.string.to_top_description, 200f, mPresenter.getGoldName(), mBlance));
         String moneyName = mPresenter.getGoldName();
         mCustomMoney.setText(moneyName);
         mTotalMoney.setText(moneyName);
@@ -168,7 +170,12 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
 
     @Override
     public void gotoRecharge() {
-        startActivity(new Intent(getActivity(), WalletActivity.class));
+//        mSystemConfigBean = mPresenter.getSystemConfigBean();
+//        if (mSystemConfigBean.getCurrencyRecharge() != null && mSystemConfigBean.getCurrencyRecharge().isOpen()) {
+        startActivity(new Intent(getActivity(), MineIntegrationActivity.class));
+//        }else {
+//            showSnackErrorMessage(getString(R.string.current_money_not_enouph));
+//        }
     }
 
     @Override
@@ -209,7 +216,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     @Override
     public void updateBalance(double balance) {
         mBlance = balance;
-        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f, balance));
+        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f, mPresenter.getGoldName(), balance));
     }
 
     private void initListener() {

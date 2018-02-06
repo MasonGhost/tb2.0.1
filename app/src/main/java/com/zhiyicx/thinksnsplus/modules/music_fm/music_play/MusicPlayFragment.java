@@ -37,7 +37,6 @@ import android.widget.TextView;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideMusicBgTransform;
 import com.zhiyicx.baseproject.utils.WindowUtils;
@@ -1065,13 +1064,13 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 .buildLinksColor2(R.color.important_for_content)
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .buildDescrStr(String.format(getString(strRes), PayConfig.realCurrency2GameCurrency(amout, mPresenter.getRatio()), mPresenter
+                .buildDescrStr(String.format(getString(strRes),amout, mPresenter
                         .getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(amout, mPresenter.getRatio())))
+                .buildMoneyStr(getString(R.string.buy_pay_integration,amout))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(position, note);
                     mPayMusicPopWindow.hide();

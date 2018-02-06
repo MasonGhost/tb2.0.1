@@ -24,6 +24,20 @@ public class SystemConfigBean implements Serializable {
      * "question:apply_amount": 200,  //  申请精选所需支付金额
      * "question:onlookers_amount": 100  //  围观答案所需支付金额
      * "checkin": false
+     * <p>
+     * "wallet:cash": {
+     * "open": true
+     * },
+     * "wallet:recharge": {
+     * "open": true
+     * },
+     * "currency:cash": {
+     * "open": true
+     * },
+     * "currency:recharge": {
+     * "open": true
+     * },
+     * server:version
      */
     @SerializedName("wallet:ratio")
     private int wallet_ratio;
@@ -50,6 +64,18 @@ public class SystemConfigBean implements Serializable {
     private boolean checkin;
     @SerializedName("group:create")
     private CircleGroup mCircleGroup;
+    @SerializedName("server:version")
+    private String serverVersion;
+    @SerializedName("wallet:cash")
+    private OpenConfig walletCash;
+    @SerializedName("wallet:recharge")
+    private OpenConfig walletRecharge;
+    @SerializedName("wallet:transform")
+    private OpenConfig walletTransform; // 余额转积分
+    @SerializedName("currency:cash")
+    private OpenConfig currencyCash;
+    @SerializedName("currency:recharge")
+    private OpenConfig currencyRecharge;
 
     /**
      * registerSettings : {"showTerms":false,"registerMode":"all","completeData":true,"accountType":"all","content":"# 服务条款及隐私政策"}
@@ -182,6 +208,54 @@ public class SystemConfigBean implements Serializable {
 
     public void setSite(SiteBean site) {
         this.site = site;
+    }
+
+    public String getServerVersion() {
+        return serverVersion;
+    }
+
+    public void setServerVersion(String serverVersion) {
+        this.serverVersion = serverVersion;
+    }
+
+    public OpenConfig getWalletCash() {
+        return walletCash;
+    }
+
+    public void setWalletCash(OpenConfig walletCash) {
+        this.walletCash = walletCash;
+    }
+
+    public OpenConfig getWalletRecharge() {
+        return walletRecharge;
+    }
+
+    public void setWalletRecharge(OpenConfig walletRecharge) {
+        this.walletRecharge = walletRecharge;
+    }
+
+    public OpenConfig getCurrencyCash() {
+        return currencyCash;
+    }
+
+    public void setCurrencyCash(OpenConfig currencyCash) {
+        this.currencyCash = currencyCash;
+    }
+
+    public OpenConfig getCurrencyRecharge() {
+        return currencyRecharge;
+    }
+
+    public void setCurrencyRecharge(OpenConfig currencyRecharge) {
+        this.currencyRecharge = currencyRecharge;
+    }
+
+    public OpenConfig getWalletTransform() {
+        return walletTransform;
+    }
+
+    public void setWalletTransform(OpenConfig walletTransform) {
+        this.walletTransform = walletTransform;
     }
 
     /**
@@ -387,6 +461,7 @@ public class SystemConfigBean implements Serializable {
         private H5Bean h5;
         private GoldBean gold;
         private RewardBean reward;
+        @SerializedName("currency_name")
         private GoldNameBean gold_name;
 
         public boolean isStatus() {
@@ -739,6 +814,27 @@ public class SystemConfigBean implements Serializable {
         }
     }
 
+    public static class OpenConfig implements Serializable {
+
+        private static final long serialVersionUID = 3393545893640479534L;
+        private boolean open;
+
+        public boolean isOpen() {
+            return open;
+        }
+
+        public void setOpen(boolean open) {
+            this.open = open;
+        }
+
+        @Override
+        public String toString() {
+            return "Open{" +
+                    "open=" + open +
+                    '}';
+        }
+    }
+
     @Override
     public String toString() {
         return "SystemConfigBean{" +
@@ -755,6 +851,12 @@ public class SystemConfigBean implements Serializable {
                 ", mFeed=" + mFeed +
                 ", checkin=" + checkin +
                 ", mCircleGroup=" + mCircleGroup +
+                ", serverVersion='" + serverVersion + '\'' +
+                ", walletCash=" + walletCash +
+                ", walletRecharge=" + walletRecharge +
+                ", walletTransform=" + walletTransform +
+                ", currencyCash=" + currencyCash +
+                ", currencyRecharge=" + currencyRecharge +
                 ", registerSettings=" + registerSettings +
                 ", site=" + site +
                 '}';

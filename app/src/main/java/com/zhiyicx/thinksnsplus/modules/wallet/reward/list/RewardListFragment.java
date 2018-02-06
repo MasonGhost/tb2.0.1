@@ -65,16 +65,6 @@ public class RewardListFragment extends TSListFragment<RewardListContract.Presen
     }
 
     @Override
-    protected void initView(View rootView) {
-        super.initView(rootView);
-    }
-
-    @Override
-    protected void initData() {
-        super.initData();
-    }
-
-    @Override
     protected int setEmptView() {
         return R.mipmap.img_default_nobody;
     }

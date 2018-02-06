@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.home.main;
 
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -131,8 +132,11 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
         });
 
         // 启动 app，如果本地没有最新数据，应跳到“热门”页面 关联 github  #113  #366
-        if (mDynamicBeanGreenDao.getNewestDynamicList(System.currentTimeMillis()).size() == 0) {
-            mVpFragment.setCurrentItem(1);
+        try {
+            if (mDynamicBeanGreenDao.getNewestDynamicList(System.currentTimeMillis()).size() == 0) {
+                mVpFragment.setCurrentItem(1);
+            }
+        } catch (SQLiteException ignored) {
         }
 
     }

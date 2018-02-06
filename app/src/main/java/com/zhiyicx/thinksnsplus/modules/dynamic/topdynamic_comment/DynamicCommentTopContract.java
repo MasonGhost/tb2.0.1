@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment;
 
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
@@ -29,7 +30,7 @@ public interface DynamicCommentTopContract {
         void topSuccess();
     }
 
-    interface Presenter extends IBasePresenter {
+    interface Presenter extends IBaseTouristPresenter {
         double getBalance();
         void topDynamicComment(long feed_id,long comment_id, double amount, int day);
     }

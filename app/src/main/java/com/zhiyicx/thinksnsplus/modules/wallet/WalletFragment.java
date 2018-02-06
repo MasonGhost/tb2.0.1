@@ -8,21 +8,21 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.integration.mine.MineIntegrationActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge.IntegrationRechargeActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsFragment;
-import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.list_detail.WithdrawalsDetailActivity;
 
 import org.simple.eventbus.Subscriber;
 import org.simple.eventbus.ThreadMode;
@@ -31,10 +31,8 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_COMMENT_COUNT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_WALLET_RECHARGE;
 import static com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.TAG_SHOWRULE_POP;
 
@@ -52,13 +50,15 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
     CombinationButton mBtReCharge;
     @BindView(R.id.bt_withdraw)
     CombinationButton mBtWithdraw;
+    @BindView(R.id.bt_mine_integration)
+    CombinationButton btMineIntegration;
     @BindView(R.id.tv_recharge_and_withdraw_rule)
     TextView mTvReChargeAndWithdrawRule;
     @BindView(R.id.tv_account_unit)
     TextView getTvMineMoney;
 
     /**
-     *  充值提示规则选择弹框
+     * 充值提示规则选择弹框
      */
     private CenterInfoPopWindow mRulePop;
 
@@ -101,7 +101,18 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         setCenterTextColor(R.color.white);
         setRightText(getString(R.string.detail));
         initListener();
-        getTvMineMoney.setText(String.format(Locale.getDefault(),getString(R.string.account_balance),mPresenter.getGoldName()));
+        getTvMineMoney.setText(String.format(Locale.getDefault(), getString(R.string.account_balance), getString(R.string.yuan)));
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
+        if (mSystemConfigBean == null || mSystemConfigBean.getWalletRecharge() == null || !mSystemConfigBean.getWalletRecharge().isOpen()) {
+            mBtReCharge.setVisibility(View.GONE);
+        } else {
+            mBtReCharge.setVisibility(View.VISIBLE);
+        }
+        if (mSystemConfigBean == null || mSystemConfigBean.getWalletCash() == null || !mSystemConfigBean.getWalletCash().isOpen()) {
+            mBtWithdraw.setVisibility(View.GONE);
+        } else {
+            mBtWithdraw.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -112,13 +123,20 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
 
     @Override
     protected void initData() {
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
+        if (mSystemConfigBean.getCurrencyRecharge() != null && mSystemConfigBean.getCurrencyRecharge().isOpen()) {
+            btMineIntegration.setVisibility(View.VISIBLE);
+            btMineIntegration.setLeftText(getString(R.string.integration_recharge_format, mPresenter.getGoldName()));
+        } else {
+            btMineIntegration.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (mPresenter.checkIsNeedTipPop()) {
-            getView().post(() -> mPresenter.checkWalletConfig(TAG_SHOWRULE_POP,false));
+            getView().post(() -> mPresenter.checkWalletConfig(TAG_SHOWRULE_POP, false));
         }
     }
 
@@ -133,18 +151,26 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         RxView.clicks(mBtReCharge)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_RECHARGE,true));
+                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_RECHARGE, true));
         // 提现
         RxView.clicks(mBtWithdraw)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_WITHDRAW,true));
+                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_WITHDRAW, true));     // 提现
+        // 积分充值
+        RxView.clicks(btMineIntegration)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> {
+                    Intent intent = new Intent(mActivity, IntegrationRechargeActivity.class);
+                    startActivity(intent);
+                });
         // 充值提现规则
         RxView.clicks(mTvReChargeAndWithdrawRule)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    mPresenter.checkWalletConfig(WalletPresenter.TAG_SHOWRULE_JUMP,true);
+                    mPresenter.checkWalletConfig(WalletPresenter.TAG_SHOWRULE_JUMP, true);
                 });
     }
 
@@ -152,6 +178,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         Intent intent = new Intent(getActivity(), WalletRuleActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(WalletRuleFragment.BUNDLE_RULE, mPresenter.getTipPopRule());
+        bundle.putString(WalletRuleFragment.BUNDLE_TITLE, getString(R.string.recharge_and_withdraw_rule));
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -182,7 +209,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
 
     @Override
     public void updateBalance(double balance) {
-        mTvMineMoney.setText(getString(R.string.money_format, balance));
+        mTvMineMoney.setText(getString(R.string.money_format, PayConfig.realCurrencyFen2Yuan(balance)));
     }
 
     @Override

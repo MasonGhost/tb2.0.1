@@ -6,6 +6,24 @@
 
     <include layout="@layout/fragment_tslist"/>
 
+    <TextView
+        android:id="@+id/tv_rule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="@dimen/spacing_large"
+        android:background="@drawable/selector_button_corner_circle_solid_small"
+        android:drawableLeft="@mipmap/ico_wallet_rules_white"
+        android:drawablePadding="@dimen/spacing_small"
+        android:paddingLeft="@dimen/spacing_large"
+        android:paddingRight="@dimen/spacing_large"
+        android:paddingTop="@dimen/spacing_normal"
+        android:paddingBottom="@dimen/spacing_normal"
+        android:text="@string/integration_rule"
+        android:visibility="gone"
+        android:textColor="@color/white"
+        />
+
     <View
         android:id="@+id/v_shadow"
         android:layout_width="match_parent"

@@ -38,14 +38,9 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  */
 public class GalleryPresenter extends AppBasePresenter<GalleryConstract.View> implements GalleryConstract.Presenter {
 
-    @Inject
-    CommentRepository mCommentRepository;
+
     @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-    @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
 
     @Inject
     public GalleryPresenter(GalleryConstract.View rootView) {
@@ -68,7 +63,7 @@ public class GalleryPresenter extends AppBasePresenter<GalleryConstract.View> im
         DynamicDetailBeanV2 dynamicDetail = mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_id);
         double amount = dynamicDetail.getImages().get(imagePosition).getAmount();
 
-        handleWalletBlance((long) amount)
+        handleIntegrationBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
                 .flatMap(o -> mCommentRepository.paykNote(note))
@@ -103,7 +98,7 @@ public class GalleryPresenter extends AppBasePresenter<GalleryConstract.View> im
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        if (isBalanceCheck(throwable)) {
+                        if (isIntegrationBalanceCheck(throwable)) {
                             return;
                         }
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));

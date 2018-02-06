@@ -117,6 +117,8 @@ public interface DynamicClient {
      * 置顶动态 V2
      *
      * @param feed_id 动态的唯一 id
+     * @param amount  必须，置顶总价格，积分。
+     * @param day     必须，置顶天数。
      * @return
      */
     @FormUrlEncoded
@@ -161,16 +163,6 @@ public interface DynamicClient {
      */
     @DELETE(ApiConfig.APP_PATH_REFUSE_DYNAMIC_COMMENT)
     Observable<BaseJsonV2> refuseDynamicTopComment(@Path("pinned_id") int pinned_id);
-
-    /**
-     * 动态评论置顶审核通过 V2
-     *
-     * @return
-     */
-    @DELETE(ApiConfig.APP_PATH_APPROVED_DYNAMIC_COMMENT)
-    Observable<BaseJsonV2> deleteTopComment(@Path("feed_id") Long feed_id, @Path("comment_id")
-            int comment_id);
-
 
     /*******************************************  打赏  *********************************************/
 

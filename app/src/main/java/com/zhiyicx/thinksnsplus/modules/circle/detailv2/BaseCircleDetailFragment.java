@@ -416,7 +416,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
             CircleDetailActivity.startCircleDetailActivity(mActivity, circleInfo.getId());
             return;
         } else if (isPaid) {
-            moneyStr = String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(circleInfo.getMoney(),
+            moneyStr = String.format(getString(R.string.buy_pay_integration), PayConfig.realCurrency2GameCurrency(circleInfo.getMoney(),
                     mPresenter.getRatio()));
             descStr = String.format(getString(R.string.buy_pay_circle_desc) + getString(R
                     .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(circleInfo.getMoney(),

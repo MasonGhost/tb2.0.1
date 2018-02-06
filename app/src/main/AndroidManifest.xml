@@ -418,11 +418,14 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
-        <!-- 微信支付结果类 -->
-        <activity
-            android:name=".wxapi.WXPayEntryActivity"
+
+        <!-- 微信支付 -->
+        <!-- 1.需要将以下"替换成自己 APK 的包名"换成在微信平台上注册填写的包名 -->
+        <!-- 2.WxPayEntryActivity 这个类在 SDK 内部实现，开发者不需要额外实现该类 -->
+        <activity-alias
+            android:name="${applicationId}.wxapi.WXPayEntryActivity"
             android:exported="true"
-            android:launchMode="singleTop"/>
+            android:targetActivity="com.pingplusplus.android.PaymentActivity" />
         <!-- 支付宝 -->
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
@@ -437,7 +440,6 @@
             android:screenOrientation="behind">
         </activity>
 
-        <!-- 频道 -->
         <activity
             android:name=".modules.collect.CollectListActivity"
             android:screenOrientation="portrait"/>
@@ -643,6 +645,32 @@
         <activity android:name=".modules.information.publish.detail.EditeInfoDetailActivity"/>
         <activity android:name=".modules.q_a.publish.detail.EditeQuestionDetailActivity"/>
         <activity android:name=".modules.q_a.answer.EditeAnswerDetailActivity"/>
+        <!--我的积分-->
+        <activity
+            android:name=".modules.wallet.integration.mine.MineIntegrationActivity"
+            android:screenOrientation="portrait"/>
+        <!--开发中的默认页面-->
+        <activity
+            android:name=".modules.develop.TSDevelopActivity"
+            android:screenOrientation="portrait"/>
+        <!--积分充值-->
+        <activity
+            android:name=".modules.wallet.integration.recharge.IntegrationRechargeActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"/>
+        <!--积分详情-->
+        <activity
+            android:name=".modules.wallet.integration.detail.IntegrationDetailActivity"
+            android:screenOrientation="portrait"/>
+        <!--积分充值提现记录-->
+        <activity
+            android:name=".modules.wallet.integration.detail.recharge_withdrawal.IntegrationRWDetailActivity"
+            android:screenOrientation="portrait"/>
+        <!--积分提取-->
+        <activity
+            android:name=".modules.wallet.integration.withdrawal.IntegrationWithdrawalsActivity"
+            android:screenOrientation="portrait"/>
+
         <!--系统通知页面-->
         <activity
             android:name=".modules.home.message.notifacationlist.NotificationActivity"

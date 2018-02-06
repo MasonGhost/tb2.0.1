@@ -1,8 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
@@ -14,10 +12,7 @@ import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.i.IUploadRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.simple.eventbus.EventBus;
@@ -95,7 +90,7 @@ public class SendDynamicPresenter extends AppBasePresenter< SendDynamicContract.
             dynamicBean.setImages(new ArrayList<>());
         }
         // 发送动态 V2 所需要的数据
-        dynamicBean.setAmount((long) PayConfig.gameCurrency2RealCurrency(dynamicBean.getAmount(), getRatio()));
+        dynamicBean.setAmount(dynamicBean.getAmount());
         SendDynamicDataBeanV2 sendDynamicDataBeanV2 = SendDynamicDataBeanV2.DynamicDetailBean2SendDynamicDataBeanV2(dynamicBean);
         mRootView.packageDynamicStorageDataV2(sendDynamicDataBeanV2);
 

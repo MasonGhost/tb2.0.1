@@ -89,7 +89,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     /**
      * 头部左边的刷新控件
      */
-    private ImageView mIvRefresh;
+    protected ImageView mIvRefresh;
 
     protected ViewGroup mSnackRootView;
     /**
@@ -284,7 +284,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     @Override
-    public void showSnackMessage(String message, final Prompt prompt) {
+    public void showSnackMessage(final String message, final Prompt prompt) {
         if (mSnackBar != null) {
             mSnackBar.dismiss();
             mSnackBar = null;
@@ -298,7 +298,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                         switch (event) {
                             case DISMISS_EVENT_TIMEOUT:
                                 try {
-                                    snackViewDismissWhenTimeOut(prompt);
+                                    snackViewDismissWhenTimeOut(prompt, message);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -308,6 +308,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                     }
                 });
         mSnackBar.show();
+    }
+
+    protected void snackViewDismissWhenTimeOut(Prompt prompt, String message) {
+        snackViewDismissWhenTimeOut(prompt);
     }
 
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
@@ -889,6 +893,17 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     public void setStatusPlaceholderViewBackgroundColor(int resId) {
         if (mStatusPlaceholderView != null) {
             mStatusPlaceholderView.setBackgroundColor(resId);
+        }
+    }
+
+    /**
+     * 设置状态栏占位图背景色
+     *
+     * @param resId
+     */
+    public void setStatusPlaceholderViewBackground(int resId) {
+        if (mStatusPlaceholderView != null) {
+            mStatusPlaceholderView.setBackgroundResource(resId);
         }
     }
 

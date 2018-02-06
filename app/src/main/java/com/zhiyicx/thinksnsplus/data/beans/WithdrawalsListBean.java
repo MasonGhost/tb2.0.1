@@ -19,13 +19,15 @@ import org.greenrobot.greendao.annotation.Generated;
 public class WithdrawalsListBean extends BaseListBean {
 
     /**
-     * id : 4
-     * value : 10
-     * type : alipay
-     * account : xxx@alipay.com
-     * status : 0
-     * remark : null
-     * created_at : 2017-06-01 09:30:22
+     * {
+     * "id": 4, // 提现记录ID
+     * "value": 10, // 提现金额
+     * "type": "alipay", // 提现方式
+     * "account": "xxx@alipay.com", // 提现账户
+     * "status": 0, // 提现状态， 0 - 待审批，1 - 已审批，2 - 被拒绝
+     * "remark": null, // 备注，审批或者拒绝的时候由管理填写
+     * "created_at": "2017-06-01 09:30:22" // 申请时间
+     * }
      */
     @Id(autoincrement = true)
     private Long _id;
@@ -37,9 +39,10 @@ public class WithdrawalsListBean extends BaseListBean {
     private int status;
     private String remark;
     private String created_at;
+
     @Generated(hash = 1425554202)
     public WithdrawalsListBean(Long _id, int id, int value, String type,
-            String account, int status, String remark, String created_at) {
+                               String account, int status, String remark, String created_at) {
         this._id = _id;
         this.id = id;
         this.value = value;
@@ -49,54 +52,71 @@ public class WithdrawalsListBean extends BaseListBean {
         this.remark = remark;
         this.created_at = created_at;
     }
+
     @Generated(hash = 474679993)
     public WithdrawalsListBean() {
     }
+
     public Long get_id() {
         return this._id;
     }
+
     public void set_id(Long _id) {
         this._id = _id;
     }
+
     public int getId() {
         return this.id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
+
     public int getValue() {
         return this.value;
     }
+
     public void setValue(int value) {
         this.value = value;
     }
+
     public String getType() {
         return this.type;
     }
+
     public void setType(String type) {
         this.type = type;
     }
+
     public String getAccount() {
         return this.account;
     }
+
     public void setAccount(String account) {
         this.account = account;
     }
+
     public int getStatus() {
         return this.status;
     }
+
     public void setStatus(int status) {
         this.status = status;
     }
+
     public String getRemark() {
         return this.remark;
     }
+
     public void setRemark(String remark) {
         this.remark = remark;
     }
+
     public String getCreated_at() {
         return this.created_at;
     }
+
     public void setCreated_at(String created_at) {
         this.created_at = created_at;
     }

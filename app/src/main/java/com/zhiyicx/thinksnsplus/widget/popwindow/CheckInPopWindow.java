@@ -65,12 +65,12 @@ public class CheckInPopWindow extends PopupWindow {
     private double mWalletRatio = 100;
     private String mGoldName;
 
-    public CheckInPopWindow(View parentView, CheckInBean checkInBean,String goldName, double mWalletRatio, OnCheckInClickListener l) {
+    public CheckInPopWindow(View parentView, CheckInBean checkInBean, String goldName, double mWalletRatio, OnCheckInClickListener l) {
         this.mParentView = parentView;
         this.mOnCheckInClickListener = l;
         this.mWalletRatio = mWalletRatio;
         this.mCheckInBean = checkInBean;
-        this.mGoldName=goldName;
+        this.mGoldName = goldName;
         initLayout();
         initData();
     }
@@ -115,7 +115,8 @@ public class CheckInPopWindow extends PopupWindow {
         mLayoutManager = new LinearLayoutManager(mParentView.getContext(), LinearLayoutManager.HORIZONTAL, false);
         mRvUserCheckInList.setLayoutManager(mLayoutManager);
         mRvUserCheckInList.setHasFixedSize(true);
-        mRvUserCheckInList.addItemDecoration(new LinearDecoration(0, 0, mParentView.getResources().getDimensionPixelOffset(com.zhiyicx.thinksnsplus.R.dimen.spacing_small), 0));
+        mRvUserCheckInList.addItemDecoration(new LinearDecoration(0, 0, mParentView.getResources().getDimensionPixelOffset(com.zhiyicx.thinksnsplus
+                .R.dimen.spacing_small), 0));
 
 
         mCommonAdapter = new CommonAdapter<UserInfoBean>(mParentView.getContext(), R.layout.item_check_in_user, mListData) {
@@ -131,7 +132,7 @@ public class CheckInPopWindow extends PopupWindow {
             }
         };
         mRvUserCheckInList.setAdapter(mCommonAdapter);
-        setData(mCheckInBean, mWalletRatio,mGoldName);
+        setData(mCheckInBean, mWalletRatio, mGoldName);
     }
 
     /**
@@ -140,9 +141,13 @@ public class CheckInPopWindow extends PopupWindow {
      * @param checkInBean
      * @param walletRatio
      */
-    public void setData(CheckInBean checkInBean, double walletRatio,String goldName) {
+    public void setData(CheckInBean checkInBean, double walletRatio, String goldName) {
         mTvTotalCheckIn.setText(mParentView.getContext().getString(R.string.check_in_total_day_format, checkInBean.getLast_checkin_count()));
-        mTvTotoalGold.setText("+" + PayConfig.realCurrency2GameCurrency(checkInBean.getAttach_balance(), (int) walletRatio));
+        mTvTotoalGold.setText("+" + mContentView.getResources().getString(R.string.buy_pay_integration,(int)PayConfig.realCurrency2GameCurrency
+                (checkInBean
+                        .getAttach_balance(),
+                (int)
+                        walletRatio)));
         mListData.clear();
         mListData.addAll(checkInBean.getRank_users());
         mCommonAdapter.notifyDataSetChanged();
@@ -155,7 +160,7 @@ public class CheckInPopWindow extends PopupWindow {
 
         }
         if (!TextUtils.isEmpty(goldName)) {
-            mTvCheckInGetGold.setText(mTvCheckInGetGold.getResources().getString(R.string.check_in_today_get_gold_format,goldName));
+            mTvCheckInGetGold.setText(mTvCheckInGetGold.getResources().getString(R.string.check_in_today_get_gold_format, goldName));
         }
     }
 

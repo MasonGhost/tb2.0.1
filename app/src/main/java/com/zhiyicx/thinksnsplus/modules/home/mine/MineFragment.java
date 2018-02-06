@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -13,11 +12,7 @@ import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
-import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.NotificationConfig;
@@ -33,17 +28,15 @@ import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
-import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.friends.MyFriendsListActivity;
 import com.zhiyicx.thinksnsplus.modules.home.mine.mycode.MyCodeActivity;
-import com.zhiyicx.thinksnsplus.modules.home.mine.scan.ScanCodeActivity;
 import com.zhiyicx.thinksnsplus.modules.information.my_info.ManuscriptsActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.MyMusicActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.mine.container.MyQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
-import com.zhiyicx.thinksnsplus.modules.system_conversation.SystemConversationActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.integration.mine.MineIntegrationActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.CertificationTypePopupWindow;
 
@@ -82,6 +75,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     TextView mTvFriendsCount;
     @BindView(R.id.bt_wallet)
     CombinationButton mBtWallet;
+    @BindView(R.id.bt_mine_integration)
+    CombinationButton btMineIntegration;
     @BindView(R.id.bt_certification)
     CombinationButton mBtCertification;
     @BindView(R.id.bv_fans_new_count)
@@ -197,20 +192,20 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        startActivity(new Intent(getActivity(), MyCodeActivity.class));
+        startActivity(new Intent(mActivity, MyCodeActivity.class));
         if (mPresenter != null) {
             mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_NOTICES);
         }
     }
 
     @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_my_info,
-            R.id.bt_personal_page, R.id.bt_collect, R.id.bt_wallet, R.id.bt_music,
+            R.id.bt_personal_page, R.id.bt_collect, R.id.bt_wallet, R.id.bt_mine_integration, R.id.bt_music,
             R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification, R.id.bt_my_qa, R.id.bt_my_group,
             R.id.ll_friends_container})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_userinfo_container:
-                startActivity(new Intent(getActivity(), UserInfoActivity.class));
+                startActivity(new Intent(mActivity, UserInfoActivity.class));
                 break;
                 /*
                   粉丝列表
@@ -220,7 +215,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 Bundle bundleFans = new Bundle();
                 bundleFans.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FANS_FRAGMENT_PAGE);
                 bundleFans.putLong(FollowFansListFragment.PAGE_DATA, fansUserId);
-                Intent itFans = new Intent(getActivity(), FollowFansListActivity.class);
+                Intent itFans = new Intent(mActivity, FollowFansListActivity.class);
                 itFans.putExtras(bundleFans);
                 startActivity(itFans);
                 break;
@@ -232,55 +227,61 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 Bundle bundleFollow = new Bundle();
                 bundleFollow.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FOLLOW_FRAGMENT_PAGE);
                 bundleFollow.putLong(FollowFansListFragment.PAGE_DATA, followUserId);
-                Intent itFollow = new Intent(getActivity(), FollowFansListActivity.class);
+                Intent itFollow = new Intent(mActivity, FollowFansListActivity.class);
                 itFollow.putExtras(bundleFollow);
                 startActivity(itFollow);
                 break;
             case R.id.bt_personal_page:
-                PersonalCenterFragment.startToPersonalCenter(getContext(), mUserInfoBean);
+                PersonalCenterFragment.startToPersonalCenter(mActivity, mUserInfoBean);
                 break;
             /*
              * 我的投稿
              */
             case R.id.bt_my_info:
-                startActivity(new Intent(getContext(), ManuscriptsActivity.class));
+                startActivity(new Intent(mActivity, ManuscriptsActivity.class));
                 break;
             /*
               我的收藏
              */
             case R.id.bt_collect:
-                startActivity(new Intent(getActivity(), CollectListActivity.class));
+                startActivity(new Intent(mActivity, CollectListActivity.class));
                 break;
             /*
               我的钱包
              */
             case R.id.bt_wallet:
-                startActivity(new Intent(getActivity(), WalletActivity.class));
+                startActivity(new Intent(mActivity, WalletActivity.class));
+                break;
+            /*
+              我的积分 
+             */
+            case R.id.bt_mine_integration:
+                startActivity(new Intent(mActivity, MineIntegrationActivity.class));
                 break;
             /*
               我的音乐
              */
             case R.id.bt_music:
-                startActivity(new Intent(getActivity(), MyMusicActivity.class));
+                startActivity(new Intent(mActivity, MyMusicActivity.class));
                 break;
             case R.id.bt_suggestion:
-                startActivity(new Intent(getActivity(), FeedBackActivity.class));
+                startActivity(new Intent(mActivity, FeedBackActivity.class));
                 break;
              /*
               草稿箱
               */
             case R.id.bt_draft_box:
-                startActivity(new Intent(getActivity(), DraftBoxActivity.class));
+                startActivity(new Intent(mActivity, DraftBoxActivity.class));
                 break;
             case R.id.bt_setting:
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                startActivity(new Intent(mActivity, SettingsActivity.class));
                 break;
             case R.id.bt_certification:
                 // 弹窗选择个人或者机构，被驳回也只能重新申请哦 (*^__^*)
                 if (mUserCertificationInfo != null
                         && mUserCertificationInfo.getId() != 0
                         && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
-                    Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
+                    Intent intentToDetail = new Intent(mActivity, CertificationDetailActivity.class);
                     Bundle bundleData = new Bundle();
                     if (mUserCertificationInfo.getCertification_name().equals(SendCertificationBean.USER)) {
                         // 跳转个人认证
@@ -298,15 +299,15 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 break;
             case R.id.bt_my_qa:
                 // 我的问答
-                startActivity(new Intent(getActivity(), MyQuestionActivity.class));
+                startActivity(new Intent(mActivity, MyQuestionActivity.class));
                 break;
             case R.id.bt_my_group:
                 // 我的圈子
-                startActivity(new Intent(getActivity(), MyCircleContainerActivity.class));
+                startActivity(new Intent(mActivity, MyCircleContainerActivity.class));
                 break;
             case R.id.ll_friends_container:
                 // 我的朋友
-                startActivity(new Intent(getActivity(), MyFriendsListActivity.class));
+                startActivity(new Intent(mActivity, MyFriendsListActivity.class));
                 break;
             default:
         }
@@ -314,6 +315,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     public void setUserInfo(UserInfoBean userInfoBean) {
+        btMineIntegration.setLeftText(getString(R.string.my_integration_name,mPresenter.getGoldName()));
         if (userInfoBean == null) {
             return;
         }
@@ -347,8 +349,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         if (userInfoBean.getWallet() != null) {
             myMoney = userInfoBean.getWallet().getBalance();
         }
-        mBtWallet.setRightText(getString(R.string.money_format_with_unit, PayConfig.realCurrency2GameCurrency(myMoney, mPresenter.getRatio())
-                , mPresenter.getGoldName()));
+        mBtWallet.setRightText(getString(R.string.money_format_with_unit, PayConfig.realCurrencyFen2Yuan(myMoney)
+                , ""));
+        btMineIntegration.setRightText(String.valueOf(userInfoBean.getFormatCurrencyNum()));
         this.mUserInfoBean = userInfoBean;
         // 设置好友数
         String friendsCount = String.valueOf(userInfoBean.getFriends_count());
@@ -387,7 +390,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     private void initCertificationTypePop() {
         if (mCertificationWindow == null) {
             mCertificationWindow = CertificationTypePopupWindow.Builder()
-                    .with(getActivity())
+                    .with(mActivity)
                     .alpha(0.8f)
                     .setListener(this)
                     .build();
@@ -398,7 +401,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @Override
     public void onTypeSelected(int position) {
         mCertificationWindow.dismiss();
-        Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
+        Intent intent = new Intent(mActivity, CertificationInputActivity.class);
         Bundle bundle = new Bundle();
         if (position == 0) {
             // 跳转个人认证

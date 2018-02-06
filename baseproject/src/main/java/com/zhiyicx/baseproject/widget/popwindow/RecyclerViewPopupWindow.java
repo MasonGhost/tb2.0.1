@@ -96,6 +96,7 @@ public class RecyclerViewPopupWindow extends PopupWindow {
                 recyclerView.addItemDecoration(new ShareDecoration(mItemSpacing));
                 recyclerView.setLayoutManager(gridLayoutManager);
                 break;
+                default:
         }
 
         recyclerView.setAdapter(mAdapter);

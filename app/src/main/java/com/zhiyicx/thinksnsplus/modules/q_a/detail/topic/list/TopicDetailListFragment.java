@@ -179,7 +179,7 @@ public class TopicDetailListFragment extends TSListFragment<TopicDetailListContr
                 .buildTitleStr(getString(R.string.qa_pay_for_watch))
                 .buildItem1Str(getString(R.string.buy_pay_in_payment))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfigBean()
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_integration), PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfigBean()
                         .getOnlookQuestion(),mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payForOnlook(answer_id, pisotion);

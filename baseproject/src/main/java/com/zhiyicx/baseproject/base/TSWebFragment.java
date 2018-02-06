@@ -26,6 +26,7 @@ import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.NetUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -348,8 +349,8 @@ public abstract class TSWebFragment extends TSFragment {
      *
      * @param url 网页地址
      */
-    public void loadUrl(String url) {
-        mWebView.loadUrl(url);
+    public void loadUrl(String url, HashMap<String, String> headers) {
+        mWebView.loadUrl(url, headers);
         if (!mIsNeedProgress) {
             return;
         }

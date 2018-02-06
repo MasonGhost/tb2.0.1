@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -22,79 +23,40 @@ import org.greenrobot.greendao.DaoException;
 public class RechargeSuccessBean extends BaseListBean implements Parcelable {
 
     /**
-     * id : 1
-     * user_id : 1
-     * channel : alipay
-     * account : alipay_account
-     * charge_id : ch_vvP4u1H0evPGqn9qn5mPCGS4
-     * action : 1
-     * amount : 100
-     * currency : cny
-     * subject : 余额充值
-     * body : 账户余额充值
-     * transaction_no : 2017060879918233
-     * status : 1
-     * created_at : 2017-06-07 06:32:28
-     * updated_at : 2017-06-08 06:46:23
-     * deleted_at : null
+     * id	int	记录id
+     * owner_id	int	所属者id
+     * target_type	string	操作类型 recharge_ping_p_p - 充值, widthdraw - 提现, user - 转账, reward - 打赏
+     * target_id	string	账户
+     * title	string	标题
+     * body	string	内容
+     * type	int	1 - 收入 -1 - 支出
+     * amount	int	金额，分单位
+     * state	int	订单状态，0: 等待，1：成功，-1: 失败
      */
+
     @Id(autoincrement = true)
     private Long _id;
     @Unique
     private int id;
+    @SerializedName("owner_id")
     private Long user_id;
+    @SerializedName("target_type")
     private String channel;
+    @SerializedName("target_id")
     private String account;
-    private String charge_id;
+    @SerializedName("type")
     private int action;
     private int amount;
-    private String currency;
+    @SerializedName("title")
     private String subject;
     private String body;
-    private String transaction_no;
+    @SerializedName("state")
     private int status;
     private String created_at;
     private String updated_at;
-    private String deleted_at;
 
     @ToOne(joinProperty = "user_id")
     private UserInfoBean userInfoBean;
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 1729717820)
-    private transient RechargeSuccessBeanDao myDao;
-
-    @Generated(hash = 287155188)
-    public RechargeSuccessBean(Long _id, int id, Long user_id, String channel,
-            String account, String charge_id, int action, int amount,
-            String currency, String subject, String body, String transaction_no,
-            int status, String created_at, String updated_at, String deleted_at) {
-        this._id = _id;
-        this.id = id;
-        this.user_id = user_id;
-        this.channel = channel;
-        this.account = account;
-        this.charge_id = charge_id;
-        this.action = action;
-        this.amount = amount;
-        this.currency = currency;
-        this.subject = subject;
-        this.body = body;
-        this.transaction_no = transaction_no;
-        this.status = status;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.deleted_at = deleted_at;
-    }
-
-    @Generated(hash = 1436548267)
-    public RechargeSuccessBean() {
-    }
-
-    @Generated(hash = 1005780391)
-    private transient Long userInfoBean__resolvedKey;
 
     @Override
     public Long getMaxId() {
@@ -126,13 +88,6 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable {
         this.account = account;
     }
 
-    public String getCharge_id() {
-        return charge_id;
-    }
-
-    public void setCharge_id(String charge_id) {
-        this.charge_id = charge_id;
-    }
 
     public int getAction() {
         return action;
@@ -150,14 +105,6 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable {
         this.amount = amount;
     }
 
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
     public String getSubject() {
         return subject;
     }
@@ -172,14 +119,6 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable {
 
     public void setBody(String body) {
         this.body = body;
-    }
-
-    public String getTransaction_no() {
-        return transaction_no;
-    }
-
-    public void setTransaction_no(String transaction_no) {
-        this.transaction_no = transaction_no;
     }
 
     public int getStatus() {
@@ -206,27 +145,12 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable {
         this.updated_at = updated_at;
     }
 
-    public String getDeleted_at() {
-        return deleted_at;
-    }
-
-    public void setDeleted_at(String deleted_at) {
-        this.deleted_at = deleted_at;
-    }
-
     public Long get_id() {
         return this._id;
     }
 
     public void set_id(Long _id) {
         this._id = _id;
-    }
-
-    @Override
-    public String toString() {
-        return "id=" + id + "\n" +
-                "action=" + action + "\n" +
-                "status=" + status + "\n";
     }
 
     public Long getUser_id() {
@@ -237,12 +161,34 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable {
         this.user_id = user_id;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this._id);
+        dest.writeInt(this.id);
+        dest.writeValue(this.user_id);
+        dest.writeString(this.channel);
+        dest.writeString(this.account);
+        dest.writeInt(this.action);
+        dest.writeInt(this.amount);
+        dest.writeString(this.subject);
+        dest.writeString(this.body);
+        dest.writeInt(this.status);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeParcelable(this.userInfoBean, flags);
+    }
+
     /** To-one relationship, resolved on first access. */
     @Generated(hash = 1288178437)
     public UserInfoBean getUserInfoBean() {
         Long __key = this.user_id;
-        if (userInfoBean__resolvedKey == null
-                || !userInfoBean__resolvedKey.equals(__key)) {
+        if (userInfoBean__resolvedKey == null || !userInfoBean__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -303,38 +249,14 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable {
         myDao.update(this);
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this._id);
-        dest.writeInt(this.id);
-        dest.writeValue(this.user_id);
-        dest.writeString(this.channel);
-        dest.writeString(this.account);
-        dest.writeString(this.charge_id);
-        dest.writeInt(this.action);
-        dest.writeInt(this.amount);
-        dest.writeString(this.currency);
-        dest.writeString(this.subject);
-        dest.writeString(this.body);
-        dest.writeString(this.transaction_no);
-        dest.writeInt(this.status);
-        dest.writeString(this.created_at);
-        dest.writeString(this.updated_at);
-        dest.writeString(this.deleted_at);
-        dest.writeParcelable(this.userInfoBean, flags);
-    }
-
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 2001597343)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getRechargeSuccessBeanDao() : null;
+    }
+
+    public RechargeSuccessBean() {
     }
 
     protected RechargeSuccessBean(Parcel in) {
@@ -344,18 +266,32 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable {
         this.user_id = (Long) in.readValue(Long.class.getClassLoader());
         this.channel = in.readString();
         this.account = in.readString();
-        this.charge_id = in.readString();
         this.action = in.readInt();
         this.amount = in.readInt();
-        this.currency = in.readString();
         this.subject = in.readString();
         this.body = in.readString();
-        this.transaction_no = in.readString();
         this.status = in.readInt();
         this.created_at = in.readString();
         this.updated_at = in.readString();
-        this.deleted_at = in.readString();
         this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
+    }
+
+    @Generated(hash = 2019727700)
+    public RechargeSuccessBean(Long _id, int id, Long user_id, String channel, String account,
+            int action, int amount, String subject, String body, int status, String created_at,
+            String updated_at) {
+        this._id = _id;
+        this.id = id;
+        this.user_id = user_id;
+        this.channel = channel;
+        this.account = account;
+        this.action = action;
+        this.amount = amount;
+        this.subject = subject;
+        this.body = body;
+        this.status = status;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
     }
 
     public static final Creator<RechargeSuccessBean> CREATOR = new Creator<RechargeSuccessBean>() {
@@ -369,4 +305,12 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable {
             return new RechargeSuccessBean[size];
         }
     };
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 1729717820)
+    private transient RechargeSuccessBeanDao myDao;
+    @Generated(hash = 1005780391)
+    private transient Long userInfoBean__resolvedKey;
 }
