@@ -189,6 +189,13 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                         protected void onSuccess(ChatGroupBean data) {
                             // 创建成功 跳转聊天详情页面
                             String id = data.getId();
+                            data.setName(groupName);
+                            data.setMembersonly(true);
+                            data.setMaxusers(200);
+                            data.setAllowinvites(false);
+                            data.setIsPublic(false);
+                            data.setOwner(list.get(0).getUser_id());
+                            mChatGroupBeanGreenDao.saveSingleData(data);
                             mUserInfoBeanGreenDao.saveMultiData(data.getAffiliations());
                             mRootView.createConversionResult(getChatUser(list), EMConversation.EMConversationType.GroupChat, EaseConstant.CHATTYPE_GROUP, id);
                         }

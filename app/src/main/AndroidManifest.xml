@@ -81,7 +81,7 @@
             android:name=".modules.home.HomeActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden">
         </activity>
         <activity
             android:name=".modules.settings.SettingsActivity"

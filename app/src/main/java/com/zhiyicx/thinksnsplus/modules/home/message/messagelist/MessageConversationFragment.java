@@ -84,7 +84,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
 
     @Override
     protected boolean isNeedRefreshAnimation() {
-        return true;
+        return false;
     }
 
     @Override
@@ -119,7 +119,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
     public void onResume() {
         super.onResume();
         // 刷新信息内容
-        if (mPresenter!=null){
+        if (mPresenter != null) {
             mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
             mPresenter.refreshConversationReadMessage();
         }
@@ -128,7 +128,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (mAdapter != null && ((MessageAdapterV2) mAdapter).hasItemOpend()) {
+        if (isVisibleToUser && mAdapter != null && ((MessageAdapterV2) mAdapter).hasItemOpend()) {
             ((MessageAdapterV2) mAdapter).closeAllItems();
         }
     }

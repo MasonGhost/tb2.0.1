@@ -139,9 +139,7 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
         if (chatType == EaseConstant.CHATTYPE_SINGLE) {
             setCenterText(mPresenter.getUserName(toChatUsername));
         } else if (chatType == EaseConstant.CHATTYPE_GROUP) {
-
-            EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatUsername);
-            setCenterText(group.getGroupName());
+            setCenterText(mPresenter.getGroupName(toChatUsername));
             mTsGroupListener = new TSGroupListener();
             EMClient.getInstance().groupManager().addGroupChangeListener(mTsGroupListener);
         }
@@ -474,7 +472,7 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
         if (!EMClient.getInstance().isConnected()) {
             ToastUtils.showToast(getActivity(), R.string.not_connect_to_server, Toast.LENGTH_SHORT);
         } else {
-            BaseCallActivity.startVoiceCallActivity(mActivity,toChatUsername,false);
+            BaseCallActivity.startVoiceCallActivity(mActivity, toChatUsername, false);
             inputMenu.hideExtendMenuContainer();
         }
     }
@@ -486,7 +484,7 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
         if (!EMClient.getInstance().isConnected()) {
             ToastUtils.showToast(R.string.not_connect_to_server);
         } else {
-            BaseCallActivity.startVideoCallActivity(mActivity,toChatUsername,false);
+            BaseCallActivity.startVideoCallActivity(mActivity, toChatUsername, false);
             inputMenu.hideExtendMenuContainer();
         }
     }

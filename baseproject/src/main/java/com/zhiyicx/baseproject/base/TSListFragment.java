@@ -260,7 +260,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @return
      */
     protected boolean showNoMoreData() {
-        return mListDatas.size() >= DEFAULT_ONE_PAGE_SHOW_MAX_SIZE ;
+        return mListDatas.size() >= DEFAULT_ONE_PAGE_SHOW_MAX_SIZE;
     }
 
     protected int setEmptView() {
@@ -422,7 +422,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * 懒加载 top Tip
      */
     private void inflateTopView() {
-        if (mTvTopTip == null) {
+        if (mTvTopTip == null && mRootView != null) {
             ViewStub mTopTipStub = (ViewStub) mRootView.findViewById(R.id.stub_toptip);
             mTvTopTip = (TextView) mTopTipStub.inflate();
             RxView.clicks(mTvTopTip)
@@ -771,6 +771,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     /**
      * 默认加载条数，具体数据又后端确定
+     *
      * @return
      */
     protected int getPagesize() {

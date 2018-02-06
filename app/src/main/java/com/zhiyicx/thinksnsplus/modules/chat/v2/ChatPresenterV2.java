@@ -4,6 +4,7 @@ import com.hyphenate.chat.EMMessage;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.ChatGroupBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ public class ChatPresenterV2 extends AppBasePresenter<ChatContractV2.View> imple
 
     @Inject
     UserInfoRepository mUserInfoRepository;
+    @Inject
+    ChatGroupBeanGreenDaoImpl mChatGroupBeanGreenDao;
+
 
     @Inject
     public ChatPresenterV2(ChatContractV2.View rootView) {
@@ -71,7 +75,16 @@ public class ChatPresenterV2 extends AppBasePresenter<ChatContractV2.View> imple
     public String getUserName(String id) {
         try {
             return mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(id)).getName();
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
+            return "未知用户";
+        }
+    }
+
+    @Override
+    public String getGroupName(String id) {
+        try {
+            return mChatGroupBeanGreenDao.getChatGroupBeanById(id).getName();
+        } catch (Exception e) {
             return "未知用户";
         }
     }

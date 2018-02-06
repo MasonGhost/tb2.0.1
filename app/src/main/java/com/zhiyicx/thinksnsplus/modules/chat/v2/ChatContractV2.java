@@ -22,5 +22,6 @@ public interface ChatContractV2 {
     interface Presenter extends IBasePresenter {
         void dealMessages(List<EMMessage> messages);
         String getUserName(String id);
+        String getGroupName(String id);
     }
 }
