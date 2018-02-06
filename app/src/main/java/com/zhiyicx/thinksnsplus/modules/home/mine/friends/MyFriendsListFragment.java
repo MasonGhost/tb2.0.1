@@ -25,7 +25,7 @@ import butterknife.OnClick;
  */
 
 public class MyFriendsListFragment extends TSListFragment<MyFriendsListContract.Presenter, UserInfoBean>
-        implements MyFriendsListContract.View{
+        implements MyFriendsListContract.View {
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
@@ -43,13 +43,23 @@ public class MyFriendsListFragment extends TSListFragment<MyFriendsListContract.
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
+    }
+
+    @Override
     protected Long getMaxId(@NotNull List<UserInfoBean> data) {
         return (long) mListDatas.size();
     }
 
     @OnClick({R.id.tv_toolbar_left, R.id.tv_toolbar_right, R.id.tv_toolbar_center})
-    public void onClick(View view){
-        switch (view.getId()){
+    public void onClick(View view) {
+        switch (view.getId()) {
             case R.id.tv_toolbar_left:
                 // 退出当前页面
                 getActivity().finish();
