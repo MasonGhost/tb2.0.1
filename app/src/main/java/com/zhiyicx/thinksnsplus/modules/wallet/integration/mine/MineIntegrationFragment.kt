@@ -313,6 +313,11 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
         return true
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        dismissPop(mRulePop)
+    }
+
     @Subscriber(tag = EVENT_INTEGRATION_RECHARGE, mode = ThreadMode.MAIN)
     fun onRechargeSuccessUpdate(result: String) {
         initData()
