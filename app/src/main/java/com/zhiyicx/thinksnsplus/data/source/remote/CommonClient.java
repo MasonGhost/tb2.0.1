@@ -18,6 +18,7 @@ import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -112,6 +113,14 @@ public interface CommonClient {
     @PATCH(APP_PATH_REFRESH_TOKEN)
     Observable<AuthBean> refreshToken(@Path("token") String token);
 
+    /**
+     * 同步刷新 token
+     *
+     * @param token 刷新 token
+     * @return 成功后自动调用 auth 接口，返回信息和 login 一样
+     */
+    @PATCH(APP_PATH_REFRESH_TOKEN)
+    Call<AuthBean> refreshTokenSyn(@Path("token") String token);
     /**
      * 启动信息
      *

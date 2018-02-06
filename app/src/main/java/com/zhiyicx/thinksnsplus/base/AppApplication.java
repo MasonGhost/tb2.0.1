@@ -11,7 +11,6 @@ import com.danikula.videocache.HttpProxyCacheServer;
 import com.github.tamir7.contacts.Contacts;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMOptions;
 import com.pingplusplus.android.Pingpp;
@@ -30,7 +29,6 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.appprocess.AndroidProcess;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.imsdk.manage.ZBIMSDK;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
@@ -50,6 +48,7 @@ import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 import org.simple.eventbus.EventBus;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,17 +57,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.net.ssl.SSLSocketFactory;
 
 import cn.jpush.android.api.JPushInterface;
+import okhttp3.Authenticator;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.Route;
+import retrofit2.Call;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-
-import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.AUTH_FAIL;
 
 /**
  * @Describe
@@ -77,6 +78,7 @@ import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.AUTH_FAIL;
  * @Contact 335891510@qq.com
  */
 public class AppApplication extends TSApplication {
+
     /**
      * 丢帧检查设置
      */
@@ -143,13 +145,13 @@ public class AppApplication extends TSApplication {
     /**
      * 初始化环信
      */
-    private void initIm(){
+    private void initIm() {
         int pid = android.os.Process.myPid();
         String processAppName = DeviceUtils.getAppName(getContext(), pid);
         // 如果APP启用了远程的service，此application:onCreate会被调用2次
         // 为了防止环信SDK被初始化2次，加此判断会保证SDK被初始化1次
         // 默认的APP会在以包名为默认的process name下运行，如果查到的process name不是APP的process name就立即返回
-        if (processAppName == null ||!processAppName.equalsIgnoreCase(getPackageName())) {
+        if (processAppName == null || !processAppName.equalsIgnoreCase(getPackageName())) {
             LogUtils.e(TAG, "enter the service process!");
             // 则此application::onCreate 是被service 调用的，直接返回
             return;
@@ -207,13 +209,7 @@ public class AppApplication extends TSApplication {
                     baseJson = new Gson().fromJson(httpResult, BaseJson.class);
                 } catch (JsonSyntaxException e) {
                 }
-                if (originalResponse.code() == AUTH_FAIL) {
-                    if (mAuthRepository.isNeededRefreshToken()) {
-                        handleAuthFail(getString(R.string.auth_fail_relogin));
-                    } else {
-                        handleAuthFail(getString(R.string.code_1015));
-                    }
-                }
+
                 String tipStr = null;
                 if (baseJson != null) {
                     switch (baseJson.getCode()) {
@@ -258,6 +254,50 @@ public class AppApplication extends TSApplication {
                             .header("Accept", "application/json")
                             .build();
                 }
+            }
+        };
+    }
+
+    /**
+     * 401 认证处理
+     *
+     * @return
+     */
+    @Override
+    protected Authenticator getAuthenticator() {
+        return new Authenticator() {
+            @Nullable
+            @Override
+            public Request authenticate(Route route, Response response) throws IOException {
+                // 刷新 token 没过期,刷新 token
+                if (!mCurrentLoginAuth.getRefresh_token_is_expired()) {
+
+                    Call<AuthBean> call = mAuthRepository.refreshTokenSyn();
+                    try {
+                        // 丢弃多次
+                        AuthBean authBean = call.execute().body();
+                        mCurrentLoginAuth.setToken(authBean.getToken());
+                        mCurrentLoginAuth.setExpires(authBean.getExpires());
+                        mCurrentLoginAuth.setRefresh_token(authBean.getRefresh_token());
+                        mAuthRepository.saveAuthBean(mCurrentLoginAuth);
+                    } catch (Exception ignored) {
+                    }
+
+                    return response.request().newBuilder()
+                            .header("Authorization", " Bearer " + mCurrentLoginAuth.getToken())
+                            .build();
+                } else {
+                    // 过期了，重新登录
+                    if (mAuthRepository.isNeededRefreshToken()) {
+                        handleAuthFail(getString(R.string.auth_fail_relogin));
+                    } else {
+                        // 挤下线，重新登录
+                        handleAuthFail(getString(R.string.code_1015));
+                    }
+                    return null;
+                }
+
+
             }
         };
     }

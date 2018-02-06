@@ -5,6 +5,7 @@ import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 
+import retrofit2.Call;
 import rx.Observable;
 
 /**
@@ -44,6 +45,11 @@ public interface IAuthRepository {
     void refreshToken();
 
     /**
+     * 同步刷新 token
+     */
+    Call<AuthBean> refreshTokenSyn();
+
+    /**
      * 删除认证信息
      *
      * @return
@@ -54,6 +60,7 @@ public interface IAuthRepository {
      * 清除三方认证信息
      */
     void clearThridAuth();
+
     void clearThridAuth(SHARE_MEDIA share_media);
 
     /**

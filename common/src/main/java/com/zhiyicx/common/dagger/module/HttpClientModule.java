@@ -20,6 +20,7 @@ import dagger.Module;
 import dagger.Provides;
 import io.rx_cache.internal.RxCache;
 import io.victoralbertos.jolyglot.GsonSpeaker;
+import okhttp3.Authenticator;
 import okhttp3.Cache;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -49,6 +50,7 @@ public class HttpClientModule {
     private Set<Interceptor> mInterceptorSet;
     private ResponseErroListener mErroListener;
     private SSLSocketFactory mSSLSocketFactory;// 配置安全证书
+    private Authenticator mAuthenticator;
 
     /**
      * 设置 baseurl
@@ -61,6 +63,7 @@ public class HttpClientModule {
         this.mInterceptorSet = buidler.mInterceptorSet;
         this.mErroListener = buidler.responseErroListener;
         this.mSSLSocketFactory = buidler.mSSLSocketFactory;
+        this.mAuthenticator = buidler.mAuthenticator;
     }
 
     public static Buidler buidler() {
@@ -124,7 +127,7 @@ public class HttpClientModule {
     @Singleton
     @Provides
     public File provideCacheFile(Application application) {
-        return FileUtils.getCacheFile(application,false);
+        return FileUtils.getCacheFile(application, false);
     }
 
     /**
@@ -199,16 +202,21 @@ public class HttpClientModule {
                 .retryOnConnectionFailure(true)
                 .connectTimeout(CONNECTED_TOME_OUT, TimeUnit.SECONDS)
                 .readTimeout(READE_TOME_OUT, TimeUnit.SECONDS)
-                .writeTimeout(WRITE_TOME_OUT,TimeUnit.SECONDS)
+                .writeTimeout(WRITE_TOME_OUT, TimeUnit.SECONDS)
                 .cache(cache)//设置缓存
                 .addNetworkInterceptor(intercept);
         if (mSSLSocketFactory != null) {
             builder.sslSocketFactory(mSSLSocketFactory);
         }
-        if (mInterceptorSet != null) {// 如果外部提供了 interceptor 则遍历添加
+        // 如果外部提供了 interceptor 则遍历添加
+        if (mInterceptorSet != null) {
             for (Interceptor interceptor : mInterceptorSet) {
                 builder.addInterceptor(interceptor);
             }
+        }
+        // 401 认证失败处理
+        if (mAuthenticator != null) {
+            builder.authenticator(mAuthenticator);
         }
         return builder
                 .build();
@@ -221,6 +229,7 @@ public class HttpClientModule {
         private Set<Interceptor> mInterceptorSet;
         private ResponseErroListener responseErroListener;
         private SSLSocketFactory mSSLSocketFactory;
+        private Authenticator mAuthenticator;
 
         private Buidler() {
         }
@@ -245,6 +254,17 @@ public class HttpClientModule {
          */
         public Buidler globeHttpHandler(RequestInterceptListener handler) {
             this.handler = handler;
+            return this;
+        }
+
+        /**
+         * 用来处理http响应 401 认证失败处理
+         *
+         * @param authenticator
+         * @return
+         */
+        public Buidler authenticator(Authenticator authenticator) {
+            this.mAuthenticator = authenticator;
             return this;
         }
 
