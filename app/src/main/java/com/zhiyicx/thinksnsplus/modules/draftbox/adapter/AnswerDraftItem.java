@@ -50,6 +50,7 @@ public class AnswerDraftItem extends BaseDraftItem<AnswerDraftBean> {
 
     @Override
     protected void bindData(ViewHolder holder, AnswerDraftBean draftBean) {
+        holder.setVisible(R.id.tv_draft_content,View.VISIBLE);
         holder.setText(R.id.tv_draft_content, draftBean.getSubject());
     }
 
