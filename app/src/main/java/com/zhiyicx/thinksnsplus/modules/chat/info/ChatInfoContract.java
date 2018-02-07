@@ -40,6 +40,8 @@ public interface ChatInfoContract {
         void createGroupSuccess(ChatGroupBean chatGroupBean);
 
         void closeCurrentActivity();
+
+        void updateGroupOwner(ChatGroupBean chatGroupBean);
     }
 
     interface Presenter extends IBasePresenter {

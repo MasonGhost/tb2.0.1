@@ -45,6 +45,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 import static com.hyphenate.easeui.EaseConstant.EXTRA_TO_USER_ID;
 import static com.zhiyicx.thinksnsplus.modules.chat.edit.name.EditGroupNameFragment.GROUP_ORIGINAL_NAME;
@@ -120,7 +124,6 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         fragment.setArguments(bundle);
         return fragment;
     }
-
 
 
     @Override
@@ -239,8 +242,11 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                 // 清空消息记录
                 showClearAllMsgPopupWindow("您正在删除聊天记录，删除后不可恢复");
                 break;
+                /*
+                 群主：删除群聊
+                 普通用户：退出群
+                 */
             case R.id.tv_delete_group:
-                // （群主）删除群聊
                 initDeletePopupWindow(mPresenter.isGroupOwner() ? getString(R.string.chat_delete) : getString(R.string.chat_quit)
                         , mPresenter.isGroupOwner() ? getString(R.string.chat_delete_group_alert) : getString(R.string.chat_quit_group_alert));
                 break;
@@ -349,6 +355,39 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     }
 
     @Override
+    public void updateGroupOwner(ChatGroupBean chatGroupBean) {
+        // emm 由于没有完全返回所有信息 再加上字段也不同 所以手动改一下
+        Observable.just(chatGroupBean)
+                .subscribeOn(Schedulers.io())
+                .map(chatGroupBean1 -> {
+                    System.out.println("Thread.currentThread().getName() = " + Thread.currentThread().getName());
+                    mChatGroupBean.setGroup_face(chatGroupBean.getGroup_face());
+                    mChatGroupBean.setOwner(chatGroupBean.getOwner());
+                    mChatGroupBean.setPublic(chatGroupBean.isPublic());
+                    mChatGroupBean.setName(chatGroupBean.getName());
+                    mChatGroupBean.setDescription(chatGroupBean.getDescription());
+                    mChatGroupBean.setMembersonly(chatGroupBean.isMembersonly());
+                    mChatGroupBean.setAllowinvites(chatGroupBean.isAllowinvites());
+                    if (mChatGroupBean.getAffiliations() != null) {
+                        for (UserInfoBean userInfoBean : mChatGroupBean.getAffiliations()) {
+                            if (mChatGroupBean.getOwner() == userInfoBean.getUser_id()) {
+                                mChatGroupBean.getAffiliations().remove(userInfoBean);
+                                mChatGroupBean.getAffiliations().add(0, userInfoBean);
+                                break;
+                            }
+                        }
+                    }
+                    return mChatGroupBean;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(chatGroupBean12 -> {
+            if (getActivity() != null) {
+                setGroupData();
+            }
+        }, Throwable::printStackTrace);
+    }
+
+    @Override
     public void getGroupInfoSuccess(ChatGroupBean chatGroupBean) {
         mChatGroupBean = chatGroupBean;
         mChatGroupBean.setId(mChatId);
@@ -389,7 +428,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         String id = chatGroupBean.getId();
         if (EMClient.getInstance().groupManager().getGroup(id) == null) {
             // 不知道为啥 有时候获取不到群组对象
-            showSnackErrorMessage("创建失败");
+            showSnackErrorMessage(getString(R.string.create_fail));
         } else {
             // 点击跳转聊天
             Intent to = new Intent(getContext(), ChatActivityV2.class);

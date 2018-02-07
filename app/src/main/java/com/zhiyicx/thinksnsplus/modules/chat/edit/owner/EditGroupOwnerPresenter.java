@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -71,7 +72,7 @@ public class EditGroupOwnerPresenter extends AppBasePresenter<EditGroupOwnerCont
     public void updateGroup(ChatGroupBean chatGroupBean) {
         Subscription subscription = mRepository.updateGroup(chatGroupBean.getId(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0, 200, chatGroupBean.isMembersonly(),
                 0, chatGroupBean.getGroup_face(), false, chatGroupBean.getOwner() + "")
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage("修改中..."))
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.modifing)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<ChatGroupBean>() {
                     @Override

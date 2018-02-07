@@ -88,6 +88,11 @@ public class EditGroupOwnerFragment extends TSListFragment<EditGroupOwnerContrac
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_edit_group_owner;
     }
