@@ -194,14 +194,33 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
         if (EMClient.getInstance().isLoggedInBefore() && EMClient.getInstance().isConnected()) {
             Subscription subscribe = mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(messageItemBeanV2s -> {
-                        if (mCopyConversationList == null) {
-                            mCopyConversationList = new ArrayList<>();
+                    .subscribe(new BaseSubscribeForV2<List<MessageItemBeanV2>>() {
+                        @Override
+                        protected void onSuccess(List<MessageItemBeanV2> data) {
+                            if (mCopyConversationList == null) {
+                                mCopyConversationList = new ArrayList<>();
+                            }
+                            mCopyConversationList = data;
+                            mRootView.onNetResponseSuccess(data, isLoadMore);
+                            mRootView.hideStickyMessage();
+                            checkBottomMessageTip();
                         }
-                        mCopyConversationList = messageItemBeanV2s;
-                        mRootView.onNetResponseSuccess(messageItemBeanV2s, isLoadMore);
-                        mRootView.hideStickyMessage();
-                        checkBottomMessageTip();
+
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            super.onFailure(message, code);
+                            mRootView.showStickyMessage(message);
+                            mRootView.onResponseError(null,false);
+                        }
+
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            super.onException(throwable);
+                            mRootView.showStickyMessage(mContext.getString(R.string.chat_unconnected));
+                            mRootView.onResponseError(throwable,false);
+
+
+                        }
                     });
             addSubscrebe(subscribe);
         } else {
