@@ -1075,7 +1075,7 @@ public class TSEMHyphenate {
         try {
             id = Long.parseLong(userId);
         } catch (NumberFormatException e) {
-            return new ChatUserInfoBean("未知用户");
+            return new ChatUserInfoBean("");
         }
         if (mUserInfoBeanGreenDao == null) {
             mUserInfoBeanGreenDao = new UserInfoBeanGreenDaoImpl((Application) AppApplication.getContext());
@@ -1085,7 +1085,7 @@ public class TSEMHyphenate {
 
     private ChatUserInfoBean getChatUser(UserInfoBean userInfoBean) {
         if (userInfoBean == null) {
-            return new ChatUserInfoBean("未知用户");
+            return new ChatUserInfoBean("");
         }
         ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
         chatUserInfoBean.setUser_id(userInfoBean.getUser_id());

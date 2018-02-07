@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import android.content.Context;
 import android.os.Build;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
@@ -78,7 +79,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
             case Chat:
                 // 私聊
                 userAvatarView.getIvVerify().setVisibility(View.VISIBLE);
-                ImageUtils.loadUserHead(TSEMHyphenate.getInstance().getChatUser(messageItemBean.getEmKey()), userAvatarView,false);
+                ImageUtils.loadUserHead(TSEMHyphenate.getInstance().getChatUser(messageItemBean.getEmKey()), userAvatarView, false);
                 // 响应事件
                 holder.setText(R.id.tv_name, TSEMHyphenate.getInstance().getChatUser(messageItemBean.getEmKey()).getName());
                 setUserInfoClick(holder.getView(R.id.tv_name), messageItemBean.getUserInfo());
@@ -100,7 +101,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                 // 群名称
                 String groupName = chatGroupBean == null ? group.getGroupName() : chatGroupBean.getName()
                         + "(" + chatGroupBean.getAffiliations_count() + ")";
-                holder.setText(R.id.tv_name,groupName);
+                holder.setText(R.id.tv_name, groupName);
                 swipeLayout.setSwipeEnabled(true);
                 break;
             default:
@@ -113,8 +114,8 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
             // 最新的消息的发言人，只有群组才管这个
             String lastUserName = "";
             ChatUserInfoBean chatUserInfoBean = TSEMHyphenate.getInstance().getChatUser(messageItemBean.getConversation().getLastMessage().getFrom());
-            if (chatUserInfoBean != null) {
-                lastUserName = chatUserInfoBean.getName()+": ";
+            if (!TextUtils.isEmpty(chatUserInfoBean.getName())) {
+                lastUserName = chatUserInfoBean.getName() + ": ";
             }
             EMMessage message = messageItemBean.getConversation().getLastMessage();
             // 根据发送状态设置是否有失败icon

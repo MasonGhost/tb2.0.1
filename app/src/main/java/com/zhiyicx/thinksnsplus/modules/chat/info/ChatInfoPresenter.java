@@ -78,8 +78,6 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
                             // 退群
                             EMClient.getInstance().groupManager().leaveGroup(id);
                         }
-                        EventBus.getDefault().post(id, EVENT_IM_DELETE_QUIT);
-                        mRootView.closeCurrentActivity();
                         return Observable.just(id);
                     } catch (HyphenateException e) {
                         e.printStackTrace();
@@ -91,7 +89,9 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
                 .subscribe(new BaseSubscribeForV2<String>() {
                     @Override
                     protected void onSuccess(String data) {
-
+                        EventBus.getDefault().post(data, EVENT_IM_DELETE_QUIT);
+                        mRootView.closeCurrentActivity();
+                        EMClient.getInstance().chatManager().deleteConversation(data, true);
                     }
 
                     @Override
