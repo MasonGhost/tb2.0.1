@@ -122,7 +122,6 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     }
 
 
-
     @Override
     protected boolean showToolBarDivider() {
         return true;
@@ -239,8 +238,11 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                 // 清空消息记录
                 showClearAllMsgPopupWindow("您正在删除聊天记录，删除后不可恢复");
                 break;
+                /*
+                 群主：删除群聊
+                 普通用户：退出群
+                 */
             case R.id.tv_delete_group:
-                // （群主）删除群聊
                 initDeletePopupWindow(mPresenter.isGroupOwner() ? getString(R.string.chat_delete) : getString(R.string.chat_quit)
                         , mPresenter.isGroupOwner() ? getString(R.string.chat_delete_group_alert) : getString(R.string.chat_quit_group_alert));
                 break;
@@ -389,7 +391,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         String id = chatGroupBean.getId();
         if (EMClient.getInstance().groupManager().getGroup(id) == null) {
             // 不知道为啥 有时候获取不到群组对象
-            showSnackErrorMessage("创建失败");
+            showSnackErrorMessage(getString(R.string.create_fail));
         } else {
             // 点击跳转聊天
             Intent to = new Intent(getContext(), ChatActivityV2.class);
