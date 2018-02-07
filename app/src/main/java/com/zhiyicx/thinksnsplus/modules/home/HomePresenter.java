@@ -1,7 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
+import android.text.TextUtils;
+
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.chat.callV2.TSEMHyphenate;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMMultipleMessagesEvent;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -220,8 +223,16 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
             for (EMMessage message : list) {
                 ChatItemBean chatItemBean = new ChatItemBean();
                 chatItemBean.setMessage(message);
-                chatItemBean.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache
-                        (Long.parseLong("admin".equals(message.getFrom()) ? "1" : message.getFrom())));
+                if ("admin".equals(message.getFrom())) {
+                    chatItemBean.setUserInfo(new UserInfoBean(""));
+                } else {
+                    try {
+                        chatItemBean.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache
+                                (Long.parseLong(message.getFrom())));
+                    } catch (NumberFormatException ignore) {
+                        chatItemBean.setUserInfo(new UserInfoBean(""));
+                    }
+                }
                 chatItemBeans.add(chatItemBean);
             }
             // 遍历返回的信息，如果有用户信息为空的 证明数据库中没有此用户，从服务器取用户信息
@@ -241,12 +252,19 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
                         .subscribe(chatItemBean12 -> {
                             JpushMessageBean jpushMessageBean = new JpushMessageBean();
                             jpushMessageBean.setType(JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM);
+                            jpushMessageBean.setExtras(chatItemBean12.getMessage().getChatType().name());
                             String content = chatItemBean12.getMessage().getBody().toString();
                             // 目前只有单聊，别的还没定
                             if (chatItemBean12.getMessage().getBody() instanceof EMTextMessageBody) {
                                 content = ((EMTextMessageBody) chatItemBean12.getMessage().getBody()).getMessage();
                             }
-                            jpushMessageBean.setMessage(chatItemBean12.getUserInfo().getName() + ":" + content);
+
+                            if (TextUtils.isEmpty(chatItemBean12.getUserInfo().getName())) {
+                                content = chatItemBean12.getUserInfo().getName() + content;
+                            } else {
+                                content = chatItemBean12.getUserInfo().getName() + ":" + content;
+                            }
+                            jpushMessageBean.setMessage(content);
                             jpushMessageBean.setNofity(false);
                             NotificationUtil.showChatNotifyMessage(mContext, jpushMessageBean, chatItemBean12.getUserInfo());
                         });

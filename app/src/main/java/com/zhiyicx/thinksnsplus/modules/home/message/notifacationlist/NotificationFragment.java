@@ -43,6 +43,16 @@ public class NotificationFragment extends TSListFragment<NotificationContract.Pr
     }
 
     @Override
+    protected boolean isRefreshEnable() {
+        return false;
+    }
+
+    @Override
+    protected boolean isLoadingMoreEnable() {
+        return false;
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
         return new NotificationAdapter(getContext(), mListDatas);
     }
