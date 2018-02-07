@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
+import com.zhiyicx.thinksnsplus.config.DefaultUserInfoConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -80,8 +81,7 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
                         }
                         return Observable.just(id);
                     } catch (HyphenateException e) {
-                        e.printStackTrace();
-                        return Observable.error(null);
+                        return Observable.error(e);
                     }
 
                 })
@@ -283,7 +283,7 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
         try {
             return mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(id));
         } catch (NumberFormatException e) {
-            return new UserInfoBean("未知用户");
+            return DefaultUserInfoConfig.getDefaultDeletUserInfo(mContext,0);
         }
     }
 }
