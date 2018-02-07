@@ -28,6 +28,7 @@ import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.TSEaseChatFragment;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -93,8 +94,6 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
     private static final int ITEM_VIDEO_TS = 34;
     private static final int ITEM_VOICE_CALL_TS = 35;
     private static final int ITEM_VIDEO_CALL_TS = 36;
-
-    protected View mStatusPlaceholderView;
 
     private ActionPopupWindow mActionPopupWindow;
 
@@ -449,12 +448,6 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
@@ -538,8 +531,14 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
                 .bottomClickListener(() -> mActionPopupWindow.hide())
                 .isFocus(true)
                 .isOutsideTouch(true)
-                .backgroundAlpha(0.8f)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .build();
         mActionPopupWindow.show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissPop(mActionPopupWindow);
     }
 }

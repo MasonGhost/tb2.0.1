@@ -404,7 +404,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
                 } finally {
                     Activity activity = getActivity();
                     if (activity != null) {
-                        activity.runOnUiThread(() -> loadMoreLocalMessage());
+                        activity.runOnUiThread(this::loadMoreLocalMessage);
                     }
                 }
             });

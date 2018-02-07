@@ -984,11 +984,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         super.onDestroyView();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
     /**
      * 取消 pop
      *
