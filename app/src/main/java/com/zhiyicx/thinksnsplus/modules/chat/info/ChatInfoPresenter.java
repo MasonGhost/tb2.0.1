@@ -207,6 +207,14 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
                 .subscribe(new BaseSubscribeForV2<ChatGroupBean>() {
                     @Override
                     protected void onSuccess(ChatGroupBean data) {
+                        data.setName(name);
+                        data.setMembersonly(true);
+                        data.setMaxusers(200);
+                        data.setAllowinvites(false);
+                        data.setIsPublic(false);
+                        data.setOwner(AppApplication.getMyUserIdWithdefault());
+                        data.setAffiliations_count(2);
+                        mChatGroupBeanGreenDao.saveSingleData(data);
                         mRootView.dismissSnackBar();
                         EventBus.getDefault().post(data, EventBusTagConfig.EVENT_IM_GROUP_CREATE_FROM_SINGLE);
                         mRootView.createGroupSuccess(data);

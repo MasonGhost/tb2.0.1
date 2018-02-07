@@ -4,45 +4,45 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:animateLayoutChanges="true"
-                android:background="@color/white" >
+                android:background="@color/white">
 
     <com.hyphenate.easeui.widget.EaseTitleBar
-            android:id="@+id/title_bar"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            hyphenate:titleBarLeftImage="@mipmap/topbar_back" />
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:visibility="gone"
+        hyphenate:titleBarLeftImage="@mipmap/topbar_back"/>
 
     <View
-            android:id="@+id/view_diver"
-            style="@style/style_divider_horizontal_light"
-            android:layout_below="@id/title_bar"/>
+        android:id="@+id/view_diver"
+        style="@style/style_divider_horizontal_light"
+        android:layout_below="@id/title_bar"/>
 
     <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/input_menu"
-            android:layout_below="@id/view_diver"
-            android:paddingBottom="@dimen/spacing_small_4dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/input_menu"
+        android:layout_below="@id/view_diver"
+        android:paddingBottom="@dimen/spacing_small_4dp">
 
         <com.hyphenate.easeui.widget.EaseChatMessageList
-                android:id="@+id/message_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+            android:id="@+id/message_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <com.hyphenate.easeui.widget.EaseVoiceRecorderView
-                android:id="@+id/voice_recorder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="invisible" />
+            android:id="@+id/voice_recorder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"/>
     </RelativeLayout>
 
     <com.zhiyicx.thinksnsplus.widget.chat.TSChatInputMenu
-            android:id="@+id/input_menu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true" />
+        android:id="@+id/input_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>
