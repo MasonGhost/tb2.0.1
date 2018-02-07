@@ -65,5 +65,7 @@ public interface MessageConversationContract {
         List<ChatUserInfoBean> getChatUserList(int position);
 
         void searchList(String key);
+
+        void deleteGroup(String id);
     }
 }

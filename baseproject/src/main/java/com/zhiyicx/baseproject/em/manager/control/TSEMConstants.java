@@ -56,6 +56,9 @@ public class TSEMConstants {
      */
     public static final String TS_ATTR_RECALL = "ts_attr_recall";
 
+    public static final String TS_ATTR_ID = "ts_attr_id";
+    public static final String TS_ATTR_NAME = "ts_attr_name";
+
     /**
      * 用户加入群组
      */
@@ -70,6 +73,16 @@ public class TSEMConstants {
      * 用户创建群聊
      */
     public static final String TS_ATTR_GROUP_CRATE = "ts_group_crate";
+
+    /**
+     * 群解散
+     */
+    public static final String TS_ATTR_GROUP_DISBAND = "ts_group_disband";
+
+    /**
+     * 被移除
+     */
+    public static final String TS_ATTR_GROUP_LAYOFF = "ts_group_layoff";
 
     /**
      * 用户修改群信息

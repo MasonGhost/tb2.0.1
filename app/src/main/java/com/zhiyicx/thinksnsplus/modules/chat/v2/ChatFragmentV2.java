@@ -6,21 +6,23 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.Toast;
 
 import com.hyphenate.chat.EMClient;
-import com.hyphenate.chat.EMGroup;
+import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.EaseUI;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
-import com.hyphenate.easeui.ui.EaseGroupListener;
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
 import com.hyphenate.util.PathUtil;
 import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
+import com.zhiyicx.baseproject.utils.ExcutorUtil;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -30,7 +32,6 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.TSEaseChatFragment;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
-import com.zhiyicx.thinksnsplus.modules.chat.call.VoiceCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.callV2.BaseCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.info.ChatInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
@@ -55,6 +56,7 @@ import java.util.List;
 
 import static com.hyphenate.easeui.EaseConstant.EXTRA_CHAT_TYPE;
 import static com.hyphenate.easeui.EaseConstant.EXTRA_TO_USER_ID;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_DELETE_QUIT;
 
 /**
  * @author Catherine
@@ -93,7 +95,6 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
     private static final int ITEM_VIDEO_CALL_TS = 36;
 
     protected View mStatusPlaceholderView;
-    private TSGroupListener mTsGroupListener;
 
     private ActionPopupWindow mActionPopupWindow;
 
@@ -140,8 +141,6 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
             setCenterText(mPresenter.getUserName(toChatUsername));
         } else if (chatType == EaseConstant.CHATTYPE_GROUP) {
             setCenterText(mPresenter.getGroupName(toChatUsername));
-            mTsGroupListener = new TSGroupListener();
-            EMClient.getInstance().groupManager().addGroupChangeListener(mTsGroupListener);
         }
         if (chatType != EaseConstant.CHATTYPE_CHATROOM) {
             onConversationInit();
@@ -168,11 +167,6 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
     @Override
     public void onSetMessageAttributes(EMMessage message) {
 
-    }
-
-    @Override
-    public void onCmdMessageReceived(List<EMMessage> messages) {
-        LogUtils.d("Cathy", messages);
     }
 
     @Override
@@ -297,6 +291,28 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
     @Override
     public void onMessageReceived(List<EMMessage> messages) {
         mPresenter.dealMessages(messages);
+    }
+
+    @Subscriber(mode = ThreadMode.MAIN)
+    public void onTSEMessageEventEventBus(TSEMessageEvent event) {
+        LogUtils.d("TSEMessageEvent");
+        if (event.getMessage() == null) {
+            return;
+        }
+        EMCmdMessageBody body = (EMCmdMessageBody) event.getMessage().getBody();
+        switch (body.action()) {
+            case TSEMConstants.TS_ATTR_GROUP_DISBAND:
+                String groupId = event.getMessage().getStringAttribute(TSEMConstants.TS_ATTR_ID, null);
+                String groupName = event.getMessage().getStringAttribute(TSEMConstants.TS_ATTR_NAME, null);
+                if (TextUtils.isEmpty(groupId)) {
+                    return;
+                }
+                ToastUtils.showToast(groupName + "解散了");
+                EventBus.getDefault().post(groupId, EVENT_IM_DELETE_QUIT);
+                EMClient.getInstance().chatManager().deleteConversation(groupId, true);
+                break;
+            default:
+        }
     }
 
     @Override
@@ -491,7 +507,7 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
 
     @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_DELETE_QUIT)
     public void deleteGroup(String id) {
-        getActivity().finish();
+        mActivity.finish();
     }
 
     @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_GROUP_CREATE_FROM_SINGLE)
@@ -505,53 +521,6 @@ public class ChatFragmentV2 extends TSEaseChatFragment<ChatContractV2.Presenter>
     public void updateCurrent(ChatGroupBean chatGroupBean) {
         if (chatGroupBean.getId().equals(toChatUsername)) {
             setCenterText(chatGroupBean.getName());
-        }
-    }
-
-    /**
-     * listen the group event
-     */
-    public class TSGroupListener extends EaseGroupListener {
-
-        @Override
-        public void onUserRemoved(final String groupId, String groupName) {
-            getActivity().runOnUiThread(() -> {
-                if (toChatUsername.equals(groupId)) {
-                    ToastUtils.showToast(getActivity(), R.string.you_are_group);
-                    Activity activity = getActivity();
-                    if (activity != null && !activity.isFinishing()) {
-                        activity.finish();
-                    }
-                }
-            });
-        }
-
-        @Override
-        public void onMemberExited(String groupId, String member) {
-        }
-
-        @Override
-        public void onMemberJoined(String groupId, String member) {
-        }
-
-        @Override
-        public void onOwnerChanged(String groupId, String newOwner, String oldOwner) {
-
-        }
-
-
-        @Override
-        public void onGroupDestroyed(final String groupId, String groupName) {
-            // prompt group is dismissed and finish this activity
-            getActivity().runOnUiThread(() -> {
-                if (toChatUsername.equals(groupId)) {
-                    ToastUtils.showToast(getActivity(), R.string.the_current_group_destroyed);
-                    Activity activity = getActivity();
-                    if (activity != null && !activity.isFinishing()) {
-                        activity.finish();
-                    }
-                }
-            });
         }
     }
 

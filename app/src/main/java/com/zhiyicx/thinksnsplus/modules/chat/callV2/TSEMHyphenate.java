@@ -494,7 +494,7 @@ public class TSEMHyphenate {
             public void onCmdMessageReceived(List<EMMessage> list) {
                 // 判断当前活动界面是不是聊天界面，如果是，全局不处理消息
                 if (TSEMHyphenate.getInstance().getActivityList().size() > 0) {
-                    if (HomeActivity.class.getSimpleName().equals(TSEMHyphenate.getInstance().getTopActivity().getClass().getSimpleName())) {
+                    if (ChatActivityV2.class.getSimpleName().equals(TSEMHyphenate.getInstance().getTopActivity().getClass().getSimpleName())) {
                         return;
                     }
                 }
@@ -510,43 +510,45 @@ public class TSEMHyphenate {
                     // 判断是不是撤回消息的透传
                     if (body.action().equals(TSEMConstants.TS_ATTR_RECALL)) {
                         TSEMessageUtils.receiveRecallMessage(mContext, cmdMessage);
-                    }
-                    String typeName = "type";
-                    String typeUID = "uid";
-                    String msgType = "";
-                    String uid = "";
-                    String content = "未知操作";
-                    try {
-                        msgType = cmdMessage.getStringAttribute(typeName);
-                        uid = cmdMessage.getStringAttribute(typeUID);
-                        LogUtils.d("Cathy", ((EMCmdMessageBody) cmdMessage.getBody()).getParams().toString());
-                        LogUtils.d("Cathy", cmdMessage.toString());
-                        LogUtils.d("Cathy", ((EMCmdMessageBody) cmdMessage.getBody()).action());
-                        LogUtils.d("Cathy", (cmdMessage.ext()));
-                        LogUtils.d("Cathy", (cmdMessage.getJSONObjectAttribute("contents")));
+                    } else if (body.action().equals(TSEMConstants.TS_ATTR_GROUP_DISBAND)) {
 
-                    } catch (HyphenateException ignore) {
                     }
-
-                    // 用户加入
-                    if (TSEMConstants.TS_ATTR_JOIN.equals(msgType)) {
-                        content = "用户加入";
-                    }
-
-                    // 用户退出
-                    if (TSEMConstants.TS_ATTR_EIXT.equals(msgType)) {
-                        content = "用户退出";
-                    }
-
-                    // 创建群
-                    if (TSEMConstants.TS_ATTR_GROUP_CRATE.equals(msgType)) {
-                        content = "创建群";
-                    }
-
-                    if (TSEMConstants.TS_ATTR_GROUP_CHANGE.equals(msgType)) {
-                        content = "修改群";
-                    }
-                    TSEMessageUtils.sendGroupMemberJoinOrExitMessage(cmdMessage.getTo(), content, true, null);
+//                    String typeName = "type";
+//                    String typeUID = "uid";
+//                    String msgType = "";
+//                    String uid = "";
+//                    String content = "未知操作";
+//                    try {
+//                        msgType = cmdMessage.getStringAttribute(typeName);
+//                        uid = cmdMessage.getStringAttribute(typeUID);
+//                        LogUtils.d("Cathy", ((EMCmdMessageBody) cmdMessage.getBody()).getParams().toString());
+//                        LogUtils.d("Cathy", cmdMessage.toString());
+//                        LogUtils.d("Cathy", ((EMCmdMessageBody) cmdMessage.getBody()).action());
+//                        LogUtils.d("Cathy", (cmdMessage.ext()));
+//                        LogUtils.d("Cathy", (cmdMessage.getJSONObjectAttribute("contents")));
+//
+//                    } catch (HyphenateException ignore) {
+//                    }
+//
+//                    // 用户加入
+//                    if (TSEMConstants.TS_ATTR_JOIN.equals(msgType)) {
+//                        content = "用户加入";
+//                    }
+//
+//                    // 用户退出
+//                    if (TSEMConstants.TS_ATTR_EIXT.equals(msgType)) {
+//                        content = "用户退出";
+//                    }
+//
+//                    // 创建群
+//                    if (TSEMConstants.TS_ATTR_GROUP_CRATE.equals(msgType)) {
+//                        content = "创建群";
+//                    }
+//
+//                    if (TSEMConstants.TS_ATTR_GROUP_CHANGE.equals(msgType)) {
+//                        content = "修改群";
+//                    }
+//                    TSEMessageUtils.sendGroupMemberJoinOrExitMessage(cmdMessage.getTo(), content, true, null);
                 }
             }
 
@@ -876,6 +878,7 @@ public class TSEMHyphenate {
              */
             @Override
             public void onUserRemoved(String groupId, String groupName) {
+                TSEMessageUtils.sendEixtGroupMessage(groupId,groupName);
                 LogUtils.i("onUserRemoved groupId:%s, groupName:%s", groupId, groupName);
             }
 
@@ -887,6 +890,7 @@ public class TSEMHyphenate {
              */
             @Override
             public void onGroupDestroyed(String groupId, String groupName) {
+                TSEMessageUtils.sendEixtGroupMessage(groupId,groupName);
                 LogUtils.i("onGroupDestroyed groupId:%s, groupName:%s", groupId, groupName);
             }
 
@@ -971,7 +975,7 @@ public class TSEMHyphenate {
         EMClient.getInstance().logout(isUnbuildToken, new EMCallBack() {
             @Override
             public void onSuccess() {
-                   isUnbuildToken = true;
+                isUnbuildToken = true;
                 if (callback != null) {
                     callback.onSuccess();
                 }

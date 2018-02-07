@@ -7,7 +7,10 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.util.PathUtil;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
 import com.zhiyicx.common.utils.log.LogUtils;
+
+import org.simple.eventbus.EventBus;
 
 /**
  * @author Jliuer
@@ -138,7 +141,7 @@ public class TSEMessageUtils {
         long currTime = TSEMDateUtil.getCurrentMillisecond();
         message.setMsgTime(currTime);
         // 设置消息的扩展
-        message.setAttribute("type",TSEMConstants.TS_ATTR_JOIN);
+        message.setAttribute("type", TSEMConstants.TS_ATTR_JOIN);
         message.setAttribute(TSEMConstants.TS_ATTR_JOIN, isJoin);
         message.setAttribute(TSEMConstants.TS_ATTR_EIXT, !isJoin);
 
@@ -163,5 +166,28 @@ public class TSEMessageUtils {
         });
         // 准备工作完毕，发送消息
         EMClient.getInstance().chatManager().sendMessage(message);
+    }
+
+    /**
+     * 发送一条退出了群聊（解散，被移除）的透传，这里需要和接收方协商定义
+     * @param groupId
+     * @param groupName
+     */
+    public static void sendEixtGroupMessage(String groupId, String groupName) {
+        long currTime = TSEMDateUtil.getCurrentMillisecond();
+        EMMessage cmdMessage = EMMessage.createSendMessage(EMMessage.Type.CMD);
+        cmdMessage.setChatType(EMMessage.ChatType.GroupChat);
+        // 创建CMD 消息的消息体 并设置 action 为 disband
+        String action = TSEMConstants.TS_ATTR_GROUP_DISBAND;
+        EMCmdMessageBody body = new EMCmdMessageBody(action);
+        cmdMessage.addBody(body);
+        cmdMessage.setMsgTime(currTime);
+        cmdMessage.setAttribute(TSEMConstants.TS_ATTR_ID, groupId);
+        cmdMessage.setAttribute(TSEMConstants.TS_ATTR_NAME, groupName);
+
+        TSEMessageEvent event = new TSEMessageEvent();
+        event.setMessage(cmdMessage);
+        event.setStatus(cmdMessage.status());
+        EventBus.getDefault().post(event);
     }
 }

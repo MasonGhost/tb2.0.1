@@ -404,6 +404,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
     /**
      * 删除群
      */
+    @Override
     @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_DELETE_QUIT)
     public void deleteGroup(String id) {
         if (TextUtils.isEmpty(id)) {

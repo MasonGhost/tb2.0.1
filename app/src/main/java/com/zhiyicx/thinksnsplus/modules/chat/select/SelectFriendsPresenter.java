@@ -196,6 +196,7 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                             data.setIsPublic(false);
                             data.setOwner(list.get(0).getUser_id());
                             data.setAffiliations_count(list.size());
+                            data.setAffiliations(list);
                             mChatGroupBeanGreenDao.saveSingleData(data);
                             mUserInfoBeanGreenDao.saveMultiData(data.getAffiliations());
                             mRootView.createConversionResult(getChatUser(list), EMConversation.EMConversationType.GroupChat, EaseConstant.CHATTYPE_GROUP, id);

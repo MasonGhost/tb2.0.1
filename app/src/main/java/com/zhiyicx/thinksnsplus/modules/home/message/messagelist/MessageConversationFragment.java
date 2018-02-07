@@ -7,13 +7,18 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMConnectionEvent;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
 import com.zhiyicx.baseproject.widget.recycleview.BlankClickRecycleView;
 import com.zhiyicx.common.base.BaseFragment;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
@@ -30,6 +35,7 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.TSSearchView;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 import org.simple.eventbus.ThreadMode;
 
@@ -41,6 +47,7 @@ import butterknife.BindView;
 import rx.Observable;
 import rx.functions.Func1;
 
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_DELETE_QUIT;
 import static com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository.MAX_RETRY_COUNTS;
 import static com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository.RETRY_DELAY_TIME;
 import static com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2.BUNDLE_CHAT_DATA;
@@ -237,6 +244,25 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
                 break;
             case TSEMConstants.TS_CONNECTION_DISCONNECTED:
                 showStickyMessage(getString(R.string.chat_unconnected));
+                break;
+            default:
+        }
+    }
+
+    @Subscriber(mode = ThreadMode.MAIN)
+    public void onTSEMessageEventEventBus(TSEMessageEvent event) {
+        LogUtils.d("TSEMessageEvent");
+        EMCmdMessageBody body = (EMCmdMessageBody) event.getMessage().getBody();
+        switch (body.action()) {
+            case TSEMConstants.TS_ATTR_GROUP_DISBAND:
+                String groupId = event.getMessage().getStringAttribute(TSEMConstants.TS_ATTR_ID, null);
+                String groupName = event.getMessage().getStringAttribute(TSEMConstants.TS_ATTR_NAME, null);
+                if (TextUtils.isEmpty(groupId)) {
+                    return;
+                }
+                ToastUtils.showToast(groupName+"解散了");
+                EMClient.getInstance().chatManager().deleteConversation(groupId, true);
+                mPresenter.deleteGroup(groupId);
                 break;
             default:
         }
