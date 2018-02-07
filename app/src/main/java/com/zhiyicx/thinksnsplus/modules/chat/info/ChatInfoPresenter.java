@@ -241,7 +241,7 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
 
     @Subscriber(tag = EVENT_IM_GROUP_DATA_CHANGED)
     public void onGroupOwnerChanged(ChatGroupBean chatGroupBean) {
-        mRootView.updateGroup(chatGroupBean);
+        mRootView.updateGroupOwner(chatGroupBean);
     }
 
     @Subscriber(tag = EVENT_IM_GROUP_REMOVE_MEMBER)

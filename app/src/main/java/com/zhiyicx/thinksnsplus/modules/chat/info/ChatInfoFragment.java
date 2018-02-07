@@ -45,6 +45,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 import static com.hyphenate.easeui.EaseConstant.EXTRA_TO_USER_ID;
 import static com.zhiyicx.thinksnsplus.modules.chat.edit.name.EditGroupNameFragment.GROUP_ORIGINAL_NAME;
@@ -348,6 +352,39 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         mChatGroupBean.setAllowinvites(chatGroupBean.isAllowinvites());
 
         setGroupData();
+    }
+
+    @Override
+    public void updateGroupOwner(ChatGroupBean chatGroupBean) {
+        // emm 由于没有完全返回所有信息 再加上字段也不同 所以手动改一下
+        Observable.just(chatGroupBean)
+                .subscribeOn(Schedulers.io())
+                .map(chatGroupBean1 -> {
+                    System.out.println("Thread.currentThread().getName() = " + Thread.currentThread().getName());
+                    mChatGroupBean.setGroup_face(chatGroupBean.getGroup_face());
+                    mChatGroupBean.setOwner(chatGroupBean.getOwner());
+                    mChatGroupBean.setPublic(chatGroupBean.isPublic());
+                    mChatGroupBean.setName(chatGroupBean.getName());
+                    mChatGroupBean.setDescription(chatGroupBean.getDescription());
+                    mChatGroupBean.setMembersonly(chatGroupBean.isMembersonly());
+                    mChatGroupBean.setAllowinvites(chatGroupBean.isAllowinvites());
+                    if (mChatGroupBean.getAffiliations() != null) {
+                        for (UserInfoBean userInfoBean : mChatGroupBean.getAffiliations()) {
+                            if (mChatGroupBean.getOwner() == userInfoBean.getUser_id()) {
+                                mChatGroupBean.getAffiliations().remove(userInfoBean);
+                                mChatGroupBean.getAffiliations().add(0, userInfoBean);
+                                break;
+                            }
+                        }
+                    }
+                    return mChatGroupBean;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(chatGroupBean12 -> {
+            if (getActivity() != null) {
+                setGroupData();
+            }
+        }, Throwable::printStackTrace);
     }
 
     @Override
