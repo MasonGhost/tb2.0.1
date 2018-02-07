@@ -210,12 +210,15 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                         protected void onFailure(String message, int code) {
                             super.onFailure(message, code);
                             mRootView.showStickyMessage(message);
+                            mRootView.onResponseError(null,false);
                         }
 
                         @Override
                         protected void onException(Throwable throwable) {
                             super.onException(throwable);
                             mRootView.showStickyMessage(mContext.getString(R.string.chat_unconnected));
+                            mRootView.onResponseError(throwable,false);
+
 
                         }
                     });
