@@ -89,7 +89,6 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
     protected InputMethodManager inputManager;
     protected ClipboardManager clipboard;
 
-    protected Handler handler = new Handler();
     protected File cameraFile;
     protected EaseVoiceRecorderView voiceRecorderView;
     protected SwipeRefreshLayout swipeRefreshLayout;
@@ -112,6 +111,9 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
     protected int[] itemIds = {ITEM_TAKE_PICTURE, ITEM_PICTURE, ITEM_LOCATION};
     private boolean isMessageListInited;
     protected MyItemClickListener extendMenuItemClickListener;
+    /**
+     * 是否是漫游消息
+     */
     protected boolean isRoaming = false;
     private ExecutorService fetchQueue;
 

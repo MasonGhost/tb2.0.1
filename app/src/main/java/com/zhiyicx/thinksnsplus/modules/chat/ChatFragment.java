@@ -93,14 +93,12 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
     private static final int ITEM_VOICE_CALL_TS = 35;
     private static final int ITEM_VIDEO_CALL_TS = 36;
 
-    protected View mStatusPlaceholderView;
-
     private ActionPopupWindow mActionPopupWindow;
 
     public static ChatFragment instance(Bundle bundle) {
-        ChatFragment fragmentV2 = new ChatFragment();
-        fragmentV2.setArguments(bundle);
-        return fragmentV2;
+        ChatFragment chatFragment = new ChatFragment();
+        chatFragment.setArguments(bundle);
+        return chatFragment;
     }
 
     @Override
@@ -147,9 +145,9 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
         }
         setRefreshLayoutListener();
         // show forward message if the message is not null
-        String forward_msg_id = getArguments().getString("forward_msg_id");
-        if (forward_msg_id != null) {
-            forwardMessage(forward_msg_id);
+        String forwardMsgId = getArguments().getString("forward_msg_id");
+        if (forwardMsgId != null) {
+            forwardMessage(forwardMsgId);
         }
     }
 
@@ -280,7 +278,8 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             default:
                 break;
         }
-        return false;
+        inputMenu.hideExtendMenuContainer();
+        return true;
     }
 
     @Override
@@ -312,7 +311,7 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
                 if (TextUtils.isEmpty(groupId)) {
                     return;
                 }
-                ToastUtils.showToast(groupName + "解散了");
+                showSnackWarningMessage(getString(R.string.group_quit_format, groupName));
                 EventBus.getDefault().post(groupId, EVENT_IM_DELETE_QUIT);
                 EMClient.getInstance().chatManager().deleteConversation(groupId, true);
                 break;
@@ -370,9 +369,11 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
         // 目前仅有单聊才有音视频通话
         if (chatType == EaseConstant.CHATTYPE_SINGLE) {
             // 语音电话
-            inputMenu.registerExtendMenuItem(R.string.attach_voice_call, R.mipmap.ico_chat_voicecall, ITEM_VOICE_CALL_TS, extendMenuItemClickListener);
+            inputMenu.registerExtendMenuItem(R.string.attach_voice_call, R.mipmap.ico_chat_voicecall, ITEM_VOICE_CALL_TS,
+                    extendMenuItemClickListener);
             // 视频通话
-            inputMenu.registerExtendMenuItem(R.string.attach_video_call, R.mipmap.ico_chat_videocall, ITEM_VIDEO_CALL_TS, extendMenuItemClickListener);
+            inputMenu.registerExtendMenuItem(R.string.attach_video_call, R.mipmap.ico_chat_videocall, ITEM_VIDEO_CALL_TS,
+                    extendMenuItemClickListener);
         }
     }
 
@@ -412,8 +413,7 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
         public EaseChatRowPresenter getCustomChatRow(EMMessage message, int position, BaseAdapter adapter) {
             if (message.getType() == EMMessage.Type.TXT) {
                 // voice call or video call
-                EaseChatRowPresenter presenter = new TSChatTextPresenter();
-                return presenter;
+                return new TSChatTextPresenter();
             }
             return null;
         }
@@ -443,30 +443,19 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
                 }
                 return presenter;
             } else if (message.getType() == EMMessage.Type.IMAGE) {
-                EaseChatRowPresenter presenter = new TSChatPicturePresenter();
-                return presenter;
+                return new TSChatPicturePresenter();
             } else if (message.getType() == EMMessage.Type.VOICE) {
-                EaseChatRowPresenter presenter = new TSChatVoicePresenter();
-                return presenter;
+                return new TSChatVoicePresenter();
             } else if (message.getType() == EMMessage.Type.LOCATION) {
-                EaseChatRowPresenter presenter = new TSChatLocationPresenter();
-                return presenter;
+                return new TSChatLocationPresenter();
             } else if (message.getType() == EMMessage.Type.VIDEO) {
-                EaseChatRowPresenter presenter = new TSChatVideoPresenter();
-                return presenter;
+                return new TSChatVideoPresenter();
             } else if (message.getType() == EMMessage.Type.FILE) {
-                EaseChatRowPresenter presenter = new TSChatFilePresenter();
-                return presenter;
+                return new TSChatFilePresenter();
             }
             return null;
         }
 
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -553,8 +542,13 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
                 .bottomClickListener(() -> mActionPopupWindow.hide())
                 .isFocus(true)
                 .isOutsideTouch(true)
-                .backgroundAlpha(0.8f)
                 .build();
         mActionPopupWindow.show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissPop(mActionPopupWindow);
     }
 }
