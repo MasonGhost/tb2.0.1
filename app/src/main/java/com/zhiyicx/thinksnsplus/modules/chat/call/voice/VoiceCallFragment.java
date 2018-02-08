@@ -342,7 +342,7 @@ public class VoiceCallFragment extends BaseCallFragment {
     }
 
 
-    @OnClick({R.id.swing_card, R.id.iv_mute, R.id.btn_refuse_call, R.id.btn_hangup_call, R.id.iv_exit_full_screen,
+    @OnClick({R.id.swing_card, R.id.ll_mute, R.id.btn_refuse_call, R.id.btn_hangup_call, R.id.iv_exit_full_screen,
             R.id.btn_answer_call, R.id.iv_handsfree})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -351,7 +351,7 @@ public class VoiceCallFragment extends BaseCallFragment {
                 break;
             case R.id.swing_card:
                 break;
-            case R.id.iv_mute:
+            case R.id.ll_mute:
                 // 麦克风
                 onMicrophone();
                 break;
