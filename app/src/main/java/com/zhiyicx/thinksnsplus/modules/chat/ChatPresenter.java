@@ -73,11 +73,7 @@ public class ChatPresenter extends AppBasePresenter<ChatContract.View> implement
 
     @Override
     public String getUserName(String id) {
-        try {
-            return mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(id)).getName();
-        } catch (Exception e) {
-            return "未知用户";
-        }
+        return mUserInfoBeanGreenDao.getUserName(id);
     }
 
     @Override
@@ -90,13 +86,13 @@ public class ChatPresenter extends AppBasePresenter<ChatContract.View> implement
     }
 
     /**
-     * @param id 群 id
+     * @param id    群 id
      * @param count 变动 数量
-     * @param add 是否 加法
+     * @param add   是否 加法
      * @return
      */
     @Override
-    public boolean updateChatGroupMemberCount(String id, int count,boolean add) {
-        return mChatGroupBeanGreenDao.updateChatGroupMemberCount(id, count,add);
+    public boolean updateChatGroupMemberCount(String id, int count, boolean add) {
+        return mChatGroupBeanGreenDao.updateChatGroupMemberCount(id, count, add);
     }
 }

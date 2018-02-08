@@ -172,4 +172,16 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
         return result;
     }
 
+    public String getUserName(String id) {
+        Long userId = null;
+        try {
+            userId = Long.parseLong(id);
+        } catch (Exception e) {
+            return "未知用户";
+        }
+        UserInfoBeanDao userInfoBeanDao = getRDaoSession().getUserInfoBeanDao();
+        UserInfoBean userInfoBean = userInfoBeanDao.load(userId);
+        return userInfoBean.getName();
+    }
+
 }

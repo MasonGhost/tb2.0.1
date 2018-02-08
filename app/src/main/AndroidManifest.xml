@@ -672,7 +672,6 @@
         <!--环信的聊天页面-->
         <activity
             android:name=".modules.chat.ChatActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
         <!--发送位置-->

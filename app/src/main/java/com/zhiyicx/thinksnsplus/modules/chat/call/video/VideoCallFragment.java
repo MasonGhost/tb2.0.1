@@ -309,11 +309,13 @@ public class VideoCallFragment extends BaseCallFragment {
         // 根据麦克风开关是否被激活来进行判断麦克风状态，然后进行下一步操作
         if (!mIvMute.isActivated()) {
             mIvMute.setImageResource(R.mipmap.btn_chat_mute_on);
+
             try {
-                EMClient.getInstance().callManager().resumeVoiceTransfer();
+                EMClient.getInstance().callManager().pauseVoiceTransfer();
             } catch (HyphenateException e) {
                 e.printStackTrace();
             }
+
             // 设置按钮状态
             mIvMute.setActivated(true);
             TSEMCallStatus.getInstance().setMic(false);
@@ -321,11 +323,13 @@ public class VideoCallFragment extends BaseCallFragment {
             // 恢复语音数据的传输
             // 暂停语音数据的传输
             mIvMute.setImageResource(R.mipmap.btn_chat_mute);
+
             try {
-                EMClient.getInstance().callManager().pauseVoiceTransfer();
+                EMClient.getInstance().callManager().resumeVoiceTransfer();
             } catch (HyphenateException e) {
                 e.printStackTrace();
             }
+
             // 设置按钮状态
             mIvMute.setActivated(false);
             TSEMCallStatus.getInstance().setMic(true);

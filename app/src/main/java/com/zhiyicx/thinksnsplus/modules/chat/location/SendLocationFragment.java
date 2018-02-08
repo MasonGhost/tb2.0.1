@@ -94,7 +94,7 @@ public class SendLocationFragment extends TSFragment<SendLocationContract.Presen
         }
         if (mIsSend) {
             aMap.setOnMyLocationChangeListener(this);
-            aMap.moveCamera(CameraUpdateFactory.zoomTo(18));
+            aMap.moveCamera(CameraUpdateFactory.zoomTo(15));
             MyLocationStyle myLocationStyle;
             /*初始化定位蓝点样式类myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);*/
             myLocationStyle = new MyLocationStyle();
