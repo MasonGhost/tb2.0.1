@@ -278,7 +278,8 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             default:
                 break;
         }
-        return false;
+        inputMenu.hideExtendMenuContainer();
+        return true;
     }
 
     @Override
