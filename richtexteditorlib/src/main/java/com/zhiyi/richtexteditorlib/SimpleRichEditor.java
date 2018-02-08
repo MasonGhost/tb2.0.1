@@ -383,9 +383,9 @@ public class SimpleRichEditor extends RichEditor {
                         MenuItem menuSetting = mBottomMenu.getBottomMenuItems().get(ItemIndex.SETTING).getMenuItem();
                         if (!isSelected && menuSetting.getSelected()) {
                             mBottomMenu.getInnerListener().onItemClick(menuSetting);
+                            mOnEditorClickListener.onSettingImageButtionClick(false);
                         }
                         mBottomMenu.getBottomMenuItem(item).setSelected(isSelected);
-                        mOnEditorClickListener.onSettingImageButtionClick(isSelected);
                     }
                     return false;
                 }))
