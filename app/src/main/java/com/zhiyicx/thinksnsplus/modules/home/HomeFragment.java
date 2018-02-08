@@ -1,16 +1,19 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.appupdate.AppUpdateManager;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
@@ -20,9 +23,11 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.baseproject.utils.ExcutorUtil;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
@@ -51,6 +56,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_DEFAULT_COUNT;
 import static com.zhiyicx.thinksnsplus.modules.home.HomeActivity.BUNDLE_JPUSH_MESSAGE;
@@ -111,7 +117,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     @BindView(R.id.ll_bottom_container)
     LinearLayout mLlBottomContainer;
 
-
     private PhotoSelectorImpl mPhotoSelector;
 
     private int mCurrenPage;
@@ -130,6 +135,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
      */
     private CheckInBean mCheckInBean;
     private ArrayList<Fragment> mFragmentList = new ArrayList<>();
+    private boolean isFirst = true;
 
     public static HomeFragment newInstance(Bundle args) {
         HomeFragment fragment = new HomeFragment();
@@ -377,6 +383,31 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         });
         // 设置 IM 监听
         mPresenter.initIM();
+        RxView.globalLayouts(mActivity.getWindow().getDecorView())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        boolean isKeyboardShown = isKeyboardShown(mActivity.getWindow().getDecorView());
+                        if (isFirst == isKeyboardShown) {
+                            return;
+                        }
+                        if (mLlBottomContainer.getVisibility() == View.VISIBLE && isKeyboardShown) {
+                            onButtonMenuShow(false);
+                        } else if (mLlBottomContainer.getVisibility() == View.GONE && !isKeyboardShown) {
+                            onButtonMenuShow(true);
+                        }
+                        isFirst = isKeyboardShown;
+                    }
+                });
+    }
+
+    private boolean isKeyboardShown(View decorView) {
+        final int softKeyboardHeight = 100;
+        Rect r = new Rect();
+        decorView.getWindowVisibleDisplayFrame(r);
+        DisplayMetrics dm = decorView.getResources().getDisplayMetrics();
+        int heightDiff = decorView.getBottom() - r.bottom;
+        return heightDiff > softKeyboardHeight * dm.density;
     }
 
     /**

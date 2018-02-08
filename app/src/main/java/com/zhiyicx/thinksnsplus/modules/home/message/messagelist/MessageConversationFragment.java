@@ -180,8 +180,8 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
         if (messageItemBean == null) {
             return;
         }
-        ChatActivity.startChatActivity(mActivity, messageItemBean.getEmKey()
-                , messageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat ? EaseConstant.CHATTYPE_GROUP : EaseConstant.CHATTYPE_GROUP);
+        ChatActivity.startChatActivity(mActivity, messageItemBean.getConversation().conversationId() 
+                , messageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat ? EaseConstant.CHATTYPE_SINGLE : EaseConstant.CHATTYPE_GROUP);
     }
 
     @Override

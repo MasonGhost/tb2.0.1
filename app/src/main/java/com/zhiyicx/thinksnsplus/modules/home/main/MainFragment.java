@@ -169,9 +169,9 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     @Override
     public void onButtonMenuShow(boolean isShow) {
         mVShadow.setVisibility(isShow ? View.GONE : View.VISIBLE);
-        if (mOnCommentClickListener != null) {
-            mOnCommentClickListener.onButtonMenuShow(isShow);
-        }
+//        if (mOnCommentClickListener != null) {
+//            mOnCommentClickListener.onButtonMenuShow(isShow);
+//        }
     }
 
     /**
