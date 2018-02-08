@@ -83,9 +83,20 @@ public class ChatPresenter extends AppBasePresenter<ChatContract.View> implement
     @Override
     public String getGroupName(String id) {
         try {
-            return mChatGroupBeanGreenDao.getChatGroupBeanById(id).getName();
+            return mChatGroupBeanGreenDao.getChatGroupName(id);
         } catch (Exception e) {
             return "未知用户";
         }
+    }
+
+    /**
+     * @param id 群 id
+     * @param count 变动 数量
+     * @param add 是否 加法
+     * @return
+     */
+    @Override
+    public boolean updateChatGroupMemberCount(String id, int count,boolean add) {
+        return mChatGroupBeanGreenDao.updateChatGroupMemberCount(id, count,add);
     }
 }

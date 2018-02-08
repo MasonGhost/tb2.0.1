@@ -82,6 +82,31 @@ public class ChatGroupBeanGreenDaoImpl extends CommonCacheImpl<ChatGroupBean> {
         return readDao.queryBuilder().where(ChatGroupBeanDao.Properties.Id.eq(id)).build().unique();
     }
 
+    public String getChatGroupName(String id) {
+        ChatGroupBean chatGroupBean = readDao.queryBuilder().where(ChatGroupBeanDao.Properties.Id.eq(id)).build().unique();
+        if (chatGroupBean == null) {
+            return "未知用户";
+        }
+        return chatGroupBean.getName() + "(" + chatGroupBean.getAffiliations_count() + ")";
+    }
+
+    public boolean updateChatGroupMemberCount(String id, int count, boolean add) {
+        ChatGroupBean chatGroupBean = readDao.queryBuilder().where(ChatGroupBeanDao.Properties.Id.eq(id)).build().unique();
+        if (chatGroupBean == null) {
+            return false;
+        }
+        int resultCount;
+        if (add) {
+            resultCount = chatGroupBean.getAffiliations_count() + count;
+        } else {
+            resultCount = chatGroupBean.getAffiliations_count() - count;
+        }
+        resultCount = resultCount > 0 ? resultCount : 0;
+        chatGroupBean.setAffiliations_count(resultCount);
+        saveSingleData(chatGroupBean);
+        return true;
+    }
+
     public boolean updateGroupName(String id, String name) {
         ChatGroupBean chatGroupBean = getChatGroupBeanById(id);
         if (chatGroupBean == null) {

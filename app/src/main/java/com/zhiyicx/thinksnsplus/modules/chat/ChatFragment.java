@@ -154,6 +154,12 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        setCenterText(mPresenter.getGroupName(toChatUsername));
+    }
+
+    @Override
     protected void setLeftClick() {
         onBackPressed();
     }
@@ -324,6 +330,16 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             } else {
                 // single chat message
                 username = message.getFrom();
+            }
+            boolean isUserJoin, isUserExit;
+
+            isUserJoin = TSEMConstants.TS_ATTR_JOIN.equals(message.ext().get("type"));
+            isUserExit = TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"));
+
+            if (isUserExit || isUserJoin) {
+                // 只有群聊中才会有 成员 加入or退出的消息
+                mPresenter.updateChatGroupMemberCount(message.conversationId(), 1, isUserJoin);
+                setCenterText(mPresenter.getGroupName(message.conversationId()));
             }
 
             // if the message is for current conversation

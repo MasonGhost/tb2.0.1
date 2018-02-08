@@ -23,5 +23,6 @@ public interface ChatContract {
         void dealMessages(List<EMMessage> messages);
         String getUserName(String id);
         String getGroupName(String id);
+        boolean updateChatGroupMemberCount(String id,int count,boolean add);
     }
 }

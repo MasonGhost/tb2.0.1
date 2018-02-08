@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMMultipleMessagesEvent;
+import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.appprocess.BackgroundUtil;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
@@ -22,6 +23,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.ChatGroupBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseMessageRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
@@ -60,6 +62,9 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
 
     @Inject
     BaseMessageRepository mBaseMessageRepository;
+
+    @Inject
+    ChatGroupBeanGreenDaoImpl mChatGroupBeanGreenDao;
 
     @Inject
     public HomePresenter(HomeContract.View rootView) {
@@ -223,6 +228,18 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
             for (EMMessage message : list) {
                 ChatItemBean chatItemBean = new ChatItemBean();
                 chatItemBean.setMessage(message);
+
+                boolean isUserJoin, isUserExit;
+
+                isUserJoin = TSEMConstants.TS_ATTR_JOIN.equals(message.ext().get("type"));
+                isUserExit = TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"));
+
+                if (isUserExit || isUserJoin) {
+                    // 只有群聊中才会有 成员 加入or退出的消息
+                    updateChatGroupMemberCount(message.conversationId(), 1, isUserJoin);
+                }
+
+                // admin  消息 ，我们后台的发，显示的时候不要名字，只要内容，所以 new UserInfoBean("");搞了个名字是""的用户信息。
                 if ("admin".equals(message.getFrom())) {
                     chatItemBean.setUserInfo(new UserInfoBean(""));
                 } else {
@@ -270,5 +287,16 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
                         });
             }
         }
+    }
+
+    /**
+     * @param id 群 id
+     * @param count 变动 数量
+     * @param add 是否 加法
+     * @return
+     */
+    @Override
+    public boolean updateChatGroupMemberCount(String id, int count,boolean add) {
+        return mChatGroupBeanGreenDao.updateChatGroupMemberCount(id, count,add);
     }
 }

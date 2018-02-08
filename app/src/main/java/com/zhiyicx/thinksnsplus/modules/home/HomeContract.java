@@ -87,5 +87,7 @@ public interface HomeContract {
         void getCheckInInfo();
 
         double getWalletRatio();
+
+        boolean updateChatGroupMemberCount(String id,int count,boolean add);
     }
 }
