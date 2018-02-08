@@ -13,6 +13,7 @@ import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
+import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.ChatGroupBeanGreenDaoImpl;
@@ -241,5 +242,41 @@ public class BaseMessageRepository implements IBaseMessageRepository {
     @Override
     public Observable<UserInfoBean> getUserInfo(String id) {
         return null;
+    }
+
+    @Override
+    public Observable<List<ChatItemBean>> completeUserInfo(List<ChatItemBean> list) {
+        return Observable.just(list)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(list1 -> {
+                    List<Object> users = new ArrayList<>();
+                    for (ChatItemBean chatItemBean : list1){
+                        if ("admin".equals(chatItemBean.getMessage().getFrom())) {
+                            users.add(1L);
+                        } else {
+                            users.add(chatItemBean.getMessage().getFrom());
+                        }
+                    }
+                    return mUserInfoRepository.getUserInfo(users)
+                            .map(userInfoBeans -> {
+                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                for (UserInfoBean userInfoBean : userInfoBeans) {
+                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    // 更新数据库
+                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                                }
+                                for (int i = 0; i < list1.size(); i++) {
+                                    int key;
+                                    if ("admin".equals(list1.get(i).getMessage().getFrom())) {
+                                        key = 1;
+                                    } else {
+                                        key = Integer.parseInt(list1.get(i).getMessage().getFrom());
+                                    }
+                                    list1.get(i).setUserInfo(userInfoBeanSparseArray.get(key));
+                                }
+                                return list1;
+                            });
+                });
     }
 }

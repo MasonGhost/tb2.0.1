@@ -9,7 +9,7 @@
   * is strictly forbidden unless prior written permission is obtained
   * from Hyphenate Inc.
   */
-package com.zhiyicx.thinksnsplus.modules.chat.receiver;
+package com.zhiyicx.thinksnsplus.modules.chat.call.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -18,10 +18,6 @@ import android.content.Intent;
 import com.hyphenate.chat.EMChatService;
 import com.hyphenate.util.EMLog;
 
-/**
- * @deprecated instead of use {@link EMReceiver}
- *
- */
 public class StartServiceReceiver extends BroadcastReceiver{
 
 	@Override

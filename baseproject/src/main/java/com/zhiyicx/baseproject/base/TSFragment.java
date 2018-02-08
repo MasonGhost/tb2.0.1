@@ -26,8 +26,6 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.R;
-import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
-import com.zhiyicx.baseproject.em.manager.eventbus.TSEMConnectionEvent;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.baseproject.widget.dialog.LoadingDialog;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
@@ -38,10 +36,6 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
-
-import org.simple.eventbus.Subscriber;
-import org.simple.eventbus.ThreadMode;
 
 import java.util.concurrent.TimeUnit;
 

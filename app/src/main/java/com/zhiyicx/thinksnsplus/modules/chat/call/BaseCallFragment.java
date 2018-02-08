@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.chat.callV2;
+package com.zhiyicx.thinksnsplus.modules.chat.call;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -19,8 +19,8 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.util.EMLog;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
-import com.zhiyicx.baseproject.em.manager.control.TSEMDateUtil;
+import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
+import com.zhiyicx.baseproject.em.manager.util.TSEMDateUtil;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMCallEvent;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;

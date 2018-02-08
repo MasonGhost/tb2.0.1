@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.chat.callV2.receiver;
+package com.zhiyicx.thinksnsplus.modules.chat.call.receiver;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
@@ -8,9 +8,9 @@ import android.content.Intent;
 import com.hyphenate.chat.EMClient;
 import com.tbruyelle.rxpermissions.RxPermissions;
 import com.zhiyicx.baseproject.em.manager.TSEMCallStatus;
-import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
-import com.zhiyicx.thinksnsplus.modules.chat.callV2.BaseCallActivity;
-import com.zhiyicx.thinksnsplus.modules.chat.callV2.TSEMHyphenate;
+import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
+import com.zhiyicx.thinksnsplus.modules.chat.call.BaseCallActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
 
 
 /**

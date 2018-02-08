@@ -1,8 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.chat.select;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +12,6 @@ import android.widget.ImageView;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMGroup;
-import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -23,10 +20,9 @@ import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2;
 import com.zhiyicx.thinksnsplus.modules.chat.adapter.SelectFriendsAllAdapter;
 import com.zhiyicx.thinksnsplus.modules.chat.adapter.SelectedFriendsAdapter;
-import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -35,8 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
-
-import static com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2.BUNDLE_CHAT_DATA;
 
 /**
  * @author Catherine
@@ -288,14 +282,7 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
                 return;
             }
         }
-
-        Intent to = new Intent(getActivity(), ChatActivityV2.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(EaseConstant.EXTRA_USER_ID, id);
-        bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, chatType);
-        bundle.putParcelableArrayList(ChatConfig.MESSAGE_CHAT_MEMBER_LIST, (ArrayList<? extends Parcelable>) list);
-        to.putExtra(BUNDLE_CHAT_DATA, bundle);
-        startActivity(to);
+        ChatActivity.startChatActivity(mActivity, id, chatType);
         getActivity().finish();
     }
 

@@ -9,21 +9,11 @@ import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
-import com.zhiyicx.imsdk.core.ChatType;
-import com.zhiyicx.imsdk.db.dao.MessageDao;
-import com.zhiyicx.imsdk.entity.Conversation;
-import com.zhiyicx.imsdk.entity.Message;
-import com.zhiyicx.imsdk.entity.MessageStatus;
-import com.zhiyicx.imsdk.entity.MessageType;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
-import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
@@ -55,8 +45,6 @@ public class SystemRepository implements ISystemRepository {
     protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     protected SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
-    @Inject
-    protected ChatRepository mChatRepository;
 
     private CommonClient mCommonClient;
     private Context mContext;
@@ -276,73 +264,6 @@ public class SystemRepository implements ISystemRepository {
     }
 
     /**
-     * 获取系统对话信息
-     *
-     * @param max_id 分页标识
-     * @param limit  每页数量
-     * @return
-     */
-    @Override
-    public Observable<List<SystemConversationBean>> getSystemConversations(long max_id, int limit) {
-        return mCommonClient.getSystemConversations(max_id, limit)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(listBaseJson -> {
-//                            descNetSystemConversation(listBaseJson.getData());
-                    mSystemConversationBeanGreenDao.saveMultiData(listBaseJson);
-                    handleTsHelperUserInfo(listBaseJson);
-                    return listBaseJson;
-                });
-    }
-
-    /**
-     * 获取本地系统公告
-     *
-     * @param max_Id 唯一标识
-     * @return
-     */
-    @Override
-    public List<SystemConversationBean> requestCacheData(long max_Id) {
-        List<SystemConversationBean> list = mSystemConversationBeanGreenDao.getMultiDataFromCacheByMaxId(max_Id);
-        handleTsHelperUserInfo(list);
-        return list;
-    }
-
-    /**
-     * 创建 ts 助手对话
-     */
-    @Override
-    public void creatTsHelperConversation() {
-
-        // 新版 ts 助手
-        for (final SystemConfigBean.ImHelperBean imHelperBean : getBootstrappersInfoFromLocal().getIm_helper()) {
-            final String uids = AppApplication.getMyUserIdWithdefault() + "," + imHelperBean.getUid();
-            final String pair = AppApplication.getmCurrentLoginAuth().getUser_id() + "&" + imHelperBean.getUid();// "pair":null,   //
-            // type=0时此项为两个uid：min_uid&max_uid
-            mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uids)
-                    .subscribe(new BaseSubscribeForV2<Conversation>() {
-                        @Override
-                        protected void onSuccess(Conversation data) {
-                            data.setIm_uid((int) AppApplication.getmCurrentLoginAuth().getUser_id());
-                            data.setUsids(uids);
-                            data.setPair(pair);
-                            mChatRepository.insertOrUpdateConversation(data);
-                            // 写入 ts helper 默认提示语句
-                            Message message = new Message();
-                            message.setId(DEFAULT_TS_HELPER_TIP_MSG_ID);
-                            message.setType(MessageType.MESSAGE_TYPE_TEXT);
-                            message.setTxt(mContext.getString(R.string.ts_helper_default_tip));
-                            message.setSend_status(MessageStatus.SEND_SUCCESS);
-                            message.setIs_read(false);
-                            message.setUid(Integer.parseInt(imHelperBean.getUid()));
-                            message.setCid(data.getCid());
-                            MessageDao.getInstance(mContext).insertOrUpdateMessage(message);
-                        }
-                    });
-        }
-    }
-
-    /**
      * 获取全部标签
      *
      * @return
@@ -376,23 +297,6 @@ public class SystemRepository implements ISystemRepository {
         return mCommonClient.getHoCity()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    /**
-     * 处理 TS 助手和用户信息
-     *
-     * @param list 对话信息
-     */
-    private void handleTsHelperUserInfo(List<SystemConversationBean> list) {
-        UserInfoBean myUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id());
-        UserInfoBean tsHleper = new UserInfoBean();
-        tsHleper.setName(mContext.getString(R.string.ts_helper));
-        for (SystemConversationBean systemConversationBean : list) {
-            systemConversationBean.setUserInfo(systemConversationBean.getUser_id() == null || systemConversationBean.getUser_id() == 0 ? tsHleper :
-                    myUserInfo);
-            systemConversationBean.setToUserInfo(systemConversationBean.getTo_user_id() == null || systemConversationBean.getTo_user_id() == 0 ?
-                    tsHleper : myUserInfo);
-        }
     }
 
     @Override

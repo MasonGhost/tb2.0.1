@@ -17,11 +17,8 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
-import com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
-
-import static com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2.BUNDLE_CHAT_DATA;
 
 /**
  * @Describe 通知工具类
@@ -54,7 +51,7 @@ public class NotificationUtil {
      * @param jpushMessageBean
      */
     public static void showNotifyMessage(Context context, JpushMessageBean jpushMessageBean) {
-        if (!BackgroundUtil.getAppIsForegroundStatus()) {   // 应用在后台
+        if (!BackgroundUtil.getAppIsForegroundStatus()) {
             NotificationUtil notiUtil = new NotificationUtil(context);
             notiUtil.postNotification(jpushMessageBean);
         }
@@ -67,7 +64,7 @@ public class NotificationUtil {
      * @param jpushMessageBean
      */
     public static void showChatNotifyMessage(Context context, JpushMessageBean jpushMessageBean, UserInfoBean userInfoBean) {
-        if (!BackgroundUtil.getAppIsForegroundStatus()) {   // 应用在后台
+        if (!BackgroundUtil.getAppIsForegroundStatus()) {
             NotificationUtil notiUtil = new NotificationUtil(context);
             notiUtil.postChatNotification(jpushMessageBean, userInfoBean);
         }
@@ -111,16 +108,15 @@ public class NotificationUtil {
         if (TextUtils.isEmpty(emKey) || TextUtils.isEmpty(userInfoBean.getName())) {
 
         } else {
-            Intent intent = new Intent(context, ChatActivityV2.class);
+            Intent intent = new Intent(context, ChatActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putSerializable(ChatFragment.BUNDLE_CHAT_USER, userInfoBean);
             bundle.putString(EaseConstant.EXTRA_USER_ID, emKey);
             if (EMMessage.ChatType.Chat.name().equals(jpushMessageBean.getExtras())) {
                 bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_SINGLE);
             } else {
                 bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_GROUP);
             }
-            intent.putExtra(BUNDLE_CHAT_DATA, bundle);
+            intent.putExtras(bundle);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             builder.setContentIntent(pendingIntent);
         }

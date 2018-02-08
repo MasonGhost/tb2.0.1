@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.chat.callV2;
+package com.zhiyicx.thinksnsplus.modules.chat.call;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,9 +8,9 @@ import android.support.annotation.Nullable;
 import android.view.WindowManager;
 
 import com.zhiyicx.baseproject.base.TSActivity;
-import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
-import com.zhiyicx.thinksnsplus.modules.chat.callV2.voice.VoiceCallActivity;
-import com.zhiyicx.thinksnsplus.modules.chat.callV2.video.VideoCallActivity;
+import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
+import com.zhiyicx.thinksnsplus.modules.chat.call.voice.VoiceCallActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.call.video.VideoCallActivity;
 
 /**
  * @Author Jliuer

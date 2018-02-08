@@ -4,8 +4,6 @@ import android.text.TextUtils;
 
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.chat.callV2.TSEMHyphenate;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMMultipleMessagesEvent;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.appprocess.BackgroundUtil;
@@ -23,9 +21,11 @@ import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.ChatRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseMessageRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
 import com.zhiyicx.thinksnsplus.utils.NotificationUtil;
 
 import org.simple.eventbus.Subscriber;
@@ -59,7 +59,7 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
     WalletConfigBeanGreenDaoImpl mWalletConfigBeanGreenDao;
 
     @Inject
-    ChatRepository mChatRepository;
+    BaseMessageRepository mBaseMessageRepository;
 
     @Inject
     public HomePresenter(HomeContract.View rootView) {
@@ -242,7 +242,7 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
                             if (chatItemBean1.getUserInfo() == null) {
                                 List<ChatItemBean> chatItemBeanList = new ArrayList<>();
                                 chatItemBeanList.add(chatItemBean1);
-                                return mChatRepository.completeUserInfo(chatItemBeanList)
+                                return mBaseMessageRepository.completeUserInfo(chatItemBeanList)
                                         .map(list1 -> list1.get(0));
                             }
                             return Observable.just(chatItemBean1);

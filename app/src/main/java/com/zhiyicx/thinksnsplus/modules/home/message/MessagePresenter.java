@@ -6,18 +6,13 @@ import android.text.TextUtils;
 import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.util.NetUtils;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.imsdk.core.ChatType;
-import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
-import com.zhiyicx.imsdk.entity.MessageStatus;
-import com.zhiyicx.imsdk.entity.MessageType;
 import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -30,12 +25,7 @@ import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UnReadNotificaitonBean;
 import com.zhiyicx.thinksnsplus.data.beans.UnreadCountBean;
-import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.ChatRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
 
@@ -53,11 +43,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
-
-import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
-import static com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository.DEFAULT_TS_HELPER_TIP_MSG_ID;
 
 /**
  * @Describe
@@ -69,9 +55,6 @@ import static com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository.D
 public class MessagePresenter extends AppBasePresenter<MessageContract.View> implements MessageContract.Presenter {
     private static final int MAX_USER_NUMS_COMMENT = 2;
     private static final int MAX_USER_NUMS_DIGG = 3;
-
-    @Inject
-    ChatRepository mChatRepository;
 
     @Inject
     MessageRepository mMessageRepository;
@@ -149,75 +132,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
     }
 
     /**
-     * mNotificaitonRedDotIsShow
-     * 创建 ts 助手对话
-     */
-    public void creatTsHelperConversation() {
-        Subscription subscribe = Observable.just(1)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .flatMap(integer -> {
-                    List<Observable<Conversation>> datas = new ArrayList<>();
-                    final List<SystemConfigBean.ImHelperBean> tsHlepers = mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
-                    // 新版 ts 助手
-                    for (final SystemConfigBean.ImHelperBean imHelperBean : tsHlepers) {
-                        if (imHelperBean.isDelete()) {
-                            continue;
-                        }
-                        final String uidsstr = AppApplication.getMyUserIdWithdefault() + "," + imHelperBean.getUid();
-                        datas.add(mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uidsstr).observeOn(Schedulers.io()));
-                    }
-                    if (datas.isEmpty()) {
-                        return mMessageRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault());
-                    } else {
-                        return Observable.zip(datas, (FuncN<Object>) args -> {
-                            // 为 ts 助手添加提示语
-                            for (int i = 0; i < args.length; i++) {
-                                Conversation data = ((Conversation) args[i]);
-                                // 写入 ts helper 默认提示语句
-                                long currentTime = System.currentTimeMillis();
-                                Message message = new Message();
-                                message.setId(DEFAULT_TS_HELPER_TIP_MSG_ID);
-                                message.setType(MessageType.MESSAGE_TYPE_TEXT);
-                                message.setTxt(mContext.getString(R.string.ts_helper_default_tip));
-                                message.setSend_status(MessageStatus.SEND_SUCCESS);
-                                message.setIs_read(false);
-                                message.setUid(Integer.parseInt(tsHlepers.get(i).getUid()));
-                                message.setCid(data.getCid());
-                                message.setCreate_time(currentTime);
-//                    public static final long TIME_DEFAULT_ADD = 1451577600000L; //  消息的MID，`(mid >> 23) + 1451577600000` 为毫秒时间戳
-                                message.setMid((currentTime - TIME_DEFAULT_ADD) << 23);
-                                MessageDao.getInstance(mContext).insertOrUpdateMessage(message);
-                            }
-                            return args;
-                        }).flatMap(o -> mMessageRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault()));
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .doAfterTerminate(() -> mRootView.hideLoading())
-                .subscribe(new BaseSubscribeForV2<List<MessageItemBean>>() {
-                    @Override
-                    protected void onSuccess(final List<MessageItemBean> data) {
-                        mRootView.onNetResponseSuccess(data, false);
-                        refreshConversationReadMessage();
-                    }
-
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        mRootView.showMessage(message);
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        mRootView.showMessage(mContext.getResources().getString(R.string.err_net_not_work));
-                    }
-                });
-        addSubscrebe(subscribe);
-
-
-    }
-
-    /**
      * 没有加载更多，一次全部取出
      *
      * @param isLoadMore 加载状态
@@ -236,7 +150,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<MessageItemBean> data, boolean isLoadMore) {
-        return mChatRepository.insertOrUpdateMessageItemBean(data);
+        return false;
     }
 
     @Override

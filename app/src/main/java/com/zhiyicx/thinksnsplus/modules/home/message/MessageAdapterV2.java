@@ -31,7 +31,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
-import com.zhiyicx.thinksnsplus.modules.chat.callV2.TSEMHyphenate;
+import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -47,7 +47,6 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @date 2017/12/12
  * @contact email:648129313@qq.com
  */
-
 public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implements SwipeItemMangerInterface, SwipeAdapterInterface {
 
     private SwipeItemMangerImpl mItemManger;

@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.chat.callV2;
+package com.zhiyicx.thinksnsplus.modules.chat.call;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -24,13 +24,12 @@ import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.EaseUI;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.bean.ChatVerifiedBean;
-import com.hyphenate.exceptions.HyphenateException;
 import com.zhiyicx.baseproject.em.manager.TSEMCallStatus;
-import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
-import com.zhiyicx.baseproject.em.manager.control.TSEMContacterEntity;
-import com.zhiyicx.baseproject.em.manager.control.TSEMDateUtil;
-import com.zhiyicx.baseproject.em.manager.control.TSEMessageUtils;
-import com.zhiyicx.baseproject.em.manager.control.TSEmConversationExtUtils;
+import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
+import com.zhiyicx.baseproject.em.manager.util.TSEMContacterEntity;
+import com.zhiyicx.baseproject.em.manager.util.TSEMDateUtil;
+import com.zhiyicx.baseproject.em.manager.util.TSEMessageUtils;
+import com.zhiyicx.baseproject.em.manager.util.TSEmConversationExtUtils;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMApplyForEvent;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMCallEvent;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMConnectionEvent;
@@ -44,9 +43,8 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.modules.chat.callV2.receiver.TSEMCallReceiver;
-import com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2;
-import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.call.receiver.TSEMCallReceiver;
 
 import org.simple.eventbus.EventBus;
 
@@ -453,7 +451,7 @@ public class TSEMHyphenate {
             public void onMessageReceived(List<EMMessage> list) {
                 // 判断当前活动界面是不是聊天界面，如果是，全局不处理消息
                 if (TSEMHyphenate.getInstance().getActivityList().size() > 0) {
-                    if (ChatActivityV2.class.getSimpleName().equals(TSEMHyphenate.getInstance().getTopActivity().getClass().getSimpleName())) {
+                    if (ChatActivity.class.getSimpleName().equals(TSEMHyphenate.getInstance().getTopActivity().getClass().getSimpleName())) {
                         return;
                     }
                 }
@@ -494,7 +492,7 @@ public class TSEMHyphenate {
             public void onCmdMessageReceived(List<EMMessage> list) {
                 // 判断当前活动界面是不是聊天界面，如果是，全局不处理消息
                 if (TSEMHyphenate.getInstance().getActivityList().size() > 0) {
-                    if (ChatActivityV2.class.getSimpleName().equals(TSEMHyphenate.getInstance().getTopActivity().getClass().getSimpleName())) {
+                    if (ChatActivity.class.getSimpleName().equals(TSEMHyphenate.getInstance().getTopActivity().getClass().getSimpleName())) {
                         return;
                     }
                 }

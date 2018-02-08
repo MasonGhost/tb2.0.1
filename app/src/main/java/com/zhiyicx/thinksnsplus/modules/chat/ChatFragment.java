@@ -1,109 +1,116 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
-import android.graphics.Rect;
+import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.widget.BaseAdapter;
+import android.widget.Toast;
 
 import com.hyphenate.chat.EMClient;
-import com.hyphenate.chat.EMConversation;
-import com.jakewharton.rxbinding.view.RxView;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
-import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.widget.InputLimitView;
+import com.hyphenate.chat.EMCmdMessageBody;
+import com.hyphenate.chat.EMMessage;
+import com.hyphenate.easeui.EaseConstant;
+import com.hyphenate.easeui.EaseUI;
+import com.hyphenate.easeui.bean.ChatUserInfoBean;
+import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
+import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
+import com.hyphenate.util.PathUtil;
+import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.imsdk.entity.Message;
-import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
-import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.widget.chat.ChatMessageList;
+import com.zhiyicx.thinksnsplus.base.TSEaseChatFragment;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
+import com.zhiyicx.thinksnsplus.modules.chat.call.BaseCallActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.info.ChatInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
+import com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatCallPresneter;
+import com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatFilePresenter;
+import com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatLocationPresenter;
+import com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatPicturePresenter;
+import com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatTextPresenter;
+import com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatTipTextPresenter;
+import com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatVideoPresenter;
+import com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatVoicePresenter;
+import com.zhiyicx.thinksnsplus.modules.chat.location.SendLocationActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.video.ImageGridActivity;
 
-import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
+import org.simple.eventbus.ThreadMode;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 
-import butterknife.BindView;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-
-import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
+import static com.hyphenate.easeui.EaseConstant.EXTRA_CHAT_TYPE;
+import static com.hyphenate.easeui.EaseConstant.EXTRA_TO_USER_ID;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_DELETE_QUIT;
 
 /**
- * @Describe
- * @Author Jungle68
- * @Date 2017/01/06
- * @Contact master.jungle68@gmail.com
+ * @author Catherine
+ * @describe 使用环信UI的聊天页面
+ * @date 2018/1/2
+ * @contact email:648129313@qq.com
  */
-public class ChatFragment extends TSFragment<ChatContract.Presenter> implements ChatContract
-        .View, InputLimitView.OnSendClickListener,
-        OnRefreshListener, ChatMessageList.MessageListItemClickListener {
-    public static final String BUNDLE_MESSAGEITEMBEAN = "MessageItemBean";
-    public static final String BUNDLE_CHAT_ID = "bundle_chat_id";
-    public static final String BUNDLE_CHAT_USER = "bundle_chat_user";
-    public static final int DEFAULT_PAGE_SIZE = 10;
+
+public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
+        implements TSEaseChatFragment.EaseChatFragmentHelper, ChatContract.View {
+
+    private static final int REQUEST_CODE_SELECT_VIDEO = 11;
+    private static final int REQUEST_CODE_SELECT_FILE = 12;
+    private static final int REQUEST_CODE_GROUP_DETAIL = 13;
+    private static final int REQUEST_CODE_CONTEXT_MENU = 14;
+    private static final int REQUEST_CODE_SELECT_AT_USER = 15;
+    public static final int REQUEST_CODE_SELECT_AMAP = 16;
+
+
+    private static final int MESSAGE_TYPE_SENT_VOICE_CALL = 1;
+    private static final int MESSAGE_TYPE_RECV_VOICE_CALL = 2;
+    private static final int MESSAGE_TYPE_SENT_VIDEO_CALL = 3;
+    private static final int MESSAGE_TYPE_RECV_VIDEO_CALL = 4;
+    private static final int MESSAGE_TYPE_RECALL = 9;
+
     /**
-     * 聊天列表
+     * 群聊天室的提示消息
      */
-    @BindView(R.id.message_list)
-    ChatMessageList mMessageList;
-    /**
-     * 输入控件
-     */
-    @BindView(R.id.ilv_container)
-    InputLimitView mIlvContainer;
-    /**
-     * 页面容器
-     */
-    @BindView(R.id.rl_container)
-    RelativeLayout mRlContainer;
-    private ActionPopupWindow mDeletCommentPopWindow;
+    private static final int MESSAGE_TYPE_TIP = 10;
 
-    private List<ChatItemBean> mDatas = new ArrayList<>();
-    private MessageItemBeanV2 mMessageItemBean;
-    /**
-     * 软键盘是否打开
-     */
-    private boolean mKeyboradIsOpen;
+    static final int ITEM_TAKE_PICTURE_TS = 31;
+    static final int ITEM_PICTURE_TS = 32;
+    static final int ITEM_LOCATION_TS = 33;
+    private static final int ITEM_VIDEO_TS = 34;
+    private static final int ITEM_VOICE_CALL_TS = 35;
+    private static final int ITEM_VIDEO_CALL_TS = 36;
 
-    public static ChatFragment newInstance(Bundle bundle) {
-        ChatFragment fragment = new ChatFragment();
-        fragment.setArguments(bundle);
-        return fragment;
+    protected View mStatusPlaceholderView;
+
+    private ActionPopupWindow mActionPopupWindow;
+
+    public static ChatFragment instance(Bundle bundle) {
+        ChatFragment fragmentV2 = new ChatFragment();
+        fragmentV2.setArguments(bundle);
+        return fragmentV2;
     }
 
     @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_chat;
+    protected boolean useEventBus() {
+        return true;
     }
 
     @Override
-    protected int setToolBarBackgroud() {
-        return R.color.white;
-    }
-
-
-    @Override
-    protected void setRightClick() {
-        super.setRightClick();
-    }
-
-    @Override
-    protected void setLeftClick() {
-        DeviceUtils.hideSoftKeyboard(mActivity, mIlvContainer.getEtContent());
-        super.setLeftClick();
-    }
-
-    @Override
-    protected String setCenterTitle() {
-        return "";
+    protected boolean usePermisson() {
+        return true;
     }
 
     @Override
@@ -112,283 +119,426 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     }
 
     @Override
-    protected void initView(View rootView) {
-        mIlvContainer.setOnSendClickListener(this);
-        // 保持显示
-        mIlvContainer.setSendButtonVisiable(true);
-        mIlvContainer.getFocus();
-        // 软键盘控制区
-        RxView.globalLayouts(mRlContainer)
-                .flatMap(aVoid -> {
-                    if (mRlContainer == null) {
-                        return Observable.just(false);
-                    }
-                    Rect rect = new Rect();
-                    //获取root在窗体的可视区域
-                    mRlContainer.getWindowVisibleDisplayFrame(rect);
-                    //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
-                    int rootInvisibleHeight = mRlContainer.getRootView().getHeight() - rect.bottom;
-                    int dispayHeight = UIUtils.getWindowHeight(getContext());
-                    return Observable.just(rootInvisibleHeight > (dispayHeight * (1f / 3)));
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(aBoolean -> {
-                    if (mMessageList == null) {
-                        return;
-                    }
-                    //若不可视区域高度大于1/3屏幕高度，则键盘显示
-                    LogUtils.i(TAG + "---RxView   " + aBoolean);
-                    if (aBoolean) {
-                        if (!mKeyboradIsOpen && mMessageItemBean.getConversation() != null) {//
-                            // 如果对话没有创建，不做处理
-                            scrollToBottom();
-                        }
-                        mKeyboradIsOpen = true;
-                    } else {
-                        //键盘隐藏
-                        mKeyboradIsOpen = false;
-//                            mIlvContainer.clearFocus();// 主动失去焦点
-                    }
-//                        mIlvContainer.setSendButtonVisiable(mKeyboradIsOpen);//      不需要隐藏
-
-                });
-        mIlvContainer.setEtContentHint(getString(R.string.default_input_chat_hint));
-        // 软键盘异常解决方案： 1： 使用      android:fitsSystemWindows="true"  2:
-        // AndroidBug5497Workaround.assistActivity(getActivity());
+    protected int getToolBarLayoutId() {
+        return R.layout.ease_ts_title_bar;
     }
 
     @Override
-    protected void initData() {
-        getIntentData();
-        mMessageList.setMessageListItemClickListener(this);
-        mMessageList.setRefreshListener(this);
-        if (mMessageItemBean.getConversation() == null) {
-            // 先获取本地信息，如果本地信息存在，直接使用，如果没有直接创建
-            EMConversation conversation = (EMClient.getInstance().chatManager().getConversation
-                    (mMessageItemBean.getEmKey()));
-            if (conversation == null) {
-                mPresenter.createChat(mMessageItemBean.getUserInfo(), null);
-            } else {
-                mMessageItemBean.setConversation(conversation);
-                mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), DEFAULT_PAGE_SIZE, true);
-                updateConversation(conversation);
-            }
-        } else {
-            mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), DEFAULT_PAGE_SIZE, true);
+    protected int setRightImg() {
+        return R.mipmap.topbar_more_black;
+    }
+
+    @Override
+    protected int setLeftImg() {
+        return R.mipmap.topbar_back;
+    }
+
+    @Override
+    protected void setUpView() {
+        setChatFragmentHelper(this);
+        if (chatType == EaseConstant.CHATTYPE_SINGLE) {
+            setCenterText(mPresenter.getUserName(toChatUsername));
+        } else if (chatType == EaseConstant.CHATTYPE_GROUP) {
+            setCenterText(mPresenter.getGroupName(toChatUsername));
         }
-        // 设置消息内容已读
-        mMessageItemBean.getConversation().markAllMessagesAsRead();
-    }
-
-    @Override
-    public void hideLoading() {
-        mMessageList.getRefreshLayout().finishRefresh();
-    }
-
-    /**
-     * 发送按钮被点击
-     */
-    @Override
-    public void onSendClick(View v, String text) {
-        if (TextUtils.isEmpty(text)) {
-            return;
+        if (chatType != EaseConstant.CHATTYPE_CHATROOM) {
+            onConversationInit();
+            onMessageListInit();
         }
-        if (mMessageItemBean.getConversation() != null) {
-            mPresenter.sendTextMessageV2(text, mMessageItemBean.getEmKey());
-        } else {
-            mPresenter.createChat(mMessageItemBean.getUserInfo(), text);
+        setRefreshLayoutListener();
+        // show forward message if the message is not null
+        String forward_msg_id = getArguments().getString("forward_msg_id");
+        if (forward_msg_id != null) {
+            forwardMessage(forward_msg_id);
         }
     }
 
-    /*******************************************  聊天 item 点击事件
-     * *********************************************/
-
-    /**
-     * 发送状态点击
-     */
     @Override
-    public void onStatusClick(ChatItemBean chatItemBean) {
-        initDeletCommentPopupWindow(chatItemBean);
-        mDeletCommentPopWindow.show();
-    }
-
-    /**
-     * 聊天气泡点击
-     */
-    @Override
-    public void onBubbleClick(ChatItemBean message) {
-        LogUtils.d("----------------onBubbleClick----------");
-        DeviceUtils.hideSoftKeyboard(getContext(), mMessageList.getListView());
-
-    }
-
-    /**
-     * 聊天气泡长按
-     */
-    @Override
-    public boolean onBubbleLongClick(ChatItemBean message) {
-        LogUtils.d("----------------onBubbleLongClick----------");
-        DeviceUtils.hideSoftKeyboard(getContext(), mMessageList.getListView());
-        return true;
-    }
-
-    /**
-     * 用户信息点击
-     */
-    @Override
-    public void onUserInfoClick(ChatItemBean chatItemBean) {
-        PersonalCenterFragment.startToPersonalCenter(getContext(), chatItemBean.getUserInfo());
-    }
-
-    /**
-     * 用户信息长按
-     */
-    @Override
-    public boolean onUserInfoLongClick(ChatItemBean chatItemBean) {
-        showSnackSuccessMessage(chatItemBean.getUserInfo().getName());
-        return true;
+    protected void setLeftClick() {
+        onBackPressed();
     }
 
     @Override
-    public void setChatTitle(@NotNull String titleStr) {
-        setCenterText(titleStr);
+    protected void setRightClick() {
+        toGroupDetails();
     }
 
     @Override
-    public void reFreshMessage(ChatItemBean chatItemBean) {
-        if (mDatas.indexOf(chatItemBean) != -1) {
-            mDatas.remove(chatItemBean);
-        }
-        mDatas.add(chatItemBean);
-        scrollToBottom();
+    public void onSetMessageAttributes(EMMessage message) {
+
     }
 
     @Override
-    public void refreshData() {
-        mMessageList.refresh();
+    protected void toGroupDetails() {
+        onEnterToChatDetails();
     }
 
     @Override
-    public void refreshData(int position) {
-        mMessageList.refresh(position);
+    public void onEnterToChatDetails() {
+        // 跳转群组详情
+        Intent intent = new Intent(getActivity(), ChatInfoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_TO_USER_ID, toChatUsername);
+        bundle.putInt(EXTRA_CHAT_TYPE, chatType);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override
-    public void smoothScrollToBottom() {
-        mMessageList.smoothScrollToBottom();
+    public void onAvatarClick(String username) {
+
     }
 
     @Override
-    public int getCurrentChatCid() {
-        return 0;
+    public void onAvatarLongClick(String username) {
+
     }
 
     @Override
-    public void updateMessageStatus(Message message) {
-        int size = mDatas.size();
-        for (int i = 0; i < size; i++) {
-            if (mDatas.get(i).getLastMessage().getId() == message.getId()) {
-                mDatas.get(i).setLastMessage(message);
-                mMessageList.refresh(); // 没有 UI 更新 ，可以不刷新
+    public boolean onMessageBubbleClick(EMMessage message) {
+        return false;
+    }
+
+    @Override
+    public void onMessageBubbleLongClick(EMMessage message) {
+
+    }
+
+    @Override
+    public boolean onExtendMenuItemClick(int itemId, View view) {
+        LogUtils.d("Cathy", "onExtendMenuItemClick" + itemId);
+        switch (itemId) {
+            case ITEM_TAKE_PICTURE_TS:
+                // 拍照
+                mRxPermissions
+                        .requestEach(Manifest.permission.CAMERA)
+                        .subscribe(permission -> {
+                            if (permission.granted) {
+                                // 权限被允许
+                                selectPicFromCamera();
+                            } else if (permission.shouldShowRequestPermissionRationale) {
+                                // 权限没有被彻底禁止
+                            } else {
+                                // 权限被彻底禁止
+                                initPermissionPopUpWindow(getString(com.zhiyicx.baseproject.R.string.setting_permission_hint));
+                            }
+                        });
                 break;
+            case ITEM_PICTURE_TS:
+                // 相册
+                selectPicFromLocal();
+                break;
+            case ITEM_LOCATION_TS:
+                // 位置
+                Intent intentMap = new Intent(new Intent(getActivity(), SendLocationActivity.class));
+                intentMap.putExtras(new Bundle());
+                startActivityForResult(intentMap, REQUEST_CODE_MAP);
+                break;
+            case ITEM_VIDEO_TS:
+                // 发送视频文件
+                Intent intent = new Intent(getActivity(), ImageGridActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_SELECT_VIDEO);
+                break;
+            case ITEM_VIDEO_CALL_TS:
+                // 视频通话
+                mRxPermissions
+                        .requestEach(Manifest.permission.CAMERA)
+                        .subscribe(permission -> {
+                            if (permission.granted) {
+                                // 权限被允许
+                                startVideoCall();
+                            } else if (permission.shouldShowRequestPermissionRationale) {
+                                // 权限没有被彻底禁止
+                            } else {
+                                // 权限被彻底禁止
+                                initPermissionPopUpWindow(getString(com.zhiyicx.baseproject.R.string.setting_permission_hint));
+                            }
+                        });
+                break;
+            case ITEM_VOICE_CALL_TS:
+                // 语音通话
+                mRxPermissions
+                        .requestEach(Manifest.permission.RECORD_AUDIO)
+                        .subscribe(permission -> {
+                            if (permission.granted) {
+                                // 权限被允许
+                                startVoiceCall();
+                            } else if (permission.shouldShowRequestPermissionRationale) {
+                                // 权限没有被彻底禁止
+                            } else {
+                                // 权限被彻底禁止
+                                initPermissionPopUpWindow(getString(com.zhiyicx.baseproject.R.string.setting_permission_hint));
+                            }
+                        });
+                break;
+            default:
+                break;
+        }
+        return false;
+    }
+
+    @Override
+    public EaseCustomChatRowProvider onSetCustomChatRowProvider() {
+        return new CustomChatRowProvider();
+    }
+
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_chat_v2;
+    }
+
+    @Override
+    public void onMessageReceived(List<EMMessage> messages) {
+        mPresenter.dealMessages(messages);
+    }
+
+    @Subscriber(mode = ThreadMode.MAIN)
+    public void onTSEMessageEventEventBus(TSEMessageEvent event) {
+        LogUtils.d("TSEMessageEvent");
+        if (event.getMessage() == null) {
+            return;
+        }
+        EMCmdMessageBody body = (EMCmdMessageBody) event.getMessage().getBody();
+        switch (body.action()) {
+            case TSEMConstants.TS_ATTR_GROUP_DISBAND:
+                String groupId = event.getMessage().getStringAttribute(TSEMConstants.TS_ATTR_ID, null);
+                String groupName = event.getMessage().getStringAttribute(TSEMConstants.TS_ATTR_NAME, null);
+                if (TextUtils.isEmpty(groupId)) {
+                    return;
+                }
+                ToastUtils.showToast(groupName + "解散了");
+                EventBus.getDefault().post(groupId, EVENT_IM_DELETE_QUIT);
+                EMClient.getInstance().chatManager().deleteConversation(groupId, true);
+                break;
+            default:
+        }
+    }
+
+    @Override
+    public void onMessageReceivedWithUserInfo(List<EMMessage> messages) {
+        for (EMMessage message : messages) {
+            String username = null;
+            // group message
+            if (message.getChatType() == EMMessage.ChatType.GroupChat || message.getChatType() == EMMessage.ChatType.ChatRoom) {
+                username = message.getTo();
+            } else {
+                // single chat message
+                username = message.getFrom();
+            }
+
+            // if the message is for current conversation
+            if (username.equals(toChatUsername) || message.getTo().equals(toChatUsername)
+                    || message.conversationId().equals(toChatUsername)) {
+                messageList.refreshSelectLast();
+                EaseUI.getInstance().getNotifier().vibrateAndPlayTone(message);
+                conversation.markMessageAsRead(message.getMsgId());
+            } else {
+                EaseUI.getInstance().getNotifier().onNewMsg(message);
             }
         }
     }
 
     @Override
-    public void updateConversation(EMConversation conversation) {
-        mMessageItemBean.setConversation(conversation);
-        initMessageList(new ArrayList<>());
-    }
-
-    @Override
-    public MessageItemBeanV2 getMessItemBean() {
-        return mMessageItemBean;
-    }
-
-    @Override
-    public void getHistoryMessageSuccess(List<ChatItemBean> list, boolean isNeedScrollToBottom) {
-        if (mMessageItemBean.getConversation() == null) {
-            hideLoading();
-            return;
+    protected void registerExtendMenuItem() {
+        //use the menu in base class
+//        super.registerExtendMenuItem();
+        //extend menu items
+        // 图片
+        inputMenu.registerExtendMenuItem(R.string.attach_picture, R.mipmap.ico_chat_picture, ITEM_PICTURE_TS, extendMenuItemClickListener);
+        // 拍照
+        inputMenu.registerExtendMenuItem(R.string.attach_take_pic, R.mipmap.ico_chat_takephoto, ITEM_TAKE_PICTURE_TS, extendMenuItemClickListener);
+        // 视频 -- 需求取消  2018-1-31 15:26:14
+        inputMenu.registerExtendMenuItem(R.string.attach_video, R.mipmap.ico_chat_video, ITEM_VIDEO_TS, extendMenuItemClickListener);
+        // 位置
+        inputMenu.registerExtendMenuItem(R.string.attach_location, R.mipmap.ico_chat_location, ITEM_LOCATION_TS, extendMenuItemClickListener);
+        // 目前仅有单聊才有音视频通话
+        if (chatType == EaseConstant.CHATTYPE_SINGLE) {
+            // 语音电话
+            inputMenu.registerExtendMenuItem(R.string.attach_voice_call, R.mipmap.ico_chat_voicecall, ITEM_VOICE_CALL_TS, extendMenuItemClickListener);
+            // 视频通话
+            inputMenu.registerExtendMenuItem(R.string.attach_video_call, R.mipmap.ico_chat_videocall, ITEM_VIDEO_CALL_TS, extendMenuItemClickListener);
         }
-        mDatas.addAll(0, list);
-        mMessageList.refresh();
-        if (isNeedScrollToBottom) {
-            mMessageList.post(new Runnable() {
-                @Override
-                public void run() {
-                    scrollToBottom();
+    }
 
+    private final class CustomChatRowProvider implements EaseCustomChatRowProvider {
+        @Override
+        public int getCustomChatRowTypeCount() {
+            //here the number is the message type in EMMessage::Type
+            //which is used to count the number of different chat row
+            return 11;
+        }
+
+        @Override
+        public int getCustomChatRowType(EMMessage message) {
+            boolean isGroupChange = TSEMConstants.TS_ATTR_GROUP_CHANGE.equals(message.ext().get("type"))
+                    || TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"))
+                    || TSEMConstants.TS_ATTR_JOIN.equals(message.ext().get("type"));
+
+            if (message.getType() == EMMessage.Type.TXT) {
+                //voice call
+                if (message.getBooleanAttribute(ChatConfig.MESSAGE_ATTR_IS_VOICE_CALL, false)) {
+                    return message.direct() == EMMessage.Direct.RECEIVE ? MESSAGE_TYPE_RECV_VOICE_CALL : MESSAGE_TYPE_SENT_VOICE_CALL;
+                } else if (message.getBooleanAttribute(ChatConfig.MESSAGE_ATTR_IS_VIDEO_CALL, false)) {
+                    //video call
+                    return message.direct() == EMMessage.Direct.RECEIVE ? MESSAGE_TYPE_RECV_VIDEO_CALL : MESSAGE_TYPE_SENT_VIDEO_CALL;
                 }
-            });
+                //messagee recall
+                else if (message.getBooleanAttribute(ChatConfig.MESSAGE_TYPE_RECALL, false)) {
+                    return MESSAGE_TYPE_RECALL;
+                } else if ("admin".equals(message.getUserName()) || isGroupChange) {
+                    return MESSAGE_TYPE_TIP;
+                }
+            }
+            return 0;
+        }
+
+        @Override
+        public EaseChatRowPresenter getCustomChatRow(EMMessage message, int position, BaseAdapter adapter) {
+            if (message.getType() == EMMessage.Type.TXT) {
+                // voice call or video call
+                EaseChatRowPresenter presenter = new TSChatTextPresenter();
+                return presenter;
+            }
+            return null;
+        }
+
+        @Override
+        public EaseChatRowPresenter getCustomChatRow(EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean userInfoBean) {
+            if (message.getType() == EMMessage.Type.TXT) {
+                EaseChatRowPresenter presenter;
+                // voice call or video call
+                if (message.getBooleanAttribute(EaseConstant.MESSAGE_ATTR_IS_VOICE_CALL, false) ||
+                        message.getBooleanAttribute(EaseConstant.MESSAGE_ATTR_IS_VIDEO_CALL, false)) {
+                    presenter = new TSChatCallPresneter();
+                    return presenter;
+                } else {
+                    boolean admin;
+                    boolean isGroupChange = TSEMConstants.TS_ATTR_GROUP_CHANGE.equals(message.ext().get("type"))
+                            || TSEMConstants.TS_ATTR_GROUP_CHANGE.equals(message.ext().get("type"))
+                            || TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"))
+                            || TSEMConstants.TS_ATTR_JOIN.equals(message.ext().get("type"));
+
+                    admin = "admin".equals(message.getUserName());
+                    if (admin || isGroupChange) {
+                        presenter = new TSChatTipTextPresenter();
+                    } else {
+                        presenter = new TSChatTextPresenter();
+                    }
+                }
+                return presenter;
+            } else if (message.getType() == EMMessage.Type.IMAGE) {
+                EaseChatRowPresenter presenter = new TSChatPicturePresenter();
+                return presenter;
+            } else if (message.getType() == EMMessage.Type.VOICE) {
+                EaseChatRowPresenter presenter = new TSChatVoicePresenter();
+                return presenter;
+            } else if (message.getType() == EMMessage.Type.LOCATION) {
+                EaseChatRowPresenter presenter = new TSChatLocationPresenter();
+                return presenter;
+            } else if (message.getType() == EMMessage.Type.VIDEO) {
+                EaseChatRowPresenter presenter = new TSChatVideoPresenter();
+                return presenter;
+            } else if (message.getType() == EMMessage.Type.FILE) {
+                EaseChatRowPresenter presenter = new TSChatFilePresenter();
+                return presenter;
+            }
+            return null;
+        }
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_CODE_SELECT_VIDEO: //send the video
+                    if (data != null) {
+                        int duration = data.getIntExtra("dur", 0);
+                        String videoPath = data.getStringExtra("path");
+                        File file = new File(PathUtil.getInstance().getImagePath(), "thvideo" + System.currentTimeMillis());
+                        try {
+                            FileOutputStream fos = new FileOutputStream(file);
+                            Bitmap ThumbBitmap = ThumbnailUtils.createVideoThumbnail(videoPath, 3);
+                            ThumbBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                            fos.close();
+                            sendVideoMessage(videoPath, file.getAbsolutePath(), duration);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
-    @Override
-    public List<ChatItemBean> getListDatas() {
-        return mDatas;
-    }
-
-    @Override
-    public void onRefresh(RefreshLayout refreshlayout) {
-        mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), DEFAULT_PAGE_SIZE, false);
+    /**
+     * make a voice call
+     */
+    protected void startVoiceCall() {
+        if (!EMClient.getInstance().isConnected()) {
+            ToastUtils.showToast(getActivity(), R.string.not_connect_to_server, Toast.LENGTH_SHORT);
+        } else {
+            BaseCallActivity.startVoiceCallActivity(mActivity, toChatUsername, false);
+            inputMenu.hideExtendMenuContainer();
+        }
     }
 
     /**
-     * 获取当前信息的第一条聊天id
-     *
-     * @return msgId
+     * make a video call
      */
-    private String getCurrentFirstItemId() {
-        return mDatas.isEmpty() ? "0" : mDatas.get(0).getMessage().getMsgId();
+    protected void startVideoCall() {
+        if (!EMClient.getInstance().isConnected()) {
+            ToastUtils.showToast(R.string.not_connect_to_server);
+        } else {
+            BaseCallActivity.startVideoCallActivity(mActivity, toChatUsername, false);
+            inputMenu.hideExtendMenuContainer();
+        }
     }
 
-    private void getIntentData() {
-        UserInfoBean userInfoBean = (UserInfoBean) getArguments().getSerializable(BUNDLE_CHAT_USER);
-        String id = getArguments().getString(BUNDLE_CHAT_ID);
-        mMessageItemBean = new MessageItemBeanV2();
-        mMessageItemBean.setEmKey(id);
-        mMessageItemBean.setUserInfo(userInfoBean);
-        setChatTitle(mMessageItemBean.getUserInfo().getName());
+    @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_DELETE_QUIT)
+    public void deleteGroup(String id) {
+        mActivity.finish();
     }
 
-    public void initMessageList(List<ChatItemBean> list) {
-        mDatas.addAll(list);
-        mMessageList.init(mMessageItemBean.getConversation().getType() == EMConversation
-                        .EMConversationType.Chat ? mMessageItemBean.getUserInfo()
-                        .getName() : getString(R.string.default_message_group)
-                , mMessageItemBean.getConversation().getType(), mDatas);
-        scrollToBottom();
+    @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_GROUP_CREATE_FROM_SINGLE)
+    public void closeCurrent(ChatGroupBean chatGroupBean) {
+        if (!chatGroupBean.getId().equals(toChatUsername)) {
+            getActivity().finish();
+        }
     }
 
-    @Override
-    public void scrollToBottom() {
-        mMessageList.scrollToBottom();
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_GROUP_UPDATE_GROUP_INFO)
+    public void updateCurrent(ChatGroupBean chatGroupBean) {
+        if (chatGroupBean.getId().equals(toChatUsername)) {
+            setCenterText(chatGroupBean.getName());
+        }
     }
 
-    /**
-     * 初始化评论删除选择弹框
-     */
-    private void initDeletCommentPopupWindow(final ChatItemBean chatItemBean) {
-        mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.resend))
-                .bottomStr(getString(R.string.cancel))
-                .isOutsideTouch(true)
-                .isFocus(true)
-                .backgroundAlpha(POPUPWINDOW_ALPHA)
+    private void initPermissionPopUpWindow(String item1) {
+        mActionPopupWindow = PermissionPopupWindow.builder()
+                .permissionName(getString(com.zhiyicx.baseproject.R.string.camera_permission))
                 .with(getActivity())
-                .item1ClickListener(() -> {
-                    onResendClick(chatItemBean);
-                    mDeletCommentPopWindow.hide();
-
+                .bottomStr(getString(com.zhiyicx.baseproject.R.string.cancel))
+                .item1Str(item1)
+                .item2Str(getString(com.zhiyicx.baseproject.R.string.setting_permission))
+                .item2ClickListener(() -> {
+                    DeviceUtils.openAppDetail(getContext());
+                    mActionPopupWindow.hide();
                 })
-                .bottomClickListener(() -> mDeletCommentPopWindow.hide())
+                .bottomClickListener(() -> mActionPopupWindow.hide())
+                .isFocus(true)
+                .isOutsideTouch(true)
+                .backgroundAlpha(0.8f)
                 .build();
-    }
-
-    private void onResendClick(ChatItemBean chatItemBean) {
-        mPresenter.reSendText(chatItemBean);
+        mActionPopupWindow.show();
     }
 }

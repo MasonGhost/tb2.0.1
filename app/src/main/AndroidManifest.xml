@@ -136,12 +136,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-            android:name=".modules.chat.ChatActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
-        </activity>
-        <activity
             android:name=".modules.system_conversation.SystemConversationActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -677,7 +671,8 @@
             android:screenOrientation="portrait"/>
         <!--环信的聊天页面-->
         <activity
-            android:name=".modules.chat.v2.ChatActivityV2"
+            android:name=".modules.chat.ChatActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
         <!--发送位置-->
@@ -702,14 +697,6 @@
         <activity
             android:name="com.hyphenate.easeui.ui.EaseShowNormalFileActivity"
             android:screenOrientation="portrait"/>
-        <!--语音通话页面-->
-        <activity
-            android:name=".modules.chat.call.VoiceCallActivity"
-            android:screenOrientation="portrait"/>
-        <!--视频通话页面-->
-        <activity
-            android:name=".modules.chat.call.VideoCallActivity"
-            android:screenOrientation="portrait"/>
         <!--单聊详情-->
         <activity
             android:name=".modules.chat.info.ChatInfoActivity"
@@ -730,10 +717,14 @@
         <activity
             android:name=".modules.chat.member.GroupMemberListActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".modules.chat.callV2.video.VideoCallActivity"/>
-        <activity android:name=".modules.chat.callV2.voice.VoiceCallActivity"/>
+        <!--视频通话页面-->
+        <activity android:name=".modules.chat.call.video.VideoCallActivity"
+                  android:screenOrientation="portrait"/>
+        <!--语音通话页面-->
+        <activity android:name=".modules.chat.call.voice.VoiceCallActivity"
+                  android:screenOrientation="portrait"/>
         <!-- 开机自启动服务 -->
-        <receiver android:name=".modules.chat.receiver.StartServiceReceiver">
+        <receiver android:name=".modules.chat.call.receiver.StartServiceReceiver">
             <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.QUICKBOOT_POWERON"/>

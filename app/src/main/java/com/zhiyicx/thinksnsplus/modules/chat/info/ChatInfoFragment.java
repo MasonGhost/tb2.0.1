@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.chat.info;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
@@ -29,13 +28,13 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.adapter.ChatMemberAdapter;
 import com.zhiyicx.thinksnsplus.modules.chat.edit.manager.GroupManagerActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.edit.name.EditGroupNameActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
 import com.zhiyicx.thinksnsplus.modules.chat.member.GroupMemberListActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.select.SelectFriendsActivity;
-import com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -47,7 +46,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.hyphenate.easeui.EaseConstant.EXTRA_TO_USER_ID;
@@ -56,7 +54,6 @@ import static com.zhiyicx.thinksnsplus.modules.chat.edit.owner.EditGroupOwnerFra
 import static com.zhiyicx.thinksnsplus.modules.chat.member.GroupMemberListFragment.BUNDLE_GROUP_MEMBER;
 import static com.zhiyicx.thinksnsplus.modules.chat.select.SelectFriendsFragment.BUNDLE_GROUP_EDIT_DATA;
 import static com.zhiyicx.thinksnsplus.modules.chat.select.SelectFriendsFragment.BUNDLE_GROUP_IS_DELETE;
-import static com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2.BUNDLE_CHAT_DATA;
 
 /**
  * @author Catherine
@@ -431,12 +428,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             showSnackErrorMessage(getString(R.string.create_fail));
         } else {
             // 点击跳转聊天
-            Intent to = new Intent(getContext(), ChatActivityV2.class);
-            Bundle bundle = new Bundle();
-            bundle.putString(EaseConstant.EXTRA_USER_ID, id);
-            bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_GROUP);
-            to.putExtra(BUNDLE_CHAT_DATA, bundle);
-            startActivity(to);
+            ChatActivity.startChatActivity(mActivity,id,EaseConstant.CHATTYPE_GROUP);
             getActivity().finish();
         }
 

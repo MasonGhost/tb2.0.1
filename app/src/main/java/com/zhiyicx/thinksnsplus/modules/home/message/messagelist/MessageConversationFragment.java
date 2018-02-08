@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagelist;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -10,10 +8,9 @@ import android.view.View;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMConversation;
-import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.em.manager.control.TSEMConstants;
+import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMConnectionEvent;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
 import com.zhiyicx.baseproject.widget.recycleview.BlankClickRecycleView;
@@ -21,21 +18,17 @@ import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
-import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
-import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
-import com.zhiyicx.thinksnsplus.modules.chat.callV2.TSEMHyphenate;
-import com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageAdapterV2;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.TSSearchView;
 
 import org.jetbrains.annotations.NotNull;
-import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 import org.simple.eventbus.ThreadMode;
 
@@ -44,13 +37,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import rx.Observable;
-import rx.functions.Func1;
-
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_DELETE_QUIT;
-import static com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository.MAX_RETRY_COUNTS;
-import static com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository.RETRY_DELAY_TIME;
-import static com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2.BUNDLE_CHAT_DATA;
 
 /**
  * @author Catherine
@@ -58,7 +44,6 @@ import static com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2.BUNDLE_CHA
  * @date 2017/12/28
  * @contact email:648129313@qq.com
  */
-
 public class MessageConversationFragment extends TSListFragment<MessageConversationContract.Presenter, MessageItemBeanV2>
         implements MessageConversationContract.View, MessageAdapterV2.OnSwipeItemClickListener,
         OnUserInfoClickListener, BlankClickRecycleView.BlankClickListener {
@@ -195,17 +180,8 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
         if (messageItemBean == null) {
             return;
         }
-        Intent to = new Intent(getActivity(), ChatActivityV2.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(ChatFragment.BUNDLE_CHAT_USER, messageItemBean.getUserInfo());
-        bundle.putString(EaseConstant.EXTRA_USER_ID, messageItemBean.getEmKey());
-        if (messageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat) {
-            bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_SINGLE);
-        } else {
-            bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_GROUP);
-        }
-        to.putExtra(BUNDLE_CHAT_DATA, bundle);
-        startActivity(to);
+        ChatActivity.startChatActivity(mActivity, messageItemBean.getEmKey()
+                , messageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat ? EaseConstant.CHATTYPE_GROUP : EaseConstant.CHATTYPE_GROUP);
     }
 
     @Override
@@ -260,7 +236,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
                 if (TextUtils.isEmpty(groupId)) {
                     return;
                 }
-                ToastUtils.showToast(groupName+"解散了");
+                ToastUtils.showToast(groupName + "解散了");
                 EMClient.getInstance().chatManager().deleteConversation(groupId, true);
                 mPresenter.deleteGroup(groupId);
                 break;

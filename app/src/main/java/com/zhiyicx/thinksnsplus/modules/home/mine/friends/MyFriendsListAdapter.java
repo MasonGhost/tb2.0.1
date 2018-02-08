@@ -1,36 +1,29 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine.friends;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.hyphenate.easeui.EaseConstant;
-import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2;
-import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.home.mine.friends.search.SearchFriendsContract;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.chat.v2.ChatActivityV2.BUNDLE_CHAT_DATA;
 
 /**
  * @author Catherine
@@ -65,27 +58,19 @@ public class MyFriendsListAdapter extends CommonAdapter<UserInfoBean> {
             return;
         }
         RxView.clicks(holder.getView(R.id.iv_to_chat))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(aVoid -> {
                     // 点击跳转聊天
                     MessageItemBeanV2 messageItemBean = new MessageItemBeanV2();
                     messageItemBean.setUserInfo(userInfoBean);
-                    Intent to = new Intent(mContext, ChatActivityV2.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString(EaseConstant.EXTRA_USER_ID, String.valueOf(userInfoBean.getUser_id()));
-                    bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_SINGLE);
-                    List<ChatUserInfoBean> list;
-                    if (mPresenter == null){
-                        list = mMyFriendsPresenter.getChatUserList(userInfoBean);
-                    } else {
-                        list = mPresenter.getChatUserList(userInfoBean);
+                    try {
+                        ChatActivity.startChatActivity(mContext, String.valueOf(userInfoBean.getUser_id()),
+                                EaseConstant.CHATTYPE_SINGLE);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    bundle.putParcelableArrayList(ChatConfig.MESSAGE_CHAT_MEMBER_LIST,
-                            (ArrayList<? extends Parcelable>) list);
-                    to.putExtra(BUNDLE_CHAT_DATA, bundle);
-                    mContext.startActivity(to);
                 });
         // 设置用户名，用户简介
         holder.setText(R.id.tv_name, userInfoBean.getName());

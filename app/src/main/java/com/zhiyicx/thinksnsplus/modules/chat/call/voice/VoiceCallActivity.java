@@ -1,8 +1,8 @@
-package com.zhiyicx.thinksnsplus.modules.chat.callV2.voice;
+package com.zhiyicx.thinksnsplus.modules.chat.call.voice;
 
 import android.support.v4.app.Fragment;
 
-import com.zhiyicx.thinksnsplus.modules.chat.callV2.BaseCallActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.call.BaseCallActivity;
 
 /**
  * @Author Jliuer

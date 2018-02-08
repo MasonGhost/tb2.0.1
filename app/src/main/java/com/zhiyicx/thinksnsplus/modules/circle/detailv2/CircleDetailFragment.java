@@ -28,6 +28,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.hyphenate.easeui.EaseConstant;
 import com.jakewharton.rxbinding.view.RxView;
 import com.nineoldandroids.view.ViewHelper;
 import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
@@ -58,14 +59,12 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
-import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleZipBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
-import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListBaseItem;
@@ -1110,16 +1109,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         RxView.clicks(mTvCircleFounder)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .filter(aVoid -> !mPresenter.handleTouristControl())
-                .subscribe(aVoid -> {
-                    MessageItemBeanV2 messageItemBean = new MessageItemBeanV2();
-                    messageItemBean.setUserInfo(mCircleInfo.getFounder().getUser());
-                    Intent to = new Intent(getActivity(), ChatActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(ChatFragment.BUNDLE_CHAT_USER, mCircleInfo.getFounder().getUser());
-                    bundle.putString(ChatFragment.BUNDLE_CHAT_ID, String.valueOf(mCircleInfo.getFounder().getUser_id()));
-                    to.putExtras(bundle);
-                    startActivity(to);
-                });
+                .subscribe(aVoid -> ChatActivity.startChatActivity(mActivity, mCircleInfo.getFounder().getUser().getUser_id() + "",
+                        EaseConstant.CHATTYPE_SINGLE));
 
         mDrawer.addDrawerListener(toggle);
         toggle.syncState();

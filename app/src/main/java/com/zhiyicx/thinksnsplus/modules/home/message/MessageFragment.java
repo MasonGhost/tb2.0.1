@@ -22,8 +22,6 @@ import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
-import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
-import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.MessageReviewActivity;
@@ -37,8 +35,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -188,7 +184,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      *
      * @param headerview
      */
-    private void updateHeaderViewData(View headerview,MessageItemBean systemMsgItemData, MessageItemBean commentItemData,
+    private void updateHeaderViewData(View headerview, MessageItemBean systemMsgItemData, MessageItemBean commentItemData,
                                       MessageItemBean likedItemData, MessageItemBean
                                               reviewItemBean) {
         View rlCritical = null;
@@ -372,7 +368,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         if (messageItemBean == null) {
             return;
         }
-        updateHeaderViewData(mHeaderView, mPresenter.updateSystemMsgItemData(),mPresenter.updateCommnetItemData(), mPresenter
+        updateHeaderViewData(mHeaderView, mPresenter.updateSystemMsgItemData(), mPresenter.updateCommnetItemData(), mPresenter
                 .updateLikeItemData(), mPresenter.updateReviewItemData());
         refreshData();
     }
@@ -382,21 +378,21 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         if (messageItemBean == null) {
             return;
         }
-        updateHeaderViewData(mHeaderView,mPresenter.updateSystemMsgItemData(), mPresenter.updateCommnetItemData(), mPresenter
+        updateHeaderViewData(mHeaderView, mPresenter.updateSystemMsgItemData(), mPresenter.updateCommnetItemData(), mPresenter
                 .updateLikeItemData(), mPresenter.updateReviewItemData());
         refreshData();
     }
 
     @Override
     public void updateLikeItemData(MessageItemBean messageItemBean) {
-        updateHeaderViewData(mHeaderView,mPresenter.updateSystemMsgItemData(), mPresenter.updateCommnetItemData(), mPresenter
+        updateHeaderViewData(mHeaderView, mPresenter.updateSystemMsgItemData(), mPresenter.updateCommnetItemData(), mPresenter
                 .updateLikeItemData(), mPresenter.updateReviewItemData());
         refreshData();
     }
 
     @Override
     public void updateReviewItemData(MessageItemBean messageItemBean) {
-        updateHeaderViewData(mHeaderView,mPresenter.updateSystemMsgItemData(), mPresenter.updateCommnetItemData(), mPresenter
+        updateHeaderViewData(mHeaderView, mPresenter.updateSystemMsgItemData(), mPresenter.updateCommnetItemData(), mPresenter
                 .updateLikeItemData(), mPresenter.updateReviewItemData());
         refreshData();
     }
@@ -455,47 +451,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         showMessageNotSticky(message);
     }
 
-
-    /**
-     * 进入聊天页
-     *
-     * @param messageItemBean 当前 item 内容
-     * @param positon         当前点击位置
-     */
-    private void toChat(MessageItemBean messageItemBean, int positon) {
-        if (messageItemBean == null || messageItemBean.getUserInfo() == null || messageItemBean.getUserInfo().getUser_id() == null) {
-            return;
-        }
-        Intent to = new Intent(getActivity(), ChatActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
-        to.putExtras(bundle);
-        startActivity(to);
-    }
-
-    /**
-     * 进入聊天页
-     *
-     * @param messageItemBean 当前 item 内容
-     * @param positon         当前点击位置
-     */
-    private void toChatV2(MessageItemBeanV2 messageItemBean, int positon) {
-        if (messageItemBean == null || messageItemBean.getUserInfo() == null || messageItemBean.getUserInfo().getUser_id() == null) {
-            return;
-        }
-        Intent to = new Intent(getActivity(), ChatActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(ChatFragment.BUNDLE_CHAT_USER, messageItemBean.getUserInfo());
-        bundle.putString(ChatFragment.BUNDLE_CHAT_ID, messageItemBean.getEmKey());
-        to.putExtras(bundle);
-        startActivity(to);
-    }
-
     @Override
     public void onLeftClick(int position) {
-        // 减去 header
-        position = position - mHeaderAndFooterWrapper.getHeadersCount();
-        toChatV2(messageItemBeanList.get(position), position);
     }
 
     @Override

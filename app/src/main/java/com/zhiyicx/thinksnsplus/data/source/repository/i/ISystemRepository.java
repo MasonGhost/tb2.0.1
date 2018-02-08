@@ -42,27 +42,6 @@ public interface ISystemRepository {
      */
     Observable<Object> systemFeedback(String content, long system_mark);
 
-    /**
-     * 获取系统会话列表
-     *
-     * @param max_id
-     * @param limit
-     * @return
-     */
-    Observable<List<SystemConversationBean>> getSystemConversations(long max_id, int limit);
-
-    /**
-     * 获取本地系统会话列表
-     *
-     * @param max_Id
-     * @return
-     */
-    List<SystemConversationBean> requestCacheData(long max_Id);
-
-    /**
-     * 创建ts helper 对话
-     */
-    void creatTsHelperConversation();
 
     /**
      * 获取全部标签

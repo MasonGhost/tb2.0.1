@@ -1,11 +1,11 @@
-package com.zhiyicx.thinksnsplus.modules.chat.callV2.video;
+package com.zhiyicx.thinksnsplus.modules.chat.call.video;
 
 import android.support.v4.app.Fragment;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;
 import com.zhiyicx.baseproject.em.manager.TSEMCallStatus;
-import com.zhiyicx.thinksnsplus.modules.chat.callV2.BaseCallActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.call.BaseCallActivity;
 
 /**
  * @Author Jliuer

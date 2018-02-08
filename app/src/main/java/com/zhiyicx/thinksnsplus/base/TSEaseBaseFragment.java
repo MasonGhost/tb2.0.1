@@ -1,17 +1,12 @@
 package com.zhiyicx.thinksnsplus.base;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
-import com.hyphenate.easeui.R;
-import com.hyphenate.easeui.widget.EaseTitleBar;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
-import com.zhiyicx.thinksnsplus.modules.chat.v2.ChatContractV2;
 
 /**
  * @author Jliuer

@@ -14,7 +14,6 @@ import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.IMConfig;
-import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -24,7 +23,6 @@ import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerDraftBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
@@ -50,7 +48,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IAuthRepository;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
-import com.zhiyicx.thinksnsplus.modules.chat.callV2.TSEMHyphenate;
+import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.simple.eventbus.EventBus;
@@ -62,8 +60,6 @@ import javax.inject.Inject;
 import retrofit2.Call;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**

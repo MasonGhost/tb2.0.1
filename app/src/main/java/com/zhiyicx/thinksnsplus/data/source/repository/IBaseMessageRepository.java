@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
+import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
@@ -33,4 +34,6 @@ public interface IBaseMessageRepository {
      * @return
      */
     Observable<UserInfoBean> getUserInfo(String id);
+
+    Observable<List<ChatItemBean>> completeUserInfo(List<ChatItemBean> list);
 }
