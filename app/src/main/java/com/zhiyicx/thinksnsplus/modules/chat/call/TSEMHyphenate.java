@@ -41,6 +41,7 @@ import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
@@ -50,6 +51,7 @@ import org.simple.eventbus.EventBus;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 /**
@@ -876,7 +878,7 @@ public class TSEMHyphenate {
              */
             @Override
             public void onUserRemoved(String groupId, String groupName) {
-                TSEMessageUtils.sendEixtGroupMessage(groupId,groupName);
+                TSEMessageUtils.sendEixtGroupMessage(groupId, groupName);
                 LogUtils.i("onUserRemoved groupId:%s, groupName:%s", groupId, groupName);
             }
 
@@ -888,7 +890,7 @@ public class TSEMHyphenate {
              */
             @Override
             public void onGroupDestroyed(String groupId, String groupName) {
-                TSEMessageUtils.sendEixtGroupMessage(groupId,groupName);
+                TSEMessageUtils.sendEixtGroupMessage(groupId, groupName);
                 LogUtils.i("onGroupDestroyed groupId:%s, groupName:%s", groupId, groupName);
             }
 
@@ -1103,6 +1105,15 @@ public class TSEMHyphenate {
             chatUserInfoBean.setVerified(verifiedBean);
         }
         return chatUserInfoBean;
+    }
+
+    public int getUnreadMsgCount() {
+        Map<String, EMConversation> conversations = EMClient.getInstance().chatManager().getAllConversations();
+        int count = 0;
+        for (Map.Entry<String, EMConversation> entry : conversations.entrySet()) {
+            count += entry.getValue().getUnreadMsgCount();
+        }
+        return count;
     }
 
     public void replease() {

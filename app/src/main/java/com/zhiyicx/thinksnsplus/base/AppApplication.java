@@ -305,15 +305,12 @@ public class AppApplication extends TSApplication {
 
     /**
      * 未读数处理
-     *
      * @param originalResponse
      */
     private void handleHeadRequest(Response originalResponse) {
-
         if (originalResponse != null && originalResponse.header("unread-notification-limit") != null) {
             EventBus.getDefault().post(originalResponse.header("unread-notification-limit"), EventBusTagConfig.EVENT_UNREAD_NOTIFICATION_LIMIT);
         }
-
     }
 
     /**

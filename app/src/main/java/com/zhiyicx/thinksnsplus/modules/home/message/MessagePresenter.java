@@ -15,7 +15,6 @@ import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -26,6 +25,7 @@ import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UnReadNotificaitonBean;
 import com.zhiyicx.thinksnsplus.data.beans.UnreadCountBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository;
+import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
 
@@ -101,34 +101,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        if (AppApplication.getmCurrentLoginAuth() == null) {
-            return;
-        }
-//        getAllConversationV2(isLoadMore);
-    }
-
-    /**
-     * 获取环信的所有会话列表
-     *
-     * @param isLoadMore 是否加载更多
-     */
-    private void getAllConversationV2(boolean isLoadMore) {
-        // 已连接才去获取
-        if (EMClient.getInstance().isLoggedInBefore() && EMClient.getInstance().isConnected()) {
-            Subscription subscribe = mMessageRepository.getConversationListV2((int) AppApplication.getMyUserIdWithdefault())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(messageItemBeanV2s -> {
-                        mRootView.getMessageListSuccess(messageItemBeanV2s);
-                        mRootView.hideStickyMessage();
-                        checkBottomMessageTip();
-                    });
-            addSubscrebe(subscribe);
-        } else {
-            mRootView.showStickyMessage(mContext.getString(R.string.chat_unconnected));
-            mRootView.hideLoading();
-            // 尝试重新登录，在homepresenter接收
-            mAuthRepository.loginIM();
-        }
     }
 
     /**
@@ -144,7 +116,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
             initHeaderItemData();
             // 处理本地通知数据
             mRootView.updateLikeItemData(mItemBeanDigg);
-//            getAllConversationV2(isLoadMore);
         }
     }
 
@@ -275,7 +246,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
         int unreadNum = 0;
         try {
             unreadNum = Integer.parseInt(unreadNumStr);
-
         } catch (Exception igonred) {
         }
         mNotificaitonRedDotIsShow = unreadNum > 0;
@@ -422,7 +392,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
                         mItemBeanReview.setUnReadMessageNums(pinnedNums);
                     } else {
                         mItemBeanReview.setUnReadMessageNums(0);
-
                     }
 
                     /**
@@ -581,27 +550,20 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
      */
     private void checkBottomMessageTip() {
         Subscription subscribe = Observable.just(true)
-                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
                 .map(aBoolean -> {
                     // 是否显示底部红点
                     boolean isShowMessgeTip;
-                    if (mItemBeanDigg != null && mItemBeanComment != null
-                            && mItemBeanDigg.getUnReadMessageNums() == 0
-                            && mItemBeanComment.getUnReadMessageNums() == 0) {
-                        isShowMessgeTip = false;
-                    } else {
-                        isShowMessgeTip = true;
-                    }
-                    if (!isShowMessgeTip) {
-                        for (MessageItemBeanV2 messageItemBean : mRootView.getRealMessageList()) {
-                            if (messageItemBean.getConversation().getUnreadMsgCount() > 0) {
-                                isShowMessgeTip = true;
-                                break;
-                            } else {
-                                isShowMessgeTip = false;
-                            }
-                        }
-                    }
+
+                    boolean hasSystemMsg = mItemBeanSystemMessage != null && mItemBeanSystemMessage.getUnReadMessageNums() != 0;
+                    boolean hasDigMsg = mItemBeanDigg != null && mItemBeanDigg.getUnReadMessageNums() != 0;
+                    boolean hasCommentMsg = mItemBeanComment != null && mItemBeanComment.getUnReadMessageNums() != 0;
+                    boolean hasReviewMsg = mItemBeanReview != null && mItemBeanReview.getUnReadMessageNums() != 0;
+
+                    isShowMessgeTip = hasSystemMsg || hasDigMsg || hasCommentMsg || hasReviewMsg;
+
+                    mNotificaitonRedDotIsShow = TSEMHyphenate.getInstance().getUnreadMsgCount() > 0;
+
                     return isShowMessgeTip;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
