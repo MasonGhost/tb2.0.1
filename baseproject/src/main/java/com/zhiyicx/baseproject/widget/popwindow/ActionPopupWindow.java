@@ -273,7 +273,7 @@ public class ActionPopupWindow extends PopupWindow {
         private int mItemDesColor;
         private int mItemBottomColor;
 
-        private float mAlpha;
+        private float mAlpha = POPUPWINDOW_ALPHA;
         private boolean mIsOutsideTouch = true;// 默认为true
         private boolean mIsFocus = true;// 默认为true
         private ActionPopupWindowItem1ClickListener mActionPopupWindowItem1ClickListener;
@@ -453,7 +453,8 @@ public class ActionPopupWindow extends PopupWindow {
             return this;
         }
 
-        public ActionPopupWindow.Builder bottomClickListener(ActionPopupWindow.ActionPopupWindowBottomClickListener actionPopupWindowBottomClickListener) {
+        public ActionPopupWindow.Builder bottomClickListener(ActionPopupWindow.ActionPopupWindowBottomClickListener
+                                                                     actionPopupWindowBottomClickListener) {
             this.mActionPopupWindowBottomClickListener = actionPopupWindowBottomClickListener;
             return this;
         }

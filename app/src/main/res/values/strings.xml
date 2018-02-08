@@ -1054,4 +1054,5 @@
     <string name="chat_single_name_default">(%d)</string>
     <string name="create_fail">创建失败</string>
     <string name="modifing">修改中&#8230;</string>
+    <string name="group_quit_format">%s解散了</string>
 </resources>
