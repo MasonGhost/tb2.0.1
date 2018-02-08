@@ -33,7 +33,7 @@ public class EaseChatPrimaryMenu extends EaseChatPrimaryMenuBase implements OnCl
     private View buttonPressToSpeak;
     private ImageView faceNormal;
     private ImageView faceChecked;
-    private Button buttonMore;
+    private View buttonMore;
     private boolean ctrlPress = false;
 
     public EaseChatPrimaryMenu(Context context, AttributeSet attrs, int defStyle) {
@@ -66,7 +66,7 @@ public class EaseChatPrimaryMenu extends EaseChatPrimaryMenuBase implements OnCl
         faceNormal = (ImageView) findViewById(R.id.iv_face_normal);
         faceChecked = (ImageView) findViewById(R.id.iv_face_checked);
         RelativeLayout faceLayout = (RelativeLayout) findViewById(R.id.rl_face);
-        buttonMore = (Button) findViewById(R.id.btn_more);
+        buttonMore = findViewById(R.id.btn_more);
 //        edittext_layout.setBackgroundResource(R.drawable.ease_input_bar_bg_normal);
         
         buttonSend.setOnClickListener(this);
@@ -206,27 +206,31 @@ public class EaseChatPrimaryMenu extends EaseChatPrimaryMenuBase implements OnCl
         } else if (id == R.id.btn_set_mode_voice) {
             setModeVoice();
             showNormalFaceImage();
-            if(listener != null)
+            if(listener != null) {
                 listener.onToggleVoiceBtnClicked();
+            }
         } else if (id == R.id.btn_set_mode_keyboard) {
             setModeKeyboard();
             showNormalFaceImage();
-            if(listener != null)
+            if(listener != null) {
                 listener.onToggleVoiceBtnClicked();
+            }
         } else if (id == R.id.btn_more) {
             buttonSetModeVoice.setVisibility(View.VISIBLE);
             buttonSetModeKeyboard.setVisibility(View.GONE);
             edittext_layout.setVisibility(View.VISIBLE);
             buttonPressToSpeak.setVisibility(View.GONE);
             showNormalFaceImage();
-            if(listener != null)
+            if(listener != null) {
                 listener.onToggleExtendClicked();
+            }
         } else if (id == R.id.et_sendmessage) {
 //            edittext_layout.setBackgroundResource(R.drawable.ease_input_bar_bg_active);
             faceNormal.setVisibility(View.VISIBLE);
             faceChecked.setVisibility(View.INVISIBLE);
-            if(listener != null)
+            if(listener != null) {
                 listener.onEditTextClicked();
+            }
         } else if (id == R.id.rl_face) {
             toggleFaceImage();
             if(listener != null){

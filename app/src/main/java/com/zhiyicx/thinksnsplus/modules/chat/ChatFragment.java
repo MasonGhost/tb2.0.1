@@ -284,7 +284,7 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_chat_v2;
+        return R.layout.fragment_chat;
     }
 
     @Override
