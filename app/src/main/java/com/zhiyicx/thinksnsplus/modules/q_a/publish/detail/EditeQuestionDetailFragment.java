@@ -123,8 +123,8 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
     }
 
     @Override
-    protected void handlePublish(String title, String markdwon, String noMarkdown,String html) {
-        super.handlePublish(title, markdwon, noMarkdown,html);
+    protected void handlePublish(String title, String markdwon, String noMarkdown, String html) {
+        super.handlePublish(title, markdwon, noMarkdown, html);
         PublishQuestionFragment.mDraftQuestion.setBody(markdwon);
         if (!isBack) {
             Intent intent = new Intent(getActivity(), AddTopicActivity.class);
@@ -209,6 +209,8 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
                     })
                     .build();
         }
+        mAnonymity = isChecked ? 1 : 0;
+        PublishQuestionFragment.mDraftQuestion.setAnonymity(mAnonymity);
         if (isChecked && PublishQuestionFragment.mDraftQuestion != null && showAnonymityAlertPopWindow()) {
             mAnonymityAlertPopWindow.show();
         } else {
