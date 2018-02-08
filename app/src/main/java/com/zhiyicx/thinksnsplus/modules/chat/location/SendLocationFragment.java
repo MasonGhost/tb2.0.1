@@ -1,19 +1,17 @@
 package com.zhiyicx.thinksnsplus.modules.chat.location;
 
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
-import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -96,12 +94,12 @@ public class SendLocationFragment extends TSFragment<SendLocationContract.Presen
         }
         if (mIsSend) {
             aMap.setOnMyLocationChangeListener(this);
+            aMap.moveCamera(CameraUpdateFactory.zoomTo(18));
             MyLocationStyle myLocationStyle;
             /*初始化定位蓝点样式类myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);*/
-            /*连续定位、且将视角移动到地图中心点，定位点依照设备方向旋转，并且会跟随设备移动。（1秒1次定位）如果不设置myLocationType，默认也会执行此种模式。*/
             myLocationStyle = new MyLocationStyle();
-            /*设置连续定位模式下的定位间隔，只在连续定位模式下生效，单次定位模式下不会生效。单位为毫秒。*/
-            myLocationStyle.interval(2000);
+            //定位一次，且将视角移动到地图中心点。
+            myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE);
             // 自定义定位蓝点图标
             myLocationStyle.myLocationIcon(BitmapDescriptorFactory.
                     fromResource(R.mipmap.find_ico_location2));
@@ -172,7 +170,7 @@ public class SendLocationFragment extends TSFragment<SendLocationContract.Presen
     @Override
     public void onResume() {
         super.onResume();
-        if (mMapView != null){
+        if (mMapView != null) {
             mMapView.onResume();
         }
     }
@@ -183,7 +181,7 @@ public class SendLocationFragment extends TSFragment<SendLocationContract.Presen
     @Override
     public void onPause() {
         super.onPause();
-        if (mMapView != null){
+        if (mMapView != null) {
             mMapView.onPause();
         }
     }
@@ -194,7 +192,7 @@ public class SendLocationFragment extends TSFragment<SendLocationContract.Presen
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mMapView != null){
+        if (mMapView != null) {
             mMapView.onDestroy();
         }
     }

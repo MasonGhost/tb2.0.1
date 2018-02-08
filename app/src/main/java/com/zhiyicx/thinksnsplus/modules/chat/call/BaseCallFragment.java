@@ -151,10 +151,7 @@ public abstract class BaseCallFragment extends TSFragment {
     }
 
     /**
-     * @author Jliuer
-     * @Date 18/02/01 16:07
-     * @Email Jliuer@aliyun.com
-     * @Description see http://www.easemob
+     * see http://www.easemob
      * .com/apidoc/android/chat3.0
      * /interfacecom_1_1hyphenate_1_1chat_1_1_e_m_call_manager_1_1_e_m_call_push_provider.html
      */
@@ -365,10 +362,7 @@ public abstract class BaseCallFragment extends TSFragment {
     }
 
     /**
-     * @author Jliuer
-     * @Date 18/02/01 17:43
-     * @Email Jliuer@aliyun.com
-     * @Description 实现订阅方法，订阅全局监听发来的通话状态事件
+     * 实现订阅方法，订阅全局监听发来的通话状态事件
      */
     @Subscriber(mode = ThreadMode.MAIN)
     public void onTSEMCallEventBus(TSEMCallEvent event) {
@@ -460,10 +454,7 @@ public abstract class BaseCallFragment extends TSFragment {
     }
 
     /**
-     * @author Jliuer
-     * @Date 18/02/01 17:27
-     * @Email Jliuer@aliyun.com
-     * @Description 接通了
+     * 接通了
      */
     protected void callAccept(){}
 
@@ -477,10 +468,7 @@ public abstract class BaseCallFragment extends TSFragment {
     }
 
     /**
-     * @author Jliuer
-     * @Date 18/02/01 17:39
-     * @Email Jliuer@aliyun.com
-     * @Description 结束通话关闭界面
+     * 结束通话关闭界面
      */
     protected void onFinish() {
         stopCallSound();
@@ -504,38 +492,25 @@ public abstract class BaseCallFragment extends TSFragment {
     }
 
     /**
-     * @author Jliuer
-     * @Date 18/02/01 16:53
-     * @Email Jliuer@aliyun.com
-     * @Description 开始呼叫对方
+     * 开始呼叫对方
      */
     protected void makeCall(){
 
     }
 
     /**
-     * @author Jliuer
-     * @Date 18/02/01 17:11
-     * @Email Jliuer@aliyun.com
-     * @Description 退出全屏通话界面
+     * 退出全屏通话界面
      */
     protected void exitFullScreen() {
     }
 
     /**
-     * @author Jliuer
-     * @Date 18/02/01 17:56
-     * @Email Jliuer@aliyun.com
-     * @Description 静音
      * 麦克风开关，主要调用环信语音数据传输方法
      */
     protected void onMicrophone(){}
 
     /**
-     * @author Jliuer
-     * @Date 18/02/01 17:59
-     * @Email Jliuer@aliyun.com
-     * @Description 扬声器开关
+     * 扬声器开关
      */
     protected void onSpeaker(){}
 
@@ -556,26 +531,17 @@ public abstract class BaseCallFragment extends TSFragment {
     protected void closeSpeaker() {}
 
     /**
-     * @Author Jliuer
-     * @Date 2018/2/1/20:59
-     * @Email Jliuer@aliyun.com
-     * @Description 拒绝通话
+     * 拒绝通话
      */
     protected void rejectCall() {}
 
     /**
-     * @Author Jliuer
-     * @Date 2018/2/1/21:03
-     * @Email Jliuer@aliyun.com
-     * @Description 结束通话
+     * 结束通话
      */
     protected void endCall() {}
 
     /**
-     * @Author Jliuer
-     * @Date 2018/2/1/21:04
-     * @Email Jliuer@aliyun.com
-     * @Description 接听通话
+     * 接听通话
      */
     protected void answerCall() {}
 }
