@@ -244,13 +244,13 @@ public class AnswerDetailsPresenter extends AppBasePresenter<
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.showSnackSuccessMessage(message);
+                        mRootView.showSnackErrorMessage(message);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.err_net_not_work));
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
                     }
                 });
         addSubscrebe(subscription);
