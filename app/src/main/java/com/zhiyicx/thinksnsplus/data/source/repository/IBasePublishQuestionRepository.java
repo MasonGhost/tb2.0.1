@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.QuestionCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QuestionConfig;
 
 import java.util.List;
 
@@ -23,6 +24,13 @@ import rx.Observable;
  */
 
 public interface IBasePublishQuestionRepository {
+
+    /**
+     *
+     * @return 获取问答基础配置
+     */
+    Observable<QuestionConfig> getQuestionConfig();
+
     Observable<List<QATopicBean>> getAllTopic(String name, Long after, Long follow);
 
     Observable<List<QATopicBean>> getFollowTopic(String type, Long after);

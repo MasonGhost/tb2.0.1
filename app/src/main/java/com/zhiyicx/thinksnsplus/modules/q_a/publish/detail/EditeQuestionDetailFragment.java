@@ -178,6 +178,7 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
     }
 
     private void initAnonymityAlertPopWindow(boolean isChecked) {
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
         if (mAnonymityAlertPopWindow == null) {
             mAnonymityAlertPopWindow = CenterAlertPopWindow.builder()
                     .with(getActivity())
@@ -186,9 +187,7 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
                     .animationStyle(R.style.style_actionPopupAnimation)
                     .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .titleStr(getString(R.string.qa_publish_enable_anonymous))
-                    .desStr("当我回忆你过去做过的某些事情的时候，要接受你就变得相当困难，不过最终我仍旧理解了你。" +
-                            "我始终在期望你做一些你的选择，期望你做一些你无法做到的事情，这种期望使我对你过于吹毛求疵，" +
-                            "当初的你，怎么会像现在的我一样成熟呢！如今我终于接受了你的存在，你绝对值得。")
+                    .desStr(TextUtils.isEmpty(mSystemConfigBean.getAnonymityRule()) ? "" : mSystemConfigBean.getAnonymityRule())
                     .buildCenterPopWindowItem1ClickListener(new CenterAlertPopWindow.CenterPopWindowItemClickListener() {
                         @Override
                         public void onRightClicked() {

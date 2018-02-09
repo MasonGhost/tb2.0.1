@@ -21,6 +21,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.CollectAnswerList;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QuestionConfig;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerDraftBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.QAPublishBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -62,8 +63,7 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
     @Inject
     protected AnswerDraftBeanGreenDaoImpl mAnswerDraftBeanGreenDaoImpl;
 
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
     @Inject
     protected UserInfoRepository mUserInfoRepository;
 
@@ -71,6 +71,12 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
     @Inject
     public BaseQARepository(ServiceManager manager) {
         mQAClient = manager.getQAClient();
+    }
+
+    @Override
+    public Observable<QuestionConfig> getQuestionConfig() {
+        return mQAClient.getQuestionConfig()
+                .subscribeOn(Schedulers.io());
     }
 
     @Override
@@ -331,7 +337,6 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
                                         answerDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get(answerDigListBean.getTarget_user()
                                                 .intValue()));
                                     }
-                                    mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
                                     return answerDigListBeen;
                                 });
                     } else {
@@ -384,7 +389,6 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
                                 }
 
                             }
-                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                             return answerCommentListBeen;
                         });
                     }
@@ -426,7 +430,6 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
                                         .getTarget_user().intValue()));
 
                             }
-                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                             return answerInfoBean;
                         });
                     }
@@ -545,7 +548,6 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
                                         }
 
                                     }
-                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeen);
                                     return questionCommentListBeen;
                                 });
                     }

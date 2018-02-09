@@ -137,7 +137,7 @@
                 android:paddingRight="@dimen/spacing_large"
                 zhiyi:itv_direction="TOP"
                 zhiyi:itv_gap="@dimen/spacing_normal"
-                zhiyi:itv_icon="@mipmap/ico_words"
+                zhiyi:itv_icon="@mipmap/ico_fatie"
                 zhiyi:itv_iconHeight="@dimen/send_dynamic_send_button_img"
                 zhiyi:itv_iconWidth="@dimen/send_dynamic_send_button_img"
                 zhiyi:itv_text="@string/send_post"

@@ -107,20 +107,18 @@ public interface CommonClient {
     /**
      * 刷新 token
      *
-     * @param token 刷新 token
      * @return 成功后自动调用 auth 接口，返回信息和 login 一样
      */
     @PATCH(APP_PATH_REFRESH_TOKEN)
-    Observable<AuthBean> refreshToken(@Path("token") String token);
+    Observable<AuthBean> refreshToken();
 
     /**
      * 同步刷新 token
      *
-     * @param token 刷新 token
      * @return 成功后自动调用 auth 接口，返回信息和 login 一样
      */
     @PATCH(APP_PATH_REFRESH_TOKEN)
-    Call<AuthBean> refreshTokenSyn(@Path("token") String token);
+    Call<AuthBean> refreshTokenSyn();
     /**
      * 启动信息
      *

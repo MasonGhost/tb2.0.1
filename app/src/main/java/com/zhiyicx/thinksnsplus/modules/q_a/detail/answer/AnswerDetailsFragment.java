@@ -107,7 +107,6 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     private ActionPopupWindow mDealInfoMationPopWindow;
 
     private AnswerInfoBean mAnswerInfoBean;
-    private boolean isFirstIn = true;
 
     private int mReplyUserId;// 被评论者的 id ,评论动态 id = 0
 
@@ -640,6 +639,8 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     public void onDestroyView() {
         super.onDestroyView();
         mAnswerDetailHeaderView.destroyedWeb();
+        dismissPop(mDealInfoMationPopWindow);
+        dismissPop(mDeletCommentPopWindow);
     }
 
 
