@@ -419,7 +419,7 @@
         <activity-alias
             android:name="${applicationId}.wxapi.WXPayEntryActivity"
             android:exported="true"
-            android:targetActivity="com.pingplusplus.android.PaymentActivity" />
+            android:targetActivity="com.pingplusplus.android.PaymentActivity"/>
         <!-- 支付宝 -->
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
@@ -672,8 +672,8 @@
         <!--环信的聊天页面-->
         <activity
             android:name=".modules.chat.ChatActivity"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
         <!--发送位置-->
         <activity
@@ -718,11 +718,17 @@
             android:name=".modules.chat.member.GroupMemberListActivity"
             android:screenOrientation="portrait"/>
         <!--视频通话页面-->
-        <activity android:name=".modules.chat.call.video.VideoCallActivity"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.chat.call.video.VideoCallActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden"/>
         <!--语音通话页面-->
-        <activity android:name=".modules.chat.call.voice.VoiceCallActivity"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.chat.call.voice.VoiceCallActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden"/>
         <!-- 开机自启动服务 -->
         <receiver android:name=".modules.chat.call.receiver.StartServiceReceiver">
             <intent-filter android:priority="1000">

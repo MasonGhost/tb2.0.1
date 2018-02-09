@@ -341,6 +341,12 @@ public class VoiceCallFragment extends BaseCallFragment {
     }
 
     @Override
+    protected void setCallStatusText(String status) {
+        super.setCallStatusText(status);
+        mTvCallState.setText(getString(R.string.video_calling, status));
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_voice_call;
     }
