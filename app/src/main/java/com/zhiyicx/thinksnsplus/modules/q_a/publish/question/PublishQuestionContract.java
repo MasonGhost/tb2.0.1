@@ -25,6 +25,11 @@ public interface PublishQuestionContract {
         QAPublishBean getDraftQuestion(long qestion_mark);
         void deleteQuestion(QAPublishBean qestion);
         void requestNetData(String subject, Long maxId,String type,boolean isLoadMore);
+
+        /**
+         * 检查问答配置
+         */
+        void checkQuestionConfig();
     }
 
 }

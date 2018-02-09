@@ -57,6 +57,9 @@ public class SystemConfigBean implements Serializable {
     private int excellentQuestion; // 问题加精的金额
     @SerializedName("question:onlookers_amount")
     private int onlookQuestion;// 答案围观的金额
+    @SerializedName("anonymity_rule")
+    private String anonymityRule; //匿名规则
+
     @SerializedName("news:pay_conyribute")
     private int newsPayContribute;// 资讯投稿的金额
     @SerializedName("feed")
@@ -120,6 +123,14 @@ public class SystemConfigBean implements Serializable {
 
     public void setFeed(Feed feed) {
         mFeed = feed;
+    }
+
+    public String getAnonymityRule() {
+        return anonymityRule;
+    }
+
+    public void setAnonymityRule(String anonymityRule) {
+        this.anonymityRule = anonymityRule;
     }
 
     public CircleGroup getCircleGroup() {
@@ -847,6 +858,7 @@ public class SystemConfigBean implements Serializable {
                 ", mAppversion=" + mAppversion +
                 ", excellentQuestion=" + excellentQuestion +
                 ", onlookQuestion=" + onlookQuestion +
+                ", anonymityRule='" + anonymityRule + '\'' +
                 ", newsPayContribute=" + newsPayContribute +
                 ", mFeed=" + mFeed +
                 ", checkin=" + checkin +

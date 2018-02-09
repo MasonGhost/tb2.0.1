@@ -1,10 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.question;
 
+import android.text.TextUtils;
+
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QuestionConfig;
 import com.zhiyicx.thinksnsplus.data.source.local.QAListInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 
@@ -23,7 +27,7 @@ import rx.Subscription;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class PublishQuestionPresenter extends AppBasePresenter< PublishQuestionContract.View>
+public class PublishQuestionPresenter extends AppBasePresenter<PublishQuestionContract.View>
         implements PublishQuestionContract.Presenter {
 
     @Inject
@@ -34,7 +38,7 @@ public class PublishQuestionPresenter extends AppBasePresenter< PublishQuestionC
     private Subscription searchSub;
 
     @Inject
-    public PublishQuestionPresenter( PublishQuestionContract.View rootView) {
+    public PublishQuestionPresenter(PublishQuestionContract.View rootView) {
         super(rootView);
     }
 
@@ -86,11 +90,31 @@ public class PublishQuestionPresenter extends AppBasePresenter< PublishQuestionC
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
     }
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<QAListInfoBean> data, boolean isLoadMore) {
         return false;
+    }
+
+    /**
+     * 检查问答配置
+     */
+    @Override
+    public void checkQuestionConfig() {
+        SystemConfigBean systemConfigBean = getSystemConfigBean();
+        if (TextUtils.isEmpty(systemConfigBean.getAnonymityRule())) {
+            mBaseQARepository.getQuestionConfig()
+                    .subscribe(new BaseSubscribeForV2<QuestionConfig>() {
+                        @Override
+                        protected void onSuccess(QuestionConfig data) {
+                            systemConfigBean.setAnonymityRule(data.getAnonymity_rule());
+                            systemConfigBean.setExcellentQuestion(data.getApply_amount());
+                            systemConfigBean.setOnlookQuestion(data.getOnlookers_amount());
+                            mSystemRepository.saveComponentStatus(systemConfigBean, mContext);
+                        }
+                    });
+        }
     }
 }

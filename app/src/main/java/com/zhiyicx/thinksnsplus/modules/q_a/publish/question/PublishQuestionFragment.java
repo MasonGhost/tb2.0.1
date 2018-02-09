@@ -116,6 +116,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     }
 
     private void addTopic() {
+        mPresenter.checkQuestionConfig();
         Intent intent = new Intent(getActivity(), EditeQuestionDetailActivity.class);
         Bundle bundle = new Bundle();
         saveQuestion();

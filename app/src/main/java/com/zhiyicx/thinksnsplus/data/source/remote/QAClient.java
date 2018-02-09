@@ -12,6 +12,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.CollectAnswerList;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QuestionConfig;
 
 import java.util.List;
 
@@ -43,6 +44,12 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_QA_REPORT;
  */
 public interface QAClient {
 
+    /**
+     *
+     * @return 获取问答基础配置
+     */
+    @GET(ApiConfig.APP_PATH_GET_QUESTIONS_CONFIG)
+    Observable<QuestionConfig> getQuestionConfig();
     /**
      * 发布问题
      * @param body

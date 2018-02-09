@@ -300,6 +300,11 @@ public class ApiConfig {
     /**
      * *******************************问答相关**************************************/
     /**
+     * 问答配置
+     */
+    public static final String APP_PATH_GET_QUESTIONS_CONFIG = "api/" + API_VERSION_2 + "/question-configs";
+
+    /**
      * 发布问题
      */
     public static final String APP_PATH_PUBLISH_QUESTIONS = "api/" + API_VERSION_2 + "/currency-questions";
