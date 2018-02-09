@@ -39,17 +39,7 @@ public class NotificationFragment extends TSListFragment<NotificationContract.Pr
 
     @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
-        return false;
-    }
-
-    @Override
-    protected boolean isRefreshEnable() {
-        return false;
-    }
-
-    @Override
-    protected boolean isLoadingMoreEnable() {
-        return false;
+        return true;
     }
 
     @Override

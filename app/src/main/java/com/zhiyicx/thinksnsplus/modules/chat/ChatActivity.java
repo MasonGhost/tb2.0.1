@@ -22,6 +22,11 @@ public class ChatActivity extends TSActivity<ChatPresenter, ChatFragment> {
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        mContanierFragment.onNewIntent(intent.getExtras());
+    }
+
+    @Override
     protected void componentInject() {
         DaggerChatComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())

@@ -20,8 +20,8 @@ import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
 import com.hyphenate.util.PathUtil;
-import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
+import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -154,7 +154,19 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
     @Override
     public void onResume() {
         super.onResume();
-        setCenterText(mPresenter.getGroupName(toChatUsername));
+        if (chatType == EaseConstant.CHATTYPE_SINGLE) {
+            setCenterText(mPresenter.getUserName(toChatUsername));
+        } else if (chatType == EaseConstant.CHATTYPE_GROUP) {
+            setCenterText(mPresenter.getGroupName(toChatUsername));
+        }
+    }
+
+    public void onNewIntent(Bundle bundle) {
+        setArguments(bundle);
+        fragmentArgs = getArguments();
+        chatType = fragmentArgs.getInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_SINGLE);
+        // userId you are chat with or group id
+        toChatUsername = fragmentArgs.getString(EaseConstant.EXTRA_USER_ID);
     }
 
     @Override

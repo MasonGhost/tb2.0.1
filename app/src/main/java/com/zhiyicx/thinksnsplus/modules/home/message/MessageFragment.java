@@ -78,6 +78,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
+    protected boolean isRefreshEnable() {
+        return false;
+    }
+
+    @Override
     protected boolean isLoadingMoreEnable() {
         return false;
     }
@@ -115,7 +120,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         ((BlankClickRecycleView) mRvList).setBlankListener(this);
 
     }
-
 
     @Override
     protected boolean showToolbar() {
