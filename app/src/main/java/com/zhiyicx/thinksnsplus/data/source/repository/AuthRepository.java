@@ -159,7 +159,7 @@ public class AuthRepository implements IAuthRepository {
             return;
         }
         AuthBean authBean = getAuthBean();
-        mCommonClient.refreshToken(authBean.getToken())
+        mCommonClient.refreshToken()
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -193,7 +193,7 @@ public class AuthRepository implements IAuthRepository {
      */
     @Override
     public Call<AuthBean> refreshTokenSyn() {
-        return mCommonClient.refreshTokenSyn(getAuthBean().getToken());
+        return mCommonClient.refreshTokenSyn();
 
     }
 

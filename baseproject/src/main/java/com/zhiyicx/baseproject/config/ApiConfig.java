@@ -491,7 +491,7 @@ public class ApiConfig {
     /**
      * **************************通用 CommonClient
      **************************/
-    public static final String APP_PATH_REFRESH_TOKEN = "api/" + API_VERSION_2 + "/tokens/{token}";// 刷新 token
+    public static final String APP_PATH_REFRESH_TOKEN = "api/" + API_VERSION_2 + "/auth/refresh";// 刷新 token
     public static final String APP_PATH_HANDLE_BACKGROUND_TASK = "{path}";// 处理后台任务
 
     public static final String APP_PATH_SYSTEM_FEEDBACK = "api/" + API_VERSION_2 + "/user/feedback";// 意见反馈
