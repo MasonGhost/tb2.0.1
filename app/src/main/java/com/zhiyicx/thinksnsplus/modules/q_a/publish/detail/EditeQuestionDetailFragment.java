@@ -212,6 +212,8 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
                     })
                     .build();
         }
+        mAnonymity = isChecked ? 1 : 0;
+        PublishQuestionFragment.mDraftQuestion.setAnonymity(mAnonymity);
         if (isChecked && PublishQuestionFragment.mDraftQuestion != null && showAnonymityAlertPopWindow()) {
             mAnonymityAlertPopWindow.show();
         } else {
