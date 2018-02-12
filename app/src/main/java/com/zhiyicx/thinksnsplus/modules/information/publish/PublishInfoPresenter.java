@@ -49,14 +49,12 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.V
                     "mContentLength::" + contentLength + "\n" +
                     "done::" + done);
 
-            LogUtils.d("currentThread::" + Thread.currentThread().getName());
-
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> {
                     if (mRootView.showUplaoding()) {
-                        mRootView.showSnackLoadingMessage("图片上传中...");
+                        mRootView.showSnackLoadingMessage(mContext.getString(R.string.image_uploading));
                     }
                 })
                 .subscribe(new BaseSubscribe<Integer>() {
@@ -68,14 +66,14 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.V
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.showSnackErrorMessage("图片上传失败");
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.image_upload_fail));
                         mRootView.uploadPicFailed();
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.showSnackErrorMessage("图片解析错误");
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.image_prase_fail));
                         mRootView.uploadPicFailed();
                     }
                 });

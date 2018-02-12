@@ -983,6 +983,9 @@
     <string name="withdrawals_fail">提取失败</string>
     <string name="recharge_success">充值成功</string>
     <string name="recharge_fail">充值失败</string>
+    <string name="image_uploading">图片上传中&#8230;</string>
+    <string name="image_upload_fail">图片上传失败</string>
+    <string name="image_prase_fail">图片解析错误</string>
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>
         <item>提取记录</item>
