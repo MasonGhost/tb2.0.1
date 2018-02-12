@@ -69,7 +69,7 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
 
     @Override
     protected void initData() {
-        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f, mPresenter.getGoldName(), mPresenter.getBalance()));
+        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200, mPresenter.getGoldName(), mPresenter.getBalance()));
     }
 
     @Override
@@ -183,7 +183,7 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
         mBtTop.setEnabled(enable);
 //        if (!enable)
 //            return;
-        mEtTopTotal.setText(String.valueOf(mCurrentDays * mInputMoney));
+        mEtTopTotal.setText(String.valueOf((long)(mCurrentDays * mInputMoney)));
     }
 
     @Override

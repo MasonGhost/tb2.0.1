@@ -95,7 +95,7 @@ public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContr
 
     @Override
     protected void initData() {
-        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f,mPresenter.getGoldName(), mPresenter.getBalance()));
+        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200,mPresenter.getGoldName(), mPresenter.getBalance()));
     }
 
     @Override
@@ -188,7 +188,7 @@ public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContr
         mBtTop.setEnabled(enable);
 //        if (!enable)
 //            return;
-        mEtTopTotal.setText(String.valueOf(mCurrentDays * mInputMoney));
+        mEtTopTotal.setText(String.valueOf((long)(mCurrentDays * mInputMoney)));
     }
 
     @Override
