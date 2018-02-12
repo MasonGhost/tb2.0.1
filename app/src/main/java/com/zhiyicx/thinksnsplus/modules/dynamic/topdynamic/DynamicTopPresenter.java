@@ -101,8 +101,11 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Vie
         addSubscrebe(subscription);
     }
 
+    /**
+     * @return 积分余额
+     */
     @Override
-    public double getBalance() {
+    public long getBalance() {
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
         if (authBean != null) {
             UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(authBean.getUser_id());
@@ -113,4 +116,5 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Vie
         }
         return 0;
     }
+
 }

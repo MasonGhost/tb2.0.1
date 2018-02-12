@@ -414,7 +414,7 @@
     <string name="comment_top_success">申请评论置顶成功</string>
     <string name="post_top_success">帖子置顶成功</string>
     <string name="post_top_failed">帖子置顶失败</string>
-    <string name="to_top_description">当前平均置顶金额%1$.2f / 天，%2s余额%3$.2f</string>
+    <string name="to_top_description">当前平均置顶金额%1$d/ 天，%2$s余额%3$d</string>
 
     <!--设置评论收费-->
     <string name="apply_doing">申请中&#8230;</string>
@@ -986,6 +986,9 @@
     <string name="withdrawals_fail">提取失败</string>
     <string name="recharge_success">充值成功</string>
     <string name="recharge_fail">充值失败</string>
+    <string name="image_uploading">图片上传中&#8230;</string>
+    <string name="image_upload_fail">图片上传失败</string>
+    <string name="image_prase_fail">图片解析错误</string>
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>
         <item>提取记录</item>

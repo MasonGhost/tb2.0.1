@@ -167,7 +167,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.View>
     }
 
     @Override
-    public double getBalance() {
+    public long getBalance() {
 
         Subscription userInfoSub = mUserInfoRepository.getCurrentLoginUserInfo()
                 .subscribe(new BaseSubscribeForV2<UserInfoBean>() {

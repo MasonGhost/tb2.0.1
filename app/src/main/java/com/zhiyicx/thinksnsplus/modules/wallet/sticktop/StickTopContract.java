@@ -30,7 +30,7 @@ public interface StickTopContract {
 
         String getType();
 
-        void updateBalance(double balance);
+        void updateBalance(long balance);
 
         boolean useInputMoney();
 
@@ -38,7 +38,7 @@ public interface StickTopContract {
     }
 
     interface Presenter extends IBaseTouristPresenter {
-        double getBalance();
+        long getBalance();
 
         void stickTop(long parent_id);
         void stickTop(long parent_id,long child_id);

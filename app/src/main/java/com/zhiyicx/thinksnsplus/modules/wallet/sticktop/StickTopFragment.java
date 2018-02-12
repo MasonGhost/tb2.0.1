@@ -103,7 +103,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     private List<Integer> mSelectDays;
     private int mCurrentDays;
     private int mInputMoney;
-    private double mBlance;
+    private long mBlance;
     private double mInputMoneyDouble;
     private ActionPopupWindow mStickTopInstructionsPopupWindow;
 
@@ -131,7 +131,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         child_id = getArguments().getLong(CHILD_ID, -1L);
         isManager = getArguments().getBoolean(TYPE_MANAGER);
         mBlance = mPresenter.getBalance();
-        mTvDynamicTopDec.setText(getString(R.string.to_top_description, 200f, mPresenter.getGoldName(), mBlance));
+        mTvDynamicTopDec.setText(getString(R.string.to_top_description, 200, mPresenter.getGoldName(), mBlance));
         String moneyName = mPresenter.getGoldName();
         mCustomMoney.setText(moneyName);
         mTotalMoney.setText(moneyName);
@@ -214,9 +214,9 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     }
 
     @Override
-    public void updateBalance(double balance) {
+    public void updateBalance(long balance) {
         mBlance = balance;
-        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f, mPresenter.getGoldName(), balance));
+        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200, mPresenter.getGoldName(), balance));
     }
 
     private void initListener() {
@@ -287,7 +287,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     private void setConfirmEnable() {
         boolean enable = mCurrentDays > 0 && mInputMoneyDouble > 0;
         mBtTop.setEnabled(enable);
-        double money = mCurrentDays * mInputMoneyDouble;
+        long money = (long) (mCurrentDays * mInputMoneyDouble);
         mEtTopTotal.setText(money > 0 ? money + "" : "");
     }
 

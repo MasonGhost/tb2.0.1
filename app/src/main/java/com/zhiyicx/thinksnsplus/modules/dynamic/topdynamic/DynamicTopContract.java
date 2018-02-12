@@ -27,7 +27,11 @@ public interface DynamicTopContract {
     }
 
     interface Presenter extends IBaseTouristPresenter {
-        double getBalance();
+        /**
+         *
+         * @return 积分余额
+         */
+        long getBalance();
 
         void stickTop(long feed_id);
     }
