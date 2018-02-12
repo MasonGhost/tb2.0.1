@@ -487,7 +487,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ChooseCircleFragment.CHOOSE_CIRCLE) {
-            if (data != null && data.getExtras().getParcelable(ChooseCircleFragment.BUNDLE_CIRCLE) != null) {
+            if (data != null && data.getExtras() != null && data.getExtras().getParcelable(ChooseCircleFragment.BUNDLE_CIRCLE) != null) {
                 onActivityResultForChooseCircle(data.getExtras().getParcelable(ChooseCircleFragment.BUNDLE_CIRCLE));
             }
         } else {
@@ -659,6 +659,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
 
     /**
      * 这个还原的 顺序不能变
+     *
      * @param body
      * @return
      */

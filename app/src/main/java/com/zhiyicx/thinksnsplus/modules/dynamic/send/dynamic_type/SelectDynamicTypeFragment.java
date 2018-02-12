@@ -232,6 +232,9 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                 // 发布提示 1、首先需要认证 2、需要付费
                 mPresenter.checkCertification();
                 break;
+                /*
+                 发帖
+                 */
             case R.id.send_circle_post:
                 BaseMarkdownActivity.startActivityForPublishPostOutCircle(mActivity);
                 closeActivity();
@@ -332,7 +335,8 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
             mPayAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
                     .item6Str(getString(R.string.info_publish_go_to_next))
-                    .desStr(String.format(Locale.getDefault(), getString(R.string.info_publish_hint_pay), mPresenter!=null?mPresenter.getGoldName():""))
+                    .desStr(String.format(Locale.getDefault(), getString(R.string.info_publish_hint_pay), mPresenter != null ? mPresenter
+                            .getGoldName() : ""))
                     .bottomStr(getString(R.string.cancel))
                     .isOutsideTouch(true)
                     .isFocus(true)
