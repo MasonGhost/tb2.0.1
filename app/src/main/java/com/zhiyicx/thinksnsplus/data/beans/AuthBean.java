@@ -45,18 +45,23 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
      * },
      * "ttl": 20160, 用户token的有效期(单位:分)
      * "refresh_ttl": 40320
+     * access_token	授权 Token
+     * token_type	Token 类型
+     * expires_in	过期时间，单位秒
+     * <p>
      * }
      */
-
+    @SerializedName(value = "token", alternate = {"access_token"})
     private String token;
-    @SerializedName("refresh_ttl")
+    @SerializedName(value = "refresh_token", alternate = {"refresh_ttl"})
     private long refresh_token; // 刷新 token 过期时间 间隔时间(单位:分钟)
-    @SerializedName("ttl")
+    @SerializedName(value = "ttl", alternate = {"expires_in"})
     private long expires;// 用户 token 的有效期(单位:分钟) 过期时间 ，间隔时间
     private long user_id;
     private UserInfoBean user;
-
+    private String token_type;
     private long token_request_time; // 请求 token 的当前时间
+
 
     public long getToken_request_time() {
         return token_request_time;
@@ -78,6 +83,13 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
         this.user_id = user_id;
     }
 
+    public String getToken_type() {
+        return token_type;
+    }
+
+    public void setToken_type(String token_type) {
+        this.token_type = token_type;
+    }
 
     public long getExpires() {
         return expires;
@@ -134,17 +146,6 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
         this.user_id = user_id;
     }
 
-    @Override
-    public String toString() {
-        return "AuthBean{" +
-                "token='" + token + '\'' +
-                ", refresh_token=" + refresh_token +
-                ", expires=" + expires +
-                ", user_id=" + user_id +
-                ", user=" + user +
-                ", token_request_time=" + token_request_time +
-                '}';
-    }
 
     @Override
     public int describeContents() {
@@ -158,6 +159,7 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
         dest.writeLong(this.expires);
         dest.writeLong(this.user_id);
         dest.writeParcelable(this.user, flags);
+        dest.writeString(this.token_type);
         dest.writeLong(this.token_request_time);
     }
 
@@ -167,6 +169,7 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
         this.expires = in.readLong();
         this.user_id = in.readLong();
         this.user = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.token_type = in.readString();
         this.token_request_time = in.readLong();
     }
 
