@@ -25,8 +25,8 @@
             android:id="@+id/btn_set_mode_voice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/spacing_small"
-            android:paddingRight="@dimen/spacing_small"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:paddingRight="@dimen/spacing_normal"
             android:src="@mipmap/ico_chat_keyboard_voice"
             android:visibility="visible"/>
 
@@ -34,8 +34,8 @@
             android:id="@+id/btn_set_mode_keyboard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/spacing_small"
-            android:paddingRight="@dimen/spacing_small"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:paddingRight="@dimen/spacing_normal"
             android:src="@mipmap/ico_chat_keyboard"
             android:visibility="gone"/>
 
@@ -43,8 +43,6 @@
             android:id="@+id/btn_press_to_speak"
             android:layout_width="0dp"
             android:layout_height="@dimen/chat_detail_input_menu_send_voice_height"
-            android:layout_marginLeft="@dimen/spacing_normal"
-            android:layout_marginRight="@dimen/spacing_normal"
             android:layout_weight="1"
             android:background="@drawable/ease_chat_press_speak_btn"
             android:gravity="center"
@@ -53,7 +51,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
                 android:text="@string/chat_send_voice_alert"
                 android:textColor="@color/normal_for_dynamic_list_content"
                 android:textSize="@dimen/size_content_comment"/>
@@ -63,8 +60,6 @@
             android:id="@+id/edittext_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_normal"
-            android:layout_marginRight="@dimen/spacing_normal"
             android:layout_weight="1"
             android:visibility="visible">
 
@@ -110,8 +105,8 @@
             android:id="@+id/btn_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/spacing_small"
-            android:paddingRight="@dimen/spacing_small"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:paddingRight="@dimen/spacing_normal"
             android:src="@mipmap/ico_chat_keyboard_add"
             android:visibility="visible"/>
 
