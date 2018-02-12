@@ -87,7 +87,8 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
         if (EditeInfoDetailFragment.mInfoPublishBean.isRefuse()) {
             EditeInfoDetailFragment.mInfoPublishBean.setImage((long) imageId < 0 ? null : (long) imageId);
         } else {
-            EditeInfoDetailFragment.mInfoPublishBean.setImage(EditeInfoDetailFragment.mInfoPublishBean.getCover() < 0 ? null : (long) EditeInfoDetailFragment.mInfoPublishBean.getCover());
+            EditeInfoDetailFragment.mInfoPublishBean.setImage(EditeInfoDetailFragment.mInfoPublishBean.getCover() < 0 ? null : (long)
+                    EditeInfoDetailFragment.mInfoPublishBean.getCover());
         }
 
     }
@@ -173,7 +174,8 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
             mIvInfoCoverIamge.setVisibility(View.VISIBLE);
 
             Glide.with(getActivity())
-                    .load(ImageUtils.imagePathConvertV2(EditeInfoDetailFragment.mInfoPublishBean.getImage().intValue(), w, h, ImageZipConfig.IMAGE_70_ZIP))
+                    .load(ImageUtils.imagePathConvertV2(EditeInfoDetailFragment.mInfoPublishBean.getImage().intValue(), w, h, ImageZipConfig
+                            .IMAGE_70_ZIP))
                     .centerCrop()
                     .into(mIvInfoCoverIamge);
         }
@@ -246,16 +248,16 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(R.string.publish_pay_info) + getString(R
-                        .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(EditeInfoDetailFragment.mInfoPublishBean
-                        .getAmout(), mPresenter.getRatio()), mPresenter.getGoldName()))
+                        .string.buy_pay_member), EditeInfoDetailFragment.mInfoPublishBean
+                        .getAmout(), mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.send_info_pay))
                 .buildItem1Str(getString(R.string.publish_info_pay_in))
                 .buildItem2Str(getString(R.string.publish_info_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_integration), PayConfig
-                        .realCurrency2GameCurrency(EditeInfoDetailFragment.mInfoPublishBean.getAmout(), mPresenter.getRatio())))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_integration), EditeInfoDetailFragment.mInfoPublishBean.getAmout()))
                 .buildCenterPopWindowItem1ClickListener(() -> {
-///                    EditeInfoDetailFragment.mInfoPublishBean.setContent(EditeInfoDetailFragment.mInfoPublishBean.getSubject() + EditeInfoDetailFragment.mInfoPublishBean.getContent());
+///                    EditeInfoDetailFragment.mInfoPublishBean.setContent(EditeInfoDetailFragment.mInfoPublishBean.getSubject() +
+/// EditeInfoDetailFragment.mInfoPublishBean.getContent());
                     mPresenter.publishInfo(EditeInfoDetailFragment.mInfoPublishBean);
                     mPayInfoPopWindow.hide();
                 })
