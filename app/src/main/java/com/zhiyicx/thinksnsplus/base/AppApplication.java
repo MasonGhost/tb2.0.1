@@ -143,35 +143,8 @@ public class AppApplication extends TSApplication {
     /**
      * 初始化环信
      */
-    private void initIm(){
-        TSEMHyphenate.getInstance().initHyphenate(getContext());
-//        int pid = android.os.Process.myPid();
-//        String processAppName = DeviceUtils.getAppName(getContext(), pid);
-//        // 如果APP启用了远程的service，此application:onCreate会被调用2次
-//        // 为了防止环信SDK被初始化2次，加此判断会保证SDK被初始化1次
-//        // 默认的APP会在以包名为默认的process name下运行，如果查到的process name不是APP的process name就立即返回
-//        if (processAppName == null ||!processAppName.equalsIgnoreCase(getPackageName())) {
-//            LogUtils.e(TAG, "enter the service process!");
-//            // 则此application::onCreate 是被service 调用的，直接返回
-//            return;
-//        }
-//        EMOptions options = new EMOptions();
-//        // 默认添加好友时，是不需要验证的，改成需要验证
-//        options.setAcceptInvitationAlways(false);
-//        // 是否自动将消息附件上传到环信服务器，默认为True是使用环信服务器上传下载，如果设为 false，需要开发者自己处理附件消息的上传和下载
-//        options.setAutoTransferMessageAttachments(true);
-//        // 是否自动下载附件类消息的缩略图等，默认为 true 这里和上边这个参数相关联
-//        options.setAutoDownloadThumbnail(true);
-//        // 设置是否需要已读回执
-//        options.setRequireAck(true);
-//        // 设置是否需要已送达回执
-//        options.setRequireDeliveryAck(true);
-//        //初始化
-//        EaseUI.getInstance().init(getApplicationContext(), options);
-//        // service
-//        IntentFilter callFilter = new IntentFilter(EMClient.getInstance().callManager().getIncomingCallBroadcastAction());
-//        CallReceiver callReceiver = new CallReceiver();
-//        getApplicationContext().registerReceiver(callReceiver, callFilter);
+    private void initIm() {
+        TSEMHyphenate.getInstance().initHyphenate(this);
     }
 
     /**
@@ -290,7 +263,7 @@ public class AppApplication extends TSApplication {
                 } else {
                     // 过期了，重新登录
 //                    if (mAuthRepository.isNeededRefreshToken()) {
-                        handleAuthFail(getString(R.string.auth_fail_relogin));
+                    handleAuthFail(getString(R.string.auth_fail_relogin));
 //                    } else {
 //                        // 挤下线，重新登录
 //                        handleAuthFail(getString(R.string.code_1015));
@@ -305,6 +278,7 @@ public class AppApplication extends TSApplication {
 
     /**
      * 未读数处理
+     *
      * @param originalResponse
      */
     private void handleHeadRequest(Response originalResponse) {

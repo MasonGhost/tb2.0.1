@@ -213,8 +213,8 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
     @Override
     public void onDestroy() {
         super.onDestroy();
-        TSEMHyphenate.getInstance().replease();
-        ChatClient.getInstance(mContext).onDestroy();
+//        TSEMHyphenate.getInstance().replease();
+//        ChatClient.getInstance(mContext).onDestroy();
     }
 
     @Subscriber(mode = ThreadMode.MAIN)
@@ -290,13 +290,13 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
     }
 
     /**
-     * @param id 群 id
+     * @param id    群 id
      * @param count 变动 数量
-     * @param add 是否 加法
+     * @param add   是否 加法
      * @return
      */
     @Override
-    public boolean updateChatGroupMemberCount(String id, int count,boolean add) {
-        return mChatGroupBeanGreenDao.updateChatGroupMemberCount(id, count,add);
+    public boolean updateChatGroupMemberCount(String id, int count, boolean add) {
+        return mChatGroupBeanGreenDao.updateChatGroupMemberCount(id, count, add);
     }
 }
