@@ -706,7 +706,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
     }
 
     protected String getImageHtml(long tagId, int id, String name, String imagePath) {
-        String markdown = "@![" + name + "](" + id + ")";
+        String markdown = " @![" + name + "](" + id + ")";
         return "<div><br></div>" +
                 "<div class=\"block\" contenteditable=\"false\">" +
                 "   <div class=\"img-block\">" +
