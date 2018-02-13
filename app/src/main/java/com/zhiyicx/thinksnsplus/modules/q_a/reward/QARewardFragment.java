@@ -593,4 +593,11 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 .build();
         mInstructionsPopupWindow.show();
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissPop(mRulePop);
+        dismissPop(mInstructionsPopupWindow);
+    }
 }

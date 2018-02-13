@@ -103,6 +103,7 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
         super.onAfterInitialLoad(ready);
         if (ready) {
             mRichTextView.hideTitle();
+            mRichTextView.focusEditor();
         }
     }
 
@@ -126,6 +127,7 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
     protected void handlePublish(String title, String markdwon, String noMarkdown, String html) {
         super.handlePublish(title, markdwon, noMarkdown, html);
         PublishQuestionFragment.mDraftQuestion.setBody(markdwon);
+        PublishQuestionFragment.mDraftQuestion.setText_body(noMarkdown);
         if (!isBack) {
             Intent intent = new Intent(getActivity(), AddTopicActivity.class);
             startActivity(intent);
@@ -184,6 +186,7 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
                     .with(getActivity())
                     .parentView(getView())
                     .isFocus(false)
+                    .isOutsideTouch(false)
                     .animationStyle(R.style.style_actionPopupAnimation)
                     .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .titleStr(getString(R.string.qa_publish_enable_anonymous))
@@ -232,4 +235,9 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
         getActivity().finish();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissPop(mAnonymityAlertPopWindow);
+    }
 }
