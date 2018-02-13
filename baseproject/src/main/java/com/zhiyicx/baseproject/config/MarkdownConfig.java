@@ -11,7 +11,7 @@ public class MarkdownConfig {
     /**
      * 用于发布资讯 拼装图片
      */
-    public static final String IMAGE_TAG = " @![%s](%d)";
+    public static final String IMAGE_TAG = "@![%s](%d)";
 
     /**
      * 用于判断是否存在 scheme
