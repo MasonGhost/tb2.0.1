@@ -2,8 +2,10 @@ package com.zhiyicx.common.utils;
 
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -403,7 +405,8 @@ public class RegexUtils {
         return new InputFilter() {
 
             @Override
-            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int
+                    dstart, int dend) {
                 Matcher emojiMatcher = emoji.matcher(source);
                 if (emojiMatcher.find()) {
                     return "";
@@ -417,4 +420,23 @@ public class RegexUtils {
 
 
     }
+
+    public static String getMarkdownWords(String source) {
+        Matcher matcher = Pattern.compile("<div [^>]*class=\"block\"[^>]*>(<div[^>]*>(<div[^>]*>" +
+                "((<div[^>]*>[\\s\\S]*?</div>|[\\s\\S])*?</div>)|[\\s\\S])*?</div>|[\\s\\S])" +
+                "*?</div>").matcher(source);
+        while (matcher.find()) {
+            String need = matcher.group(3);
+            if (TextUtils.isEmpty(need)) {
+                break;
+            }
+            Matcher img = Pattern.compile("@!\\[.*?]\\((\\d+)\\)").matcher(need);
+            if (img.find()) {
+                source = matcher.replaceFirst(img.group(0));
+            }
+        }
+        source = source.replaceAll("div", "p");
+        return source;
+    }
+
 }

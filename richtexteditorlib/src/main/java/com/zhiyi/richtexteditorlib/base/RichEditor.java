@@ -15,6 +15,7 @@ import android.webkit.WebViewClient;
 
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -626,8 +627,7 @@ public abstract class RichEditor extends WebView {
                         if (noMarkdownWords.length() >= 191) {
                             result = noMarkdownWords.substring(0, 191);
                         }
-
-                        listener.onMarkdownWordResult(title, markdown, result, allHtml, isPublish);
+                        listener.onMarkdownWordResult(title, RegexUtils.getMarkdownWords(markdown), result, allHtml, isPublish);
                     });
         }
 
