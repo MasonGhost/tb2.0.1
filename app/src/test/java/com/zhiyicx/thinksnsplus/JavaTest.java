@@ -42,6 +42,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
+import kotlin.text.Regex;
+import kotlin.text.RegexOption;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.FuncN;
@@ -142,40 +144,59 @@ public class JavaTest {
 
     @Test
     public void testCatchGroup() {
-        String src = "<span style=\"font-family: sans-serif;\">好刚刚给</span><div style=\"font-family: sans-serif;\">黄河鬼棺给</div><h1 " +
-                "style=\"font-family: sans-serif;\">好好奋斗是</h1><div style=\"font-family: sans-serif;\"><b><i>v刚发的的</i></b></div><div " +
-                "style=\"font-family: sans-serif;\"><b><i><strike>广告费多大的</strike></i></b></div><hr style=\"color: rgb(0, 0, 0);\"><div " +
-                "style=\"font-family: sans-serif;\"><br></div><h1 style=\"font-family: sans-serif;\">复方丹参</h1><div><br></div><div class=\"block\" " +
-                "contenteditable=\"false\">\n" +
-                "                                                                  \t\t\t\t<div class=\"img-block\">\n" +
-                "                                                                  \t\t\t\t\n" +
-                "                                                                  \t\t\t\t\n" +
-                "                                                                  \t\t\t\t<div class=\"delete\">\n" +
-                "                                                                  \t\t\t\t\t\n" +
-                "                                                                  \t\t\t\t\t<div class=\"tips\">图片上传失败，请点击重试</div>\n" +
-                "                                                                  \t\t\t\t\t<div class=\"markdown\">@![image](6104)</div>\n" +
-                "                                                                  \t\t\t\t</div></div>\n" +
-                "                                                                  \t\t\t\t\n" +
-                "                                                                  \t\t\t</div><h1><br></h1></div>";
-        String reg = MarkdownConfig.TEST_HTML_FORMAT;
-        Matcher matcher = Pattern.compile(reg).matcher(src);
-        String result = "";
-
+//        String source = "<div id='footer'>\n" +
+//                "\t\t<div class=\"img-block\">\n" +
+//                "\t\t\t<img class=\"images\" data-id=\"7899\" style=\"width: 340px; height: " +
+//                "113.01851851851852px;\" " +
+//                "src=\"/storage/emulated/0/DCIM/Screenshots/Screenshot_2018-02-20-19-15-51" +
+//                "-142_com.zhihu.android.png\">\n" +
+//                "\n" +
+//                "\t\t\t<div class=\"delete\">\n" +
+//                "\t\t\t\t<img class=\"error\" src=\"./reload.png\">\n" +
+//                "\t\t\t\t<div class=\"tips\">图片上传失败，请点击重试</div>\n" +
+//                "\t\t\t\t<div class=\"markdown\">@![image](6324)</div>\n" +
+//                "\t\t\t</div>\n" +
+//                "\t\t</div>\n" +
+//                "\t\t<input class=\"dec\" type=\"text\" placeholder=\"请输入图片名字\">\n" +
+//                "\t</div>";
+        String source = "很轻松<hr>\n" +
+                "<div>\n" +
+                "\t<div><br></div>\n" +
+                "\t<div class=\"block\" contenteditable=\"false\">\n" +
+                "\t\t<div class=\"img-block\">\n" +
+                "\t\t\t<img class=\"images\" data-id=\"7899\" style=\"width: 340px; height: " +
+                "113.01851851851852px;\" " +
+                "src=\"/storage/emulated/0/DCIM/Screenshots/Screenshot_2018-02-20-19-15-51" +
+                "-142_com.zhihu.android.png\">\n" +
+                "\n" +
+                "\t\t\t<div class=\"delete\">\n" +
+                "\t\t\t\t<img class=\"error\" src=\"./reload.png\">\n" +
+                "\t\t\t\t<div class=\"tips\">图片上传失败，请点击重试</div>\n" +
+                "\t\t\t\t<div class=\"markdown\">@![image](6324)</div>\n" +
+                "\t\t\t</div>\n" +
+                "\t\t</div>\n" +
+                "\t\t<input class=\"dec\" type=\"text\" placeholder=\"请输入图片名字\">\n" +
+                "\t</div>\n" +
+                "\t<div>时间就是金钱</div>\n" +
+                "</div>";
+        Matcher matcher = Pattern.compile("<div [^>]*class=\"block\"[^>]*>(<div[^>]*>(<div[^>]*>" +
+                "((<div[^>]*>[\\s\\S]*?</div>|[\\s\\S])*?</div>)|[\\s\\S])*?</div>|[\\s\\S])" +
+                "*?</div>").matcher(source);
         while (matcher.find()) {
             int count = matcher.groupCount();
+            String need = matcher.group(3);
+            Matcher img = Pattern.compile(MarkdownConfig.IMAGE_FORMAT).matcher(need);
+            if (img.find()) {
+                System.out.println("img::" + img.group(0));
+                source = matcher.replaceFirst(img.group(0));
+                System.out.println("result::" + source);
+            }
+
             for (int i = 0; i < count; i++) {
                 System.out.println("reg::" + i + ":::" + matcher.group(i));
             }
-            String group2 = matcher.group(2);
-            String group3 = matcher.group(3);
-            if (TextUtils.isEmpty(group2)) {
-                result = src.replace(group2, "p");
-            }
-            if (TextUtils.isEmpty(group3)) {
-                result = result.replace(group3, "p");
-            }
         }
-        System.out.println("result::" + result);
+
     }
 
     @Test
@@ -257,7 +278,8 @@ public class JavaTest {
         int now = Integer.parseInt(sdf.format(today));
         int other = Integer.parseInt(sdf.format(otherDay));
 
-        int day = TimeUtils.getifferenceDays(System.currentTimeMillis() - TimeUtils.utc2LocalLong(time));
+        int day = TimeUtils.getifferenceDays(System.currentTimeMillis() - TimeUtils.utc2LocalLong
+                (time));
         String str = TimeUtils.getTimeFriendlyForDetail(time);
 
         if (daySpace > test && daySpace < 9) {
@@ -324,7 +346,8 @@ public class JavaTest {
             if (matcher2.find()) {
                 System.out.println("result:test:" + matcher2.start());
                 System.out.println("result:test:" + matcher2.end());
-                System.out.println("result:result:" + res.substring(matcher2.start(), matcher2.end()));
+                System.out.println("result:result:" + res.substring(matcher2.start(),
+                        matcher2.end()));
                 System.out.println("result:count:" + matcher2.groupCount());
                 System.out.println("result:count:" + matcher2.group(1));
 
@@ -409,9 +432,11 @@ public class JavaTest {
 
     @Test
     public void replaceTest() {
-        String tag = "@![image](580)哈哈哈哈哈ヽ(ｏ`皿′ｏ)ﾉ((*゜Д゜)ゞ”😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁@![image](581)";
+        String tag = "@![image](580)哈哈哈哈哈ヽ(ｏ`皿′ｏ)ﾉ((*゜Д゜)" +
+                "ゞ”😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁@![image](581)";
         Pattern pattern = Pattern.compile("@!\\[.*?]\\((\\d+)\\)");
-        System.out.print(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, "result:: " + pattern.matcher(tag).replaceAll("")));
+        System.out.print(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, "result:: " +
+                pattern.matcher(tag).replaceAll("")));
     }
 
     @Test
@@ -434,7 +459,8 @@ public class JavaTest {
 
             System.out.println("result:: " + matcher1.group(1));
             if (matcher1.start() > lastIndex) {
-                System.out.println("result 1 :: " + targetStr.substring(lastIndex, matcher1.start()));
+                System.out.println("result 1 :: " + targetStr.substring(lastIndex, matcher1.start
+                        ()));
             }
             String result2 = targetStr.substring(matcher1.start(), matcher1.end());
             Matcher matcher2 = Pattern.compile(reg).matcher(result2);
@@ -443,7 +469,8 @@ public class JavaTest {
             if (matcher2.find()) {
                 System.out.println("matcher 2 :: " + matcher2.group(0));
                 System.out.println("matcher 2 :: " + matcher2.group(1));
-                System.out.println("matcher 2 :: " + matcher2.group(0).replaceAll("\\d+", "tym").replaceAll("@", ""));
+                System.out.println("matcher 2 :: " + matcher2.group(0).replaceAll("\\d+", "tym")
+                        .replaceAll("@", ""));
             }
             lastIndex = matcher1.end();
         }
@@ -459,7 +486,8 @@ public class JavaTest {
     @Test
     public void removeSymbolStartWith() {
         String test = ",,2,3";
-        LogUtils.d(TAG, "ConvertUtils.removeSymbolStartWith(addBtnAnimation,\",\") = " + ConvertUtils.removeSymbolStartWith(test, ","));
+        LogUtils.d(TAG, "ConvertUtils.removeSymbolStartWith(addBtnAnimation,\",\") = " +
+                ConvertUtils.removeSymbolStartWith(test, ","));
     }
 
     /**
@@ -468,7 +496,8 @@ public class JavaTest {
     @Test
     public void removeSymbolEndWith() {
         String test = ",,2,3,,";
-        LogUtils.d(TAG, "ConvertUtils.removeSymbolStartWith(addBtnAnimation,\",\") = " + ConvertUtils.removeSymbolEndWith(test, ","));
+        LogUtils.d(TAG, "ConvertUtils.removeSymbolStartWith(addBtnAnimation,\",\") = " +
+                ConvertUtils.removeSymbolEndWith(test, ","));
     }
 
     /**
@@ -521,7 +550,8 @@ public class JavaTest {
     @SuppressLint("LogNotUsed")
     @Test
     public void jsonObject2map() {
-//        String jsonstr = "{\"token\":\"l6NOIWOwcwEzENBQWkb23s57MVmvjNLPHN4D7I5X:rP3G9ZXRk6MjhnXY2vpVKmxWOUM\\u003d
+//        String jsonstr = "{\"token\":\"l6NOIWOwcwEzENBQWkb23s57MVmvjNLPHN4D7I5X
+// :rP3G9ZXRk6MjhnXY2vpVKmxWOUM\\u003d
 // :eyJyZXR1cm5Cb2R5Ijoie1wicmVzb3VyY2VcIjogJCh4OnJlc291cmNlKX0iLCJzY29wZSI6InRzcGx1czoyMDE3XC8wNFwvMjhcLzA4MThcLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZyIsImRlYWRsaW5lIjoxNDkzNDUyOTk4LCJ1cEhvc3RzIjpbImh0dHA6XC9cL3VwLXoyLnFpbml1LmNvbSIsImh0dHA6XC9cL3VwbG9hZC16Mi5xaW5pdS5jb20iLCItSCB1cC16Mi5xaW5pdS5jb20gaHR0cDpcL1wvMTgzLjYwLjIxNC4xOTgiXX0\\u003d\",\"key\":\"2017/04/28/0818/9756FCCF72E47A2FBA935AE9213EB1E8.jpg\",\"x:resource\":\"MjAxNy8wNC8yOC8wODE4Lzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZw\\u003d\\u003d\"}";
 //
 //        Map<String, Object> retMap = new Gson().fromJson(jsonstr,
@@ -554,17 +584,20 @@ public class JavaTest {
                 "        }\n" +
                 "    ]\n" +
                 "}";
-        System.out.println("---- = " + new Gson().fromJson(test, SystemConfigBean.class).toString());
+        System.out.println("---- = " + new Gson().fromJson(test, SystemConfigBean.class).toString
+                ());
 
     }
 
     @Test
     public void objecttst() {
         Object object = "{\n" +
-                "            \"token\":\"l6NOIWOwcwEzENBQWkb23s57MVmvjNLPHN4D7I5X:mrP5oxdTmdSqDGAQs8ZhtIZdCBY" +
+                "            \"token\":\"l6NOIWOwcwEzENBQWkb23s57MVmvjNLPHN4D7I5X" +
+                ":mrP5oxdTmdSqDGAQs8ZhtIZdCBY" +
                 "=:eyJyZXR1cm5Cb2R5Ijoie1wicmVzb3VyY2VcIjogJCh4OnJlc291cmNlKX0iLCJzY29wZSI6InRzcGx1czoyMDE3XC8wNFwvMjhcLzA3MDFcLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZyIsImRlYWRsaW5lIjoxNDkzNDUxNjAxLCJ1cEhvc3RzIjpbImh0dHA6XC9cL3VwLXoyLnFpbml1LmNvbSIsImh0dHA6XC9cL3VwbG9hZC16Mi5xaW5pdS5jb20iLCItSCB1cC16Mi5xaW5pdS5jb20gaHR0cDpcL1wvMTgzLjYwLjIxNC4xOTgiXX0=\",\n" +
                 "            \"key\":\"2017/04/28/0701/9756FCCF72E47A2FBA935AE9213EB1E8.jpg\",\n" +
-                "            \"x:resource\":\"MjAxNy8wNC8yOC8wNzAxLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZw==\"\n" +
+                "            " +
+                "\"x:resource\":\"MjAxNy8wNC8yOC8wNzAxLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZw==\"\n" +
                 "        }";
         LogUtils.d(TAG, "object = " + object.toString());
     }
@@ -603,18 +636,21 @@ public class JavaTest {
                 .subscribe(new Subscriber<Object>() {
                     @Override
                     public void onCompleted() {
-                        System.out.println("Sys -----1-------= " + Thread.currentThread().getName());
+                        System.out.println("Sys -----1-------= " + Thread.currentThread().getName
+                                ());
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        System.out.println("Sys = -----2-------" + Thread.currentThread().getName());
+                        System.out.println("Sys = -----2-------" + Thread.currentThread().getName
+                                ());
                     }
 
                     @Override
                     public void onNext(Object o) {
                         System.out.println("o = -----1-------" + o);
-                        System.out.println("Sys = -----3-------" + Thread.currentThread().getName());
+                        System.out.println("Sys = -----3-------" + Thread.currentThread().getName
+                                ());
                     }
                 });
         System.out.println("Sys = " + Thread.currentThread().getName());
@@ -669,17 +705,24 @@ public class JavaTest {
      */
     @Test
     public void locationParseTest() {
-        String data = "[{\"items\":[{\"id\":3,\"name\":\"市辖区\",\"pid\":2,\"extends\":\"\",\"created_at\":\"2017-04-28 07:49:48\"," +
-                "\"updated_at\":\"2017-04-28 07:49:48\"},{\"id\":18,\"name\":\"县\",\"pid\":2,\"extends\":\"\",\"created_at\":\"2017-04-28 " +
-                "07:49:49\",\"updated_at\":\"2017-04-28 07:49:49\"}],\"tree\":{\"id\":2,\"name\":\"北京市\",\"pid\":1,\"extends\":\"\"," +
-                "\"created_at\":\"2017-04-28 07:49:48\",\"updated_at\":\"2017-04-28 07:49:48\",\"parent\":{\"id\":1,\"name\":\"中国\",\"pid\":0," +
-                "\"extends\":\"3\",\"created_at\":\"2017-04-28 07:49:48\",\"updated_at\":\"2017-04-28 07:49:48\",\"parent\":null}}}]";
-        List<LocationContainerBean> lodAta = new Gson().fromJson(data, new TypeToken<List<LocationContainerBean>>() {
+        String data = "[{\"items\":[{\"id\":3,\"name\":\"市辖区\",\"pid\":2,\"extends\":\"\"," +
+                "\"created_at\":\"2017-04-28 07:49:48\"," +
+                "\"updated_at\":\"2017-04-28 07:49:48\"},{\"id\":18,\"name\":\"县\",\"pid\":2," +
+                "\"extends\":\"\",\"created_at\":\"2017-04-28 " +
+                "07:49:49\",\"updated_at\":\"2017-04-28 07:49:49\"}],\"tree\":{\"id\":2," +
+                "\"name\":\"北京市\",\"pid\":1,\"extends\":\"\"," +
+                "\"created_at\":\"2017-04-28 07:49:48\",\"updated_at\":\"2017-04-28 07:49:48\"," +
+                "\"parent\":{\"id\":1,\"name\":\"中国\",\"pid\":0," +
+                "\"extends\":\"3\",\"created_at\":\"2017-04-28 07:49:48\"," +
+                "\"updated_at\":\"2017-04-28 07:49:48\",\"parent\":null}}}]";
+        List<LocationContainerBean> lodAta = new Gson().fromJson(data, new
+                TypeToken<List<LocationContainerBean>>() {
         }.getType());
         List<LocationBean> result = new ArrayList<>();
 
         for (LocationContainerBean locationContainerBean : lodAta) {
-            if (locationContainerBean.getItems() == null || locationContainerBean.getItems().isEmpty()) {
+            if (locationContainerBean.getItems() == null || locationContainerBean.getItems()
+                    .isEmpty()) {
                 result.add(locationContainerBean.getTree());
             } else {
                 for (LocationBean locationBean : locationContainerBean.getItems()) {
@@ -754,7 +797,8 @@ public class JavaTest {
     }
 
     private static boolean isEmojiCharacter(char codePoint) {
-        return !(codePoint == 0x0 || codePoint == 0x9 || codePoint == 0xA || codePoint == 0xD || codePoint >= 0x20 && codePoint <= 0xD7FF ||
+        return !(codePoint == 0x0 || codePoint == 0x9 || codePoint == 0xA || codePoint == 0xD ||
+                codePoint >= 0x20 && codePoint <= 0xD7FF ||
                 codePoint >= 0xE000 && codePoint <= 0xFFFD);
     }
 
@@ -825,11 +869,14 @@ public class JavaTest {
                 "}";
         String response5 = "{\n" +
                 "    \"message\": \"请绑定账号\",\n" +
-                "    \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Application.php\",\n" +
+                "    \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src" +
+                "/Illuminate/Foundation/Application.php\",\n" +
                 "    \"line\": 926,\n" +
                 "    \"trace\": [\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation" +
+                "/helpers.php\",\n" +
                 "            \"line\": 34,\n" +
                 "            \"function\": \"abort\",\n" +
                 "            \"class\": \"Illuminate\\\\Foundation\\\\Application\",\n" +
@@ -841,7 +888,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/Traits/SocialiteDriverHelper" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src" +
+                "/Traits/SocialiteDriverHelper" +
                 ".php\",\n" +
                 "            \"line\": 137,\n" +
                 "            \"function\": \"abort\",\n" +
@@ -851,11 +900,14 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/Drivers/DriverAbstract.php\"," +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src" +
+                "/Drivers/DriverAbstract.php\"," +
                 "\n" +
                 "            \"line\": 44,\n" +
                 "            \"function\": \"SlimKit\\\\PlusSocialite\\\\Traits\\\\{closure}\",\n" +
-                "            \"class\": \"SlimKit\\\\PlusSocialite\\\\Drivers\\\\DriverAbstract\",\n" +
+                "            \"class\": " +
+                "\"SlimKit\\\\PlusSocialite\\\\Drivers\\\\DriverAbstract\",\n" +
                 "            \"type\": \"->\",\n" +
                 "            \"args\": [\n" +
                 "                404,\n" +
@@ -863,22 +915,29 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/Traits/SocialiteDriverHelper" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src" +
+                "/Traits/SocialiteDriverHelper" +
                 ".php\",\n" +
                 "            \"line\": 138,\n" +
-                "            \"function\": \"SlimKit\\\\PlusSocialite\\\\Drivers\\\\{closure}\",\n" +
-                "            \"class\": \"SlimKit\\\\PlusSocialite\\\\Drivers\\\\DriverAbstract\",\n" +
+                "            \"function\": \"SlimKit\\\\PlusSocialite\\\\Drivers\\\\{closure}\"," +
+                "\n" +
+                "            \"class\": " +
+                "\"SlimKit\\\\PlusSocialite\\\\Drivers\\\\DriverAbstract\",\n" +
                 "            \"type\": \"->\",\n" +
                 "            \"args\": [\n" +
                 "                {}\n" +
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/Drivers/DriverAbstract.php\"," +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src" +
+                "/Drivers/DriverAbstract.php\"," +
                 "\n" +
                 "            \"line\": 45,\n" +
                 "            \"function\": \"abortIf\",\n" +
-                "            \"class\": \"SlimKit\\\\PlusSocialite\\\\Drivers\\\\DriverAbstract\",\n" +
+                "            \"class\": " +
+                "\"SlimKit\\\\PlusSocialite\\\\Drivers\\\\DriverAbstract\",\n" +
                 "            \"type\": \"->\",\n" +
                 "            \"args\": [\n" +
                 "                true,\n" +
@@ -886,21 +945,27 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/API/Controllers" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src" +
+                "/API/Controllers" +
                 "/SocialiteController.php\",\n" +
                 "            \"line\": 71,\n" +
                 "            \"function\": \"authUser\",\n" +
-                "            \"class\": \"SlimKit\\\\PlusSocialite\\\\Drivers\\\\DriverAbstract\",\n" +
+                "            \"class\": " +
+                "\"SlimKit\\\\PlusSocialite\\\\Drivers\\\\DriverAbstract\",\n" +
                 "            \"type\": \"->\",\n" +
                 "            \"args\": [\n" +
                 "                \"D4AA7C164E58457F9B8D20E3F594A653\"\n" +
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing" +
+                "/ControllerDispatcher.php\",\n" +
                 "            \"line\": 48,\n" +
                 "            \"function\": \"checkAuth\",\n" +
-                "            \"class\": \"SlimKit\\\\PlusSocialite\\\\API\\\\Controllers\\\\SocialiteController\",\n" +
+                "            \"class\": " +
+                "\"SlimKit\\\\PlusSocialite\\\\API\\\\Controllers\\\\SocialiteController\",\n" +
                 "            \"type\": \"->\",\n" +
                 "            \"args\": [\n" +
                 "                {\n" +
@@ -916,7 +981,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Route.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing" +
+                "/Route.php\",\n" +
                 "            \"line\": 205,\n" +
                 "            \"function\": \"dispatch\",\n" +
                 "            \"class\": \"Illuminate\\\\Routing\\\\ControllerDispatcher\",\n" +
@@ -931,8 +998,12 @@ public class JavaTest {
                 "                        \"middleware\": [\n" +
                 "                            \"api\"\n" +
                 "                        ],\n" +
-                "                        \"uses\": \"SlimKit\\\\PlusSocialite\\\\API\\\\Controllers\\\\SocialiteController@checkAuth\",\n" +
-                "                        \"controller\": \"SlimKit\\\\PlusSocialite\\\\API\\\\Controllers\\\\SocialiteController@checkAuth\",\n" +
+                "                        \"uses\": " +
+                "\"SlimKit\\\\PlusSocialite\\\\API\\\\Controllers\\\\SocialiteController" +
+                "@checkAuth\",\n" +
+                "                        \"controller\": " +
+                "\"SlimKit\\\\PlusSocialite\\\\API\\\\Controllers\\\\SocialiteController" +
+                "@checkAuth\",\n" +
                 "                        \"namespace\": null,\n" +
                 "                        \"prefix\": \"api/v2/socialite\",\n" +
                 "                        \"where\": []\n" +
@@ -956,7 +1027,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Route.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing" +
+                "/Route.php\",\n" +
                 "            \"line\": 162,\n" +
                 "            \"function\": \"runController\",\n" +
                 "            \"class\": \"Illuminate\\\\Routing\\\\Route\",\n" +
@@ -964,7 +1037,9 @@ public class JavaTest {
                 "            \"args\": []\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Router.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing" +
+                "/Router.php\",\n" +
                 "            \"line\": 610,\n" +
                 "            \"function\": \"run\",\n" +
                 "            \"class\": \"Illuminate\\\\Routing\\\\Route\",\n" +
@@ -972,7 +1047,9 @@ public class JavaTest {
                 "            \"args\": []\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing" +
+                "/Pipeline.php\",\n" +
                 "            \"line\": 30,\n" +
                 "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
                 "            \"class\": \"Illuminate\\\\Routing\\\\Router\",\n" +
@@ -990,7 +1067,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing" +
+                "/Middleware/SubstituteBindings" +
                 ".php\",\n" +
                 "            \"line\": 41,\n" +
                 "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
@@ -1009,10 +1088,13 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline" +
+                "/Pipeline.php\",\n" +
                 "            \"line\": 149,\n" +
                 "            \"function\": \"handle\",\n" +
-                "            \"class\": \"Illuminate\\\\Routing\\\\Middleware\\\\SubstituteBindings\",\n" +
+                "            \"class\": " +
+                "\"Illuminate\\\\Routing\\\\Middleware\\\\SubstituteBindings\",\n" +
                 "            \"type\": \"->\",\n" +
                 "            \"args\": [\n" +
                 "                {\n" +
@@ -1028,7 +1110,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing" +
+                "/Pipeline.php\",\n" +
                 "            \"line\": 53,\n" +
                 "            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n" +
                 "            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n" +
@@ -1046,7 +1130,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing" +
+                "/Middleware/ThrottleRequests" +
                 ".php\",\n" +
                 "            \"line\": 57,\n" +
                 "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
@@ -1065,10 +1151,13 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline" +
+                "/Pipeline.php\",\n" +
                 "            \"line\": 149,\n" +
                 "            \"function\": \"handle\",\n" +
-                "            \"class\": \"Illuminate\\\\Routing\\\\Middleware\\\\ThrottleRequests\",\n" +
+                "            \"class\": " +
+                "\"Illuminate\\\\Routing\\\\Middleware\\\\ThrottleRequests\",\n" +
                 "            \"type\": \"->\",\n" +
                 "            \"args\": [\n" +
                 "                {\n" +
@@ -1086,7 +1175,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing" +
+                "/Pipeline.php\",\n" +
                 "            \"line\": 53,\n" +
                 "            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n" +
                 "            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n" +
@@ -1104,7 +1195,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline" +
+                "/Pipeline.php\",\n" +
                 "            \"line\": 102,\n" +
                 "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
                 "            \"class\": \"Illuminate\\\\Routing\\\\Pipeline\",\n" +
@@ -1122,7 +1215,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Router.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing" +
+                "/Router.php\",\n" +
                 "            \"line\": 612,\n" +
                 "            \"function\": \"then\",\n" +
                 "            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n" +
@@ -1132,7 +1227,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Router.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing" +
+                "/Router.php\",\n" +
                 "            \"line\": 571,\n" +
                 "            \"function\": \"runRouteWithinStack\",\n" +
                 "            \"class\": \"Illuminate\\\\Routing\\\\Router\",\n" +
@@ -1147,8 +1244,12 @@ public class JavaTest {
                 "                        \"middleware\": [\n" +
                 "                            \"api\"\n" +
                 "                        ],\n" +
-                "                        \"uses\": \"SlimKit\\\\PlusSocialite\\\\API\\\\Controllers\\\\SocialiteController@checkAuth\",\n" +
-                "                        \"controller\": \"SlimKit\\\\PlusSocialite\\\\API\\\\Controllers\\\\SocialiteController@checkAuth\",\n" +
+                "                        \"uses\": " +
+                "\"SlimKit\\\\PlusSocialite\\\\API\\\\Controllers\\\\SocialiteController" +
+                "@checkAuth\",\n" +
+                "                        \"controller\": " +
+                "\"SlimKit\\\\PlusSocialite\\\\API\\\\Controllers\\\\SocialiteController" +
+                "@checkAuth\",\n" +
                 "                        \"namespace\": null,\n" +
                 "                        \"prefix\": \"api/v2/socialite\",\n" +
                 "                        \"where\": []\n" +
@@ -1179,7 +1280,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Router.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing" +
+                "/Router.php\",\n" +
                 "            \"line\": 549,\n" +
                 "            \"function\": \"dispatchToRoute\",\n" +
                 "            \"class\": \"Illuminate\\\\Routing\\\\Router\",\n" +
@@ -1197,7 +1300,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation" +
+                "/Http/Kernel.php\",\n" +
                 "            \"line\": 176,\n" +
                 "            \"function\": \"dispatch\",\n" +
                 "            \"class\": \"Illuminate\\\\Routing\\\\Router\",\n" +
@@ -1215,7 +1320,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing" +
+                "/Pipeline.php\",\n" +
                 "            \"line\": 30,\n" +
                 "            \"function\": \"Illuminate\\\\Foundation\\\\Http\\\\{closure}\",\n" +
                 "            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Kernel\",\n" +
@@ -1233,7 +1340,8 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/fideloper/proxy/src/TrustProxies.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/fideloper/proxy/src/TrustProxies.php\",\n" +
                 "            \"line\": 56,\n" +
                 "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
                 "            \"class\": \"Illuminate\\\\Routing\\\\Pipeline\",\n" +
@@ -1251,7 +1359,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline" +
+                "/Pipeline.php\",\n" +
                 "            \"line\": 149,\n" +
                 "            \"function\": \"handle\",\n" +
                 "            \"class\": \"Fideloper\\\\Proxy\\\\TrustProxies\",\n" +
@@ -1270,7 +1380,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing" +
+                "/Pipeline.php\",\n" +
                 "            \"line\": 53,\n" +
                 "            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n" +
                 "            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n" +
@@ -1288,7 +1400,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation" +
+                "/Http/Middleware" +
                 "/TransformsRequest.php\",\n" +
                 "            \"line\": 30,\n" +
                 "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
@@ -1307,10 +1421,13 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline" +
+                "/Pipeline.php\",\n" +
                 "            \"line\": 149,\n" +
                 "            \"function\": \"handle\",\n" +
-                "            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\TransformsRequest\",\n" +
+                "            \"class\": " +
+                "\"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\TransformsRequest\",\n" +
                 "            \"type\": \"->\",\n" +
                 "            \"args\": [\n" +
                 "                {\n" +
@@ -1326,7 +1443,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing" +
+                "/Pipeline.php\",\n" +
                 "            \"line\": 53,\n" +
                 "            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n" +
                 "            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n" +
@@ -1344,7 +1463,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation" +
+                "/Http/Middleware" +
                 "/TransformsRequest.php\",\n" +
                 "            \"line\": 30,\n" +
                 "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
@@ -1363,10 +1484,13 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline" +
+                "/Pipeline.php\",\n" +
                 "            \"line\": 149,\n" +
                 "            \"function\": \"handle\",\n" +
-                "            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\TransformsRequest\",\n" +
+                "            \"class\": " +
+                "\"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\TransformsRequest\",\n" +
                 "            \"type\": \"->\",\n" +
                 "            \"args\": [\n" +
                 "                {\n" +
@@ -1382,7 +1506,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing" +
+                "/Pipeline.php\",\n" +
                 "            \"line\": 53,\n" +
                 "            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n" +
                 "            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n" +
@@ -1400,7 +1526,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation" +
+                "/Http/Middleware" +
                 "/ValidatePostSize.php\",\n" +
                 "            \"line\": 27,\n" +
                 "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
@@ -1419,10 +1547,13 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline" +
+                "/Pipeline.php\",\n" +
                 "            \"line\": 149,\n" +
                 "            \"function\": \"handle\",\n" +
-                "            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\ValidatePostSize\",\n" +
+                "            \"class\": " +
+                "\"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\ValidatePostSize\",\n" +
                 "            \"type\": \"->\",\n" +
                 "            \"args\": [\n" +
                 "                {\n" +
@@ -1438,7 +1569,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing" +
+                "/Pipeline.php\",\n" +
                 "            \"line\": 53,\n" +
                 "            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n" +
                 "            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n" +
@@ -1456,7 +1589,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation" +
+                "/Http/Middleware" +
                 "/CheckForMaintenanceMode.php\",\n" +
                 "            \"line\": 46,\n" +
                 "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
@@ -1475,10 +1610,13 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline" +
+                "/Pipeline.php\",\n" +
                 "            \"line\": 149,\n" +
                 "            \"function\": \"handle\",\n" +
-                "            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\CheckForMaintenanceMode\",\n" +
+                "            \"class\": " +
+                "\"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\CheckForMaintenanceMode\",\n" +
                 "            \"type\": \"->\",\n" +
                 "            \"args\": [\n" +
                 "                {\n" +
@@ -1494,7 +1632,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing" +
+                "/Pipeline.php\",\n" +
                 "            \"line\": 53,\n" +
                 "            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n" +
                 "            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n" +
@@ -1512,7 +1652,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline" +
+                "/Pipeline.php\",\n" +
                 "            \"line\": 102,\n" +
                 "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
                 "            \"class\": \"Illuminate\\\\Routing\\\\Pipeline\",\n" +
@@ -1530,7 +1672,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation" +
+                "/Http/Kernel.php\",\n" +
                 "            \"line\": 151,\n" +
                 "            \"function\": \"then\",\n" +
                 "            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n" +
@@ -1540,7 +1684,9 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php\",\n" +
+                "            \"file\": " +
+                "\"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation" +
+                "/Http/Kernel.php\",\n" +
                 "            \"line\": 116,\n" +
                 "            \"function\": \"sendRequestThroughRouter\",\n" +
                 "            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Kernel\",\n" +
@@ -1589,7 +1735,8 @@ public class JavaTest {
     @Test
     public void testIMData() {
         JpushMessageBean jpushMessageBean;
-        String response1 = "{\"seq\":1,\"msg_type\":0,\"cid\":461,\"mid\":445579829106966533,\"type\":\"im\",\"uid\":270}";
+        String response1 = "{\"seq\":1,\"msg_type\":0,\"cid\":461,\"mid\":445579829106966533," +
+                "\"type\":\"im\",\"uid\":270}";
         jpushMessageBean = new Gson().fromJson(response1, JpushMessageBean.class);
         System.out.println("jpushMessageBean = " + jpushMessageBean);
     }
@@ -1684,14 +1831,16 @@ public class JavaTest {
         walletTransform.setOpen(false);
         mSystemConfigBean.setWalletTransform(walletTransform);
         System.out.println("rechargeTypes = " + rechargeTypes.size());
-        if (rechargeTypes.size() == 0 && mSystemConfigBean.getWalletTransform() == null || !mSystemConfigBean.getWalletTransform()
+        if (rechargeTypes.size() == 0 && mSystemConfigBean.getWalletTransform() == null ||
+                !mSystemConfigBean.getWalletTransform()
                 .isOpen()) {
             System.out.println(" 1  = ");
         } else {
             System.out.println(" 2  = ");
 
         }
-        if (rechargeTypes.size() == 0 && (mSystemConfigBean.getWalletTransform() == null || !mSystemConfigBean.getWalletTransform()
+        if (rechargeTypes.size() == 0 && (mSystemConfigBean.getWalletTransform() == null ||
+                !mSystemConfigBean.getWalletTransform()
                 .isOpen())) {
             System.out.println(" 1  = ");
         } else {

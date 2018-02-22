@@ -31,6 +31,7 @@ import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
@@ -57,9 +58,11 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownContract.Presenter> extends TSFragment<P> implements
+public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownContract.Presenter>
+        extends TSFragment<P> implements
         SimpleRichEditor.OnEditorClickListener, PhotoSelectorImpl.IPhotoBackListener,
-        MarkdownContract.View<P>, RichEditor.OnMarkdownWordResultListener, RichEditor.OnImageDeleteListener,
+        MarkdownContract.View<P>, RichEditor.OnMarkdownWordResultListener, RichEditor
+        .OnImageDeleteListener,
         BottomMenu.BottomMenuVisibleChangeListener, SimpleRichEditor.BottomMenuItemConfig {
 
     public static final String BUNDLE_SOURCE_DATA = "sourceId";
@@ -315,9 +318,13 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
      * @param html       全部 html 格式内容
      */
     @Override
-    public void onMarkdownWordResult(String title, String markdwon, String noMarkdown, String html, boolean isPublish) {
+    public void onMarkdownWordResult(String title, String markdwon, String noMarkdown, String
+            html, boolean isPublish) {
+        LogUtils.d("onMarkdownWordResult:::" + "\n" + "markdwon::" + markdwon
+                + "\n" + "noMarkdown::" + noMarkdown);
         if (isPublish) {
-            List<Integer> result = RegexUtils.getImageIdsFromMarkDown(MarkdownConfig.IMAGE_FORMAT, markdwon);
+            List<Integer> result = RegexUtils.getImageIdsFromMarkDown(MarkdownConfig
+                    .IMAGE_FORMAT, markdwon);
             if (mImages.containsAll(result)) {
                 mImages.clear();
                 mImages.addAll(result);
@@ -487,8 +494,10 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ChooseCircleFragment.CHOOSE_CIRCLE) {
-            if (data != null && data.getExtras() != null && data.getExtras().getParcelable(ChooseCircleFragment.BUNDLE_CIRCLE) != null) {
-                onActivityResultForChooseCircle(data.getExtras().getParcelable(ChooseCircleFragment.BUNDLE_CIRCLE));
+            if (data != null && data.getExtras() != null && data.getExtras().getParcelable
+                    (ChooseCircleFragment.BUNDLE_CIRCLE) != null) {
+                onActivityResultForChooseCircle(data.getExtras().getParcelable
+                        (ChooseCircleFragment.BUNDLE_CIRCLE));
             }
         } else {
             mPhotoSelector.onActivityResult(requestCode, resultCode, data);
@@ -565,7 +574,8 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         mPhotoPopupWindow.show();
     }
 
-    protected void initEditWarningPop(String title, String markdown, String noMarkdown, String html) {
+    protected void initEditWarningPop(String title, String markdown, String noMarkdown, String
+            html) {
         if (mEditWarningPopupWindow != null) {
             mEditWarningPopupWindow.show();
             return;
@@ -685,13 +695,15 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         Matcher linkMatcher = Pattern.compile(MarkdownConfig.LINK_FORMAT).matcher(result);
         result = result.replaceAll(MarkdownConfig.LINK_FORMAT, linkReplace);
         while (linkMatcher.find()) {
-            result = result.replaceFirst(linkReplace, getLinkHtml(linkMatcher.group(2), linkMatcher.group(1)));
+            result = result.replaceFirst(linkReplace, getLinkHtml(linkMatcher.group(2),
+                    linkMatcher.group(1)));
         }
 
         // 兼容就连接  http://www.baidu.com
         Matcher oldLinkMatcher = Pattern.compile(MarkdownConfig.NETSITE_A_FORMAT).matcher(body);
         while (oldLinkMatcher.find()) {
-            String html = "<a href=\" " + oldLinkMatcher.group(0) + " \" class=\"editor-link\">网页链接</a>";
+            String html =
+                    "<a href=\" " + oldLinkMatcher.group(0) + " \" class=\"editor-link\">网页链接</a>";
             body = body.replaceFirst(oldLinkMatcher.group(0), html);
         }
 
@@ -713,7 +725,8 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
                 "       <div style=\"width: 100% \" class=\"process\">" +
                 "           <div class=\"fill\"></div>" +
                 "       </div>" +
-                "       <img class=\"images\" data-id=\"" + tagId + "\" style=\"width: 100% ; height: auto\"" +
+                "       <img class=\"images\" data-id=\"" + tagId + "\" style=\"width: 100% ; " +
+                "height: auto\"" +
                 "           src=\"" + imagePath + "\">" +
                 "       <div class=\"cover\" style=\"width: 100% ; height: auto\"></div>" +
                 "       <div class=\"delete\">" +
@@ -745,11 +758,14 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
                 "<body contenteditable=\"false\">\n" +
                 "    <div class=\"content\" contenteditable=\"false\" id=\"content\">\n" +
                 "        <header>\n" +
-                "            <div class=\"title\" title-placeholder=\"请输入标题\" id=\"title\" contenteditable=\"true\">" + title + "</div>\n" +
-                "            <span id=\"stay\" style=\"display: none;text-align:right\"><span id=\"txtCount\"></span>/20</span>\n" +
+                "            <div class=\"title\" title-placeholder=\"请输入标题\" id=\"title\" " +
+                "contenteditable=\"true\">" + title + "</div>\n" +
+                "            <span id=\"stay\" style=\"display: none;text-align:right\"><span " +
+                "id=\"txtCount\"></span>/20</span>\n" +
                 "        </header>\n" +
                 "        <div class=\"line\"></div>\n" +
-                "        <div id=\"editor\" contenteditable=\"true\" editor-placeholder=\"" + setInputInitText() + "\">" + content + "</div>\n" +
+                "        <div id=\"editor\" contenteditable=\"true\" editor-placeholder=\"" +
+                setInputInitText() + "\">" + content + "</div>\n" +
                 "    </div>\n" +
                 "    <script src=\"./richeditor.js\" id=\"script\"></script>\n" +
                 "</body>\n" +

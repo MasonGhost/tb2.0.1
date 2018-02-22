@@ -214,10 +214,9 @@ var RE = {
 		return content;
 	},
 	markdownWords: function markdownWords() {
-            var _self = this;
-    //        var content = _self.cache.editor.innerHTML.replace(/<div\\s+\\S+>\\s+\\S+<\/div>|<[divimginput]+ class=".*">|\u56FE\u7247\u4E0A\u4F20\u5931\u8D25\uFF0C\u8BF7\u70B9\u51FB\u91CD\u8BD5/g, '').replace(/\n|\t/g,'').replace(/<div>[u4e00-u9fa5]+<\/div>/g,"").replace(/div|span/g,'p').trim();
-    //        var content = _self.cache.editor.innerHTML.replace(/<div\\s+\\S+>\\s+\\S+<\/div>|<[divimginput]+ class=".*">|\u56FE\u7247\u4E0A\u4F20\u5931\u8D25\uFF0C\u8BF7\u70B9\u51FB\u91CD\u8BD5/g, '').replace(/\n|\t/g,'').replace(/div|span/g,'p').trim();
-       var content = _self.cache.editor.innerHTML.replace(/<div\\s+\\S+>\\s+\\S+<\/div>|<[divimginput]+ class=".*">|\u56FE\u7247\u4E0A\u4F20\u5931\u8D25\uFF0C\u8BF7\u70B9\u51FB\u91CD\u8BD5/g, '').replace(/\n|\t/g,'').replace(/div|span/g,'p').replace('<p>',' <p>').trim();
+        var _self = this;
+//        var content = _self.cache.editor.innerHTML.replace(/<div\\s+\\S+>\\s+\\S+<\/div>|<[divimginput]+ class=".*">|\u56FE\u7247\u4E0A\u4F20\u5931\u8D25\uFF0C\u8BF7\u70B9\u51FB\u91CD\u8BD5/g, '').replace(/\n|\t/g,'').replace(/<div>[u4e00-u9fa5]+<\/div>/g,"").replace(/div|span/g,'p').trim();
+        var content = _self.cache.editor.innerHTML;
         AndroidInterface.markdownWords(content);
         return content;
     },
@@ -467,11 +466,11 @@ var RE = {
 			var process = block.querySelector('.process');
 			var imgBlock = block.querySelector('.img-block');
 			dec.addEventListener('input', function () {
-                markdown.innerHTML=" @!["+dec.value+"]("+imageId+")"
+                markdown.innerHTML="@!["+dec.value+"]("+imageId+")"
             }, false);
 
             if(markdown.innerHTML==""){
-                markdown.innerHTML=" @![image]("+imageId+")"
+                markdown.innerHTML="@![image]("+imageId+")"
             }
 			imgBlock.removeChild(cover);
 			imgBlock.removeChild(process);
