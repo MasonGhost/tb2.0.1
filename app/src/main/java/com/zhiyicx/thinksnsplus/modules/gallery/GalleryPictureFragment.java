@@ -28,8 +28,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.stream.StreamModelLoader;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
@@ -303,8 +305,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .thumbnail(0.1f)
-                    .centerCrop();
+                    .thumbnail(0.1f);
             local.into(new GallarySimpleTarget(rect));
         } else {
             // 缩略图
@@ -397,8 +398,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                         }
 
 
-                                    })
-                                    .centerCrop();
+                                    });
                             if (imageBean.getWidth() * imageBean.getHeight() != 0) {
                                 builder.override(w, h);
                             }
@@ -418,8 +418,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             }
                             return false;
                         }
-                    })
-                    .centerCrop();
+                    });
 
             if (imageBean.getWidth() * imageBean.getHeight() != 0) {
                 requestBuilder.override(w, h);
@@ -616,25 +615,26 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         }
     }
 
-    private class GallarySimpleTarget extends SimpleTarget<GlideDrawable> {
+    private class GallarySimpleTarget extends GlideDrawableImageViewTarget {
         private AnimationRectBean rect;
 
         public GallarySimpleTarget(AnimationRectBean rect) {
-            super();
+            super(mIvPager);
             this.rect = rect;
         }
 
         @Override
         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+            super.onResourceReady(resource, glideAnimation);
             if (resource == null) {
                 return;
             }
             if (mPbProgress != null) {
                 mPbProgress.setVisibility(View.GONE);
             }
-            if (mIvPager != null) {
-                mIvPager.setImageDrawable(resource);
-            }
+//            if (mIvPager != null) {
+//                mIvPager.setImageDrawable(resource);
+//            }
             mPhotoViewAttacherNormal.update();
             // 获取到模糊图进行放大动画
             if (hasAnim) {
@@ -693,7 +693,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(1.0f)
                 .buildDescrStr(String.format(getString(resId) + getString(R
-                                .string.buy_pay_member), mImageBean.getToll().getToll_money(), mPresenter.getGoldName()))
+                        .string.buy_pay_member), mImageBean.getToll().getToll_money(), mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
