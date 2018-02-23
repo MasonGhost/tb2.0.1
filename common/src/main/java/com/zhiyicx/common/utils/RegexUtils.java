@@ -432,10 +432,16 @@ public class RegexUtils {
             }
             Matcher img = Pattern.compile("@!\\[.*?]\\((\\d+)\\)").matcher(need);
             if (img.find()) {
-                source = matcher.replaceFirst(img.group(0));
+                // 这儿每个标签前面要加空格，不知道为什么
+                String imgTag = " " + img.group(0);
+                if (TextUtils.isEmpty(imgTag)) {
+                    return source;
+                }
+                source = matcher.replaceFirst(imgTag);
             }
         }
         source = source.replaceAll("div", "p");
+        source = source.replaceAll("<p>", " <p>");
         return source;
     }
 
