@@ -36,7 +36,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class ChatRowPicture extends ChatBaseRow {
     private static final int DEFAULT_IMAGE_SIZE = 460;
     /**
-     * 显示本地图片最大为屏幕 2/3
+     * 显示本地图片最大为屏幕 2/5
      */
     private int mMaxLocalImageWith;
     /**
