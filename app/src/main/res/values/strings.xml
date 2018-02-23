@@ -1036,6 +1036,7 @@
     <string name="chat_set_group_name">群名称</string>
     <string name="chat_quit_group">退出群聊</string>
     <string name="chat_quit_group_alert">是否退出群组？</string>
+    <string name="shield_group_msg">你已屏蔽该群聊</string>
     <string name="chat_quit">退出</string>
     <string name="chat_edit_group_name_alert">编辑群名称，2–15个字符</string>
     <string name="chat_edit_group_name">编辑群名称</string>

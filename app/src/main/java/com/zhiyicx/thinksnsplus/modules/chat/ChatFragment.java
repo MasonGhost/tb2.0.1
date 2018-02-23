@@ -13,7 +13,9 @@ import android.widget.Toast;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
+import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.EaseUI;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
@@ -51,6 +53,7 @@ import org.simple.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.hyphenate.easeui.EaseConstant.EXTRA_CHAT_TYPE;
@@ -149,6 +152,19 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
         if (forwardMsgId != null) {
             forwardMessage(forwardMsgId);
         }
+
+        // 提示屏蔽信息
+        EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatUsername);
+        if (group.isMsgBlocked()) {
+            EMTextMessageBody txtBody = (EMTextMessageBody) conversation.getLatestMessageFromOthers().getBody();
+            if (getString(R.string.shield_group_msg).equals(txtBody.getMessage())) {
+                return;
+            }
+            EMMessage message = EMMessage.createTxtSendMessage(getString(R.string.shield_group_msg), toChatUsername);
+            message.setFrom("admin");
+            conversation.appendMessage(message);
+        }
+
     }
 
     @Override
