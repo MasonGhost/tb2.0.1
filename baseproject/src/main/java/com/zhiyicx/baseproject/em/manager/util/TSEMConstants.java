@@ -98,6 +98,11 @@ public class TSEMConstants {
      * 消息作用对象
      */
     public static final String TS_ATTR_TAG = "ts_attr_tag";
+
+    // 状态
+    public static final String ML_ATTR_STATUS = "ml_attr_status";
+    // 类型
+    public static final String ML_ATTR_TYPE = "ml_attr_type";
     // 会话未读
     public static final String ML_ATTR_UNREAD = "ml_attr_unread";
     // 用户名
