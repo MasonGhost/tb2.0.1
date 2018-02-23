@@ -57,6 +57,7 @@ import com.zhiyicx.baseproject.em.manager.util.TSEMessageUtils;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.utils.DealPhotoUtils;
 
 import java.io.File;
 import java.util.List;
@@ -165,7 +166,8 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
 
             @Override
             public boolean onPressToSpeakBtnTouch(View v, MotionEvent event) {
-                return voiceRecorderView.onPressToSpeakBtnTouch(v, event, (voiceFilePath, voiceTimeLength) -> sendVoiceMessage(voiceFilePath, voiceTimeLength));
+                return voiceRecorderView.onPressToSpeakBtnTouch(v, event, (voiceFilePath, voiceTimeLength) -> sendVoiceMessage(voiceFilePath,
+                        voiceTimeLength));
             }
 
             @Override
@@ -357,7 +359,8 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
         if (listView.getFirstVisiblePosition() == 0 && !isloading && haveMoreData) {
             List<EMMessage> messages;
             try {
-                messages = conversation.loadMoreMsgFromDB(conversation.getAllMessages().size() == 0 ? "" : conversation.getAllMessages().get(0).getMsgId(),
+                messages = conversation.loadMoreMsgFromDB(conversation.getAllMessages().size() == 0 ? "" : conversation.getAllMessages().get(0)
+                                .getMsgId(),
                         pagesize);
             } catch (Exception e1) {
                 swipeRefreshLayout.setRefreshing(false);
@@ -678,7 +681,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
     }
 
     protected void sendImageMessage(String imagePath) {
-        EMMessage message = EMMessage.createImageSendMessage(imagePath, false, toChatUsername);
+        EMMessage message = EMMessage.createImageSendMessage(imagePath, DealPhotoUtils.checkPhotoIsGif(imagePath), toChatUsername);
         sendMessage(message);
     }
 
@@ -933,12 +936,12 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
 
         @Override
         public void onUserRemoved(final String groupId, String groupName) {
-            TSEMessageUtils.sendEixtGroupMessage(groupId,groupName);
+            TSEMessageUtils.sendEixtGroupMessage(groupId, groupName);
         }
 
         @Override
         public void onGroupDestroyed(final String groupId, String groupName) {
-            TSEMessageUtils.sendEixtGroupMessage(groupId,groupName);
+            TSEMessageUtils.sendEixtGroupMessage(groupId, groupName);
         }
 
         @Override

@@ -18,6 +18,7 @@ import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,13 +34,13 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public class ChatRowPicture extends ChatBaseRow {
-    private static final int DEFAULT_IMAGE_SIZE = 420;
+    private static final int DEFAULT_IMAGE_SIZE = 460;
     /**
-     * 显示本地图片最大为屏幕一半
+     * 显示本地图片最大为屏幕 1/3
      */
     private int mMaxLocalImageWith;
     /**
-     * 网络图片通过计算去掉周边数据获得
+     * 网络图片通过计算去掉周边数据获得 / 或者使用和本地图片一样的规则
      */
     private int mMaxNetImageWith;
 
@@ -48,9 +49,11 @@ public class ChatRowPicture extends ChatBaseRow {
 
     public ChatRowPicture(Context context, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean chatUserInfoBean) {
         super(context, message, position, adapter, chatUserInfoBean);
-        mMaxLocalImageWith = DeviceUtils.getScreenWidth(context) / 2;
-        mMaxNetImageWith = DeviceUtils.getScreenWidth(context) - 3 * getResources().getDimensionPixelOffset(R.dimen.spacing_large) - getResources()
-                .getDimensionPixelOffset(R.dimen.headpic_for_list);
+        mMaxLocalImageWith = DeviceUtils.getScreenWidth(context)  / 3;
+//        mMaxNetImageWith = DeviceUtils.getScreenWidth(context) - 3 * getResources().getDimensionPixelOffset(R.dimen.spacing_large) - getResources()
+//                .getDimensionPixelOffset(R.dimen.headpic_for_list);
+        mMaxNetImageWith = DeviceUtils.getScreenWidth(context) / 3;
+
     }
 
     @Override
@@ -101,12 +104,7 @@ public class ChatRowPicture extends ChatBaseRow {
         layoutParams.width = width;
         layoutParams.height = height;
         mIvChatContent.setLayoutParams(layoutParams);
-        Glide.with(getContext())
-                .load(url)
-                .placeholder(R.drawable.shape_default_image)
-                .error(R.drawable.shape_default_error_image)
-                .centerCrop()
-                .into(mIvChatContent);
+        ImageUtils.loadImageDefault(mIvChatContent, url);
 
         int finalWidth = width;
         int finalHeight = height;
@@ -128,6 +126,23 @@ public class ChatRowPicture extends ChatBaseRow {
                     GalleryActivity.startToGallery(getContext(), 0, imageBeanList,
                             animationRectBeanArrayList);
                 });
+    }
+
+    @Override
+    protected void onViewUpdate(EMMessage msg) {
+        super.onViewUpdate(msg);
+        switch (msg.status()) {
+            case CREATE:
+                break;
+            case SUCCESS:
+                onSetUpView();
+                break;
+            case FAIL:
+                break;
+            case INPROGRESS:
+                break;
+            default:
+        }
     }
 
     public AppCompatImageView getIvChatContent() {
