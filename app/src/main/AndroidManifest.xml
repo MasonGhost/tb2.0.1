@@ -136,12 +136,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-            android:name=".modules.system_conversation.SystemConversationActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
-        </activity>
-        <activity
             android:name=".modules.settings.aboutus.CustomWEBActivity"
             android:screenOrientation="portrait">
         </activity>
