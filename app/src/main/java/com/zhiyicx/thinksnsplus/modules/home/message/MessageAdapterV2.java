@@ -14,9 +14,11 @@ import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
 import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
 import com.daimajia.swipe.util.Attributes;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
+import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
@@ -31,6 +33,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -81,8 +84,8 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                 ImageUtils.loadUserHead(TSEMHyphenate.getInstance().getChatUser(messageItemBean.getEmKey()), userAvatarView, false);
                 // 响应事件
                 holder.setText(R.id.tv_name, TSEMHyphenate.getInstance().getChatUser(messageItemBean.getEmKey()).getName());
-                setUserInfoClick(holder.getView(R.id.tv_name), messageItemBean.getUserInfo());
-                setUserInfoClick(holder.getView(R.id.iv_headpic), messageItemBean.getUserInfo());
+                setUserInfoClick(holder.getView(R.id.tv_name), messageItemBean);
+                setUserInfoClick(holder.getView(R.id.iv_headpic), messageItemBean);
                 swipeLayout.setSwipeEnabled(true);
                 break;
             case GroupChat:
@@ -269,7 +272,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
         mItemManger.setMode(mode);
     }
 
-    private void setUserInfoClick(View v, final UserInfoBean userInfoBean) {
+    private void setUserInfoClick(View v, final MessageItemBeanV2 messageItemBean) {
         RxView.clicks(v)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
@@ -277,9 +280,8 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                         closeAllItems();
                         return;
                     }
-                    if (mOnUserInfoClickListener != null) {
-                        mOnUserInfoClickListener.onUserInfoClick(userInfoBean);
-                    }
+                    ChatActivity.startChatActivity(mContext, messageItemBean.getConversation().conversationId()
+                            , messageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat ? EaseConstant.CHATTYPE_SINGLE : EaseConstant.CHATTYPE_GROUP);
                 });
     }
 

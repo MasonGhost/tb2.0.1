@@ -225,7 +225,7 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                                     messageItemBeanList.add(itemBeanV2);
                                                 }
                                             }
-                                            list1.addAll(messageItemBeanList);
+                                            list1.addAll(0,messageItemBeanList);
                                             return Observable.just(list1);
                                         });
                             });
