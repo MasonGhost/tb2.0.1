@@ -19,11 +19,6 @@ public class QuestionDraftItem extends BaseDraftItem<QAPublishBean> {
     }
 
     @Override
-    public int getItemViewLayoutId() {
-        return R.layout.item_draft;
-    }
-
-    @Override
     public boolean isForViewType(BaseDraftBean item, int position) {
         return item instanceof QAPublishBean;
     }
