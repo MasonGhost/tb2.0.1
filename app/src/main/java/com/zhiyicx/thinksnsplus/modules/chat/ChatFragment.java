@@ -30,6 +30,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.TSEaseChatFragment;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
@@ -67,7 +68,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_DELETE_
  */
 
 public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
-        implements TSEaseChatFragment.EaseChatFragmentHelper, ChatContract.View,EaseChatRow.OnTipMsgClickListener {
+        implements TSEaseChatFragment.EaseChatFragmentHelper, ChatContract.View, EaseChatRow.OnTipMsgClickListener {
 
     private static final int REQUEST_CODE_SELECT_VIDEO = 11;
     private static final int REQUEST_CODE_SELECT_FILE = 12;
@@ -144,7 +145,7 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
         dialog.setListener(new LinkDialog.OnDialogClickListener() {
             @Override
             public void onConfirmButtonClick(String name, String url) {
-                ChatGroupBean groupBean=mPresenter.getChatGroupInfo(toChatUsername);
+                ChatGroupBean groupBean = mPresenter.getChatGroupInfo(toChatUsername);
                 groupBean.setName(url);
                 mPresenter.updateGroupName(groupBean);
                 dialog.dismiss();
@@ -369,10 +370,20 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
                 // single chat message
                 username = message.getFrom();
             }
-            boolean isUserJoin, isUserExit;
+            // 从左到右依次：用户加入，用户退出，创建群聊，屏蔽/接收群消息，该群消息作用对象是否是自己
+            boolean isUserJoin, isUserExit, isCreate, isBlock, userTag;
 
             isUserJoin = TSEMConstants.TS_ATTR_JOIN.equals(message.ext().get("type"));
             isUserExit = TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"));
+            isCreate = message.getBooleanAttribute(TSEMConstants.TS_ATTR_GROUP_CRATE, false);
+            isBlock = message.getBooleanAttribute(TSEMConstants.TS_ATTR_BLOCK, false);
+            userTag = AppApplication.getMyUserIdWithdefault() == message.getLongAttribute(TSEMConstants.TS_ATTR_TAG, -1L);
+
+            if (isCreate || isBlock) {
+                if (!userTag) {
+                    return;
+                }
+            }
 
             if (isUserExit || isUserJoin) {
                 // 只有群聊中才会有 成员 加入or退出的消息

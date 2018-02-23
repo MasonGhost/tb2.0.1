@@ -88,10 +88,16 @@ public class TSEMConstants {
      * 用户修改群信息
      */
     public static final String TS_ATTR_GROUP_CHANGE = "ts_group_change";
-    // 状态
-    public static final String ML_ATTR_STATUS = "ml_attr_status";
-    // 类型
-    public static final String ML_ATTR_TYPE = "ml_attr_type";
+
+    /**
+     * 屏蔽群消息
+     */
+    public static final String TS_ATTR_BLOCK = "ts_attr_block";
+
+    /**
+     * 消息作用对象
+     */
+    public static final String TS_ATTR_TAG = "ts_attr_tag";
     // 会话未读
     public static final String ML_ATTR_UNREAD = "ml_attr_unread";
     // 用户名

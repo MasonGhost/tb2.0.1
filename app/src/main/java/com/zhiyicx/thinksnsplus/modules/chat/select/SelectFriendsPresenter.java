@@ -185,6 +185,7 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                             message.setFrom("admin");
                             message.setTo(groupInfo.getId());
                             message.setAttribute(TSEMConstants.TS_ATTR_GROUP_CRATE,true);
+                            message.setAttribute(TSEMConstants.TS_ATTR_TAG,AppApplication.getMyUserIdWithdefault());
                             message.setChatType(EMMessage.ChatType.GroupChat);
                             EMClient.getInstance().chatManager().sendMessage(message);
                         } catch (HyphenateException e) {
