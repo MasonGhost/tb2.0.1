@@ -36,7 +36,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class ChatRowPicture extends ChatBaseRow {
     private static final int DEFAULT_IMAGE_SIZE = 460;
     /**
-     * 显示本地图片最大为屏幕 2/5
+     * 显示本地图片最大为屏幕 1/3
      */
     private int mMaxLocalImageWith;
     /**
@@ -49,10 +49,10 @@ public class ChatRowPicture extends ChatBaseRow {
 
     public ChatRowPicture(Context context, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean chatUserInfoBean) {
         super(context, message, position, adapter, chatUserInfoBean);
-        mMaxLocalImageWith = DeviceUtils.getScreenWidth(context) * 2 / 5;
+        mMaxLocalImageWith = DeviceUtils.getScreenWidth(context)  / 3;
 //        mMaxNetImageWith = DeviceUtils.getScreenWidth(context) - 3 * getResources().getDimensionPixelOffset(R.dimen.spacing_large) - getResources()
 //                .getDimensionPixelOffset(R.dimen.headpic_for_list);
-        mMaxNetImageWith = DeviceUtils.getScreenWidth(context) * 2 / 5;
+        mMaxNetImageWith = DeviceUtils.getScreenWidth(context) / 3;
 
     }
 
