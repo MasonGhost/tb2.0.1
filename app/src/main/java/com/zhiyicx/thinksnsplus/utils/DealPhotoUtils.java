@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.os.Environment;
+import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.config.PathConfig;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -221,5 +222,14 @@ public class DealPhotoUtils {
             e.printStackTrace();
         }
 
+    }
+
+    public static boolean checkPhotoIsGif(String path) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, options);
+        String type = options.outMimeType;
+        LogUtils.d("type", type);
+        return !(TextUtils.isEmpty(type) || !type.contains("gif"));
     }
 }
