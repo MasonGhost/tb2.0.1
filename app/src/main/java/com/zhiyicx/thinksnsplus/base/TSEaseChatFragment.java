@@ -49,6 +49,7 @@ import com.hyphenate.easeui.widget.EaseChatInputMenu;
 import com.hyphenate.easeui.widget.EaseChatInputMenu.ChatInputMenuListener;
 import com.hyphenate.easeui.widget.EaseChatMessageList;
 import com.hyphenate.easeui.widget.EaseVoiceRecorderView;
+import com.hyphenate.easeui.widget.chatrow.EaseChatRow;
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.EMLog;
@@ -221,7 +222,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
         }
         if (chatType != EaseConstant.CHATTYPE_CHATROOM) {
             onConversationInit();
-            onMessageListInit();
+            onMessageListInit(null);
         }
 
         setRefreshLayoutListener();
@@ -295,9 +296,9 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
         }
     }
 
-    protected void onMessageListInit() {
+    protected void onMessageListInit(EaseChatRow.OnTipMsgClickListener onTipMsgClickListener) {
         messageList.init(toChatUsername, chatType, chatFragmentHelper != null ?
-                chatFragmentHelper.onSetCustomChatRowProvider() : null, null);
+                chatFragmentHelper.onSetCustomChatRowProvider() : null, onTipMsgClickListener);
         setListItemClickListener();
 
         messageList.getListView().setOnTouchListener((v, event) -> {
@@ -520,7 +521,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
                         setCenterText(toChatUsername);
                     }
                     onConversationInit();
-                    onMessageListInit();
+                    onMessageListInit(null);
                 });
             }
 

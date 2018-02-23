@@ -315,7 +315,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
     
     protected void onMessageListInit(){
         messageList.init(toChatUsername, chatType, chatFragmentHelper != null ? 
-                chatFragmentHelper.onSetCustomChatRowProvider() : null, mUserInfoBeans);
+                chatFragmentHelper.onSetCustomChatRowProvider() : null, null);
         setListItemClickListener();
         
         messageList.getListView().setOnTouchListener(new OnTouchListener() {

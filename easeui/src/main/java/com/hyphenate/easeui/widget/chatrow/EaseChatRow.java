@@ -35,6 +35,17 @@ public abstract class EaseChatRow extends LinearLayout {
         void onDetachedFromWindow();
     }
 
+    public interface OnTipMsgClickListener {
+        void onTipMsgClick(TipMsgType tipMsgType);
+    }
+
+    public enum TipMsgType {
+        /**
+         * 创建群聊
+         */
+        CREATE_GROUP
+    }
+
     protected static final String TAG = EaseChatRow.class.getSimpleName();
 
     protected LayoutInflater inflater;

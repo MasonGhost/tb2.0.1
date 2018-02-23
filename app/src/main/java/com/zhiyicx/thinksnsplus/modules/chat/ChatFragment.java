@@ -13,15 +13,15 @@ import android.widget.Toast;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
-import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
-import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.EaseUI;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
+import com.hyphenate.easeui.widget.chatrow.EaseChatRow;
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
 import com.hyphenate.util.PathUtil;
+import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
@@ -53,7 +53,6 @@ import org.simple.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.hyphenate.easeui.EaseConstant.EXTRA_CHAT_TYPE;
@@ -68,7 +67,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_DELETE_
  */
 
 public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
-        implements TSEaseChatFragment.EaseChatFragmentHelper, ChatContract.View {
+        implements TSEaseChatFragment.EaseChatFragmentHelper, ChatContract.View,EaseChatRow.OnTipMsgClickListener {
 
     private static final int REQUEST_CODE_SELECT_VIDEO = 11;
     private static final int REQUEST_CODE_SELECT_FILE = 12;
@@ -135,6 +134,31 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
     }
 
     @Override
+    public void setGoupName(String name) {
+        setCenterText(name);
+    }
+
+    @Override
+    public void onTipMsgClick(EaseChatRow.TipMsgType tipMsgType) {
+        LinkDialog dialog = createLinkDialog();
+        dialog.setListener(new LinkDialog.OnDialogClickListener() {
+            @Override
+            public void onConfirmButtonClick(String name, String url) {
+                ChatGroupBean groupBean=mPresenter.getChatGroupInfo(toChatUsername);
+                groupBean.setName(url);
+                mPresenter.updateGroupName(groupBean);
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onCancelButtonClick() {
+                dialog.dismiss();
+            }
+        });
+        dialog.show(getFragmentManager(), LinkDialog.Tag);
+    }
+
+    @Override
     protected void setUpView() {
         setChatFragmentHelper(this);
         if (chatType == EaseConstant.CHATTYPE_SINGLE) {
@@ -144,7 +168,7 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
         }
         if (chatType != EaseConstant.CHATTYPE_CHATROOM) {
             onConversationInit();
-            onMessageListInit();
+            onMessageListInit(this);
         }
         setRefreshLayoutListener();
         // show forward message if the message is not null
@@ -152,19 +176,6 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
         if (forwardMsgId != null) {
             forwardMessage(forwardMsgId);
         }
-
-        // 提示屏蔽信息
-        EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatUsername);
-        if (group.isMsgBlocked()) {
-            EMTextMessageBody txtBody = (EMTextMessageBody) conversation.getLatestMessageFromOthers().getBody();
-            if (getString(R.string.shield_group_msg).equals(txtBody.getMessage())) {
-                return;
-            }
-            EMMessage message = EMMessage.createTxtSendMessage(getString(R.string.shield_group_msg), toChatUsername);
-            message.setFrom("admin");
-            conversation.appendMessage(message);
-        }
-
     }
 
     @Override
@@ -572,6 +583,13 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
                 .isOutsideTouch(true)
                 .build();
         mActionPopupWindow.show();
+    }
+
+    private LinkDialog createLinkDialog() {
+        return LinkDialog.createLinkDialog()
+                .setUrlHinit(getString(R.string.chat_edit_group_name_alert))
+                .setTitleStr(getString(R.string.chat_edit_group_name))
+                .setNameVisible(false);
     }
 
     @Override

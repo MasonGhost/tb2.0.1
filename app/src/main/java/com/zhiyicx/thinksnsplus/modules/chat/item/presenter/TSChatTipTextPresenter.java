@@ -21,4 +21,9 @@ public class TSChatTipTextPresenter extends EaseChatTextPresenter {
     protected EaseChatRow onCreateChatRow(Context cxt, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean userInfoBean) {
         return new ChatRowTipText(cxt, message, position, adapter, userInfoBean);
     }
+
+    @Override
+    protected EaseChatRow onCreateChatRow(Context cxt, EMMessage message, int position, BaseAdapter adapter, EaseChatRow.OnTipMsgClickListener onTipMsgClickListener) {
+        return new ChatRowTipText(cxt, message, position, adapter, onTipMsgClickListener);
+    }
 }

@@ -58,6 +58,13 @@ public abstract class EaseChatRowPresenter implements EaseChatRow.EaseChatRowAct
         return chatRow;
     }
 
+    public EaseChatRow createChatRow(Context cxt, EMMessage message, int position, BaseAdapter adapter, EaseChatRow.OnTipMsgClickListener onTipMsgClickListener) {
+        this.context = cxt;
+        this.adapter = adapter;
+        chatRow = onCreateChatRow(cxt, message, position, adapter, onTipMsgClickListener);
+        return chatRow;
+    }
+
     public void setup(EMMessage msg, int position,
                       EaseChatMessageList.MessageListItemClickListener itemClickListener,
                       EaseMessageListItemStyle itemStyle) {
@@ -110,6 +117,9 @@ public abstract class EaseChatRowPresenter implements EaseChatRow.EaseChatRowAct
     }
 
     protected abstract EaseChatRow onCreateChatRow(Context cxt, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean userInfoBean);
+    protected EaseChatRow onCreateChatRow(Context cxt, EMMessage message, int position, BaseAdapter adapter, EaseChatRow.OnTipMsgClickListener onTipMsgClickListener){
+        return null;
+    }
 
     protected EaseChatRow getChatRow() {
         return chatRow;

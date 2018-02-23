@@ -8,10 +8,13 @@ import android.text.TextUtils;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMGroup;
+import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.bean.ChatVerifiedBean;
+import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.hyphenate.exceptions.HyphenateException;
+import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -178,6 +181,12 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                         EMGroup group = null;
                         try {
                             group = EMClient.getInstance().groupManager().getGroupFromServer(groupInfo.getId());
+                            EMMessage message = EMMessage.createTxtSendMessage(mContext.getString(R.string.super_edit_group_name), groupInfo.getId());
+                            message.setFrom("admin");
+                            message.setTo(groupInfo.getId());
+                            message.setAttribute(TSEMConstants.TS_ATTR_GROUP_CRATE,true);
+                            message.setChatType(EMMessage.ChatType.GroupChat);
+                            EMClient.getInstance().chatManager().sendMessage(message);
                         } catch (HyphenateException e) {
                             e.printStackTrace();
                         }
@@ -195,6 +204,7 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                             data.setAllowinvites(false);
                             data.setIsPublic(false);
                             data.setOwner(list.get(0).getUser_id());
+                            data.setDescription(groupIntro);
                             data.setAffiliations_count(list.size());
                             data.setAffiliations(list);
                             mChatGroupBeanGreenDao.saveSingleData(data);

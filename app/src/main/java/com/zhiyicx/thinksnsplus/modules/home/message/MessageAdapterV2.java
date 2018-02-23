@@ -78,6 +78,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
         // 右边
         final SwipeLayout swipeLayout = holder.getView(R.id.swipe);
         UserAvatarView userAvatarView = holder.getView(R.id.iv_headpic);
+        holder.getTextView(R.id.tv_time).setCompoundDrawables(null, null, null, null);
         switch (messageItemBean.getConversation().getType()) {
             case Chat:
                 // 私聊

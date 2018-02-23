@@ -3,7 +3,14 @@ package com.zhiyicx.thinksnsplus.modules.chat.info;
 import android.os.Bundle;
 
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMGroup;
+import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMTextMessageBody;
+import com.hyphenate.easeui.EaseConstant;
+import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.hyphenate.exceptions.HyphenateException;
+import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -109,11 +116,19 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
                     @Override
                     public void onCompleted() {
                         try {
+                            EMMessage message;
                             if (isChecked) {
                                 EMClient.getInstance().groupManager().blockGroupMessage(chatId);
+                                // 提示屏蔽信息
+                                message = EMMessage.createTxtSendMessage(mContext.getString(R.string.shield_group_msg), chatId);
                             } else {
                                 EMClient.getInstance().groupManager().unblockGroupMessage(chatId);
+                                message = EMMessage.createTxtSendMessage(mContext.getString(R.string.unshield_group_msg), chatId);
                             }
+                            message.setFrom("admin");
+                            message.setTo(chatId);
+                            message.setChatType(EMMessage.ChatType.GroupChat);
+                            EMClient.getInstance().chatManager().sendMessage(message);
                         } catch (HyphenateException e) {
                             e.printStackTrace();
                             mRootView.showSnackErrorMessage(mContext.getString(R.string.bill_doing_fialed));
@@ -198,6 +213,12 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
                     try {
                         // 获取环信群组信息
                         EMClient.getInstance().groupManager().getGroupFromServer(groupInfo.getId());
+                        EMMessage message = EMMessage.createTxtSendMessage(mContext.getString(R.string.super_edit_group_name), groupInfo.getId());
+                        message.setAttribute(TSEMConstants.TS_ATTR_GROUP_CRATE,true);
+                        message.setFrom("admin");
+                        message.setTo(groupInfo.getId());
+                        message.setChatType(EMMessage.ChatType.GroupChat);
+                        EMClient.getInstance().chatManager().sendMessage(message);
                     } catch (HyphenateException e) {
                         e.printStackTrace();
                     }

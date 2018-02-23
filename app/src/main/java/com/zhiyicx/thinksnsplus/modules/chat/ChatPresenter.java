@@ -3,8 +3,10 @@ package com.zhiyicx.thinksnsplus.modules.chat;
 import com.hyphenate.chat.EMMessage;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.ChatGroupBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseFriendsRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -29,7 +32,8 @@ public class ChatPresenter extends AppBasePresenter<ChatContract.View> implement
     UserInfoRepository mUserInfoRepository;
     @Inject
     ChatGroupBeanGreenDaoImpl mChatGroupBeanGreenDao;
-
+    @Inject
+    BaseFriendsRepository mBaseFriendsRepository;
 
     @Inject
     public ChatPresenter(ChatContract.View rootView) {
@@ -72,6 +76,38 @@ public class ChatPresenter extends AppBasePresenter<ChatContract.View> implement
     }
 
     @Override
+    public void updateGroupName(ChatGroupBean chatGroupBean) {
+        if (chatGroupBean == null) {
+            return;
+        }
+        Subscription subscription = mBaseFriendsRepository.updateGroup(chatGroupBean.getId(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0, 200, chatGroupBean.isMembersonly(),
+                0, chatGroupBean.getGroup_face(), false, "")
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage("修改中..."))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<ChatGroupBean>() {
+                    @Override
+                    protected void onSuccess(ChatGroupBean data) {
+                        mChatGroupBeanGreenDao.saveSingleData(chatGroupBean);
+                        mRootView.setGoupName(data.getName() + "(" + chatGroupBean.getAffiliations_count() + ")");
+                        mRootView.dismissSnackBar();
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        mRootView.showSnackErrorMessage(e.getMessage());
+                    }
+                });
+        addSubscrebe(subscription);
+    }
+
+    @Override
     public String getUserName(String id) {
         return mUserInfoBeanGreenDao.getUserName(id);
     }
@@ -83,6 +119,11 @@ public class ChatPresenter extends AppBasePresenter<ChatContract.View> implement
         } catch (Exception e) {
             return "未知用户";
         }
+    }
+
+    @Override
+    public ChatGroupBean getChatGroupInfo(String id) {
+        return mChatGroupBeanGreenDao.getChatGroupBeanById(id);
     }
 
     /**
