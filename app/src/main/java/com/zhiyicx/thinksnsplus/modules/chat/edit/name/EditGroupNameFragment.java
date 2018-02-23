@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.chat.edit.name;
 
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 
@@ -26,6 +28,7 @@ import rx.functions.Action1;
 public class EditGroupNameFragment extends TSFragment<EditGroupNameContract.Presenter> implements EditGroupNameContract.View {
 
     private static final int GROUP_NAME_MIN_LENGTH = 2;
+    private static final int GROUP_NAME_MAX_LENGTH = 15;
     public static final String GROUP_ORIGINAL_NAME = "group_original_name";
 
     @BindView(R.id.edit_input)
@@ -49,6 +52,8 @@ public class EditGroupNameFragment extends TSFragment<EditGroupNameContract.Pres
     protected void initData() {
         mOldName = getArguments().getString(GROUP_ORIGINAL_NAME);
         mEditInput.setHint(mOldName);
+        mEditInput.setFilters(new InputFilter[]{RegexUtils.getEmojiFilter(),
+                new InputFilter.LengthFilter(GROUP_NAME_MAX_LENGTH)});
         RxTextView.textChanges(mEditInput)
                 .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
