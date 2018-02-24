@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -28,8 +29,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.stream.StreamModelLoader;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
@@ -300,12 +303,10 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         if (imageBean.getImgUrl() != null) {
             DrawableRequestBuilder local = Glide.with(context)
                     .load(imageBean.getImgUrl())
-                    .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .thumbnail(0.1f)
-                    .centerCrop();
-            local.into(new GallarySimpleTarget(rect));
+                    .thumbnail(0.1f);
+            local.into(new GallaryGlideDrawableImageViewTarget(rect));
         } else {
             // 缩略图
             DrawableRequestBuilder thumbnailBuilder = Glide
@@ -344,9 +345,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 if (mPbProgress != null) {
                                     mPbProgress.setVisibility(View.GONE);
                                 }
-                                if (mIvPager != null) {
-                                    mIvPager.setImageResource(R.drawable.shape_default_image);
-                                }
                                 mPhotoViewAttacherNormal.update();
                                 mLlToll.setVisibility(View.VISIBLE);
                             }
@@ -372,7 +370,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                                     params.width = params.height = 300;
                                                 }
                                                 mIvPager.setLayoutParams(params);
-                                                mIvPager.setImageResource(R.drawable.shape_default_image);
                                             }
                                             mTvOriginPhoto.setText(getString(R.string.see_origin_photos_failure));
                                             mPhotoViewAttacherNormal.update();
@@ -397,8 +394,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                         }
 
 
-                                    })
-                                    .centerCrop();
+                                    });
                             if (imageBean.getWidth() * imageBean.getHeight() != 0) {
                                 builder.override(w, h);
                             }
@@ -418,8 +414,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             }
                             return false;
                         }
-                    })
-                    .centerCrop();
+                    });
 
             if (imageBean.getWidth() * imageBean.getHeight() != 0) {
                 requestBuilder.override(w, h);
@@ -616,12 +611,37 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         }
     }
 
+    private class GallaryGlideDrawableImageViewTarget extends GlideDrawableImageViewTarget {
+        private AnimationRectBean rect;
+
+        GallaryGlideDrawableImageViewTarget(AnimationRectBean rect) {
+            super(mIvPager);
+            this.rect = rect;
+
+        }
+
+        @Override
+        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+            super.onResourceReady(resource, glideAnimation);
+            if (mPbProgress != null) {
+                mPbProgress.setVisibility(View.GONE);
+            }
+            mPhotoViewAttacherNormal.update();
+            // 获取到模糊图进行放大动画
+            if (hasAnim) {
+                hasAnim = false;
+                startInAnim(rect);
+            }
+        }
+    }
+
     private class GallarySimpleTarget extends SimpleTarget<GlideDrawable> {
         private AnimationRectBean rect;
 
-        public GallarySimpleTarget(AnimationRectBean rect) {
+        GallarySimpleTarget(AnimationRectBean rect) {
             super();
             this.rect = rect;
+
         }
 
         @Override
@@ -642,9 +662,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 startInAnim(rect);
             }
         }
-
-
     }
+
 
     private static final StreamModelLoader<String> CACHE_ONLY_STREAM_LOADER
             = (model, i, i1) -> new DataFetcher<InputStream>() {
@@ -693,7 +712,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(1.0f)
                 .buildDescrStr(String.format(getString(resId) + getString(R
-                                .string.buy_pay_member), mImageBean.getToll().getToll_money(), mPresenter.getGoldName()))
+                        .string.buy_pay_member), mImageBean.getToll().getToll_money(), mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
