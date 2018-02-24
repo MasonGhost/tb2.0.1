@@ -943,6 +943,7 @@ public class TSEMHyphenate {
 
             @Override
             public void onMemberExited(final String groupId, final String member) {
+//                TSEMessageUtils.sendGroupMemberJoinOrExitMessage(groupId,member,false,null);
             }
 
             @Override

@@ -94,14 +94,14 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
             return;
         }
         saveQuestion();
-        if (PublishQuestionFragment.mDraftQuestion.isHasAgainEdite() && (PublishQuestionFragment.mDraftQuestion.getAmount() > 0 || PublishQuestionFragment.mDraftQuestion.isHasAdoption())) {
-            PublishQuestionFragment.mDraftQuestion.setAmount(0);
-            mPresenter.updateQuestion(PublishQuestionFragment.mDraftQuestion);
+        if (PublishQuestionFragment.gDraftQuestion.isHasAgainEdite() && (PublishQuestionFragment.gDraftQuestion.getAmount() > 0 || PublishQuestionFragment.gDraftQuestion.isHasAdoption())) {
+            PublishQuestionFragment.gDraftQuestion.setAmount(0);
+            mPresenter.updateQuestion(PublishQuestionFragment.gDraftQuestion);
             return;
         }
         Intent intent = new Intent(getActivity(), QARewardActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, PublishQuestionFragment.mDraftQuestion);
+        bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, PublishQuestionFragment.gDraftQuestion);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -120,7 +120,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     @Override
     public void updateSuccess(QAListInfoBean listInfoBean) {
         mQAListInfoBean = listInfoBean;
-        mQAListInfoBean.setId(PublishQuestionFragment.mDraftQuestion.getId());
+        mQAListInfoBean.setId(PublishQuestionFragment.gDraftQuestion.getId());
     }
 
     private void saveQuestion() {
@@ -131,9 +131,9 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
             typeIds.setName(qaTopicBean.getName());
             typeIdsList.add(typeIds);
         }
-        PublishQuestionFragment.mDraftQuestion.setTopics(typeIdsList);
-//        PublishQuestionFragment.mDraftQuestion.setSubject(mEtQustion.getText().toString());
-        mPresenter.saveQuestion(PublishQuestionFragment.mDraftQuestion);
+        PublishQuestionFragment.gDraftQuestion.setTopics(typeIdsList);
+//        PublishQuestionFragment.gDraftQuestion.setSubject(mEtQustion.getText().toString());
+        mPresenter.saveQuestion(PublishQuestionFragment.gDraftQuestion);
     }
 
     @Override
@@ -197,13 +197,13 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     protected void initData() {
         super.initData();
 
-        if (PublishQuestionFragment.mDraftQuestion.isHasAgainEdite() && PublishQuestionFragment.mDraftQuestion.getAmount() > 0) {
+        if (PublishQuestionFragment.gDraftQuestion.isHasAgainEdite() && PublishQuestionFragment.gDraftQuestion.getAmount() > 0) {
             mToolbarRight.setText(getString(R.string.publish));
         }
 
         mMaxTagNums = getResources().getInteger(R.integer.tag_max_nums);
 
-        QAPublishBean draft = mPresenter.getDraftQuestion(PublishQuestionFragment.mDraftQuestion.getMark());
+        QAPublishBean draft = mPresenter.getDraftQuestion(PublishQuestionFragment.gDraftQuestion.getMark());
         if (draft != null) {
             List<QAPublishBean.Topic> topics = draft.getTopics();
             if (topics != null && !topics.isEmpty()) {
@@ -270,7 +270,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     private void goToQuestionDetail() {
         if (mQAListInfoBean != null) {
             EventBus.getDefault().post(new Bundle(), EventBusTagConfig.EVENT_PUBLISH_QUESTION);
-            PublishQuestionFragment.mDraftQuestion = null;
+            PublishQuestionFragment.gDraftQuestion = null;
             Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putSerializable(BUNDLE_QUESTION_BEAN, mQAListInfoBean);

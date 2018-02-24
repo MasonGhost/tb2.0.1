@@ -564,7 +564,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     private void goToQuestionDetail() {
         if (mQaListInfoBean != null) {
             EventBus.getDefault().post(new Bundle(), EventBusTagConfig.EVENT_PUBLISH_QUESTION);
-            PublishQuestionFragment.mDraftQuestion = null;
+            PublishQuestionFragment.gDraftQuestion = null;
             Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putSerializable(BUNDLE_QUESTION_BEAN, mQaListInfoBean);

@@ -68,9 +68,9 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
 
     @Override
     protected PostDraftBean getDraftData() {
-        if (PublishQuestionFragment.mDraftQuestion != null && !TextUtils.isEmpty(PublishQuestionFragment.mDraftQuestion.getBody())) {
+        if (PublishQuestionFragment.gDraftQuestion != null && !TextUtils.isEmpty(PublishQuestionFragment.gDraftQuestion.getBody())) {
             mDraftBean = new PostDraftBean();
-            mDraftBean.setHtml(getHtml("", pareseBody(PublishQuestionFragment.mDraftQuestion.getBody())));
+            mDraftBean.setHtml(getHtml("", pareseBody(PublishQuestionFragment.gDraftQuestion.getBody())));
         }
         return mDraftBean;
     }
@@ -125,7 +125,7 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
     @Override
     protected void handlePublish(String title, String markdwon, String noMarkdown, String html) {
         super.handlePublish(title, markdwon, noMarkdown, html);
-        PublishQuestionFragment.mDraftQuestion.setBody(markdwon);
+        PublishQuestionFragment.gDraftQuestion.setBody(markdwon);
         if (!isBack) {
             Intent intent = new Intent(getActivity(), AddTopicActivity.class);
             startActivity(intent);
@@ -170,8 +170,8 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
     }
 
     protected void setAnnoyVisible(boolean visible) {
-        boolean isAnnoy = mAnonymity == 1 || PublishQuestionFragment.mDraftQuestion != null
-                && PublishQuestionFragment.mDraftQuestion.getAnonymity() == 1;
+        boolean isAnnoy = mAnonymity == 1 || PublishQuestionFragment.gDraftQuestion != null
+                && PublishQuestionFragment.gDraftQuestion.getAnonymity() == 1;
         mSwitchAnony.setChecked(isAnnoy);
         mLLAnony.setVisibility(visible ? View.VISIBLE : View.GONE);
 
@@ -198,16 +198,16 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
                             }
                             mAnonymityAlertPopWindow.dismiss();
                             mAnonymity = 1;
-                            if (PublishQuestionFragment.mDraftQuestion != null) {
-                                PublishQuestionFragment.mDraftQuestion.setAnonymity(1);
+                            if (PublishQuestionFragment.gDraftQuestion != null) {
+                                PublishQuestionFragment.gDraftQuestion.setAnonymity(1);
                             }
                         }
 
                         @Override
                         public void onLeftClicked() {
                             mAnonymityAlertPopWindow.dismiss();
-                            if (PublishQuestionFragment.mDraftQuestion != null) {
-                                PublishQuestionFragment.mDraftQuestion.setAnonymity(0);
+                            if (PublishQuestionFragment.gDraftQuestion != null) {
+                                PublishQuestionFragment.gDraftQuestion.setAnonymity(0);
                             }
                             mCbSynToDynamic.setChecked(false);
                             mAnonymity = 0;
@@ -222,8 +222,8 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
             mAnonymityAlertPopWindow.dismiss();
         }
         mAnonymity = isChecked ? 1 : 0;
-        if (PublishQuestionFragment.mDraftQuestion != null) {
-            PublishQuestionFragment.mDraftQuestion.setAnonymity(mAnonymity);
+        if (PublishQuestionFragment.gDraftQuestion != null) {
+            PublishQuestionFragment.gDraftQuestion.setAnonymity(mAnonymity);
         }
     }
 

@@ -94,7 +94,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                 // 群组
                 ChatGroupBean chatGroupBean = messageItemBean.getChatGroupBean();
                 EMGroup group = EMClient.getInstance().groupManager().getGroup(messageItemBean.getEmKey());
-                if (group.isMsgBlocked()) {
+                if (group != null && group.isMsgBlocked()) {
                     holder.getTextView(R.id.tv_time).setCompoundDrawablePadding(mContext.getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.spacing_small));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                         holder.getTextView(R.id.tv_time).setCompoundDrawablesRelative(UIUtils.getCompoundDrawables(mContext, R.mipmap.ico_newslist_shield), null, null, null);

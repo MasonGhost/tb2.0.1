@@ -12,6 +12,7 @@ import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.hyphenate.exceptions.HyphenateException;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
+import com.zhiyicx.baseproject.em.manager.util.TSEMessageUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -86,6 +87,7 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
                         } else {
                             // 退群
                             EMClient.getInstance().groupManager().leaveGroup(id);
+                            TSEMessageUtils.sendGroupMemberJoinOrExitMessage(id,AppApplication.getmCurrentLoginAuth().getUser().getName()+"退出了群聊",false,null);
                         }
                         return Observable.just(id);
                     } catch (HyphenateException e) {

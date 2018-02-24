@@ -142,6 +142,7 @@ public class TSEMessageUtils {
         message.setMsgTime(currTime);
         // 设置消息的扩展
         message.setAttribute("type", TSEMConstants.TS_ATTR_JOIN);
+        message.setFrom(to);
         message.setAttribute(TSEMConstants.TS_ATTR_JOIN, isJoin);
         message.setAttribute(TSEMConstants.TS_ATTR_EIXT, !isJoin);
 
