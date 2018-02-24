@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -302,11 +303,10 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         if (imageBean.getImgUrl() != null) {
             DrawableRequestBuilder local = Glide.with(context)
                     .load(imageBean.getImgUrl())
-                    .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .thumbnail(0.1f);
-            local.into(new GallarySimpleTarget(rect));
+            local.into(new GallaryGlideDrawableImageViewTarget(rect));
         } else {
             // 缩略图
             DrawableRequestBuilder thumbnailBuilder = Glide
@@ -345,9 +345,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 if (mPbProgress != null) {
                                     mPbProgress.setVisibility(View.GONE);
                                 }
-                                if (mIvPager != null) {
-                                    mIvPager.setImageResource(R.drawable.shape_default_image);
-                                }
                                 mPhotoViewAttacherNormal.update();
                                 mLlToll.setVisibility(View.VISIBLE);
                             }
@@ -373,7 +370,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                                     params.width = params.height = 300;
                                                 }
                                                 mIvPager.setLayoutParams(params);
-                                                mIvPager.setImageResource(R.drawable.shape_default_image);
                                             }
                                             mTvOriginPhoto.setText(getString(R.string.see_origin_photos_failure));
                                             mPhotoViewAttacherNormal.update();
@@ -615,26 +611,21 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         }
     }
 
-    private class GallarySimpleTarget extends GlideDrawableImageViewTarget {
+    private class GallaryGlideDrawableImageViewTarget extends GlideDrawableImageViewTarget {
         private AnimationRectBean rect;
 
-        public GallarySimpleTarget(AnimationRectBean rect) {
+        GallaryGlideDrawableImageViewTarget(AnimationRectBean rect) {
             super(mIvPager);
             this.rect = rect;
+
         }
 
         @Override
         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
             super.onResourceReady(resource, glideAnimation);
-            if (resource == null) {
-                return;
-            }
             if (mPbProgress != null) {
                 mPbProgress.setVisibility(View.GONE);
             }
-//            if (mIvPager != null) {
-//                mIvPager.setImageDrawable(resource);
-//            }
             mPhotoViewAttacherNormal.update();
             // 获取到模糊图进行放大动画
             if (hasAnim) {
@@ -642,9 +633,37 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 startInAnim(rect);
             }
         }
-
-
     }
+
+    private class GallarySimpleTarget extends SimpleTarget<GlideDrawable> {
+        private AnimationRectBean rect;
+
+        GallarySimpleTarget(AnimationRectBean rect) {
+            super();
+            this.rect = rect;
+
+        }
+
+        @Override
+        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+            if (resource == null) {
+                return;
+            }
+            if (mPbProgress != null) {
+                mPbProgress.setVisibility(View.GONE);
+            }
+            if (mIvPager != null) {
+                mIvPager.setImageDrawable(resource);
+            }
+            mPhotoViewAttacherNormal.update();
+            // 获取到模糊图进行放大动画
+            if (hasAnim) {
+                hasAnim = false;
+                startInAnim(rect);
+            }
+        }
+    }
+
 
     private static final StreamModelLoader<String> CACHE_ONLY_STREAM_LOADER
             = (model, i, i1) -> new DataFetcher<InputStream>() {
