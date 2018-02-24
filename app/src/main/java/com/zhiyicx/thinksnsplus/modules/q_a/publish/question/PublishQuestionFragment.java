@@ -60,7 +60,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
      */
     private ActionPopupWindow mEditWarningPopupWindow;
 
-    public static QAPublishBean mDraftQuestion;
+    public static QAPublishBean gDraftQuestion;
 
     public static PublishQuestionFragment newInstance(Bundle args) {
         PublishQuestionFragment fragment = new PublishQuestionFragment();
@@ -120,36 +120,36 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
         Intent intent = new Intent(getActivity(), EditeQuestionDetailActivity.class);
         Bundle bundle = new Bundle();
         saveQuestion();
-        bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mDraftQuestion);
+        bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, gDraftQuestion);
         intent.putExtras(bundle);
         startActivity(intent);
     }
 
     private void saveQuestion() {
-        if (mDraftQuestion == null) {
-            mDraftQuestion = new QAPublishBean();
+        if (gDraftQuestion == null) {
+            gDraftQuestion = new QAPublishBean();
             String mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System
                     .currentTimeMillis();
-            mDraftQuestion.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
-            mDraftQuestion.setMark(Long.parseLong(mark));
+            gDraftQuestion.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
+            gDraftQuestion.setMark(Long.parseLong(mark));
         }
-        mDraftQuestion.setSubject(mQuestionStr);
-        mPresenter.saveQuestion(mDraftQuestion);
+        gDraftQuestion.setSubject(mQuestionStr);
+        mPresenter.saveQuestion(gDraftQuestion);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mDraftQuestion = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
+            gDraftQuestion = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
         }
     }
 
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        if (mDraftQuestion != null) {
-            mEtQustion.setText(mDraftQuestion.getSubject());
+        if (gDraftQuestion != null) {
+            mEtQustion.setText(gDraftQuestion.getSubject());
         }
         initListener();
     }
@@ -207,8 +207,8 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
      */
     private void initEditWarningPop() {
         DeviceUtils.hideSoftKeyboard(getContext(), mEtQustion);
-        boolean canSaveDraft = (mDraftQuestion != null && !mDraftQuestion.isHasAgainEdite()) ||
-                mDraftQuestion == null;
+        boolean canSaveDraft = (gDraftQuestion != null && !gDraftQuestion.isHasAgainEdite()) ||
+                gDraftQuestion == null;
         if (mEditWarningPopupWindow != null) {
             return;
         }
@@ -221,14 +221,14 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
-                    mDraftQuestion = null;
+                    gDraftQuestion = null;
                     mEditWarningPopupWindow.hide();
                     getActivity().finish();
                 })
                 .item2ClickListener(() -> {
                     saveQuestion();
                     mEditWarningPopupWindow.hide();
-                    mDraftQuestion = null;
+                    gDraftQuestion = null;
                     getActivity().finish();
                 })
                 .bottomClickListener(() -> mEditWarningPopupWindow.hide()).build();

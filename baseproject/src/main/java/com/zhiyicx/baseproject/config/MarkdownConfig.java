@@ -37,9 +37,9 @@ public class MarkdownConfig {
     public static final String IMAGE_FORMAT_HTML = "@!(\\[(.*?)])\\(((\\d+))\\)";
 
     /**
-     * 用于 提取 markdown 格式 链接
+     * 用于 提取 markdown 格式 链接，字符集[@!](这个@！用于ts+图片)
      */
-    public static final String LINK_FORMAT = "\\[(.*?)]\\((.*?)\\)";
+    public static final String LINK_FORMAT = "(?<!@!)\\[(.*?)]\\((.*?)\\)";
 
     /**
      * 用于 nomarkdown 链接保留

@@ -442,6 +442,8 @@ public class RegexUtils {
         }
         source = source.replaceAll("div", "p");
         source = source.replaceAll("<p>", " <p>");
+        source = source.replaceAll("\n", "");
+        source = source.replaceFirst("<p>", "");
         return source;
     }
 

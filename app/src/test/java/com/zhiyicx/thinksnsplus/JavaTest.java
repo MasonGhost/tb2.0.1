@@ -200,6 +200,26 @@ public class JavaTest {
     }
 
     @Test
+    public void testLink() { // <(a|/a)(href="(.*)").*>
+        String source = "<ahref=\"http://rde\"class=\"editor-link\">tgfff</a>@![image](6173)";
+        String source1 = "<ahref=\"http://rde\"class=\"editor-link\">tgfff</a>[image](6173)";
+        Matcher matcher = Pattern.compile(MarkdownConfig.LINK_FORMAT).matcher(source);
+        Matcher matcher1 = Pattern.compile(MarkdownConfig.LINK_FORMAT).matcher(source1);
+        while (matcher.find()) {
+            int count = matcher.groupCount();
+            for (int i = 0; i < count; i++) {
+                System.out.println("reg::" + i + ":::" + matcher.group(i));
+            }
+        }while (matcher1.find()) {
+            int count = matcher1.groupCount();
+            for (int i = 0; i < count; i++) {
+                System.out.println("reg1::" + i + ":::" + matcher1.group(i));
+            }
+        }
+        System.out.println(source);
+    }
+
+    @Test
     public void testFilter() { // <(a|/a)(href="(.*)").*>
         String source = "<ahref=\"http://rde\"class=\"editor-link\">tgfff</a>@![image](6173)";
         Matcher matcher = Pattern.compile(MarkdownConfig.LINK_WORDS_FORMAT).matcher(source);
