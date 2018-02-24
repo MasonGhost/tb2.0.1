@@ -130,7 +130,9 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
                             message.setAttribute(TSEMConstants.TS_ATTR_BLOCK,true);
                             message.setAttribute(TSEMConstants.TS_ATTR_TAG,AppApplication.getMyUserIdWithdefault());
                             message.setChatType(EMMessage.ChatType.GroupChat);
-                            EMClient.getInstance().chatManager().sendMessage(message);
+                            EMConversation conversation = EMClient.getInstance().chatManager().getConversation(chatId, EaseCommonUtils.getConversationType(EaseConstant.CHATTYPE_GROUP), true);
+                            conversation.insertMessage(message);
+                            conversation.markAllMessagesAsRead();
                         } catch (HyphenateException e) {
                             e.printStackTrace();
                             mRootView.showSnackErrorMessage(mContext.getString(R.string.bill_doing_fialed));
@@ -221,7 +223,9 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
                         message.setTo(groupInfo.getId());
                         message.setAttribute(TSEMConstants.TS_ATTR_TAG,AppApplication.getMyUserIdWithdefault());
                         message.setChatType(EMMessage.ChatType.GroupChat);
-                        EMClient.getInstance().chatManager().sendMessage(message);
+                        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(groupInfo.getId(), EaseCommonUtils.getConversationType(EaseConstant.CHATTYPE_GROUP), true);
+                        conversation.insertMessage(message);
+                        conversation.markAllMessagesAsRead();
                     } catch (HyphenateException e) {
                         e.printStackTrace();
                     }

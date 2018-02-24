@@ -11,6 +11,7 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.bean.ChatVerifiedBean;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMMultipleMessagesEvent;
+import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
@@ -333,6 +334,9 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                     // 用来装新的会话item
                     List<MessageItemBeanV2> messageItemBeanV2List = new ArrayList<>();
                     for (EMMessage emMessage : messageList) {
+
+
+
                         // 用收到的聊天的item的会话id去本地取出会话
                         EMConversation conversationNew = EMClient.getInstance().chatManager().getConversation(emMessage.conversationId());
                         if (conversationNew != null) {
