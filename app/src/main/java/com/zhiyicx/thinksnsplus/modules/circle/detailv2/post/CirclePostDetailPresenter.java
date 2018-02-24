@@ -103,7 +103,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                                 @Override
                                 public void onCompleted() {
                                     mRootView.updateReWardsView(new RewardsCountBean(circlePostDetailBean.getReward_number(),
-                                            "" + PayConfig.realCurrency2GameCurrency(circlePostDetailBean.getReward_amount(), getRatio()),
+                                            "" + PayConfig.realCurrencyFen2Yuan(circlePostDetailBean.getReward_amount()),
                                             getGoldName()), postRewardList);
                                 }
                             });
@@ -223,7 +223,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                                 @Override
                                 public void onCompleted() {
                                     mRootView.updateReWardsView(new RewardsCountBean(currenPost.getReward_number(),
-                                            "" + PayConfig.realCurrency2GameCurrency(currenPost.getReward_amount(), getRatio()),
+                                            "" + PayConfig.realCurrencyFen2Yuan(currenPost.getReward_amount()),
                                             getGoldName()), rewardsListBeens);
                                 }
                             });
