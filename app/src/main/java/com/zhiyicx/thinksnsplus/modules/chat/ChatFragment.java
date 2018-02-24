@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -137,6 +139,15 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
     @Override
     public void setGoupName(String name) {
         setCenterText(name);
+    }
+
+    @Override
+    protected void initEMView(View rootView) {
+        super.initEMView(rootView);
+        // 适配手机无法显示输入焦点
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            AndroidBug5497Workaround.assistActivity(mActivity);
+        }
     }
 
     @Override
@@ -412,9 +423,9 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
                 EaseUI.getInstance().getNotifier().onNewMsg(message);
             }
         }
-        if (isGroupChange){
+        if (isGroupChange) {
             mPresenter.getGroupChatInfo(chatGroupId);
-         }
+        }
     }
 
     @Override
