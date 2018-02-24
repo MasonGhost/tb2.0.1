@@ -211,14 +211,14 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                         protected void onFailure(String message, int code) {
                             super.onFailure(message, code);
                             mRootView.showStickyMessage(message);
-                            mRootView.onResponseError(null,false);
+                            mRootView.onResponseError(null, false);
                         }
 
                         @Override
                         protected void onException(Throwable throwable) {
                             super.onException(throwable);
                             mRootView.showStickyMessage(mContext.getString(R.string.chat_unconnected));
-                            mRootView.onResponseError(throwable,false);
+                            mRootView.onResponseError(throwable, false);
 
 
                         }
@@ -325,6 +325,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
             return;
         }
         List<EMMessage> list = messagesEvent.getMessages();
+
         Subscription subscribe = Observable.just(list)
                 .subscribeOn(Schedulers.io())
                 .flatMap(messageList -> {
@@ -333,9 +334,14 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                     // 对话是否存在
                     // 用来装新的会话item
                     List<MessageItemBeanV2> messageItemBeanV2List = new ArrayList<>();
+
                     for (EMMessage emMessage : messageList) {
 
-
+                        // 删除本地群信息后会更新
+                        boolean isGroupChange = TSEMConstants.TS_ATTR_GROUP_CHANGE.equals(emMessage.ext().get("type"));
+                        if (isGroupChange) {
+                            mRepository.deleteLocalChatGoup(emMessage.conversationId());
+                        }
 
                         // 用收到的聊天的item的会话id去本地取出会话
                         EMConversation conversationNew = EMClient.getInstance().chatManager().getConversation(emMessage.conversationId());

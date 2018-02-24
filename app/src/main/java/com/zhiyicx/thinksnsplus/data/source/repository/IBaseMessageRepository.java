@@ -35,5 +35,11 @@ public interface IBaseMessageRepository {
      */
     Observable<UserInfoBean> getUserInfo(String id);
 
+    /**
+     * 删除本地群聊信息
+     * @param id
+     */
+    void deleteLocalChatGoup(String id);
+
     Observable<List<ChatItemBean>> completeUserInfo(List<ChatItemBean> list);
 }

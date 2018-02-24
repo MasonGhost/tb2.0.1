@@ -333,6 +333,11 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
     }
 
     @Override
+    public void setTitle(String s) {
+        setCenterText(s);
+    }
+
+    @Override
     public void onMessageReceived(List<EMMessage> messages) {
         mPresenter.dealMessages(messages);
     }
@@ -361,6 +366,8 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
 
     @Override
     public void onMessageReceivedWithUserInfo(List<EMMessage> messages) {
+        boolean isGroupChange = false;
+        String chatGroupId = "";
         for (EMMessage message : messages) {
             String username = null;
             // group message
@@ -370,11 +377,15 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
                 // single chat message
                 username = message.getFrom();
             }
-            // 从左到右依次：用户加入，用户退出，创建群聊，屏蔽/接收群消息，该群消息作用对象是否是自己
+            // 从左到右依次：用户加入，用户退出，创建群聊，屏蔽/接收群消息，该群消息作用对象是否是自己,群信息修改
             boolean isUserJoin, isUserExit, isCreate, isBlock, userTag;
 
             isUserJoin = TSEMConstants.TS_ATTR_JOIN.equals(message.ext().get("type"));
             isUserExit = TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"));
+            if (!isGroupChange) {
+                isGroupChange = TSEMConstants.TS_ATTR_GROUP_CHANGE.equals(message.ext().get("type"));
+                chatGroupId = message.ext().get(TSEMConstants.TS_ATTR_GROUP_ID).toString();
+            }
             isCreate = message.getBooleanAttribute(TSEMConstants.TS_ATTR_GROUP_CRATE, false);
             isBlock = message.getBooleanAttribute(TSEMConstants.TS_ATTR_BLOCK, false);
             userTag = AppApplication.getMyUserIdWithdefault() == message.getLongAttribute(TSEMConstants.TS_ATTR_TAG, -1L);
@@ -401,6 +412,9 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
                 EaseUI.getInstance().getNotifier().onNewMsg(message);
             }
         }
+        if (isGroupChange){
+            mPresenter.getGroupChatInfo(chatGroupId);
+         }
     }
 
     @Override

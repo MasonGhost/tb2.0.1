@@ -12,10 +12,12 @@ import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.utils.EaseSmileUtils;
 import com.klinker.android.link_builder.Link;
 import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
+import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +61,7 @@ public class ChatRowTipText extends ChatBaseRow {
 
     @Override
     protected void onSetUpView() {
+
         if (position == 0) {
             mTvChatTime.setText(TimeUtils.getTimeFriendlyForChat(message.getMsgTime()));
             mTvChatTime.setVisibility(VISIBLE);

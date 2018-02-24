@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.chat.info;
 
 import android.os.Bundle;
 
+import com.hyphenate.chat.EMChatManager;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMGroup;
@@ -116,23 +117,21 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
                     @Override
                     public void onCompleted() {
                         try {
-                            EMMessage message;
+                            EMMessage message = EMMessage.createReceiveMessage(EMMessage.Type.TXT);
                             if (isChecked) {
                                 EMClient.getInstance().groupManager().blockGroupMessage(chatId);
                                 // 提示屏蔽信息
-                                message = EMMessage.createTxtSendMessage(mContext.getString(R.string.shield_group_msg), chatId);
+                                message.addBody(new EMTextMessageBody(mContext.getString(R.string.shield_group_msg)));
                             } else {
                                 EMClient.getInstance().groupManager().unblockGroupMessage(chatId);
-                                message = EMMessage.createTxtSendMessage(mContext.getString(R.string.unshield_group_msg), chatId);
+                                message.addBody(new EMTextMessageBody(mContext.getString(R.string.unshield_group_msg)));
                             }
                             message.setFrom("admin");
                             message.setTo(chatId);
-                            message.setAttribute(TSEMConstants.TS_ATTR_BLOCK,true);
-                            message.setAttribute(TSEMConstants.TS_ATTR_TAG,AppApplication.getMyUserIdWithdefault());
+                            message.setAttribute(TSEMConstants.TS_ATTR_BLOCK, true);
+                            message.setAttribute(TSEMConstants.TS_ATTR_TAG, AppApplication.getMyUserIdWithdefault());
                             message.setChatType(EMMessage.ChatType.GroupChat);
-                            EMConversation conversation = EMClient.getInstance().chatManager().getConversation(chatId, EaseCommonUtils.getConversationType(EaseConstant.CHATTYPE_GROUP), true);
-                            conversation.insertMessage(message);
-                            conversation.markAllMessagesAsRead();
+                            EMClient.getInstance().chatManager().saveMessage(message);
                         } catch (HyphenateException e) {
                             e.printStackTrace();
                             mRootView.showSnackErrorMessage(mContext.getString(R.string.bill_doing_fialed));
@@ -217,15 +216,15 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
                     try {
                         // 获取环信群组信息
                         EMClient.getInstance().groupManager().getGroupFromServer(groupInfo.getId());
-                        EMMessage message = EMMessage.createTxtSendMessage(mContext.getString(R.string.super_edit_group_name), groupInfo.getId());
-                        message.setAttribute(TSEMConstants.TS_ATTR_GROUP_CRATE,true);
+                        EMMessage message = EMMessage.createReceiveMessage(EMMessage.Type.TXT);
+                        message.addBody(new EMTextMessageBody(mContext.getString(R.string.super_edit_group_name)));
+                        message.setAttribute(TSEMConstants.TS_ATTR_GROUP_CRATE, true);
                         message.setFrom("admin");
                         message.setTo(groupInfo.getId());
-                        message.setAttribute(TSEMConstants.TS_ATTR_TAG,AppApplication.getMyUserIdWithdefault());
+                        message.setAttribute(TSEMConstants.TS_ATTR_TAG, AppApplication.getMyUserIdWithdefault());
                         message.setChatType(EMMessage.ChatType.GroupChat);
-                        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(groupInfo.getId(), EaseCommonUtils.getConversationType(EaseConstant.CHATTYPE_GROUP), true);
-                        conversation.insertMessage(message);
-                        conversation.markAllMessagesAsRead();
+
+                        EMClient.getInstance().chatManager().saveMessage(message);
                     } catch (HyphenateException e) {
                         e.printStackTrace();
                     }
@@ -319,7 +318,7 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
         try {
             return mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(id));
         } catch (NumberFormatException e) {
-            return DefaultUserInfoConfig.getDefaultDeletUserInfo(mContext,0);
+            return DefaultUserInfoConfig.getDefaultDeletUserInfo(mContext, 0);
         }
     }
 }

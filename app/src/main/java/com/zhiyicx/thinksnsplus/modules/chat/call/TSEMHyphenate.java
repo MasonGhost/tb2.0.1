@@ -49,6 +49,7 @@ import com.zhiyicx.thinksnsplus.modules.chat.call.receiver.TSEMCallReceiver;
 
 import org.simple.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -457,6 +458,7 @@ public class TSEMHyphenate {
                         return;
                     }
                 }
+
                 // 遍历消息集合
                 for (EMMessage message : list) {
                     // 更新会话时间
@@ -465,6 +467,7 @@ public class TSEMHyphenate {
                     } else {
                         TSEmConversationExtUtils.setConversationLastTime(EMClient.getInstance().chatManager().getConversation(message.getTo()));
                     }
+
                     // 使用 EventBus 发布消息，可以被订阅此类型消息的订阅者监听到
                     
                     /*TSEMessageEvent event = new TSEMessageEvent();
@@ -479,6 +482,7 @@ public class TSEMHyphenate {
                     // 只有一条消息，发送单条消息的通知
                     // TODO  NotificationUtil.notify();
                 }
+
 
                 TSEMMultipleMessagesEvent multipleMessagesEvent = new TSEMMultipleMessagesEvent();
                 multipleMessagesEvent.setMessages(list);

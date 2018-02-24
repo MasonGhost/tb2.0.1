@@ -9,6 +9,7 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.bean.ChatVerifiedBean;
@@ -182,16 +183,14 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                         try {
                             group = EMClient.getInstance().groupManager().getGroupFromServer(groupInfo.getId());
 
-                            EMMessage message = EMMessage.createTxtSendMessage(mContext.getString(R.string.super_edit_group_name), groupInfo.getId());
+                            EMMessage message = EMMessage.createReceiveMessage(EMMessage.Type.TXT);
+                            message.addBody(new EMTextMessageBody(mContext.getString(R.string.super_edit_group_name)));
                             message.setFrom("admin");
                             message.setTo(groupInfo.getId());
                             message.setAttribute(TSEMConstants.TS_ATTR_GROUP_CRATE,true);
                             message.setAttribute(TSEMConstants.TS_ATTR_TAG,AppApplication.getMyUserIdWithdefault());
                             message.setChatType(EMMessage.ChatType.GroupChat);
-
-                            EMConversation conversation = EMClient.getInstance().chatManager().getConversation(groupInfo.getId(), EaseCommonUtils.getConversationType(EaseConstant.CHATTYPE_GROUP), true);
-                            conversation.insertMessage(message);
-                            conversation.markAllMessagesAsRead();
+                            EMClient.getInstance().chatManager().saveMessage(message);
 
                         } catch (HyphenateException e) {
                             e.printStackTrace();

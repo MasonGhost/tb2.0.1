@@ -34,8 +34,11 @@ public class TSEMConstants {
     public static final String ML_ATTR_CALL_VOICE = "ml_attr_call_voice";
     // 草稿
     public static final String ML_ATTR_DRAFT = "ml_attr_draft";
-    // 群组id
-    public static final String ML_ATTR_GROUP_ID = "ml_attr_group_id";
+
+    /**
+     * 群组id
+     */
+    public static final String TS_ATTR_GROUP_ID = "group_id";
 
     /**
      * 最后时间

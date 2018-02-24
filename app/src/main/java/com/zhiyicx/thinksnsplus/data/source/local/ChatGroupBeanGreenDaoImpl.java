@@ -35,6 +35,9 @@ public class ChatGroupBeanGreenDaoImpl extends CommonCacheImpl<ChatGroupBean> {
 
     @Override
     public void saveMultiData(List<ChatGroupBean> multiData) {
+        if (multiData == null || multiData.isEmpty()) {
+            return;
+        }
         writeDao.insertOrReplaceInTx(multiData);
     }
 
@@ -80,6 +83,10 @@ public class ChatGroupBeanGreenDaoImpl extends CommonCacheImpl<ChatGroupBean> {
 
     public ChatGroupBean getChatGroupBeanById(String id) {
         return readDao.queryBuilder().where(ChatGroupBeanDao.Properties.Id.eq(id)).build().unique();
+    }
+
+    public void deleteChatGroupBeanById(String id) {
+        deleteSingleCache(getChatGroupBeanById(id));
     }
 
     public String getChatGroupName(String id) {

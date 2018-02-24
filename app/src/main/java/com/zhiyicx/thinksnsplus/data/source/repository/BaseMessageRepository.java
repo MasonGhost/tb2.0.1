@@ -236,7 +236,11 @@ public class BaseMessageRepository implements IBaseMessageRepository {
     public Observable<List<ChatGroupBean>> getGroupInfo(String ids) {
         return mClient.getGroupInfo(ids)
                 .subscribeOn(Schedulers.io());
+    }
 
+    @Override
+    public void deleteLocalChatGoup(String id) {
+        mChatGroupBeanGreenDao.deleteChatGroupBeanById(id);
     }
 
     @Override

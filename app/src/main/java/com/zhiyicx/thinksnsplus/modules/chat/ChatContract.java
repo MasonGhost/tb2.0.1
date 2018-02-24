@@ -19,12 +19,30 @@ public interface ChatContract {
     interface View extends IBaseView<Presenter> {
         void onMessageReceivedWithUserInfo(List<EMMessage> messages);
         void setGoupName(String name);
+
+        /**
+         * 更新标题
+         * @param s
+         */
+        void setTitle(String s);
     }
 
     interface Presenter extends IBasePresenter {
         void dealMessages(List<EMMessage> messages);
         String getUserName(String id);
+
+        /**
+         * 从本地拿
+         * @param id
+         * @return
+         */
         ChatGroupBean getChatGroupInfo(String id);
+
+        /**
+         * 从服务器拿
+         * @param groupId
+         */
+        void getGroupChatInfo(String groupId);
         void updateGroupName(ChatGroupBean chatGroupBean);
         String getGroupName(String id);
         boolean updateChatGroupMemberCount(String id,int count,boolean add);

@@ -7,6 +7,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.ChatGroupBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseFriendsRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.ChatInfoRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import java.util.ArrayList;
@@ -34,6 +35,8 @@ public class ChatPresenter extends AppBasePresenter<ChatContract.View> implement
     ChatGroupBeanGreenDaoImpl mChatGroupBeanGreenDao;
     @Inject
     BaseFriendsRepository mBaseFriendsRepository;
+    @Inject
+    ChatInfoRepository mRepository;
 
     @Inject
     public ChatPresenter(ChatContract.View rootView) {
@@ -73,6 +76,21 @@ public class ChatPresenter extends AppBasePresenter<ChatContract.View> implement
                         mRootView.onMessageReceivedWithUserInfo(data);
                     }
                 });
+    }
+
+    @Override
+    public void getGroupChatInfo(String groupId) {
+        Subscription subscription = mRepository.getGroupChatInfo(groupId)
+                .subscribe(new BaseSubscribeForV2<List<ChatGroupBean>>() {
+                    @Override
+                    protected void onSuccess(List<ChatGroupBean> data) {
+                        mChatGroupBeanGreenDao.saveMultiData(data);
+                        if (!data.isEmpty()) {
+                            mRootView.setTitle(data.get(0).getName() + "(" + data.get(0).getAffiliations_count() + ")");
+                        }
+                    }
+                });
+        addSubscrebe(subscription);
     }
 
     @Override
