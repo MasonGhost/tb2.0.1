@@ -177,7 +177,7 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
 
     }
 
-    private void initAnonymityAlertPopWindow(boolean isChecked) {
+    protected void initAnonymityAlertPopWindow(boolean isChecked) {
         mSystemConfigBean = mPresenter.getSystemConfigBean();
         if (mAnonymityAlertPopWindow == null) {
             mAnonymityAlertPopWindow = CenterAlertPopWindow.builder()
@@ -198,13 +198,17 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
                             }
                             mAnonymityAlertPopWindow.dismiss();
                             mAnonymity = 1;
-                            PublishQuestionFragment.mDraftQuestion.setAnonymity(1);
+                            if (PublishQuestionFragment.mDraftQuestion != null) {
+                                PublishQuestionFragment.mDraftQuestion.setAnonymity(1);
+                            }
                         }
 
                         @Override
                         public void onLeftClicked() {
                             mAnonymityAlertPopWindow.dismiss();
-                            PublishQuestionFragment.mDraftQuestion.setAnonymity(0);
+                            if (PublishQuestionFragment.mDraftQuestion != null) {
+                                PublishQuestionFragment.mDraftQuestion.setAnonymity(0);
+                            }
                             mCbSynToDynamic.setChecked(false);
                             mAnonymity = 0;
                             setAnnoyVisible(true);
@@ -212,14 +216,15 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
                     })
                     .build();
         }
-        mAnonymity = isChecked ? 1 : 0;
-        PublishQuestionFragment.mDraftQuestion.setAnonymity(mAnonymity);
-        if (isChecked && PublishQuestionFragment.mDraftQuestion != null && showAnonymityAlertPopWindow()) {
+        if (isChecked && showAnonymityAlertPopWindow()) {
             mAnonymityAlertPopWindow.show();
         } else {
             mAnonymityAlertPopWindow.dismiss();
         }
-
+        mAnonymity = isChecked ? 1 : 0;
+        if (PublishQuestionFragment.mDraftQuestion != null) {
+            PublishQuestionFragment.mDraftQuestion.setAnonymity(mAnonymity);
+        }
     }
 
     protected boolean showAnonymityAlertPopWindow() {
