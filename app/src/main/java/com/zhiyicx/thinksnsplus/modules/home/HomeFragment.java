@@ -65,7 +65,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     /**
      * 页数
      */
-    public static final int PAGE_NUMS = 4;
+    public static final int PAGE_NUMS = 2;
 
     /**
      * 对应在 viewpager 中的位置
@@ -79,16 +79,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     ImageView mIvHome;
     @BindView(R.id.tv_home)
     TextView mTvHome;
-    @BindView(R.id.iv_find)
-    ImageView mIvFind;
-    @BindView(R.id.tv_find)
-    TextView mTvFind;
-    @BindView(R.id.iv_message)
-    ImageView mIvMessage;
-    @BindView(R.id.v_message_tip)
-    View mVMessageTip;
-    @BindView(R.id.tv_message)
-    TextView mTvMessage;
     @BindView(R.id.iv_mine)
     ImageView mIvMine;
     @BindView(R.id.v_mine_tip)
@@ -104,9 +94,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     @Inject
     HomePresenter mHomePresenter;
 
-    @BindView(R.id.fl_add)
-    FrameLayout mFlAdd;
-
     @BindView(R.id.ll_bottom_container)
     LinearLayout mLlBottomContainer;
 
@@ -115,10 +102,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
     private int mCurrenPage;
 
-    /**
-     * 图片选择弹框
-     */
-    private ActionPopupWindow mPhotoPopupWindow;
+
     /**
      * 签到弹窗
      */
@@ -180,7 +164,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 .build()
                 .inject(this);
         initViewPager();
-        longClickSendTextDynamic();
         initPhotoPicker();
         initListener();
     }
@@ -215,40 +198,40 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         return R.layout.fragment_home;
     }
 
-    @OnClick({R.id.ll_home, R.id.ll_find, R.id.fl_add, R.id.ll_message, R.id.ll_mine})
+    @OnClick({R.id.ll_home, R.id.ll_mine})
     public void onClick(final View view) {
         switch (view.getId()) {
             // 点击主页
             case R.id.ll_home:
                 if (mCurrenPage == PAGE_HOME) {
-//                    暂时不需要点击 home 刷新
+///                    暂时不需要点击 home 刷新
 //                    ((MainFragment) mFragmentList.get(mCurrenPage)).refreshCurrentPage();
                 } else {
                     mVpHome.setCurrentItem(PAGE_HOME, false);
                     mCurrenPage = PAGE_HOME;
                 }
                 break;
-            // 点击发现
-            case R.id.ll_find:
-                if (TouristConfig.FIND_CAN_LOOK || !mPresenter.handleTouristControl()) {
-                    mVpHome.setCurrentItem(PAGE_FIND, false);
-                }
-                mCurrenPage = PAGE_FIND;
-                break;
-            // 添加动态
-            case R.id.fl_add:
-                if (TouristConfig.DYNAMIC_CAN_PUBLISH || !mPresenter.handleTouristControl()) {
-                    Intent intent = new Intent(getActivity(), SelectDynamicTypeActivity.class);
-                    startActivity(intent);
-                }
-                break;
-            // 点击消息
-            case R.id.ll_message:
-                if (TouristConfig.MESSAGE_CAN_LOOK || !mPresenter.handleTouristControl()) {
-                    mVpHome.setCurrentItem(PAGE_MESSAGE, false);
-                }
-                mCurrenPage = PAGE_MESSAGE;
-                break;
+//            // 点击发现
+//            case R.id.ll_find:
+//                if (TouristConfig.FIND_CAN_LOOK || !mPresenter.handleTouristControl()) {
+//                    mVpHome.setCurrentItem(PAGE_FIND, false);
+//                }
+//                mCurrenPage = PAGE_FIND;
+//                break;
+//            // 添加动态
+//            case R.id.fl_add:
+//                if (TouristConfig.DYNAMIC_CAN_PUBLISH || !mPresenter.handleTouristControl()) {
+//                    Intent intent = new Intent(getActivity(), SelectDynamicTypeActivity.class);
+//                    startActivity(intent);
+//                }
+//                break;
+//            // 点击消息
+//            case R.id.ll_message:
+//                if (TouristConfig.MESSAGE_CAN_LOOK || !mPresenter.handleTouristControl()) {
+//                    mVpHome.setCurrentItem(PAGE_MESSAGE, false);
+//                }
+//                mCurrenPage = PAGE_MESSAGE;
+//                break;
             // 点击我的
             case R.id.ll_mine:
                 if (TouristConfig.MINE_CAN_LOOK || !mPresenter.handleTouristControl()) {
@@ -263,11 +246,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
     @Override
     public void setMessageTipVisable(boolean tipVisable) {
-        if (tipVisable) {
-            mVMessageTip.setVisibility(View.VISIBLE);
-        } else {
-            mVMessageTip.setVisibility(View.INVISIBLE);
-        }
+//        if (tipVisable) {
+//            mVMessageTip.setVisibility(View.VISIBLE);
+//        } else {
+//            mVMessageTip.setVisibility(View.INVISIBLE);
+//        }
 
     }
 
@@ -335,10 +318,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
         mFragmentList.clear();
         mFragmentList.add(MainFragment.newInstance(this));
-        mFragmentList.add(FindFragment.newInstance());
-        if (TouristConfig.MESSAGE_CAN_LOOK || mPresenter.isLogin()) {
-            mFragmentList.add(MessageContainerFragment.instance());
-        }
         if (TouristConfig.MINE_CAN_LOOK || mPresenter.isLogin()) {
             mFragmentList.add(MineFragment.newInstance());
         }
@@ -388,10 +367,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         int unckeckedColor = ContextCompat.getColor(getContext(), R.color.home_bottom_navigate_text_normal);
         mIvHome.setImageResource(position == PAGE_HOME ? R.mipmap.common_ico_bottom_home_high : R.mipmap.common_ico_bottom_home_normal);
         mTvHome.setTextColor(position == PAGE_HOME ? checkedColor : unckeckedColor);
-        mIvFind.setImageResource(position == PAGE_FIND ? R.mipmap.common_ico_bottom_discover_high : R.mipmap.common_ico_bottom_discover_normal);
-        mTvFind.setTextColor(position == PAGE_FIND ? checkedColor : unckeckedColor);
-        mIvMessage.setImageResource(position == PAGE_MESSAGE ? R.mipmap.common_ico_bottom_message_high : R.mipmap.common_ico_bottom_message_normal);
-        mTvMessage.setTextColor(position == PAGE_MESSAGE ? checkedColor : unckeckedColor);
         mIvMine.setImageResource(position == PAGE_MINE ? R.mipmap.common_ico_bottom_me_high : R.mipmap.common_ico_bottom_me_normal);
         mTvMine.setTextColor(position == PAGE_MINE ? checkedColor : unckeckedColor);
     }
@@ -426,23 +401,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     }
 
     /**
-     * 长按动态发送按钮，进入纯文字的动态发布
-     */
-    private void longClickSendTextDynamic() {
-        mFlAdd.setOnLongClickListener(v -> {
-            // 跳转到发送动态页面
-            if (BuildConfig.USE_TOLL) {
-                return true;
-            }
-            SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
-            sendDynamicDataBean.setDynamicType(SendDynamicDataBean.TEXT_ONLY_DYNAMIC);
-            SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
-            return true;
-        });
-    }
-
-    /**
      * 点击动态发送按钮，进入文字图片的动态发布
      */
     private void clickSendPhotoTextDynamic() {
@@ -457,35 +415,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 .build().photoSelectorImpl();
     }
 
-
-    /**
-     * 初始化图片选择弹框
-     */
-    private void initPhotoPopupWindow() {
-        if (mPhotoPopupWindow != null) {
-            mPhotoPopupWindow.show();
-            return;
-        }
-        mPhotoPopupWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.choose_from_photo))
-                .item2Str(getString(R.string.choose_from_camera))
-                .bottomStr(getString(R.string.cancel))
-                .isOutsideTouch(true)
-                .isFocus(true)
-                .backgroundAlpha(0.8f)
-                .with(getActivity())
-                .item1ClickListener(() -> {
-                    clickSendPhotoTextDynamic();
-                    mPhotoPopupWindow.hide();
-                })
-                .item2ClickListener(() -> {
-                    // 选择相机，拍照
-                    mPhotoSelector.getPhotoFromCamera(null);
-                    mPhotoPopupWindow.hide();
-                })
-                .bottomClickListener(() -> mPhotoPopupWindow.hide()).build();
-        mPhotoPopupWindow.show();
-    }
 
     @Override
     public CheckInBean getCheckInData() {
