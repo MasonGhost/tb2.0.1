@@ -1,6 +1,8 @@
 2017年10月17日10:58:48
 # ThinkSNS Plus Android  Dev Doc
 
+本项目基于 ThinkSNS Plus Android 版 1.6 修改
+
 ## 简介
 本文档旨在帮助开发者快速理解并基于 `ThinkSNS Plus Android ` 端的开发，为二次开发提高效率。
 
