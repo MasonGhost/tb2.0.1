@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.notifacationlist;
 
+import com.klinker.android.link_builder.Link;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;

@@ -3,7 +3,9 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 
 import com.google.gson.Gson;
+import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
 
 import org.greenrobot.greendao.annotation.Convert;
@@ -47,6 +49,16 @@ public class TSPNotificationBean extends BaseListBean {
     private DataBean data;
     @Transient
     private UserInfoBean userInfo;
+    @Transient
+    private boolean isOpen;
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(boolean open) {
+        isOpen = open;
+    }
 
     public String getId() {
         return id;
@@ -93,7 +105,7 @@ public class TSPNotificationBean extends BaseListBean {
             try {
                 Gson gson = new Gson();
                 JSONObject jsonObject = new JSONObject(gson.toJson(data.getExtra()));
-                if(jsonObject.has("user")) {
+                if (jsonObject.has("user")) {
                     JSONObject userStr = jsonObject.getJSONObject("user");
                     userInfo = gson.fromJson(userStr.toString(), UserInfoBean.class);
                 }
@@ -119,7 +131,8 @@ public class TSPNotificationBean extends BaseListBean {
          */
         /**
          * 辛辛苦苦复制半天 总不能不要了吧 先写在这儿
-         * 参考 ：https://github.com/zhiyicx/thinksns-plus-document/blob/master/Summary/notifications.md#%E7%94%B3%E8%AF%B7%E8%B5%84%E8%AE%AF%E7%BD%AE%E9%A1%B6
+         * 参考 ：https://github.com/zhiyicx/thinksns-plus-document/blob/master/Summary/notifications
+         * .md#%E7%94%B3%E8%AF%B7%E8%B5%84%E8%AE%AF%E7%BD%AE%E9%A1%B6
          * 分类：
          * 1、user:reward 打赏
          * 2、paid:xxxxx 付费截点
@@ -171,6 +184,14 @@ public class TSPNotificationBean extends BaseListBean {
             this.content = content;
         }
 
+        public String getFridendlyContent() {
+            String friendlyContent = content;
+
+            friendlyContent = friendlyContent.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link
+                    .DEFAULT_NET_SITE);
+            return friendlyContent;
+        }
+
         public Object getExtra() {
             return extra;
         }
@@ -213,22 +234,6 @@ public class TSPNotificationBean extends BaseListBean {
         return id.hashCode();
     }
 
-    @Override
-    public String toString() {
-        return "TSPNotificationBean{" +
-                "_id=" + _id +
-                ", id='" + id + '\'' +
-                ", read_at='" + read_at + '\'' +
-                ", created_at='" + created_at + '\'' +
-                ", data=" + data +
-                ", userInfo=" + userInfo +
-                '}';
-    }
-
-
-    public TSPNotificationBean() {
-    }
-
 
     @Override
     public int describeContents() {
@@ -244,6 +249,10 @@ public class TSPNotificationBean extends BaseListBean {
         dest.writeString(this.created_at);
         dest.writeSerializable(this.data);
         dest.writeParcelable(this.userInfo, flags);
+        dest.writeByte(this.isOpen ? (byte) 1 : (byte) 0);
+    }
+
+    public TSPNotificationBean() {
     }
 
     protected TSPNotificationBean(Parcel in) {
@@ -254,6 +263,7 @@ public class TSPNotificationBean extends BaseListBean {
         this.created_at = in.readString();
         this.data = (DataBean) in.readSerializable();
         this.userInfo = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.isOpen = in.readByte() != 0;
     }
 
     @Generated(hash = 917704485)

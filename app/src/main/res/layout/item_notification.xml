@@ -1,33 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/spacing_mid"
+    android:paddingTop="@dimen/spacing_mid">
+
+    <com.zhiyicx.baseproject.widget.textview.SpanTextViewWithEllipsize
+        android:id="@+id/tv_notification_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/spacing_mid"
-        android:paddingBottom="@dimen/spacing_mid"
-        android:background="@color/white">
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:textColor="@color/important_for_content"
+        android:textSize="@dimen/size_content"
+        android:scrollHorizontally="true"
+        tools:text="村里住着一位老人，他仙风道骨，目光如炬，不管谁的手伸到他面前，只看一眼他就能马上说出对方的前途命运，无一偏差。方圆八百里的人们都慕名前来求他算命。一个远道而来的旅行者听说以后，十分好奇，他决定请这位老先生帮自己看看。旅行者来的时候，老人正在院里忙着摘苹果。“您能不能抽点时间帮我看看手相？旅行者问老人。“当然可以，不过你得答应我一个条件。”老人说。“什么条件？”“帮我把这棵树上的苹果摘下来。”旅行者爽快地答应了。"/>
 
     <TextView
-            android:id="@+id/tv_notification_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/size_content"
-            android:textColor="@color/important_for_content"
-            tools:text="xxxxxxxxxxxxxxxxxxxxxxxx"
-            android:layout_marginLeft="@dimen/spacing_normal"
-            android:layout_marginRight="@dimen/spacing_normal"/>
-
-    <TextView
-            android:id="@+id/tv_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_normal"
-            android:layout_marginRight="@dimen/spacing_normal"
-            android:layout_marginTop="@dimen/spacing_normal"
-            tools:text="xxxxxxxxxxxxxxxxxxxxxxxx"
-            android:textSize="@dimen/size_icon_assist"
-            android:textColor="@color/general_for_hint"/>
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:textColor="@color/general_for_hint"
+        android:textSize="@dimen/size_icon_assist"
+        tools:text="xxxxxxxxxxxxxxxxxxxxxxxx"/>
 
 </LinearLayout>
