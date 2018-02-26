@@ -34,4 +34,6 @@
 
     <!--问答匿名选项颜色-->
     <color name="qa_anonymity_color">#FBFBFB</color>
+    <color name="alpha_white_mine">#66ffffff</color>
+    <color name="reward_des_color">#bfbfbf</color>
 </resources>

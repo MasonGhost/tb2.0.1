@@ -71,9 +71,9 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
      * 对应在 viewpager 中的位置
      */
     public static final int PAGE_HOME = 0;
-    public static final int PAGE_FIND = 1;
-    public static final int PAGE_MESSAGE = 2;
-    public static final int PAGE_MINE = 3;
+//    public static final int PAGE_FIND = 1;
+//    public static final int PAGE_MESSAGE = 2;
+    public static final int PAGE_MINE = 1;
 
     @BindView(R.id.iv_home)
     ImageView mIvHome;
@@ -381,7 +381,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                     checkBottomItem(HomeFragment.PAGE_MINE);
                     break;
                 default:
-                    checkBottomItem(HomeFragment.PAGE_MESSAGE);
+                    checkBottomItem(HomeFragment.PAGE_MINE);
             }
         } else {
             mVpHome.setCurrentItem(PAGE_HOME, false);
@@ -414,6 +414,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
     }
+
 
 
     @Override

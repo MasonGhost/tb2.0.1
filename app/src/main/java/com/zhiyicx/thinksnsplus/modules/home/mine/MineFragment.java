@@ -164,7 +164,12 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     protected boolean showToolBarDivider() {
-        return true;
+        return false;
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
     }
 
     @Override
@@ -174,7 +179,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     protected boolean setUseStatusView() {
-        return true;
+        return false;
     }
 
     @Override

@@ -987,6 +987,11 @@
     <string name="image_upload_fail">图片上传失败</string>
     <string name="image_prase_fail">图片解析错误</string>
     <string name="fun_maintain">功能维护中</string>
+    <string name="friends">好友</string>
+    <string name="everyday_task">每日任务</string>
+    <string name="reward_des">奖励说明</string>
+    <string name="everyday_check_in">每日签到</string>
+    <string name="has_continiuous_check_in_format">已经连续签到%d天</string>
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>
         <item>提取记录</item>
