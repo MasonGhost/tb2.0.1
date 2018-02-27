@@ -48,30 +48,45 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA
 class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContract.View {
 
     @BindView(R.id.bt_login_out)
-    @JvmField var mBtLoginOut: CombinationButton? = null
+    @JvmField
+    var mBtLoginOut: CombinationButton? = null
+    @BindView(R.id.bt_feedback)
+    @JvmField
+    var mBtFeedback: CombinationButton? = null
     @BindView(R.id.bt_set_vertify)
-    @JvmField var mBtSetVertify: CombinationButton? = null
+    @JvmField
+    var mBtSetVertify: CombinationButton? = null
     @BindView(R.id.bt_change_password)
-    @JvmField var mBtChangePassword: CombinationButton? = null
+    @JvmField
+    var mBtChangePassword: CombinationButton? = null
     @BindView(R.id.bt_clean_cache)
-    @JvmField var mBtCleanCache: CombinationButton? = null
+    @JvmField
+    var mBtCleanCache: CombinationButton? = null
     @BindView(R.id.bt_about_us)
-    @JvmField var mBtAboutUs: CombinationButton? = null
+    @JvmField
+    var mBtAboutUs: CombinationButton? = null
     @BindView(R.id.bt_account_manager)
-    @JvmField var mBtAccountManager: CombinationButton? = null
+    @JvmField
+    var mBtAccountManager: CombinationButton? = null
     @BindView(R.id.bt_check_version)
-    @JvmField var mBtCheckVersion: CombinationButton? = null
+    @JvmField
+    var mBtCheckVersion: CombinationButton? = null
     // 服务器切换使用
     @BindView(R.id.rb_one)
-    @JvmField var mRbOne: RadioButton? = null
+    @JvmField
+    var mRbOne: RadioButton? = null
     @BindView(R.id.rb_two)
-    @JvmField var mRbTwo: RadioButton? = null
+    @JvmField
+    var mRbTwo: RadioButton? = null
     @BindView(R.id.rb_three)
-    @JvmField var mRbThree: RadioButton? = null
+    @JvmField
+    var mRbThree: RadioButton? = null
     @BindView(R.id.rb_days_group)
-    @JvmField var mRbDaysGroup: RadioGroup? = null
+    @JvmField
+    var mRbDaysGroup: RadioGroup? = null
     @BindView(R.id.tv_choose_tip)
-    @JvmField var mTvChooseTip: TextView? = null
+    @JvmField
+    var mTvChooseTip: TextView? = null
     private var mIsDefualtCheck = true
 
     private var mLoginoutPopupWindow: ActionPopupWindow? = null// 退出登录选择弹框
@@ -214,6 +229,13 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
                 .compose(this.bindToLifecycle())
                 .subscribe { aVoid ->
                     mPresenter.checkUpdate()
+                }
+        // 意见反馈
+        RxView.clicks(mBtFeedback!!)
+                .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe { aVoid ->
+                    startActivity(Intent(mActivity, SettingsActivity::class.java))
                 }
     }
 

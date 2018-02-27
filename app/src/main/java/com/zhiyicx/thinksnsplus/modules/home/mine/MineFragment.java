@@ -96,6 +96,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     public MinePresenter mMinePresenter;
 
     private UserInfoBean mUserInfoBean;
+
     private UserCertificationInfo mUserCertificationInfo;
 
     public static MineFragment newInstance() {

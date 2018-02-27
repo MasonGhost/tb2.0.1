@@ -42,6 +42,15 @@
                 app:leftText="@string/change_password"
                 app:leftTextLeftPadding="@dimen/spacing_mid"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+            <!--意见反馈-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_feedback"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                app:leftText="@string/feed_back"
+                app:showLine="true"
+                app:leftTextLeftPadding="@dimen/spacing_mid"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
             <!--清理缓存-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/bt_clean_cache"

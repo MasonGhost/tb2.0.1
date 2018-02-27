@@ -1,300 +1,313 @@
-<com.wcy.overscroll.OverScrollLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/overscroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
+    tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity"
+    >
 
-    <ScrollView
-        android:id="@+id/scroll_view"
+    <com.wcy.overscroll.OverScrollLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/overscroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bgColor">
+        android:orientation="vertical"
+        tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
-        <LinearLayout
+        <ScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <!--头像，用户名，简介-->
-            <RelativeLayout
-                android:id="@+id/rl_userinfo_container"
+            android:layout_height="match_parent"
+            android:background="@color/bgColor">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/themeColor"
-                >
-                <!--头像-->
-                <com.zhiyicx.baseproject.widget.UserAvatarView
-                    android:id="@+id/iv_head_icon"
-                    android:layout_width="@dimen/headpic_for_user_center"
-                    android:layout_height="@dimen/headpic_for_user_center"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="@dimen/spacing_normal"
-                    android:layout_marginLeft="@dimen/spacing_normal"
-                    android:layout_marginTop="@dimen/spacing_huge_60"
-                    android:src="@mipmap/pic_default_secret"
-                    app:ts_avatare_size="@dimen/headpic_for_user_center"/>
-                <!--用户名-->
-                <TextView
-                    android:id="@+id/tv_user_name"
+                android:orientation="vertical">
+                <!--头像，用户名，简介-->
+                <RelativeLayout
+                    android:id="@+id/rl_userinfo_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/iv_head_icon"
-                    android:layout_marginEnd="@dimen/spacing_large"
-                    android:layout_marginStart="@dimen/spacing_large"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/size_content_assist"
-                    android:textStyle="bold"
-                    tools:text="奔跑的蜗牛"/>
-                <!--粉丝，关注-->
-                <LinearLayout
+                    android:background="@color/themeColor"
+                    >
+                    <!--头像-->
+                    <com.zhiyicx.baseproject.widget.UserAvatarView
+                        android:id="@+id/iv_head_icon"
+                        android:layout_width="@dimen/headpic_for_user_center"
+                        android:layout_height="@dimen/headpic_for_user_center"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="@dimen/spacing_normal"
+                        android:layout_marginLeft="@dimen/spacing_normal"
+                        android:layout_marginTop="@dimen/spacing_huge_60"
+                        android:src="@mipmap/pic_default_secret"
+                        app:ts_avatare_size="@dimen/headpic_for_user_center"/>
+                    <!--用户名-->
+                    <TextView
+                        android:id="@+id/tv_user_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/iv_head_icon"
+                        android:layout_marginEnd="@dimen/spacing_large"
+                        android:layout_marginStart="@dimen/spacing_large"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/size_content_assist"
+                        android:textStyle="bold"
+                        tools:text="奔跑的蜗牛"/>
+                    <!--粉丝，关注-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_user_name"
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/spacing_normal"
+                        android:paddingTop="@dimen/spacing_bigger_large_35">
+                        <!--粉丝-->
+                        <RelativeLayout
+                            android:id="@+id/ll_fans_container"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <!--粉丝数量-->
+                            <TextView
+                                android:id="@+id/tv_fans_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/size_mine_big_mum"
+                                android:textStyle="bold"
+                                tools:text="23456"/>
+
+                            <com.zhiyicx.baseproject.widget.BadgeView
+                                android:id="@+id/bv_fans_new_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/spacing_mid_small_8dp"
+                                android:layout_toRightOf="@id/tv_fans_count"
+                                android:textSize="@dimen/size_icon_assist"
+                                android:textStyle="normal"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/tv_fans_count"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="@dimen/spacing_small_4dp"
+                                android:text="@string/fans"
+                                android:textColor="@color/alpha_white_mine"
+                                android:textSize="@dimen/size_icon_assist"/>
+                        </RelativeLayout>
+
+                        <!--关注-->
+                        <LinearLayout
+                            android:id="@+id/ll_follow_container"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            <!--关注数量-->
+                            <TextView
+                                android:id="@+id/tv_follow_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/size_mine_big_mum"
+                                android:textStyle="bold"
+                                tools:text="12233"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_small_4dp"
+                                android:text="@string/follow"
+                                android:textColor="@color/alpha_white_mine"
+                                android:textSize="@dimen/size_icon_assist"/>
+                        </LinearLayout>
+
+                        <!--好友-->
+                        <LinearLayout
+                            android:id="@+id/ll_friends"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            <!--关注数量-->
+                            <TextView
+                                android:id="@+id/tv_friends_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/size_mine_big_mum"
+                                android:textStyle="bold"
+                                tools:text="12233"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_small_4dp"
+                                android:text="@string/friends"
+                                android:textColor="@color/alpha_white_mine"
+                                android:textSize="@dimen/size_icon_assist"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_user_name"
+                    android:background="@color/white"
                     android:orientation="horizontal"
                     android:paddingBottom="@dimen/spacing_normal"
-                    android:paddingTop="@dimen/spacing_bigger_large_35">
-                    <!--粉丝-->
-                    <RelativeLayout
-                        android:id="@+id/ll_fans_container"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-                        <!--粉丝数量-->
-                        <TextView
-                            android:id="@+id/tv_fans_count"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/size_mine_big_mum"
-                            android:textStyle="bold"
-                            tools:text="23456"/>
+                    android:paddingTop="@dimen/spacing_normal">
 
-                        <com.zhiyicx.baseproject.widget.BadgeView
-                            android:id="@+id/bv_fans_new_count"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/spacing_mid_small_8dp"
-                            android:layout_toRightOf="@id/tv_fans_count"
-                            android:textSize="@dimen/size_icon_assist"
-                            android:textStyle="normal"/>
+                    <TextView
+                        android:id="@+id/tv_task_tip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/spacing_large"
+                        android:paddingEnd="@dimen/spacing_normal"
+                        android:paddingLeft="@dimen/spacing_normal"
+                        android:paddingRight="@dimen/spacing_normal"
+                        android:paddingStart="@dimen/spacing_normal"
+                        android:paddingTop="@dimen/spacing_large"
+                        android:text="@string/everyday_task"
+                        android:textColor="@color/normal_for_assist_text"
+                        android:textSize="@dimen/size_content_assist"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/tv_fans_count"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="@dimen/spacing_small_4dp"
-                            android:text="@string/fans"
-                            android:textColor="@color/alpha_white_mine"
-                            android:textSize="@dimen/size_icon_assist"/>
-                    </RelativeLayout>
+                    <TextView
+                        android:id="@+id/tv_reward_des"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@+id/tv_task_tip"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:drawableLeft="@mipmap/ico_wallet_rules"
+                        android:drawablePadding="@dimen/spacing_small_3dp"
+                        android:paddingBottom="@dimen/spacing_large"
+                        android:paddingEnd="@dimen/spacing_normal"
+                        android:paddingLeft="@dimen/spacing_normal"
+                        android:paddingRight="@dimen/spacing_normal"
+                        android:paddingStart="@dimen/spacing_normal"
+                        android:paddingTop="@dimen/spacing_large"
+                        android:text="@string/reward_des"
+                        android:textColor="@color/reward_des_color"
+                        android:textSize="@dimen/size_icon_assist"/>
+                </RelativeLayout>
 
-                    <!--关注-->
-                    <LinearLayout
-                        android:id="@+id/ll_follow_container"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-                        <!--关注数量-->
-                        <TextView
-                            android:id="@+id/tv_follow_count"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/size_mine_big_mum"
-                            android:textStyle="bold"
-                            tools:text="12233"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_small_4dp"
-                            android:text="@string/follow"
-                            android:textColor="@color/alpha_white_mine"
-                            android:textSize="@dimen/size_icon_assist"/>
-                    </LinearLayout>
-
-                    <!--好友-->
-                    <LinearLayout
-                        android:id="@+id/ll_friends"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-                        <!--关注数量-->
-                        <TextView
-                            android:id="@+id/tv_friends_count"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/size_mine_big_mum"
-                            android:textStyle="bold"
-                            tools:text="12233"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_small_4dp"
-                            android:text="@string/friends"
-                            android:textColor="@color/alpha_white_mine"
-                            android:textSize="@dimen/size_icon_assist"/>
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <FrameLayout
-                    android:id="@+id/fl_toolbar_contaier"
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_line"
                     android:background="@color/white">
 
                     <TextView
+                        android:id="@+id/tv_every_day_check_in_tip"
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/toolbar_height"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:text="@string/mine"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/spacing_normal"
+                        android:paddingTop="@dimen/spacing_normal"
+                        android:text="@string/everyday_check_in"
                         android:textColor="@color/important_for_content"
-                        android:textSize="@dimen/size_primary_title"
+                        android:textSize="@dimen/size_content_assist"
                         android:textStyle="bold"/>
 
-                    <ImageView
-                        android:id="@+id/iv_setting"
+                    <TextView
+                        android:id="@+id/tv_continiuous_check_in_tip"
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/setting_icon_size"
-                        android:layout_gravity="center_vertical|right"
-                        android:paddingLeft="@dimen/spacing_mid"
-                        android:paddingRight="@dimen/spacing_mid"
-                        android:src="@drawable/setting"/>
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_every_day_check_in_tip"
+                        android:paddingLeft="@dimen/spacing_normal"
+                        android:paddingTop="@dimen/spacing_small"
+                        android:text="@string/has_continiuous_check_in_format"
+                        android:textColor="@color/reward_des_color"
+                        android:textSize="@dimen/size_icon_assist"/>
 
-                </FrameLayout>
-            </RelativeLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="@dimen/spacing_normal"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:background="@drawable/selector_button_corner_circle_solid_small"
+                        android:paddingBottom="@dimen/spacing_small"
+                        android:paddingEnd="@dimen/spacing_normal_large"
+                        android:paddingLeft="@dimen/spacing_normal_large"
+                        android:paddingRight="@dimen/spacing_normal_large"
+                        android:paddingStart="@dimen/spacing_normal_large"
+                        android:paddingTop="@dimen/spacing_small"
+                        android:text="@string/check_in"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/size_icon_assist"
+                        />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/spacing_normal"
-                android:paddingTop="@dimen/spacing_normal">
-
-                <TextView
-                    android:id="@+id/tv_task_tip"
-                    android:layout_width="wrap_content"
+                </RelativeLayout>
+                <!--邀请好友-->
+                <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
+                    android:id="@+id/mti_invite_friends"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/spacing_large"
-                    android:paddingEnd="@dimen/spacing_normal"
-                    android:paddingLeft="@dimen/spacing_normal"
-                    android:paddingRight="@dimen/spacing_normal"
-                    android:paddingStart="@dimen/spacing_normal"
-                    android:paddingTop="@dimen/spacing_large"
-                    android:text="@string/everyday_task"
-                    android:textColor="@color/normal_for_assist_text"
-                    android:textSize="@dimen/size_content_assist"/>
+                    android:layout_marginTop="@dimen/spacing_small"/>
+                <!--填写邀请码-->
+                <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
+                    android:id="@+id/mti_edit_invite_code"
+                    android:layout_width="match_parent"
 
-                <TextView
-                    android:id="@+id/tv_reward_des"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/tv_task_tip"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:drawableLeft="@mipmap/ico_wallet_rules"
-                    android:drawablePadding="@dimen/spacing_small_3dp"
-                    android:paddingBottom="@dimen/spacing_large"
-                    android:paddingEnd="@dimen/spacing_normal"
-                    android:paddingLeft="@dimen/spacing_normal"
-                    android:paddingRight="@dimen/spacing_normal"
-                    android:paddingStart="@dimen/spacing_normal"
-                    android:paddingTop="@dimen/spacing_large"
-                    android:text="@string/reward_des"
-                    android:textColor="@color/reward_des_color"
-                    android:textSize="@dimen/size_icon_assist"/>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_line"
-                android:background="@color/white">
-
-                <TextView
-                    android:id="@+id/tv_every_day_check_in_tip"
-                    android:layout_width="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_small"/>
+                <!--分享快讯-->
+                <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
+                    android:id="@+id/mti_share_dynamic"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/spacing_normal"
-                    android:paddingTop="@dimen/spacing_normal"
-                    android:text="@string/everyday_check_in"
-                    android:textColor="@color/important_for_content"
-                    android:textSize="@dimen/size_content_assist"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:id="@+id/tv_continiuous_check_in_tip"
-                    android:layout_width="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_small"/>
+                <!--认证-->
+                <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
+                    android:id="@+id/mti_certify"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_every_day_check_in_tip"
-                    android:paddingLeft="@dimen/spacing_normal"
-                    android:paddingTop="@dimen/spacing_small"
-                    android:text="@string/has_continiuous_check_in_format"
-                    android:textColor="@color/reward_des_color"
-                    android:textSize="@dimen/size_icon_assist"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="@dimen/spacing_normal"
-                    android:layout_marginTop="@dimen/spacing_large"
-                    android:background="@drawable/selector_button_corner_circle_solid_small"
-                    android:paddingBottom="@dimen/spacing_small"
-                    android:paddingEnd="@dimen/spacing_normal_large"
-                    android:paddingLeft="@dimen/spacing_normal_large"
-                    android:paddingRight="@dimen/spacing_normal_large"
-                    android:paddingStart="@dimen/spacing_normal_large"
-                    android:paddingTop="@dimen/spacing_small"
-                    android:text="@string/check_in"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/size_icon_assist"
-                    />
-
-            </RelativeLayout>
-            <!--邀请好友-->
-            <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
-                android:id="@+id/mti_invite_friends"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_small"/>
-            <!--填写邀请码-->
-            <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
-                android:id="@+id/mti_edit_invite_code"
-                android:layout_width="match_parent"
-
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_small"/>
-            <!--分享快讯-->
-            <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
-                android:id="@+id/mti_share_dynamic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_small"/>
-            <!--认证-->
-            <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
-                android:id="@+id/mti_certify"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_small"/>
+                    android:layout_marginTop="@dimen/spacing_small"/>
 
 
-        </LinearLayout>
-    </ScrollView>
-</com.wcy.overscroll.OverScrollLayout>
+            </LinearLayout>
+        </ScrollView>
+    </com.wcy.overscroll.OverScrollLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_toolbar_contaier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/toolbar_height"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/mine"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_primary_title"
+            android:textStyle="bold"/>
+
+        <ImageView
+            android:id="@+id/iv_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/setting_icon_size"
+            android:layout_gravity="center_vertical|right"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid"
+            android:src="@drawable/setting"/>
+
+    </FrameLayout>
+
+
+</FrameLayout>
+
