@@ -16,6 +16,7 @@
     表头像、聊详情页头像、修改资料-更换头像
     -->
     <dimen name="headpic_for_list">38dp</dimen>
+    <dimen name="headpic_for_dynamic_list">32dp</dimen>
 
     <dimen name="headpic_for_question_list">20dp</dimen>
     <!--

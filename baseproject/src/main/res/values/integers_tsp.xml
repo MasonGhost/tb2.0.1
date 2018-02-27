@@ -61,7 +61,7 @@
     <integer name="dynamic_content_input_size">200</integer>
     <!--发布动态内容的显示行数-->
     <integer name="dynamic_content_show_lines">8</integer>
-    <integer name="dynamic_list_content_show_lines">3</integer>
+    <integer name="dynamic_list_content_show_lines">5</integer>
     <!--动态列表标题最大显示字数-->
     <integer name="dynamic_list_title_max_show_size">18</integer>
     <!--动态列表标题最大显示字数,最大限制修改到 DynamicDetialBeanV2 中-->

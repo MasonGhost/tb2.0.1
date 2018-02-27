@@ -59,4 +59,9 @@ public class SpanTextViewWithEllipsize extends android.support.v7.widget.AppComp
         postInvalidate();
     }
 
+    public void setMaxlines(int maxlines) {
+        mMaxlines = maxlines;
+        postInvalidate();
+    }
+
 }

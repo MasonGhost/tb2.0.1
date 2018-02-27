@@ -1002,6 +1002,7 @@
     <string name="certification_format">完成认证得%1$d%2$s</string>
     <string name="edit_invite_code_fomart">填写邀请码得%1$d%2$s</string>
     <string name="tb_gold_name">TBMark</string>
+    <string name="add_follow">+关注</string>
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>
         <item>提取记录</item>

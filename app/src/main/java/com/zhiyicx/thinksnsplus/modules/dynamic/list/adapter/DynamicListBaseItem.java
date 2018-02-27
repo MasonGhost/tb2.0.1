@@ -77,7 +77,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     protected Context mContext;
 
     protected boolean showToolMenu = true;// 是否显示工具栏:默认显示
-    protected boolean showCommentList = true;// 是否显示评论内容:默认显示
+    protected boolean showCommentList = false;// 是否显示评论内容:默认显示
     protected boolean showReSendBtn = true;// 是否显示重发按钮
 
     public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
