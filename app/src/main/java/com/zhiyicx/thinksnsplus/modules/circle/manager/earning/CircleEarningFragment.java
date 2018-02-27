@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
@@ -70,7 +69,7 @@ public class CircleEarningFragment extends TSFragment<CircleEarningContract.Pres
     protected void initView(View rootView) {
         setCenterTextColor(R.color.white);
         setRightText(getString(R.string.detail));
-        mTvAccountUnit.setText(String.format(Locale.getDefault(), getString(R.string.circle_earningn_total), mPresenter.getGoldName()));
+        mTvAccountUnit.setText(String.format(Locale.getDefault(), getString(R.string.circle_earningn_total), mPresenter.getIntegrationGoldName()));
         mCircleInfo = getArguments().getParcelable(DATA);
     }
 

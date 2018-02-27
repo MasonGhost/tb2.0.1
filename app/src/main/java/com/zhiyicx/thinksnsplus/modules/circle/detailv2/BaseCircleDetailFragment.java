@@ -420,7 +420,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
                     mPresenter.getRatio()));
             descStr = String.format(getString(R.string.buy_pay_circle_desc) + getString(R
                     .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(circleInfo.getMoney(),
-                    mPresenter.getRatio()), mPresenter.getGoldName());
+                    mPresenter.getRatio()), mPresenter.getIntegrationGoldName());
 
         } else {
             moneyStr = "";

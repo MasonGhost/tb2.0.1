@@ -188,7 +188,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 mRlInviteContainer.setVisibility(View.GONE);
             }
         }
-        String moneyName = mPresenter.getGoldName();
+        String moneyName = mPresenter.getIntegrationGoldName();
         mCustomMoney.setText(moneyName);
     }
 

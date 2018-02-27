@@ -295,7 +295,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         this.mRewardsListBeen.clear();
         this.mRewardsListBeen.addAll(datas);
         mPostDetailHeaderView.updateReward(mCirclePostDetailBean.getId(), mRewardsListBeen,
-                mRewardsCountBean, RewardType.POST, mPresenter.getGoldName());
+                mRewardsCountBean, RewardType.POST, mPresenter.getIntegrationGoldName());
     }
 
     @Override

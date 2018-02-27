@@ -104,7 +104,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                                 public void onCompleted() {
                                     mRootView.updateReWardsView(new RewardsCountBean(circlePostDetailBean.getReward_number(),
                                             "" + PayConfig.realCurrencyFen2Yuan(circlePostDetailBean.getReward_amount()),
-                                            getGoldName()), postRewardList);
+                                            getIntegrationGoldName()), postRewardList);
                                 }
                             });
                     return circlePostDetailBean;
@@ -224,7 +224,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                                 public void onCompleted() {
                                     mRootView.updateReWardsView(new RewardsCountBean(currenPost.getReward_number(),
                                             "" + PayConfig.realCurrencyFen2Yuan(currenPost.getReward_amount()),
-                                            getGoldName()), rewardsListBeens);
+                                            getIntegrationGoldName()), rewardsListBeens);
                                 }
                             });
                     return currenPost;

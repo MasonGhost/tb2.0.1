@@ -171,8 +171,8 @@ public class PictureTollFragment extends TSFragment {
                 mSelectMoney.add(1,(float) PayConfig.realCurrency2GameCurrency(amount[1], mSystemConfigBean.getWallet_ratio()));
                 mSelectMoney.add(2,(float) PayConfig.realCurrency2GameCurrency(amount[2], mSystemConfigBean.getWallet_ratio()));
             }
-            if (mSystemConfigBean.getSite() != null && mSystemConfigBean.getSite().getGold_name() != null) {
-                mMoneyName = mSystemConfigBean.getSite().getGold_name().getName();
+            if (mSystemConfigBean.getSite() != null && mSystemConfigBean.getSite().getIntegration_gold_name() != null) {
+                mMoneyName = mSystemConfigBean.getSite().getIntegration_gold_name().getName();
             }
         }
         initSelectDays(mSelectMoney);

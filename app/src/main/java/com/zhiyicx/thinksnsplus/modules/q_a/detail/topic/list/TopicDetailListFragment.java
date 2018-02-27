@@ -174,7 +174,7 @@ public class TopicDetailListFragment extends TSListFragment<TopicDetailListContr
                 .buildDescrStr(String.format(getString(R.string.qa_pay_for_watch_answer_hint) + getString(R
                                 .string.buy_pay_member),
                         PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfigBean().getOnlookQuestion(),mPresenter.getRatio())
-                        ,mPresenter.getGoldName()))
+                        ,mPresenter.getIntegrationGoldName()))
                 .buildLinksStr(getString(R.string.qa_pay_for_watch))
                 .buildTitleStr(getString(R.string.qa_pay_for_watch))
                 .buildItem1Str(getString(R.string.buy_pay_in_payment))

@@ -96,7 +96,7 @@ class IntegrationDetailListFragment : TSListFragment<IntegrationDetailContract.P
             mChooseType = arguments.getString(BUNDLE_CHOOSE_TYPE)
             mIntegrationConfigBean = arguments.getSerializable(BUNDLE_INTEGRATION_CONFIG) as IntegrationConfigBean?
         }
-        mGoldName = mPresenter.goldName
+        mGoldName = mPresenter.integrationGoldName
     }
 
     override fun getAdapter(): RecyclerView.Adapter<*> {

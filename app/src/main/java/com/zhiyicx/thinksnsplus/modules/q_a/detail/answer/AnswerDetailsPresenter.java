@@ -56,8 +56,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS_FORMAT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_QA_ANSWER_DETAIL;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_INFO_LIST_COLLECT;
 import static com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean.SEND_ING;
@@ -270,7 +268,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<
                     protected void onSuccess(AnswerInfoBean data) {
                         mAnswerInfoListBeanGreenDao.saveSingleData(data);
                         mRootView.updateReWardsView(new RewardsCountBean(data.getRewarder_count(), "" + PayConfig.realCurrencyFen2Yuan(data
-                                        .getRewards_amount()), getGoldName()),
+                                        .getRewards_amount()), getIntegrationGoldName()),
                                 data.getRewarders());
                         mRootView.updateAnswerHeader(data, isLoadMore);
                     }

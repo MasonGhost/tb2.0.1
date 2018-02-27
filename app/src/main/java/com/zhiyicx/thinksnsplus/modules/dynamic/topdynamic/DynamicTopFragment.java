@@ -16,7 +16,6 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.mine.MineIntegrationActivity;
 
 import java.util.ArrayList;
@@ -69,7 +68,7 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
 
     @Override
     protected void initData() {
-        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200, mPresenter.getGoldName(), mPresenter.getBalance()));
+        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200, mPresenter.getIntegrationGoldName(), mPresenter.getBalance()));
     }
 
     @Override

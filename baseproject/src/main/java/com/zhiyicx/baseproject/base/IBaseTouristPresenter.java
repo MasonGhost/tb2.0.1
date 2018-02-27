@@ -32,9 +32,12 @@ public interface IBaseTouristPresenter extends IBasePresenter {
 
     SystemConfigBean getSystemConfigBean();
 
-    String getGoldName();
+    String getIntegrationGoldName();
 
-    String getGoldUnit();
+    String getIntegrationGoldUnit();
 
     int getRatio();
+
+    String getWalletGoldName();
+
 }

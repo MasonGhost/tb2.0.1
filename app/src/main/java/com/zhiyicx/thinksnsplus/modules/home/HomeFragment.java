@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,8 +19,6 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
-import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
@@ -33,10 +30,7 @@ import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
-import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity;
-import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
-import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
 import com.zhiyicx.thinksnsplus.widget.popwindow.CheckInPopWindow;
 
@@ -428,13 +422,13 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         this.mCheckInBean = data;
         if (mCheckInPopWindow != null) {
             if (mCheckInPopWindow.isShowing()) {
-                mCheckInPopWindow.setData(mCheckInBean, mPresenter.getWalletRatio(), mPresenter.getGoldName());
+                mCheckInPopWindow.setData(mCheckInBean, mPresenter.getWalletRatio(), mPresenter.getIntegrationGoldName());
             } else {
-                mCheckInPopWindow.setData(mCheckInBean, mPresenter.getWalletRatio(), mPresenter.getGoldName());
+                mCheckInPopWindow.setData(mCheckInBean, mPresenter.getWalletRatio(), mPresenter.getIntegrationGoldName());
                 mCheckInPopWindow.show();
             }
         } else {
-            mCheckInPopWindow = new CheckInPopWindow(getContentView(), data, mPresenter.getGoldName(), mPresenter.getWalletRatio(), () ->
+            mCheckInPopWindow = new CheckInPopWindow(getContentView(), data, mPresenter.getIntegrationGoldName(), mPresenter.getWalletRatio(), () ->
                     mPresenter.checkIn());
             mCheckInPopWindow.show();
         }

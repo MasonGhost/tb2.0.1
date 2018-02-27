@@ -279,7 +279,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             }
         }
         initSelectMoney(mSelectMoney);
-        mCustomMoney.setText(mPresenter.getGoldName());
+        mCustomMoney.setText(mPresenter.getIntegrationGoldName());
     }
 
     @Override

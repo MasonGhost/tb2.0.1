@@ -1065,7 +1065,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(strRes),amout, mPresenter
-                        .getGoldName()))
+                        .getIntegrationGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))

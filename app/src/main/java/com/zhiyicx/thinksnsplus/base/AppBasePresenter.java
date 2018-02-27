@@ -137,6 +137,7 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
             return false;
         }
     }
+
     /**
      * 检查异常是否是手动抛出的余额检查异常，如果是不做处理，如果不是需要处理
      *
@@ -151,15 +152,16 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
             return false;
         }
     }
+
     @Override
     public SystemConfigBean getSystemConfigBean() {
         return mSystemRepository.getAppConfigInfoFromLocal();
     }
 
     @Override
-    public String getGoldName() {
+    public String getIntegrationGoldName() {
         try {
-            return getSystemConfigBean().getSite().getGold_name().getName();
+            return getSystemConfigBean().getSite().getIntegration_gold_name().getName();
 
         } catch (Exception e) {
             return mContext.getResources().getString(R.string.defualt_golde_name);
@@ -167,9 +169,9 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
     }
 
     @Override
-    public String getGoldUnit() {
+    public String getIntegrationGoldUnit() {
         try {
-            return getSystemConfigBean().getSite().getGold_name().getName();
+            return getSystemConfigBean().getSite().getIntegration_gold_name().getName();
         } catch (Exception e) {
             return "";
         }
@@ -178,5 +180,15 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
     @Override
     public int getRatio() {
         return getSystemConfigBean().getWallet_ratio();
+    }
+
+    @Override
+    public String getWalletGoldName() {
+        try {
+            return getSystemConfigBean().getSite().getGold_name().getName();
+
+        } catch (Exception e) {
+            return mContext.getResources().getString(R.string.tb_gold_name);
+        }
     }
 }

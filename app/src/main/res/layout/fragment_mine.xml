@@ -237,7 +237,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="@dimen/spacing_normal"
                         android:layout_marginTop="@dimen/spacing_large"
-                        android:background="@drawable/selector_button_corner_circle_solid_small"
+                        android:background="@drawable/selector_button_corner_circle_solid_small_gradient"
                         android:paddingBottom="@dimen/spacing_small"
                         android:paddingEnd="@dimen/spacing_normal_large"
                         android:paddingLeft="@dimen/spacing_normal_large"

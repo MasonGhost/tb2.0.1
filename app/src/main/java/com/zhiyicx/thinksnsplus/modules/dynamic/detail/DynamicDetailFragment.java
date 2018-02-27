@@ -433,7 +433,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                     mPresenter.getRatio()));
         }
         mDynamicDetailHeader.updateReward(mDynamicBean.getId(), mRewardsListBeens, mDynamicBean.getReward(),
-                RewardType.DYNAMIC, mPresenter.getGoldName());
+                RewardType.DYNAMIC, mPresenter.getIntegrationGoldName());
     }
 
 
@@ -734,7 +734,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(strRes) + getString(R
-                        .string.buy_pay_member), amout, mPresenter.getGoldName()))
+                        .string.buy_pay_member), amout, mPresenter.getIntegrationGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))

@@ -108,7 +108,7 @@ public class SendDynamicPresenter extends AppBasePresenter< SendDynamicContract.
         }
         if ((mRootView.wordsNumLimit() && mRootView.getTollMoney() <= 0d) || mRootView.getTollMoney() != (long) mRootView.getTollMoney()) {// 文字收费金额整数限制
             mRootView.initInstructionsPop(mContext.getString(R.string.instructions), String.format(Locale.getDefault(),
-                    mContext.getResources().getString(R.string.limit_monye_death), getGoldName()));
+                    mContext.getResources().getString(R.string.limit_monye_death), getIntegrationGoldName()));
             return;
         }
 

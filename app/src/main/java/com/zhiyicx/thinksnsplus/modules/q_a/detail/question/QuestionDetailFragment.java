@@ -494,7 +494,7 @@ QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
                     .buildDescrStr(String.format(getString(R.string.qa_pay_for_excellent_hint) + getString(R
                                     .string.buy_pay_member),
                             mPresenter != null ? mPresenter.getSystemConfig().getExcellentQuestion() : ""
-                            , mPresenter != null ? mPresenter.getGoldName() : ""))
+                            , mPresenter != null ? mPresenter.getIntegrationGoldName() : ""))
                     .buildLinksStr(getString(R.string.qa_pay_for_excellent))
                     .buildTitleStr(getString(R.string.qa_pay_for_excellent))
                     .buildItem1Str(getString(R.string.buy_pay_in_payment))
@@ -535,7 +535,7 @@ QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
                     .buildDescrStr(String.format(getString(R.string.qa_pay_for_watch_answer_hint) + getString(R
                                     .string.buy_pay_member),
                             mPresenter.getSystemConfig().getOnlookQuestion()
-                            , mPresenter.getGoldName()))
+                            , mPresenter.getIntegrationGoldName()))
                     .buildLinksStr(getString(R.string.qa_pay_for_watch))
                     .buildTitleStr(getString(R.string.qa_pay_for_watch))
                     .buildItem1Str(getString(R.string.buy_pay_in_payment))

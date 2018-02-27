@@ -472,8 +472,10 @@ public class SystemConfigBean implements Serializable {
         private H5Bean h5;
         private GoldBean gold;
         private RewardBean reward;
-        @SerializedName("currency_name")
         private GoldNameBean gold_name;
+        @SerializedName("currency_name")
+        private GoldNameBean integration_gold_name;
+
 
         public boolean isStatus() {
             return status;
@@ -553,6 +555,14 @@ public class SystemConfigBean implements Serializable {
 
         public void setGold_name(GoldNameBean gold_name) {
             this.gold_name = gold_name;
+        }
+
+        public GoldNameBean getIntegration_gold_name() {
+            return integration_gold_name;
+        }
+
+        public void setIntegration_gold_name(GoldNameBean integration_gold_name) {
+            this.integration_gold_name = integration_gold_name;
         }
 
         public static class AppBean implements Serializable {
@@ -676,9 +686,10 @@ public class SystemConfigBean implements Serializable {
              * name : 金币
              * unit : 枚
              */
-
+            private int id;
             private String name;
             private String unit;
+            private int enable;
 
             public String getName() {
                 return name;
@@ -696,9 +707,20 @@ public class SystemConfigBean implements Serializable {
                 this.unit = unit;
             }
 
-            @Override
-            public String toString() {
-                return super.toString();
+            public int getId() {
+                return id;
+            }
+
+            public void setId(int id) {
+                this.id = id;
+            }
+
+            public int getEnable() {
+                return enable;
+            }
+
+            public void setEnable(int enable) {
+                this.enable = enable;
             }
         }
 

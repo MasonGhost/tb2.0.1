@@ -27,7 +27,6 @@ import com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.recharge_withd
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.recharge_withdrawal.IntegrationRWDetailContainerFragment
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleFragment
-import kotlinx.android.synthetic.main.fragment_my_circle_container.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -94,7 +93,7 @@ class IntegrationWithdrawalsFragment : TSFragment<IntegrationWithdrawalsContract
         mIvRefresh = mRootView.findViewById(R.id.iv_refresh) as ImageView
         mToolbar.setBackgroundResource(android.R.color.transparent)
         (mToolbar.layoutParams as LinearLayout.LayoutParams).setMargins(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0)
-        mGoldName = mPresenter.goldName
+        mGoldName = mPresenter.integrationGoldName
         mTvToolbarCenter.setTextColor(ContextCompat.getColor(mActivity, R.color.white))
         mTvToolbarCenter.text = getString(R.string.integration_withdrawals_format, mGoldName)
         mTvToolbarRight.text = getString(R.string.withdrawals_record)

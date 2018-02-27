@@ -5,12 +5,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.SwitchCompat;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -49,7 +47,6 @@ import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 import com.zhiyicx.thinksnsplus.widget.EnableCheckBox;
 import com.zhiyicx.thinksnsplus.widget.EnableSwitchCompat;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
-import com.zhiyicx.thinksnsplus.widget.listener.OnTouchEventListener;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.ArrayList;
@@ -372,8 +369,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 mLlCharge.setVisibility(View.GONE);
                 mLlFree.setVisibility(View.GONE);
             } else {
-                if (mPresenter != null && !TextUtils.isEmpty(mPresenter.getGoldUnit())) {
-                    mTvCurrencyUnit.setText(mPresenter.getGoldUnit());
+                if (mPresenter != null && !TextUtils.isEmpty(mPresenter.getIntegrationGoldUnit())) {
+                    mTvCurrencyUnit.setText(mPresenter.getIntegrationGoldUnit());
                 }
                 createCirclepreHandle(emptyFlag != 0 && (mCbFree.isChecked() || mCbToll.isChecked()));
                 mLlFree.setVisibility(View.VISIBLE);

@@ -1022,7 +1022,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(strRes) + getString(R
                                 .string.buy_pay_member), amout,
-                        mPresenter.getGoldName()))
+                        mPresenter.getIntegrationGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))

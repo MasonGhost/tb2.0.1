@@ -29,8 +29,6 @@ import com.zhiyicx.thinksnsplus.modules.information.publish.detail.EditeInfoDeta
 
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
 
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -278,7 +276,7 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
             mPayAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
                     .item6Str(getString(R.string.info_publish_go_to_next))
-                    .desStr(String.format(Locale.getDefault(), getString(R.string.info_publish_hint_pay), mPresenter.getGoldName()))
+                    .desStr(String.format(Locale.getDefault(), getString(R.string.info_publish_hint_pay), mPresenter.getIntegrationGoldName()))
                     .bottomStr(getString(R.string.cancel))
                     .isOutsideTouch(true)
                     .isFocus(true)

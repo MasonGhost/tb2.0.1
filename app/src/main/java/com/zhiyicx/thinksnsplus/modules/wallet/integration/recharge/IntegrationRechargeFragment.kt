@@ -29,9 +29,7 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow
 import com.zhiyicx.thinksnsplus.R
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig
 import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean
-import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean
 import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean
-import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.recharge_withdrawal.IntegrationRWDetailActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.detail.recharge_withdrawal.IntegrationRWDetailContainerFragment
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity
@@ -117,7 +115,7 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
         mToolbar.setBackgroundResource(android.R.color.transparent)
         (mToolbar.layoutParams as LinearLayout.LayoutParams).setMargins(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0)
         mTvToolbarCenter.setTextColor(ContextCompat.getColor(mActivity, R.color.white))
-        mGoldName = mPresenter.goldName
+        mGoldName = mPresenter.integrationGoldName
         mTvToolbarCenter.text = getString(R.string.recharge_integration_foramt, mGoldName)
         mTvToolbarRight.text = getString(R.string.recharge_record)
         mTvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(context, R.mipmap.topbar_back_white), null, null, null)

@@ -179,7 +179,7 @@ public class CircleListItem extends BaseCircleItem {
                         if (mPresenter != null && CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
                             if (!mPresenter.handleTouristControl()) {
                                 initPayPopWindow(mContext, position, circleInfo, circleInfo.getMoney
-                                        (), mPresenter.getRatio(), mPresenter.getGoldName(), R.string
+                                        (), mPresenter.getRatio(), mPresenter.getIntegrationGoldName(), R.string
                                         .buy_pay_circle_desc);
                             }
                             return;

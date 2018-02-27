@@ -15,7 +15,6 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity;
-import com.zhiyicx.thinksnsplus.modules.wallet.integration.mine.MineIntegrationActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge.IntegrationRechargeActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeFragment;
@@ -126,7 +125,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         mSystemConfigBean = mPresenter.getSystemConfigBean();
         if (mSystemConfigBean.getCurrencyRecharge() != null && mSystemConfigBean.getCurrencyRecharge().isOpen()) {
             btMineIntegration.setVisibility(View.VISIBLE);
-            btMineIntegration.setLeftText(getString(R.string.integration_recharge_format, mPresenter.getGoldName()));
+            btMineIntegration.setLeftText(getString(R.string.integration_recharge_format, mPresenter.getIntegrationGoldName()));
         } else {
             btMineIntegration.setVisibility(View.GONE);
         }

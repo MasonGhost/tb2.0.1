@@ -1369,7 +1369,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             case R.id.tv_circle_subscrib:
                 boolean isPaid = CircleInfo.CirclePayMode.PAID.value.equals(mCircleInfo.getMode());
                 if (isPaid) {
-                    initPayPopWindow(mActivity, mCircleInfo.getMoney(), mPresenter.getRatio(), mPresenter.getGoldName()
+                    initPayPopWindow(mActivity, mCircleInfo.getMoney(), mPresenter.getRatio(), mPresenter.getIntegrationGoldName()
                             , R.string.buy_pay_circle_desc);
                 } else {
                     mPresenter.dealCircleJoinOrExit(mCircleInfo);

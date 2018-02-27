@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.NestedScrollView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,6 +37,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
@@ -112,18 +116,32 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         Observable.create(subscriber -> {
             DaggerMinePresenterComponent.builder()
                     .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                     .minePresenterModule(new MinePresenterModule(MineFragment.this))
                     .build().inject(MineFragment.this);
             subscriber.onCompleted();
-        }).subscribeOn(Schedulers.io())
-                .subscribe(o -> {
-                }, Throwable::printStackTrace);
+        }).subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        onPresenterInjected();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+
+                    }
+                });
+
     }
 
     @Override
@@ -147,17 +165,22 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                     mTvMine.setAlpha(mCurrentAlpha);
                 });
 
+    }
+
+    private void onPresenterInjected() {
         setMineTaskViewData(mMtiInviteFriends, "100", true, getString(R.string.immedite_invitation), getColor(R.color.white)
-                , getString(R.string.invite_friend_str), getString(R.string.invite_friend_str_fomart, 100, "TBMark"), false, R.drawable
+                , getString(R.string.invite_friend_str), getString(R.string.invite_friend_str_fomart, 100, mPresenter.getWalletGoldName()), false,
+                R.drawable
                         .selector_button_corner_circle_solid_small_gradient);
         setMineTaskViewData(mMtiEditInviteCode, "8", true, getString(R.string.go_edit_invite_code), getColor(R.color.white)
-                , getString(R.string.edit_invite_code), getString(R.string.edit_invite_code_fomart, 8, "TBMark"), false, R.drawable
+                , getString(R.string.edit_invite_code), getString(R.string.edit_invite_code_fomart, 8, mPresenter.getWalletGoldName()), false, R
+                        .drawable
                         .selector_button_corner_circle_solid_small_gradient);
 
         setMineTaskViewData(mMtiShareDynamic, "5", true, "1/4", getColor(R.color.themeColor)
-                , getString(R.string.share_dynamic), getString(R.string.share_dynamic_fomart, 5, "TBMark"), true, 0);
+                , getString(R.string.share_dynamic), getString(R.string.share_dynamic_fomart, 5, mPresenter.getWalletGoldName()), true, 0);
         setMineTaskViewData(mMtiCertify, "50", true, getString(R.string.immediate_certify), getColor(R.color.white)
-                , getString(R.string.certification), getString(R.string.certification_format, 50, "TBMark"), false, R.drawable
+                , getString(R.string.certification), getString(R.string.certification_format, 50, mPresenter.getWalletGoldName()), false, R.drawable
                         .selector_button_corner_circle_solid_small_gradient);
     }
 

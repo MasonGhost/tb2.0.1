@@ -18,10 +18,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.mine.MineIntegrationActivity;
-import com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge.IntegrationRechargeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,8 +128,8 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         child_id = getArguments().getLong(CHILD_ID, -1L);
         isManager = getArguments().getBoolean(TYPE_MANAGER);
         mBlance = mPresenter.getBalance();
-        mTvDynamicTopDec.setText(getString(R.string.to_top_description, 200, mPresenter.getGoldName(), mBlance));
-        String moneyName = mPresenter.getGoldName();
+        mTvDynamicTopDec.setText(getString(R.string.to_top_description, 200, mPresenter.getIntegrationGoldName(), mBlance));
+        String moneyName = mPresenter.getIntegrationGoldName();
         mCustomMoney.setText(moneyName);
         mTotalMoney.setText(moneyName);
 
@@ -216,7 +213,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     @Override
     public void updateBalance(long balance) {
         mBlance = balance;
-        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200, mPresenter.getGoldName(), balance));
+        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200, mPresenter.getIntegrationGoldName(), balance));
     }
 
     private void initListener() {
