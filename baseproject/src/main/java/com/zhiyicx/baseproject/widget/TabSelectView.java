@@ -282,7 +282,7 @@ public class TabSelectView extends FrameLayout {
             ViewGroup.LayoutParams params = mMagicIndicator.getLayoutParams();
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            mMagicIndicator.setPadding(0, 0, 20, 0);
+            mMagicIndicator.setPadding(0, 0, 80, 0);
             mMagicIndicator.setLayoutParams(params);
         }
     }

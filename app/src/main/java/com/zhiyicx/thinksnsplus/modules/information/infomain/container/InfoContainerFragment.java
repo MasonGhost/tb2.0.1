@@ -134,7 +134,7 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
         mTsvToolbar.setDefaultTabLeftMargin(com.zhiyicx.baseproject.R.integer.tab_margin_10);
         mTsvToolbar.setDefaultTabRightMargin(com.zhiyicx.baseproject.R.integer.tab_margin_10);
         mTsvToolbar.showDivider(false);
-        mTsvToolbar.setIndicatorMatchWidth(false);
+        mTsvToolbar.setIndicatorMatchWidth(true);
         mTsvToolbar.setIndicatorMode(LinePagerIndicator.MODE_MATCH_EDGE);
         mTsvToolbar.setTabSpacing(getResources().getDimensionPixelOffset(R.dimen.info_container_tab_spacing));
         mVpFragment = (ViewPager) rootView.findViewById(R.id.vp_fragment);
