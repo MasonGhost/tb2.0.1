@@ -7,6 +7,7 @@ import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.List;
@@ -132,5 +133,6 @@ public interface DynamicContract {
 
         void payNote(int dynamicPosition,int imagePosition,int note,boolean isImage);
 
+        void followUser(UserInfoBean userInfoBean);
     }
 }

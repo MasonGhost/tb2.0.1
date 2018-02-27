@@ -334,7 +334,17 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
-        setAdapter(adapter, new DynamicListItemForZeroImage(getContext()));
+        DynamicListItemForZeroImage dynamicListItemForZeroImage = new DynamicListItemForZeroImage(getContext());
+        /*
+         关注
+          */
+        dynamicListItemForZeroImage.setOnFollowlistener(new DynamicListItemForZeroImage.OnFollowClickLisitener() {
+            @Override
+            public void onFollowClick(UserInfoBean userInfoBean) {
+                mPresenter.followUser(userInfoBean);
+            }
+        });
+        setAdapter(adapter, dynamicListItemForZeroImage);
         setAdapter(adapter, new DynamicListItemForOneImage(getContext()));
         setAdapter(adapter, new DynamicListItemForTwoImage(getContext()));
         setAdapter(adapter, new DynamicListItemForThreeImage(getContext()));

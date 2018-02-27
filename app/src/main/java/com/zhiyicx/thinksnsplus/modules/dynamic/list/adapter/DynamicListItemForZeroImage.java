@@ -3,10 +3,17 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 import android.content.Context;
 import android.view.View;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.widget.textview.SpanTextViewWithEllipsize;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import java.util.concurrent.TimeUnit;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author LiuChao
@@ -16,8 +23,15 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
  */
 
 public class DynamicListItemForZeroImage extends DynamicListBaseItem {
+    private OnFollowClickLisitener mOnFollowlistener;
+
     public DynamicListItemForZeroImage(Context context) {
         super(context);
+    }
+
+
+    public void setOnFollowlistener(OnFollowClickLisitener onFollowlistener) {
+        mOnFollowlistener = onFollowlistener;
     }
 
     @Override
@@ -36,7 +50,20 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
         SpanTextViewWithEllipsize contentView = holder.getView(R.id.tv_content);
         contentView.setMaxlines(contentView.getResources().getInteger(R.integer
                 .dynamic_list_content_show_lines));
-        holder.setVisible(R.id.tv_follow, dynamicBean.getUserInfoBean().getFollower() ? View.INVISIBLE : View.VISIBLE);
+        holder.setVisible(R.id.tv_follow, dynamicBean.getUserInfoBean().getUser_id() == AppApplication.getMyUserIdWithdefault() || dynamicBean
+                .getUserInfoBean().getFollower() ? View.INVISIBLE : View.VISIBLE);
+        if (mOnFollowlistener != null) {
+            RxView.clicks(holder.getView(R.id.tv_follow))
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                    .subscribe(aVoid -> {
+                        mOnFollowlistener.onFollowClick(dynamicBean.getUserInfoBean());
+                        holder.setVisible(R.id.tv_follow, View.INVISIBLE);
+                        dynamicBean.getUserInfoBean().setFollower(true);
+                    });
+        }
+    }
 
+    public interface OnFollowClickLisitener {
+        void onFollowClick(UserInfoBean userInfoBean);
     }
 }

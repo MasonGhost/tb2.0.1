@@ -592,6 +592,11 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
 
     }
 
+    @Override
+    public void followUser(UserInfoBean userInfoBean) {
+        mUserInfoRepository.handleFollow(userInfoBean);
+    }
+
     /**
      * 通过 feedMark 获取当前数据的位置
      *

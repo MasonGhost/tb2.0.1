@@ -42,6 +42,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImp
 import com.zhiyicx.thinksnsplus.data.source.local.SendDynamicDataBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
@@ -86,6 +87,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
     private SharePolicy mSharePolicy;
     private AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
     private BaseDynamicRepository mDynamicRepository;
+    private UserInfoRepository mUserInfoRepository;
 
     private SparseArray<Long> msendingStatus = new SparseArray<>();
 
@@ -97,6 +99,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
             , SendDynamicDataBeanV2GreenDaoImpl sendDynamicDataBeanV2GreenDao
             , TopDynamicBeanGreenDaoImpl topDynamicBeanGreenDao
             , BaseDynamicRepository baseDynamicRepository
+            , UserInfoRepository userInfoRepository
     ) {
         super(rootView);
         mAllAdvertListBeanGreenDao = allAdvertListBeanGreenDao;
@@ -108,6 +111,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
             mSharePolicy = new UmengSharePolicyImpl(((Fragment) rootView).getActivity());
         }
         mDynamicRepository = baseDynamicRepository;
+        mUserInfoRepository = userInfoRepository;
     }
 
 
@@ -586,6 +590,11 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
                     }
                 });
         addSubscrebe(subscribe);
+    }
+
+    @Override
+    public void followUser(UserInfoBean userInfoBean) {
+        mUserInfoRepository.handleFollow(userInfoBean);
     }
 
     @Override
