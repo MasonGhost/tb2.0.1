@@ -452,7 +452,8 @@
     <!--代码中的string-->
     <string name="token_expiers">token过期，请重新登陆</string>
     <string name="share">分享</string>
-    <string name="share_dynamic">分享动态</string>
+    <string name="share_dynamic">分享快讯</string>
+    <string name="share_dynamic_fomart">分享快讯给好友，每次得%1$d%2$s</string>
     <string name="share_circle">分享圈子</string>
     <string name="share_post">分享帖子</string>
     <string name="favorite">收藏</string>
@@ -827,6 +828,8 @@
     <string name="default_location_format">地址：%s</string>
     <string name="default_certify">当前用户还没有认证呢</string>
     <string name="invite_friend">邀请您的好友使用TS+吧！http://www.thinksns.com/</string>
+    <string name="invite_friend_str">邀请好友</string>
+    <string name="invite_friend_str_fomart">邀请一名好友获得%1$d%2$s</string>
     <string name="reward_type_error">打赏类型错误</string>
     <!--评论的、赞的-->
     <string name="digg_format_feed">%s赞了你的动态</string>
@@ -992,6 +995,12 @@
     <string name="reward_des">奖励说明</string>
     <string name="everyday_check_in">每日签到</string>
     <string name="has_continiuous_check_in_format">已经连续签到%d天</string>
+    <string name="immedite_invitation">立即邀请</string>
+    <string name="edit_invite_code">填写邀请码</string>
+    <string name="go_edit_invite_code">去填写</string>
+    <string name="immediate_certify">立即认证</string>
+    <string name="certification_format">完成认证得%1$d%2$s</string>
+    <string name="edit_invite_code_fomart">填写邀请码得%1$d%2$s</string>
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>
         <item>提取记录</item>

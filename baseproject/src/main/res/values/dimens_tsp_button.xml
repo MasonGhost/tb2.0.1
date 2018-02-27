@@ -16,5 +16,7 @@
     <dimen name="button_send_height">25dp</dimen>
     <!-- 描边 -->
     <dimen name="button_stroke_width">1dp</dimen>
+    <dimen name="button_circle_corner_big">24dp</dimen>
+
 
 </resources>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fl_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center_vertical">
+
+    <RelativeLayout
+        android:id="@+id/ll_point_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/mine_point_margint_right"
+        android:gravity="center"
+        android:minWidth="60dp"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/spacing_normal">
+
+        <TextView
+            android:id="@+id/tv_point_symbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tv_point"
+            android:textColor="@color/tb_point_color"
+            android:textSize="@dimen/size_content"
+            tools:text="+"/>
+
+        <TextView
+            android:id="@+id/tv_point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tv_point_symbol"
+            android:textColor="@color/tb_point_color"
+            android:textSize="@dimen/size_mine_point"
+            tools:text="100"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:layout_toRightOf="@id/ll_point_container"
+        android:textColor="@color/important_for_content"
+        android:textSize="@dimen/size_sub_title"
+        android:textStyle="bold"
+        tools:text="邀请好友"
+        />
+
+    <TextView
+        android:id="@+id/tv_des"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_title"
+        android:layout_marginBottom="@dimen/spacing_large"
+        android:layout_toLeftOf="@+id/f_container"
+        android:layout_toRightOf="@id/ll_point_container"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingTop="@dimen/spacing_small"
+        android:textColor="@color/normal_for_assist_text"
+        android:textSize="@dimen/size_icon_assist"
+        tools:text="邀请一名好友获得100TBMark"
+        />
+
+    <FrameLayout
+        android:id="@+id/f_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/spacing_normal">
+
+
+        <ProgressBar
+            android:id="@+id/pb_task"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/task_view_progeress_height"
+            android:layout_gravity="center"
+            android:max="100"
+            android:progress="40"
+            android:progressDrawable="@drawable/layer_list_progress_drawable"/>
+
+        <TextView
+            android:id="@+id/tv_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/selector_button_corner_circle_solid_small_gradient"
+            android:gravity="center"
+            android:minWidth="@dimen/mine_task_view_button_min_with"
+            android:paddingBottom="@dimen/spacing_small"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid"
+            android:paddingTop="@dimen/spacing_small"
+            android:text="4/10"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_icon_assist"
+            />
+
+    </FrameLayout>
+
+
+</RelativeLayout>

@@ -126,4 +126,9 @@
     <dimen name="info_container_tab_spacing">13dp</dimen>
     <dimen name="integration_withdrawals_et_padding">14dp</dimen>
     <dimen name="size_mine_big_mum">20sp</dimen>
+    <dimen name="size_mine_point">20sp</dimen>
+    <dimen name="mine_point_margint_right">12dp</dimen>
+    <dimen name="mine_task_view_button_min_with">75dp</dimen>
+    <dimen name="task_view_progeress_height">24dp</dimen>
+    <dimen name="setting_icon_size">24dp</dimen>
 </resources>

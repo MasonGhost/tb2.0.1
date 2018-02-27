@@ -3,52 +3,43 @@ package com.zhiyicx.thinksnsplus.modules.home.mine;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
-import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.NotificationConfig;
-import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
-import com.zhiyicx.thinksnsplus.modules.circle.mine.container.MyCircleContainerActivity;
-import com.zhiyicx.thinksnsplus.modules.collect.CollectListActivity;
-import com.zhiyicx.thinksnsplus.modules.draftbox.DraftBoxActivity;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
-import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
-import com.zhiyicx.thinksnsplus.modules.home.mine.friends.MyFriendsListActivity;
 import com.zhiyicx.thinksnsplus.modules.home.mine.mycode.MyCodeActivity;
-import com.zhiyicx.thinksnsplus.modules.information.my_info.ManuscriptsActivity;
-import com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.MyMusicActivity;
-import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.container.MyQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
-import com.zhiyicx.thinksnsplus.modules.wallet.integration.mine.MineIntegrationActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.CertificationTypePopupWindow;
+import com.zhiyicx.thinksnsplus.widget.MineTaskItemView;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_DATA;
-import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
 
@@ -65,21 +56,37 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     UserAvatarView mIvHeadIcon;
     @BindView(R.id.tv_user_name)
     TextView mTvUserName;
-    @BindView(R.id.tv_user_signature)
-    TextView mTvUserSignature;
     @BindView(R.id.tv_fans_count)
     TextView mTvFansCount;
     @BindView(R.id.tv_follow_count)
     TextView mTvFollowCount;
-    @BindView(R.id.bt_wallet)
-    CombinationButton mBtWallet;
-    @BindView(R.id.bt_mine_integration)
-    CombinationButton btMineIntegration;
-    @BindView(R.id.bt_certification)
-    CombinationButton mBtCertification;
+    @BindView(R.id.tv_friends_count)
+    TextView mTvFriendsCount;
     @BindView(R.id.bv_fans_new_count)
     BadgeView mVvFansNewCount;
+    @BindView(R.id.tv_task_tip)
+    TextView mTvTaskTip;
+    @BindView(R.id.tv_reward_des)
+    TextView mTvRewardDes;
+    @BindView(R.id.tv_every_day_check_in_tip)
+    TextView mTvEveryDayCheckInTip;
+    @BindView(R.id.tv_continiuous_check_in_tip)
+    TextView mTvContiniuousCheckInTip;
+    @BindView(R.id.mti_invite_friends)
+    MineTaskItemView mMtiInviteFriends;
+    @BindView(R.id.mti_edit_invite_code)
+    MineTaskItemView mMtiEditInviteCode;
+    @BindView(R.id.mti_share_dynamic)
+    MineTaskItemView mMtiShareDynamic;
+    @BindView(R.id.mti_certify)
+    MineTaskItemView mMtiCertify;
 
+    @BindView(R.id.overscroll)
+    OverScrollLayout mOverScrollLayout;
+    @BindView(R.id.scroll_view)
+    ScrollView mScrollView;
+    @BindView(R.id.fl_toolbar_contaier)
+    FrameLayout mFlToolbarContaier;
     /**
      * 选择认证人类型的弹窗
      */
@@ -115,6 +122,39 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     protected void initView(View rootView) {
+        mOverScrollLayout.setTopOverScrollEnable(false);
+        mFlToolbarContaier.setPadding(0, DeviceUtils.getStatuBarHeight(mActivity.getApplicationContext()), 0, 0);
+        mScrollView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                LogUtils.d("layout", left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom);
+            }
+        });
+        setMineTaskViewData(mMtiInviteFriends, "100", true, getString(R.string.immedite_invitation), getColor(R.color.white)
+                , getString(R.string.invite_friend_str), getString(R.string.invite_friend_str_fomart, 100, "TBMark"), false, R.drawable
+                        .selector_button_corner_circle_solid_small_gradient);
+        setMineTaskViewData(mMtiEditInviteCode, "8", true, getString(R.string.go_edit_invite_code), getColor(R.color.white)
+                , getString(R.string.edit_invite_code), getString(R.string.edit_invite_code_fomart, 8, "TBMark"), false, R.drawable
+                        .selector_button_corner_circle_solid_small_gradient);
+
+        setMineTaskViewData(mMtiShareDynamic, "5", true, "1/4", getColor(R.color.themeColor)
+                , getString(R.string.share_dynamic), getString(R.string.share_dynamic_fomart, 5, "TBMark"), true, 0);
+        setMineTaskViewData(mMtiCertify, "50", true, getString(R.string.immediate_certify), getColor(R.color.white)
+                , getString(R.string.certification), getString(R.string.certification_format, 50, "TBMark"), false, R.drawable
+                        .selector_button_corner_circle_solid_small_gradient);
+    }
+
+    private void setMineTaskViewData(MineTaskItemView mineTaskViewData, String point, boolean isAdd, String buttonText, int buttonTextColor, String
+            title, String des,
+                                     boolean progressShow, int buttonBgRes) {
+        mineTaskViewData.setPoint(point);
+        mineTaskViewData.setPointSymbol(isAdd);
+        mineTaskViewData.setButtonText(buttonText);
+        mineTaskViewData.setTitle(title);
+        mineTaskViewData.setDes(des);
+        mineTaskViewData.setProgressVisiable(progressShow);
+        mineTaskViewData.setTvButtonTextColor(buttonTextColor);
+        mineTaskViewData.setTvButtonBackground(buttonBgRes);
     }
 
     @Override
@@ -201,15 +241,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         }
     }
 
-    @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_my_info,
-            R.id.bt_personal_page, R.id.bt_collect, R.id.bt_wallet, R.id.bt_mine_integration, R.id.bt_music,
-            R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification, R.id.bt_my_qa, R.id.bt_my_group,
-            R.id.bt_my_friends})
+    @OnClick({R.id.ll_fans_container, R.id.ll_follow_container, R.id.iv_setting})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.rl_userinfo_container:
-                startActivity(new Intent(mActivity, UserInfoActivity.class));
-                break;
                 /*
                   粉丝列表
                  */
@@ -234,91 +268,44 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 itFollow.putExtras(bundleFollow);
                 startActivity(itFollow);
                 break;
-            case R.id.bt_personal_page:
-                PersonalCenterFragment.startToPersonalCenter(mActivity, mUserInfoBean);
-                break;
-            /*
-             * 我的投稿
-             */
-            case R.id.bt_my_info:
-                startActivity(new Intent(mActivity, ManuscriptsActivity.class));
-                break;
-            /*
-              我的收藏
-             */
-            case R.id.bt_collect:
-                startActivity(new Intent(mActivity, CollectListActivity.class));
-                break;
-            /*
-              我的钱包
-             */
-            case R.id.bt_wallet:
-                startActivity(new Intent(mActivity, WalletActivity.class));
-                break;
-            /*
-              我的积分 
-             */
-            case R.id.bt_mine_integration:
-                startActivity(new Intent(mActivity, MineIntegrationActivity.class));
-                break;
-            /*
-              我的音乐
-             */
-            case R.id.bt_music:
-                startActivity(new Intent(mActivity, MyMusicActivity.class));
-                break;
-            case R.id.bt_suggestion:
-                startActivity(new Intent(mActivity, FeedBackActivity.class));
-                break;
-             /*
-              草稿箱
-              */
-            case R.id.bt_draft_box:
-                startActivity(new Intent(mActivity, DraftBoxActivity.class));
-                break;
-            case R.id.bt_setting:
+//            case R.id.bt_personal_page:
+//                PersonalCenterFragment.startToPersonalCenter(mActivity, mUserInfoBean);
+//                break;
+//
+            case R.id.iv_setting:
                 startActivity(new Intent(mActivity, SettingsActivity.class));
                 break;
-            case R.id.bt_certification:
-                // 弹窗选择个人或者机构，被驳回也只能重新申请哦 (*^__^*)
-                if (mUserCertificationInfo != null
-                        && mUserCertificationInfo.getId() != 0
-                        && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
-                    Intent intentToDetail = new Intent(mActivity, CertificationDetailActivity.class);
-                    Bundle bundleData = new Bundle();
-                    if (mUserCertificationInfo.getCertification_name().equals(SendCertificationBean.USER)) {
-                        // 跳转个人认证
-                        bundleData.putInt(BUNDLE_DETAIL_TYPE, 0);
-                    } else {
-                        // 跳转企业认证
-                        bundleData.putInt(BUNDLE_DETAIL_TYPE, 1);
-                    }
-                    bundleData.putParcelable(BUNDLE_DETAIL_DATA, mUserCertificationInfo);
-                    intentToDetail.putExtra(BUNDLE_DETAIL_TYPE, bundleData);
-                    startActivity(intentToDetail);
-                } else {
-                    initCertificationTypePop();
-                }
-                break;
-            case R.id.bt_my_qa:
-                // 我的问答
-                startActivity(new Intent(mActivity, MyQuestionActivity.class));
-                break;
-            case R.id.bt_my_group:
-                // 我的圈子
-                startActivity(new Intent(mActivity, MyCircleContainerActivity.class));
-                break;
-            case R.id.bt_my_friends:
-                // 我的朋友
-                startActivity(new Intent(mActivity, MyFriendsListActivity.class));
-                break;
+//            case R.id.bt_certification:
+//                // 弹窗选择个人或者机构，被驳回也只能重新申请哦 (*^__^*)
+//                if (mUserCertificationInfo != null
+//                        && mUserCertificationInfo.getId() != 0
+//                        && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
+//                    Intent intentToDetail = new Intent(mActivity, CertificationDetailActivity.class);
+//                    Bundle bundleData = new Bundle();
+//                    if (mUserCertificationInfo.getCertification_name().equals(SendCertificationBean.USER)) {
+//                        // 跳转个人认证
+//                        bundleData.putInt(BUNDLE_DETAIL_TYPE, 0);
+//                    } else {
+//                        // 跳转企业认证
+//                        bundleData.putInt(BUNDLE_DETAIL_TYPE, 1);
+//                    }
+//                    bundleData.putParcelable(BUNDLE_DETAIL_DATA, mUserCertificationInfo);
+//                    intentToDetail.putExtra(BUNDLE_DETAIL_TYPE, bundleData);
+//                    startActivity(intentToDetail);
+//                } else {
+//                    initCertificationTypePop();
+//                }
+//                break;
+//            case R.id.bt_my_friends:
+//                // 我的朋友
+//                startActivity(new Intent(mActivity, MyFriendsListActivity.class));
+//                break;
             default:
         }
     }
 
     @Override
     public void setUserInfo(UserInfoBean userInfoBean) {
-        btMineIntegration.setLeftText(getString(R.string.my_integration_name,mPresenter.getGoldName()));
         if (userInfoBean == null) {
             return;
         }
@@ -340,8 +327,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         }
         // 设置用户名
         mTvUserName.setText(userInfoBean.getName());
-        // 设置简介
-        mTvUserSignature.setText(TextUtils.isEmpty(userInfoBean.getIntro()) ? getString(R.string.intro_default) : userInfoBean.getIntro());
         // 设置粉丝数
         String followedCount = String.valueOf(userInfoBean.getExtra().getFollowers_count());
         mTvFansCount.setText(ConvertUtils.numberConvert(Integer.parseInt(followedCount)));
@@ -352,9 +337,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         if (userInfoBean.getWallet() != null) {
             myMoney = userInfoBean.getWallet().getBalance();
         }
-        mBtWallet.setRightText(getString(R.string.money_format_with_unit, PayConfig.realCurrencyFen2Yuan(myMoney)
-                , ""));
-        btMineIntegration.setRightText(String.valueOf(userInfoBean.getFormatCurrencyNum()));
         this.mUserInfoBean = userInfoBean;
     }
 
@@ -372,15 +354,15 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     public void updateCertification(UserCertificationInfo data) {
         if (data != null && data.getId() != 0) {
             mUserCertificationInfo = data;
-            if (data.getStatus() == UserCertificationInfo.CertifyStatusEnum.PASS.value) {
-                mBtCertification.setRightText(getString(R.string.certification_state_success));
-            } else if (data.getStatus() == UserCertificationInfo.CertifyStatusEnum.REVIEWING.value) {
-                mBtCertification.setRightText(getString(R.string.certification_state_ing));
-            } else if (data.getStatus() == UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
-                mBtCertification.setRightText(getString(R.string.certification_state_failed));
-            }
+//            if (data.getStatus() == UserCertificationInfo.CertifyStatusEnum.PASS.value) {
+//                mBtCertification.setRightText(getString(R.string.certification_state_success));
+//            } else if (data.getStatus() == UserCertificationInfo.CertifyStatusEnum.REVIEWING.value) {
+//                mBtCertification.setRightText(getString(R.string.certification_state_ing));
+//            } else if (data.getStatus() == UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
+//                mBtCertification.setRightText(getString(R.string.certification_state_failed));
+//            }
         } else {
-            mBtCertification.setRightText("");
+//            mBtCertification.setRightText("");
         }
         if (mCertificationWindow != null) {
             mCertificationWindow.dismiss();

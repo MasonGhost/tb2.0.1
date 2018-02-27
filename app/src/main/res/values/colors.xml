@@ -36,4 +36,5 @@
     <color name="qa_anonymity_color">#FBFBFB</color>
     <color name="alpha_white_mine">#66ffffff</color>
     <color name="reward_des_color">#bfbfbf</color>
+    <color name="tb_point_color">#ee6464</color>
 </resources>

@@ -36,7 +36,8 @@ public class HomeActivity extends TSActivity {
                         ((HomeContract.View) mContanierFragment).checkBottomItem(HomeFragment.PAGE_MINE);
                         break;
                     default:
-                        ((HomeContract.View) mContanierFragment).checkBottomItem(HomeFragment.PAGE_MESSAGE);
+//                        ((HomeContract.View) mContanierFragment).checkBottomItem(HomeFragment.PAGE_MESSAGE);
+                        ((HomeContract.View) mContanierFragment).checkBottomItem(HomeFragment.PAGE_MINE);
                 }
 
             }

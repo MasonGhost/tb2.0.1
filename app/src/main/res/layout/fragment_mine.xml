@@ -9,6 +9,7 @@
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
     <ScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bgColor">
@@ -32,7 +33,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="@dimen/spacing_normal"
                     android:layout_marginLeft="@dimen/spacing_normal"
-                    android:layout_marginTop="@dimen/spacing_bigger_large_35"
+                    android:layout_marginTop="@dimen/spacing_huge_60"
                     android:src="@mipmap/pic_default_secret"
                     app:ts_avatare_size="@dimen/headpic_for_user_center"/>
                 <!--用户名-->
@@ -150,27 +151,32 @@
 
                 </LinearLayout>
 
-                <LinearLayout
+                <FrameLayout
+                    android:id="@+id/fl_toolbar_contaier"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/toolbar_height"
+                    android:layout_height="wrap_content"
                     android:background="@color/white">
 
                     <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_centerHorizontal="true"
-                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/toolbar_height"
+                        android:layout_gravity="center"
                         android:gravity="center"
+                        android:text="@string/mine"
                         android:textColor="@color/important_for_content"
                         android:textSize="@dimen/size_primary_title"
-                        android:textStyle="bold"
-                        tools:text="我的"/>
+                        android:textStyle="bold"/>
 
                     <ImageView
+                        android:id="@+id/iv_setting"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="@dimen/setting_icon_size"
+                        android:layout_gravity="center_vertical|right"
+                        android:paddingLeft="@dimen/spacing_mid"
+                        android:paddingRight="@dimen/spacing_mid"
+                        android:src="@drawable/setting"/>
 
-                </LinearLayout>
+                </FrameLayout>
             </RelativeLayout>
 
             <RelativeLayout
@@ -247,8 +253,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_alignTop="@+id/tv_every_day_check_in_tip"
                     android:layout_marginRight="@dimen/spacing_normal"
+                    android:layout_marginTop="@dimen/spacing_large"
                     android:background="@drawable/selector_button_corner_circle_solid_small"
                     android:paddingBottom="@dimen/spacing_small"
                     android:paddingEnd="@dimen/spacing_normal_large"
@@ -262,20 +268,31 @@
                     />
 
             </RelativeLayout>
+            <!--邀请好友-->
+            <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
+                android:id="@+id/mti_invite_friends"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_small"/>
+            <!--填写邀请码-->
+            <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
+                android:id="@+id/mti_edit_invite_code"
+                android:layout_width="match_parent"
 
-
-            <!--&lt;!&ndash;个人主页&ndash;&gt;-->
-            <!--<com.zhiyicx.baseproject.widget.button.CombinationButton-->
-            <!--android:id="@+id/bt_personal_page"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="@dimen/full_button_height"-->
-            <!--android:layout_marginTop="@dimen/spacing_normal"-->
-            <!--app:dividerLeftMargin="@dimen/spacing_normal"-->
-            <!--app:dividerRightMargin="@dimen/spacing_normal"-->
-            <!--app:leftImage="@mipmap/ico_me_homepage"-->
-            <!--app:leftText="@string/personal_page"-->
-            <!--app:rightImage="@mipmap/ic_arrow_smallgrey"-->
-            <!--app:showLine="true"/>-->
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_small"/>
+            <!--分享快讯-->
+            <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
+                android:id="@+id/mti_share_dynamic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_small"/>
+            <!--认证-->
+            <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
+                android:id="@+id/mti_certify"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_small"/>
 
 
         </LinearLayout>
