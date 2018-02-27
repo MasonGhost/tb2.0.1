@@ -17,7 +17,7 @@
         android:orientation="vertical"
         tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
-        <ScrollView
+        <android.support.v4.widget.NestedScrollView
             android:id="@+id/scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -278,21 +278,31 @@
 
 
             </LinearLayout>
-        </ScrollView>
+        </android.support.v4.widget.NestedScrollView>
     </com.wcy.overscroll.OverScrollLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:alpha="0"
+        />
 
     <FrameLayout
         android:id="@+id/fl_toolbar_contaier"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        >
 
         <TextView
+            android:id="@+id/tv_mine"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/toolbar_height"
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/mine"
+            android:alpha="0"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_primary_title"
             android:textStyle="bold"/>

@@ -3,20 +3,19 @@ package com.zhiyicx.thinksnsplus.modules.home.mine;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
+import android.support.v4.widget.NestedScrollView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ScrollView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.support.v4.widget.RxNestedScrollView;
 import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.NotificationConfig;
@@ -34,9 +33,7 @@ import com.zhiyicx.thinksnsplus.widget.MineTaskItemView;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -54,6 +51,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @BindView(R.id.iv_head_icon)
     UserAvatarView mIvHeadIcon;
+    @BindView(R.id.tv_mine)
+    TextView mTvMine;
     @BindView(R.id.tv_user_name)
     TextView mTvUserName;
     @BindView(R.id.tv_fans_count)
@@ -84,13 +83,18 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @BindView(R.id.overscroll)
     OverScrollLayout mOverScrollLayout;
     @BindView(R.id.scroll_view)
-    ScrollView mScrollView;
+    NestedScrollView mScrollView;
     @BindView(R.id.fl_toolbar_contaier)
     FrameLayout mFlToolbarContaier;
+    @BindView(R.id.fl_title)
+    FrameLayout mFrameLayout;
+    @BindView(R.id.rl_userinfo_container)
+    RelativeLayout mLayout;
     /**
      * 选择认证人类型的弹窗
      */
     private CertificationTypePopupWindow mCertificationWindow;
+    private int mStatusHeight;
 
     @Inject
     public MinePresenter mMinePresenter;
@@ -98,6 +102,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     private UserInfoBean mUserInfoBean;
 
     private UserCertificationInfo mUserCertificationInfo;
+    private float mCurrentAlpha = 0;
 
     public static MineFragment newInstance() {
         MineFragment fragment = new MineFragment();
@@ -123,14 +128,25 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     protected void initView(View rootView) {
+        mStatusHeight = DeviceUtils.getStatuBarHeight(mActivity.getApplicationContext());
         mOverScrollLayout.setTopOverScrollEnable(false);
-        mFlToolbarContaier.setPadding(0, DeviceUtils.getStatuBarHeight(mActivity.getApplicationContext()), 0, 0);
-        mScrollView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                LogUtils.d("layout", left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom);
-            }
-        });
+        mFlToolbarContaier.setPadding(0, mStatusHeight, 0, 0);
+        mFrameLayout.setPadding(0, mStatusHeight + getResources().getDimensionPixelOffset(R
+                .dimen.toolbar_height), 0, 0);
+        RxNestedScrollView.scrollChangeEvents(mScrollView)
+                .compose(this.bindToLifecycle())
+                .subscribe(viewScrollChangeEvent ->
+                {
+                    float alpha = ((float) (viewScrollChangeEvent.scrollY()) / (mFlToolbarContaier.getHeight() + mStatusHeight));
+                    if (mCurrentAlpha > 1 && alpha > 1) {
+                        mCurrentAlpha = 1;
+                    } else {
+                        mCurrentAlpha = alpha;
+                    }
+                    mFrameLayout.setAlpha(mCurrentAlpha);
+                    mTvMine.setAlpha(mCurrentAlpha);
+                });
+
         setMineTaskViewData(mMtiInviteFriends, "100", true, getString(R.string.immedite_invitation), getColor(R.color.white)
                 , getString(R.string.invite_friend_str), getString(R.string.invite_friend_str_fomart, 100, "TBMark"), false, R.drawable
                         .selector_button_corner_circle_solid_small_gradient);
