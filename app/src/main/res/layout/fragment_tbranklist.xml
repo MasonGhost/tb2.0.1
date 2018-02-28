@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tbrank_title_height"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_rank"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="76"
+            android:gravity="center"
+            android:textColor="@color/themeColor"
+            android:textSize="@dimen/size_sub_title"
+            tools:text="1"/>
+
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/spacing_large"
+            android:layout_weight="159"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_content_assist"
+            tools:text="1"/>
+
+
+        <TextView
+            android:id="@+id/tv_friends"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="100"
+            android:gravity="center"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_content_assist"
+            tools:text="1"/>
+
+        <TextView
+            android:id="@+id/tv_tbmark"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="100"
+            android:gravity="center"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_content_assist"
+            tools:text="1"/>
+    </LinearLayout>
+
+    <view
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_line"
+        android:background="@drawable/light_linear_driver"/>
+
+    <include layout="@layout/fragment_tslist"/>
+
+</LinearLayout>

@@ -114,6 +114,9 @@
     <dimen name="type_item_rank_num_width">42dp</dimen>
     <dimen name="item_channel_detial_header_des_with">280dp</dimen>
     <dimen name="info_title_size">25sp</dimen>
+    <!--TB 排行榜-->
+    <dimen name="tbrank_item_height">51dp</dimen>
+    <dimen name="tbrank_title_height">44dp</dimen>
 
     <!--扫码-->
     <dimen name="qr_code_width">147dp</dimen>

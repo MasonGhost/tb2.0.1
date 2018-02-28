@@ -671,6 +671,10 @@
             android:name=".modules.wallet.integration.withdrawal.IntegrationWithdrawalsActivity"
             android:screenOrientation="portrait"/>
 
+        <!--TB 排行榜-->
+        <activity android:name=".modules.rank.tb.RankListActivity"
+                  android:screenOrientation="portrait"/>
+
     </application>
 
 </manifest>
