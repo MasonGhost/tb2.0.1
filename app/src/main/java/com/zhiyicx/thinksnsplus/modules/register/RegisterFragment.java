@@ -54,8 +54,8 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     DeleteEditText mEtRegistUsername;
     @BindView(R.id.et_regist_phone)
     DeleteEditText mEtRegistPhone;
-    @BindView(R.id.et_register_email)
-    DeleteEditText mEtRegisterEmail;
+//    @BindView(R.id.et_register_email)
+//    DeleteEditText mEtRegisterEmail;
     @BindView(R.id.bt_regist_send_vertify_code)
     TextView mBtRegistSendVertifyCode;
     @BindView(R.id.iv_vertify_loading)
@@ -74,8 +74,8 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     TextView mTvLookAround;
     @BindView(R.id.ll_register_by_phone)
     LinearLayout mLlRegisterByPhone;
-    @BindView(R.id.ll_register_by_email)
-    LinearLayout mLlRegisterByEmail;
+//    @BindView(R.id.ll_register_by_email)
+//    LinearLayout mLlRegisterByEmail;
 
     private AnimationDrawable mVertifyAnimationDrawable;
     private boolean isNameEdited;
@@ -189,16 +189,16 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                     isNameEdited = isPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
                 });
-        // 邮箱地址观察
-        RxTextView.textChanges(mEtRegisterEmail)
-                .compose(this.bindToLifecycle())
-                .subscribe(charSequence -> {
-                    if (mIsVertifyCodeEnalbe) {
-                        mBtRegistSendVertifyCode.setEnabled(RegexUtils.isEmail(charSequence));
-                    }
-                    isEmailEdited = !TextUtils.isEmpty(charSequence.toString());
-                    setConfirmEnable();
-                });
+//        // 邮箱地址观察
+//        RxTextView.textChanges(mEtRegisterEmail)
+//                .compose(this.bindToLifecycle())
+//                .subscribe(charSequence -> {
+//                    if (mIsVertifyCodeEnalbe) {
+//                        mBtRegistSendVertifyCode.setEnabled(RegexUtils.isEmail(charSequence));
+//                    }
+//                    isEmailEdited = !TextUtils.isEmpty(charSequence.toString());
+//                    setConfirmEnable();
+//                });
         // 验证码观察
         RxTextView.textChanges(mEtRegistVertifyCode)
                 .compose(this.bindToLifecycle())
@@ -246,15 +246,15 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                         mPresenter.getVertifyCode(mEtRegistPhone.getText().toString().trim());
                         mEtRegistVertifyCode.requestFocus();
                     } else {
-                        if (mPresenter
-                                .getSystemConfigBean().getSite().getClient_email().contains(mEtRegisterEmail.getText().toString().trim())
-                                ) {
-                            showMessage(getString(R.string.can_not_use_protected_email));
-                            return;
-                        }
-                        mPresenter.getVerifyCodeByEmail(mEtRegisterEmail.getText().toString()
-                                .trim());
-                        mEtRegistVertifyCode.requestFocus();
+//                        if (mPresenter
+//                                .getSystemConfigBean().getSite().getClient_email().contains(mEtRegisterEmail.getText().toString().trim())
+//                                ) {
+//                            showMessage(getString(R.string.can_not_use_protected_email));
+//                            return;
+//                        }
+//                        mPresenter.getVerifyCodeByEmail(mEtRegisterEmail.getText().toString()
+//                                .trim());
+//                        mEtRegistVertifyCode.requestFocus();
                     }
                 });
         // 点击注册按钮
@@ -282,11 +282,11 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                             );
                         } else {
                             // 邮箱注册
-                            mPresenter.registerByEmail(mEtRegistUsername.getText().toString().trim()
-                                    , mEtRegisterEmail.getText().toString().trim()
-                                    , mEtRegistVertifyCode.getText().toString().trim()
-                                    , mEtRegistPassword.getText().toString().trim()
-                            );
+//                            mPresenter.registerByEmail(mEtRegistUsername.getText().toString().trim()
+//                                    , mEtRegisterEmail.getText().toString().trim()
+//                                    , mEtRegistVertifyCode.getText().toString().trim()
+//                                    , mEtRegistPassword.getText().toString().trim()
+//                            );
                         }
 
                     } else if (permission.shouldShowRequestPermissionRationale) {// 拒绝权限，但是可以再次请求
@@ -419,8 +419,8 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     private void setRegisterType() {
         mLlRegisterByPhone.setVisibility(mCurrentRegisterType == REGISTER_PHONE ? View.VISIBLE :
                 View.GONE);
-        mLlRegisterByEmail.setVisibility(mCurrentRegisterType == REGISTER_EMAIL ? View.VISIBLE :
-                View.GONE);
+//        mLlRegisterByEmail.setVisibility(mCurrentRegisterType == REGISTER_EMAIL ? View.VISIBLE :
+//                View.GONE);
     }
 
     /**
@@ -428,7 +428,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
      */
     private void clearAllData() {
         mEtRegistUsername.setText("");
-        mEtRegisterEmail.setText("");
+//        mEtRegisterEmail.setText("");
         mEtRegistPhone.setText("");
         mEtRegistVertifyCode.setText("");
         mEtRegistPassword.setText("");
