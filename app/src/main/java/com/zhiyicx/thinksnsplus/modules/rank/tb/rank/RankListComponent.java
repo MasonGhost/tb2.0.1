@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.rank.tb;
+package com.zhiyicx.thinksnsplus.modules.rank.tb.rank;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;

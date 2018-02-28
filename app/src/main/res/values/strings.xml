@@ -990,6 +990,8 @@
     <string name="image_upload_fail">图片上传失败</string>
     <string name="image_prase_fail">图片解析错误</string>
     <string name="fun_maintain">功能维护中</string>
+
+    <!--TB-->
     <string name="friends">好友</string>
     <string name="everyday_task">每日任务</string>
     <string name="reward_des">奖励说明</string>
@@ -1006,5 +1008,10 @@
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>
         <item>提取记录</item>
+    </string-array>
+
+    <string-array name="integration_contribution_type">
+        <item>累计贡献</item>
+        <item>今日贡献</item>
     </string-array>
 </resources>

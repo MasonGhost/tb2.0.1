@@ -672,8 +672,9 @@
             android:screenOrientation="portrait"/>
 
         <!--TB 排行榜-->
-        <activity android:name=".modules.rank.tb.RankListActivity"
+        <activity android:name=".modules.rank.tb.rank.RankListActivity"
                   android:screenOrientation="portrait"/>
+        <activity android:name=".modules.rank.tb.contribution.ContributionActivity"/>
 
     </application>
 

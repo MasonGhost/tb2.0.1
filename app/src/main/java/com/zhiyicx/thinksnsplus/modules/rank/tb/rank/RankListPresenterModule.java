@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.rank.tb;
+package com.zhiyicx.thinksnsplus.modules.rank.tb.rank;
 
 import dagger.Module;
 import dagger.Provides;

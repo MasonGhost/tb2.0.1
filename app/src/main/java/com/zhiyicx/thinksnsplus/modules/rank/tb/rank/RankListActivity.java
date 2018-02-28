@@ -1,6 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.rank.tb;
-
-import android.support.v4.app.Fragment;
+package com.zhiyicx.thinksnsplus.modules.rank.tb.rank;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 

@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.rank.tb;
+package com.zhiyicx.thinksnsplus.modules.rank.tb.rank;
 
 import android.support.v7.widget.RecyclerView;
 

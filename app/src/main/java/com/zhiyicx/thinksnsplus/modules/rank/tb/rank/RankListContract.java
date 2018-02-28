@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.rank.tb;
+package com.zhiyicx.thinksnsplus.modules.rank.tb.rank;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
