@@ -33,6 +33,7 @@ import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
@@ -79,6 +80,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     protected boolean showToolMenu = true;// 是否显示工具栏:默认显示
     protected boolean showCommentList = false;// 是否显示评论内容:默认显示
     protected boolean showReSendBtn = true;// 是否显示重发按钮
+    protected int mMaxlinesShow;
 
     public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
         mOnImageClickListener = onImageClickListener;
@@ -146,6 +148,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         mImageContainerWith = DeviceUtils.getScreenWidth(context) - margin;
         // 最大高度是最大宽度的4/3 保持 宽高比 3：4
         mImageMaxHeight = mImageContainerWith * 4 / 3;
+        mMaxlinesShow= context.getResources().getInteger(R.integer
+                .dynamic_list_content_show_lines);
     }
 
     @Override
@@ -219,8 +223,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                                     .color.normal_for_assist_text))
                             .position(startPosition, content.length())
                             .dataPosition(holder.getAdapterPosition())
-                            .maxLines(contentView.getResources().getInteger(R.integer
-                                    .dynamic_list_content_show_lines))
+                            .maxLines(mMaxlinesShow)
                             .onSpanTextClickListener(mOnSpanTextClickListener)
                             .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText().toString()), false))
                             .disPlayText(true)
@@ -231,8 +234,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                                     .color.normal_for_assist_text))
                             .position(startPosition, content.length())
                             .dataPosition(holder.getAdapterPosition())
-                            .maxLines(contentView.getResources().getInteger(R.integer
-                                    .dynamic_list_content_show_lines))
+                            .maxLines(mMaxlinesShow)
                             .onSpanTextClickListener(mOnSpanTextClickListener)
                             .note(dynamicBean.getPaid_node().getNode())
                             .amount(dynamicBean.getPaid_node().getAmount())
@@ -480,7 +482,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .build())
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color
                             .general_for_hint))
-                    .setHighlightAlpha(.8f)
+                    .setHighlightAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .setOnClickListener((clickedText, linkMetadata) -> {
                         LogUtils.d(clickedText);
                         Intent intent = new Intent();

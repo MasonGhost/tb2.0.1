@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.TextView;
 
@@ -84,7 +85,6 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
             holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
             holder.setText(R.id.tv_time, dynamicBean.getFriendlyTime());
             holder.setVisible(R.id.tv_title, View.GONE);
-            TextView contentView = holder.getView(R.id.tv_content);
             // 置顶标识 ,防止没有置顶布局错误
             try {
                 // 待审核 也隐藏
@@ -97,49 +97,7 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
             } catch (Exception ignored) {
             }
 
-            String content = dynamicBean.getFriendlyContent();
-            contentView.setVisibility(TextUtils.isEmpty(content) ? View.GONE : View.VISIBLE);
-            if (!TextUtils.isEmpty(content)) {
-
-                boolean canLookWords = dynamicBean.getPaid_node() == null || dynamicBean
-                        .getPaid_node().isPaid();
-
-                int startPosition = dynamicBean.getStartPosition();
-
-                if (canLookWords) {
-                    TextViewUtils.newInstance(contentView, content)
-                            .spanTextColor(SkinUtils.getColor(R
-                                    .color.normal_for_assist_text))
-                            .position(startPosition, content.length())
-                            .dataPosition(holder.getAdapterPosition())
-                            .maxLines(contentView.getResources().getInteger(R.integer
-                                    .dynamic_list_content_show_lines))
-                            .onSpanTextClickListener(mOnSpanTextClickListener)
-                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText()
-                                    .toString()), false))
-                            .disPlayText(true)
-                            .build();
-                } else {
-                    TextViewUtils.newInstance(contentView, content)
-                            .spanTextColor(SkinUtils.getColor(R
-                                    .color.normal_for_assist_text))
-                            .position(startPosition, content.length())
-                            .dataPosition(holder.getAdapterPosition())
-                            .maxLines(contentView.getResources().getInteger(R.integer
-                                    .dynamic_list_content_show_lines))
-                            .onSpanTextClickListener(mOnSpanTextClickListener)
-                            .note(dynamicBean.getPaid_node().getNode())
-                            .amount(dynamicBean.getPaid_node().getAmount())
-                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText()
-                                    .toString()), false))
-                            .disPlayText(false)
-                            .build();
-                }
-                contentView.setVisibility(View.VISIBLE);
-            }
-
             setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
-            contentView.setOnClickListener(v -> holder.getConvertView().performClick());
             holder.setVisible(R.id.dlmv_menu, showToolMenu ? View.VISIBLE : View.GONE);
             // 分割线跟随工具栏显示隐藏
             holder.setVisible(R.id.v_line, showToolMenu ? View.VISIBLE : View.GONE);
@@ -209,9 +167,7 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
             e.printStackTrace();
         }
 
-        SpanTextViewWithEllipsize contentView = holder.getView(R.id.tv_content);
-        contentView.setMaxlines(contentView.getResources().getInteger(R.integer
-                .dynamic_list_content_show_lines));
+
         holder.setVisible(R.id.tv_follow, dynamicBean.getUserInfoBean().getUser_id() == AppApplication.getMyUserIdWithdefault() || dynamicBean
                 .getUserInfoBean().getFollower() ? View.INVISIBLE : View.VISIBLE);
         if (mOnFollowlistener != null) {
@@ -223,6 +179,37 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
                         dynamicBean.getUserInfoBean().setFollower(true);
                     });
         }
+        /*
+        文本内容处理
+         */
+        SpanTextViewWithEllipsize contentView = holder.getView(R.id.tv_content);
+        contentView.setOnClickListener(v -> holder.getConvertView().performClick());
+        contentView.setText(dynamicBean.getFriendlyContent());
+        ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText().toString()), false);
+        if (dynamicBean.isOpen()) {
+            contentView.setMaxLines(Integer.MAX_VALUE);
+        } else {
+            contentView.setMovementMethod(LinkMovementMethod.getInstance());
+            contentView.setMaxLines(mMaxlinesShow);
+            contentView.setEllipsize(TextUtils.TruncateAt.END);
+        }
+        contentView.setShowDot(!dynamicBean.isOpen(), mMaxlinesShow);
+        contentView.setOnClickListener(v -> {
+            if (dynamicBean.isOpen()) {
+                dynamicBean.setOpen(false);
+                contentView.setMovementMethod(LinkMovementMethod.getInstance());
+                ((TextView) v).setMaxLines(mMaxlinesShow);
+                contentView.setEllipsize(TextUtils.TruncateAt.END);
+
+            } else {
+                dynamicBean.setOpen(true);
+                contentView.setMaxLines(Integer.MAX_VALUE);
+                contentView.setText(dynamicBean.getFriendlyContent());
+                ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText().toString()), false);
+            }
+            contentView.setShowDot(!dynamicBean.isOpen(), mMaxlinesShow);
+        });
+
     }
 
     @Override

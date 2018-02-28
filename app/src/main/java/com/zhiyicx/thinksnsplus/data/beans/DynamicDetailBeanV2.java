@@ -142,6 +142,31 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     private String userCenterFriendlyTimeDonw;
     @Transient
     private String friendlyContent;
+    /**
+     * 列表是否点击打开
+     */
+    @Transient
+    private boolean isOpen;
+    /**
+     * 分享统计
+     */
+    private int shareCount;
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(boolean open) {
+        isOpen = open;
+    }
+
+    public int getShareCount() {
+        return shareCount;
+    }
+
+    public void setShareCount(int shareCount) {
+        this.shareCount = shareCount;
+    }
 
     public String getFriendlyTime() {
         return friendlyTime;
@@ -594,7 +619,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             imageBean.setImageViewHeight(height);
         }
         imageBean.setPropPart(proportion);
-        imageBean.setLongImage(ImageUtils.isLongImage(netHeight,netWidth));
+        imageBean.setLongImage(ImageUtils.isLongImage(netHeight, netWidth));
     }
 
     public static class ImagesBean implements Parcelable, Serializable {
@@ -1045,15 +1070,16 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         dest.writeInt(this.top);
         dest.writeTypedList(this.digUserInfoList);
         dest.writeParcelable(this.reward, flags);
+        dest.writeInt(this.startPosition);
         dest.writeString(this.friendlyTime);
         dest.writeString(this.userCenterFriendlyTimeUp);
         dest.writeString(this.userCenterFriendlyTimeDonw);
         dest.writeString(this.friendlyContent);
+        dest.writeByte(this.isOpen ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.shareCount);
     }
 
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     @Generated(hash = 249603048)
     public synchronized void resetComments() {
         comments = null;
@@ -1136,20 +1162,21 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.top = in.readInt();
         this.digUserInfoList = in.createTypedArrayList(DynamicDigListBean.CREATOR);
         this.reward = in.readParcelable(RewardsCountBean.class.getClassLoader());
+        this.startPosition = in.readInt();
         this.friendlyTime = in.readString();
         this.userCenterFriendlyTimeUp = in.readString();
         this.userCenterFriendlyTimeDonw = in.readString();
         this.friendlyContent = in.readString();
+        this.isOpen = in.readByte() != 0;
+        this.shareCount = in.readInt();
     }
 
-    @Generated(hash = 1726011089)
-    public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id, String feed_content,
-                               int feed_from, int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude, String
-                                       feed_longtitude,
-                               String feed_geohash, int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, long amount,
-                               List<DynamicLikeBean> likes, boolean paid, List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node, Long
-                                       hot_creat_time,
-                               boolean isFollowed, int state, int top, List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward) {
+    @Generated(hash = 1352146341)
+    public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id, String feed_content, int feed_from,
+            int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash,
+            int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, long amount, List<DynamicLikeBean> likes, boolean paid,
+            List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node, Long hot_creat_time, boolean isFollowed, int state, int top,
+            List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward, int shareCount) {
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -1179,6 +1206,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.top = top;
         this.digUserInfoList = digUserInfoList;
         this.reward = reward;
+        this.shareCount = shareCount;
     }
 
     public static final Creator<DynamicDetailBeanV2> CREATOR = new Creator<DynamicDetailBeanV2>() {
@@ -1192,16 +1220,15 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             return new DynamicDetailBeanV2[size];
         }
     };
-    /**
-     * Used to resolve relations
-     */
+
+    /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
+
+    /** Used for active entity operations. */
     @Generated(hash = 49871375)
     private transient DynamicDetailBeanV2Dao myDao;
+
     @Generated(hash = 1005780391)
     private transient Long userInfoBean__resolvedKey;
 }
