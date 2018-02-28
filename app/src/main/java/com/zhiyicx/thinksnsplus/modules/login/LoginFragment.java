@@ -245,7 +245,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_login;
+//        return R.layout.fragment_login;
+        return R.layout.fragment_login_for_tb;
     }
 
     @Override

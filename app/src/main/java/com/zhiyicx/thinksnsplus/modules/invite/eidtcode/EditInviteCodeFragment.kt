@@ -77,10 +77,10 @@ class EditInviteCodeFragment : TSFragment<EditInviteCodeContract.Presenter>(), E
 
     private fun initListener() {
         // 认证
-        RxView.clicks(mBtSetVertify!!)
-                .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.bindToLifecycle())
-                .subscribe { showSnackSuccessMessage("vertify") }
+//        RxView.clicks(mBtSetVertify!!)
+//                .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+//                .compose(this.bindToLifecycle())
+//                .subscribe { showSnackSuccessMessage("vertify") }
     }
 
     companion object {

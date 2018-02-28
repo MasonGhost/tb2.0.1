@@ -8,6 +8,7 @@
 
     <ImageView
         android:id="@+id/iv_top_logo"
+        android:background="@mipmap/bgpic_top_375"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="188"/>
@@ -20,6 +21,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:textStyle="bold"
             android:id="@+id/tv_invitation_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,6 +44,7 @@
 
 
     <ImageView
+        android:layout_gravity="center"
         android:id="@+id/iv_2code"
         android:layout_width="wrap_content"
         android:layout_height="0dp"

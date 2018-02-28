@@ -5,6 +5,7 @@
 
     <!--tb 邀请码加粗-->
     <dimen name="size_bold">20sp</dimen>
+    <dimen name="size_login_bold">35sp</dimen>
 
     <!--排序的排位数字-->
     <dimen name="size_rank_number">17sp</dimen>

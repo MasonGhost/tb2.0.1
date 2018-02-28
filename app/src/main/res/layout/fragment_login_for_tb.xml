@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.wcy.overscroll.OverScrollLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/overscroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:text="@string/tb_login_name"
+                android:textColor="@color/themeColor"
+                android:textSize="@dimen/size_login_bold"
+                android:layout_marginBottom="@dimen/spacing_bigger_large"
+                android:layout_marginTop="@dimen/spacing_bigger_large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:background="@drawable/shape_corner_small_white_tb_login"
+                style="@style/style_edit_white_container">
+
+                <TextView
+                    style="@style/style_small_text"
+                    android:text="@string/login_account"/>
+
+                <android.support.v7.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/et_complete_input"
+                    style="@style/style_edit"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:completionThreshold="@integer/login_hint_mix_count"
+                    android:hint="@string/login_account_hint"
+                    android:imeOptions="actionNext"
+                    android:singleLine="true"
+                    android:visibility="visible"/>
+
+                <ImageView
+                    android:id="@+id/iv_clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="15dp"
+                    android:src="@mipmap/login_inputbox_clean"
+                    android:visibility="gone"/>
+
+                <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
+                    android:id="@+id/et_login_phone"
+                    style="@style/style_edit"
+                    android:hint="@string/login_account_hint"
+                    android:inputType="textPersonName"
+                    android:visibility="gone"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:background="@drawable/shape_corner_small_white_tb_login"
+                style="@style/style_edit_white_container">
+
+                <TextView
+                    style="@style/style_small_text"
+                    android:text="@string/password"/>
+
+                <com.zhiyicx.baseproject.widget.edittext.PasswordEditText
+                    android:id="@+id/et_login_password"
+                    style="@style/style_passward_edit"
+                    android:hint="@string/password_input_hint"
+                    android:inputType="text"
+                    android:text=""/>
+            </LinearLayout>
+
+            <!--登录异常相关提示-->
+            <include
+                layout="@layout/include_error_tip_text"/>
+
+            <com.zhiyicx.baseproject.widget.button.LoadingButton
+                android:id="@+id/bt_login_login"
+                style="@style/style_login_button"
+                android:background="@drawable/selector_button_corner_circle_solid_small_gradient"
+                android:layout_marginTop="@dimen/button_login_margin_top"
+                android:enabled="false"
+                app:text="@string/bt_login"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+
+                >
+                <!--随便逛逛-->
+                <TextView
+                    android:id="@+id/tv_look_around"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/spacing_mid"
+                    android:paddingTop="@dimen/spacing_mid"
+                    android:text="@string/no_login"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:textSize="@dimen/size_content_comment"
+                    />
+                <!--忘记密码-->
+                <TextView
+                    android:id="@+id/tv_forget_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:paddingBottom="@dimen/spacing_mid"
+                    android:paddingTop="@dimen/spacing_mid"
+                    android:text="@string/forget_password"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:textSize="@dimen/size_content_comment"/>
+            </RelativeLayout>
+
+            <!--第三方登陆-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                android:layout_marginBottom="@dimen/margin_34"
+                android:layout_marginLeft="@dimen/third_margin"
+                android:layout_marginRight="@dimen/third_margin"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        style="@style/style_divider_horizontal_light"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing_normal"
+                        android:layout_marginRight="@dimen/spacing_normal"
+                        android:text="@string/login_by_third_platform"
+                        android:textColor="@color/general_for_hint"
+                        android:textSize="@dimen/size_icon_assist"/>
+
+                    <ImageView
+                        style="@style/style_divider_horizontal_light"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_34">
+
+                    <TextView
+                        android:id="@+id/tv_login_by_qq"
+                        style="@style/ThirdLoginButton"
+                        android:drawableTop="@mipmap/login_qq"
+                        android:text="@string/third_qq"/>
+
+                    <TextView
+                        android:id="@+id/tv_login_by_weibo"
+                        style="@style/ThirdLoginButton"
+                        android:layout_centerInParent="true"
+                        android:drawableTop="@mipmap/login_weibo"
+                        android:text="@string/third_weibo"/>
+
+                    <TextView
+                        android:id="@+id/tv_login_by_wechat"
+                        style="@style/ThirdLoginButton"
+                        android:layout_alignParentRight="true"
+                        android:drawableTop="@mipmap/login_wechat"
+                        android:text="@string/third_wechat"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_placeholder"
+            android:layout_width="match_parent"
+            android:clickable="true"
+            android:visibility="gone"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
+</com.wcy.overscroll.OverScrollLayout>
