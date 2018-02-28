@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_top_logo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="188"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="133"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_invitation_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_bold"
+            tools:text="238ss"/>
+
+        <TextView
+            android:id="@+id/tv_click_copy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:gravity="center"
+            android:text="@string/copy_invitation_code"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_icon_assist"/>
+
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/iv_2code"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="84"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="80"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/scan_get_candy"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_assist"/>
+
+        <view
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_line"
+            android:layout_marginTop="@dimen/spacing_mid_small_8dp"
+            android:background="@drawable/light_linear_driver"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_mid_small_8dp"
+            android:gravity="center"
+            android:text="@string/read_latest_info"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_icon_assist"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/spacing_normal_large"
+        android:layout_marginRight="@dimen/spacing_normal_large"
+        android:layout_weight="119"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_wx"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/spacing_normal"
+            android:drawableTop="@mipmap/login_qq"
+            android:gravity="center"
+            android:text="@string/third_qq"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_icon_assist"/>
+
+        <TextView
+            android:id="@+id/tv_friend"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/spacing_normal"
+            android:drawableTop="@mipmap/login_weibo"
+            android:gravity="center"
+            android:text="@string/third_weibo"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_icon_assist"/>
+
+        <TextView
+            android:id="@+id/tv_copy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/spacing_normal"
+            android:drawableTop="@mipmap/login_wechat"
+            android:gravity="center"
+            android:text="@string/third_wechat"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_icon_assist"/>
+
+        <TextView
+            android:id="@+id/tv_save"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_icon_assist"
+            android:drawablePadding="@dimen/spacing_normal"
+            android:drawableTop="@mipmap/login_wechat"
+            android:text="@string/third_wechat"/>
+
+    </LinearLayout>
+
+</LinearLayout>

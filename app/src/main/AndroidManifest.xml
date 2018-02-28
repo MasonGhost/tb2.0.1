@@ -674,7 +674,12 @@
         <!--TB 排行榜-->
         <activity android:name=".modules.rank.tb.rank.RankListActivity"
                   android:screenOrientation="portrait"/>
-        <activity android:name=".modules.rank.tb.contribution.ContributionActivity"/>
+        <!--贡献-->
+        <activity android:name=".modules.rank.tb.contribution.ContributionActivity"
+                  android:screenOrientation="portrait"/>
+        <!--邀请好友-->
+        <activity android:name=".modules.rank.tb.invitation.InvitationActivity"
+                  android:screenOrientation="portrait"/>
 
     </application>
 

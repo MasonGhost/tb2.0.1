@@ -2,6 +2,10 @@
 <resources>
     <!--个人主页动态左侧的显示天的文字大小-->
     <dimen name="size_dynamic_day">22sp</dimen>
+
+    <!--tb 邀请码加粗-->
+    <dimen name="size_bold">20sp</dimen>
+
     <!--排序的排位数字-->
     <dimen name="size_rank_number">17sp</dimen>
     <!-- 标题栏标题；动态详情页标题 -->
