@@ -6,7 +6,7 @@
     android:id="@+id/rl_container"
     android:layout_width="match_parent"
     android:layout_height="@dimen/button_login_height"
-    android:background="@drawable/selector_button_corner_solid_big"
+    android:background="@drawable/selector_button_corner_solid_big_for_tb"
     android:gravity="center_vertical"
     tools:ignore="MissingPrefix">
 

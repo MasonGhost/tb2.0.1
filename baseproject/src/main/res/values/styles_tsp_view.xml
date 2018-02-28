@@ -97,7 +97,7 @@
         <item name="android:layout_marginLeft">@dimen/spacing_mid</item>
         <item name="android:layout_marginRight">@dimen/spacing_mid</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:background">@drawable/selector_button_corner_solid_big</item>
+        <item name="android:background">@drawable/selector_button_corner_solid_big_for_tb</item>
         <item name="android:textSize">@dimen/size_primary_title</item>
     </style>
 

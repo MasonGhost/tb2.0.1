@@ -27,6 +27,9 @@ public interface RegisterClient {
      * @param password        用户密码，长度最小可无，最大不能超过 64 位4
      * @param verifiable_type Required, Notification serve verification type.
      * @param verifiable_code Required, Verification code.
+     * @param type type, 只有两个值 personal 和 group
+     *          personal 个人用户注册类型值
+     *          group 组织用户注册类型值
      * @return
      */
     @FormUrlEncoded
@@ -36,6 +39,7 @@ public interface RegisterClient {
             , @Field("name") String name
             , @Field("password") String password
             , @Field("verifiable_type") String verifiable_type
-            , @Field("verifiable_code") String verifiable_code);
+            , @Field("verifiable_code") String verifiable_code
+            , @Field("type") String type);
 
 }

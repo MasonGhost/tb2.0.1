@@ -35,6 +35,7 @@
                 android:layout_height="wrap_content"/>
 
             <LinearLayout
+                android:visibility="gone"
                 android:layout_marginRight="@dimen/spacing_mid"
                 android:layout_marginLeft="@dimen/spacing_mid"
                 android:background="@drawable/shape_corner_small_white_tb_login"
@@ -68,6 +69,7 @@
                     android:layout_toStartOf="@+id/rl_send_vertify_code_container">
                     <!--手机注册-->
                     <LinearLayout
+                        android:background="@drawable/shape_corner_small_white_tb_login"
                         android:id="@+id/ll_register_by_phone"
                         style="@style/style_edit_white_container">
 

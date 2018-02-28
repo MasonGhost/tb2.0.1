@@ -61,7 +61,7 @@ public class ApiConfig {
     /**
      * 注册 RegitstClient
      */
-    public static final String APP_PATH_REGISTER = "api/" + API_VERSION_2 + "/users";// 注册
+    public static final String APP_PATH_REGISTER = "api/" + API_VERSION_2 + "/tbm/register";// 注册
     /**
      * 用户 UserInfoClient
      */

@@ -99,7 +99,8 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_register;
+//        return R.layout.fragment_register;
+        return R.layout.fragment_register_for_tb;
     }
 
     @Override
@@ -145,13 +146,18 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                 && SystemConfig.REGITER_ACCOUNTTYPE_MAIL_ONLY.equals(mSystemConfigBean
                 .getRegisterSettings().getMethod());
 
+        isOnlyMobile = true;
+
         if (isOnlyMobile) {
             mCurrentRegisterType = REGISTER_PHONE;
         } else {
             mCurrentRegisterType = REGISTER_EMAIL;
         }
-        setRightText(mCurrentRegisterType == REGISTER_PHONE ?
-                getString(R.string.email_address) : getString(R.string.phone_hint));
+
+        setRightText(getString(R.string.bt_login));
+
+//        setRightText(mCurrentRegisterType == REGISTER_PHONE ?
+//                getString(R.string.email_address) : getString(R.string.phone_hint));
         setCenterText(mCurrentRegisterType == REGISTER_PHONE ?
                 getString(R.string.register_by_phone) : getString(R.string.register_by_email));
 
@@ -165,13 +171,13 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     }
 
     private void initListener() {
-        // 用户名观察
-        RxTextView.textChanges(mEtRegistUsername)
-                .compose(this.bindToLifecycle())
-                .subscribe(charSequence -> {
-                    isNameEdited = !TextUtils.isEmpty(charSequence.toString());
-                    setConfirmEnable();
-                });
+        // 用户名观察 在 TB 项目中，注册时 手机号为默认用户名
+//        RxTextView.textChanges(mEtRegistUsername)
+//                .compose(this.bindToLifecycle())
+//                .subscribe(charSequence -> {
+//                    isNameEdited = !TextUtils.isEmpty(charSequence.toString());
+//                    setConfirmEnable();
+//                });
         // 电话号码观察
         RxTextView.textChanges(mEtRegistPhone)
                 .compose(this.bindToLifecycle())
@@ -180,7 +186,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                         mBtRegistSendVertifyCode.setEnabled(charSequence.length() ==
                                 MOBILE_PHONE_NUMBER_LENGHT);
                     }
-                    isPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
+                    isNameEdited = isPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
                 });
         // 邮箱地址观察
@@ -397,16 +403,16 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     @Override
     protected void setRightClick() {
         // 修改UI
-        resetUI();
-        setRegisterType();
-        // 清空数据
-        clearAllData();
-        // 重置倒计时
-        mPresenter.closeTimer();
-        setVertifyCodeBtEnabled(true);
-        setVertifyCodeBtText(getString(R.string.send_vertify_code));
-        setVertifyCodeLoadin(false);
-        mBtRegistSendVertifyCode.setEnabled(false);
+//        resetUI();
+//        setRegisterType();
+//        // 清空数据
+//        clearAllData();
+//        // 重置倒计时
+//        mPresenter.closeTimer();
+//        setVertifyCodeBtEnabled(true);
+//        setVertifyCodeBtText(getString(R.string.send_vertify_code));
+//        setVertifyCodeLoadin(false);
+//        mBtRegistSendVertifyCode.setEnabled(false);
     }
 
     private void setRegisterType() {

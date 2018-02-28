@@ -90,7 +90,6 @@
             <com.zhiyicx.baseproject.widget.button.LoadingButton
                 android:id="@+id/bt_login_login"
                 style="@style/style_login_button"
-                android:background="@drawable/selector_button_corner_circle_solid_small_gradient"
                 android:layout_marginTop="@dimen/button_login_margin_top"
                 android:enabled="false"
                 app:text="@string/bt_login"/>
