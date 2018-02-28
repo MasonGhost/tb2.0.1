@@ -425,7 +425,7 @@
         <activity-alias
             android:name="${applicationId}.wxapi.WXPayEntryActivity"
             android:exported="true"
-            android:targetActivity="com.pingplusplus.android.PaymentActivity" />
+            android:targetActivity="com.pingplusplus.android.PaymentActivity"/>
         <!-- 支付宝 -->
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
@@ -669,6 +669,10 @@
         <!--积分提取-->
         <activity
             android:name=".modules.wallet.integration.withdrawal.IntegrationWithdrawalsActivity"
+            android:screenOrientation="portrait"/>
+        <!--填写邀请码-->
+        <activity
+            android:name=".modules.invite.eidtcode.EditInviteCodeActivity"
             android:screenOrientation="portrait"/>
 
         <!--TB 排行榜-->

@@ -1049,7 +1049,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .build();
     }
 
-    private void showBottomView(boolean isShow) {
+    protected void showBottomView(boolean isShow) {
         if (isShow) {
             mVShadow.setVisibility(View.GONE);
             mIlvComment.setVisibility(View.GONE);

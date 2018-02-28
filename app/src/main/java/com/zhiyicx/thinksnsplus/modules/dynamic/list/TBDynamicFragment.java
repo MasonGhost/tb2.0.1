@@ -6,9 +6,17 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.config.TouristConfig;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
+import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportType;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 
 /**
  * @author Jungle68
@@ -46,10 +54,6 @@ public class TBDynamicFragment extends DynamicFragment {
 
             case 2:
                 // 分享
-                break;
-
-            case 3:
-                // 更多
                 Bitmap shareBitMap = null;
                 try {
                     ImageView imageView = (ImageView) layoutManager.findViewByPosition
@@ -58,20 +62,18 @@ public class TBDynamicFragment extends DynamicFragment {
                             .getDrawable(), R.mipmap.icon);
                 } catch (Exception e) {
                 }
-                if (AppApplication.getmCurrentLoginAuth() != null && mListDatas.get(dataPosition)
+                break;
+
+            case 3:
+                // 更多
+
+                if (mListDatas.get(dataPosition)
                         .getUser_id() == AppApplication.getMyUserIdWithdefault()) {
-                    initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition,
-                            mListDatas.get(dataPosition)
-                                    .isHas_collect(), shareBitMap);
-                    mMyDynamicPopWindow.show();
                 } else if (mListDatas.get(dataPosition).getFeed_from() != -1) {
-                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition,
-                            mListDatas.get(dataPosition)
-                                    .isHas_collect(), shareBitMap);
+                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition));
                     mOtherDynamicPopWindow.show();
                 } else {
                     // 广告
-
                 }
                 break;
             default:
@@ -79,4 +81,52 @@ public class TBDynamicFragment extends DynamicFragment {
         }
     }
 
+    /**
+     * 初始化他人动态操作选择弹框
+     *
+     * @param dynamicBean curent dynamic
+     */
+    protected void initOtherDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean) {
+        mOtherDynamicPopWindow = ActionPopupWindow.builder()
+                .item1Str(dynamicBean.getUserInfoBean().getFollower() ? getString(R.string.cancel_follow) : "")
+                .item2Str(dynamicBean.getFeed_from() == -1 ? "" : getString(R.string.report))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(() -> {
+                    // 取消关注
+                    mPresenter.followUser(dynamicBean.getUserInfoBean());
+                    dynamicBean.getUserInfoBean().setFollower(false);
+                    refreshData();
+                    mOtherDynamicPopWindow.hide();
+                })  // 关注
+                .item2ClickListener(() -> {                    // 举报帖子
+                    if (mPresenter.handleTouristControl()) {
+                        return;
+                    }
+
+                    String img = "";
+                    if (dynamicBean.getImages() != null && !dynamicBean.getImages().isEmpty()) {
+                        img = ImageUtils.imagePathConvertV2(dynamicBean.getImages().get(0).getFile(), getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img), getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img),
+                                100);
+                    }
+                    ReportResourceBean reportResourceBean = new ReportResourceBean(dynamicBean.getUserInfoBean(), String.valueOf(dynamicBean
+                            .getId()),
+                            "", img, dynamicBean.getFeed_content(), ReportType.DYNAMIC);
+                    reportResourceBean.setDesCanlook(dynamicBean.getPaid_node() == null || dynamicBean
+                            .getPaid_node().isPaid());
+                    ReportActivity.startReportActivity(mActivity, reportResourceBean);
+                    mOtherDynamicPopWindow.hide();
+                    showBottomView(true);
+                })
+                .bottomClickListener(() -> {
+                    mOtherDynamicPopWindow.hide();
+                    showBottomView(true);
+                })
+                .build();
+    }
 }

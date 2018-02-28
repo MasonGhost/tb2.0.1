@@ -38,6 +38,7 @@ import butterknife.BindView
 import com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US
 import com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA
+import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity
 
 /**
  * @Describe
@@ -235,7 +236,7 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe { aVoid ->
-                    startActivity(Intent(mActivity, SettingsActivity::class.java))
+                    startActivity(Intent(mActivity, FeedBackActivity::class.java))
                 }
     }
 

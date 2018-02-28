@@ -11,8 +11,6 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.baseproject.widget.textview.SpanTextViewWithEllipsize;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.SkinUtils;
-import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -38,17 +36,17 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
     protected
     @DrawableRes
     int[] mImageNormalResourceIds = new int[]{
-            com.zhiyicx.baseproject.R.mipmap.home_ico_good_normal,
+            R.mipmap.ico_zan,
             com.zhiyicx.baseproject.R.mipmap.home_ico_comment_normal,
-            com.zhiyicx.baseproject.R.mipmap.home_ico_eye_normal,
+            R.mipmap.ico_share,
             com.zhiyicx.baseproject.R.mipmap.home_ico_more,
     };// 图片 ids 正常状态
     protected
     @DrawableRes
     int[] mImageCheckedResourceIds = new int[]{
-            com.zhiyicx.baseproject.R.mipmap.home_ico_good_high,
+            R.mipmap.ico_zan_on,
             com.zhiyicx.baseproject.R.mipmap.home_ico_comment_normal,
-            com.zhiyicx.baseproject.R.mipmap.home_ico_eye_normal,
+            R.mipmap.ico_share,
             com.zhiyicx.baseproject.R.mipmap.home_ico_more,
     };// 图片 ids 选中状态
 
