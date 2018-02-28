@@ -11,24 +11,32 @@
         android:background="@mipmap/bgpic_top_375"/>
 
     <EditText
-        android:id="@+id/tv_feedback_contract"
+        android:id="@+id/et_code"
         style="@style/style_edit_cursor"
         android:layout_width="match_parent"
         android:layout_height="@dimen/feed_back_item_height"
-        android:layout_marginLeft="@dimen/spacing_normal"
-        android:layout_marginTop="@dimen/spacing_small"
-        android:background="@color/white"
-        android:gravity="center_vertical"
-        android:hint="@string/hint_phone_or_email"
+        android:layout_marginBottom="@dimen/spacing_normal_large"
+        android:layout_marginLeft="@dimen/edit_code_et_margin"
+        android:layout_marginRight="@dimen/edit_code_et_margin"
+        android:layout_marginTop="@dimen/spacing_bigger_large_48"
+        android:background="@drawable/shape_circle_white"
+        android:gravity="center"
+        android:hint="@string/input_invite_code_hint"
         android:textColor="@color/important_for_content"
         android:textColorHint="@color/general_for_hint"
-        android:textSize="@dimen/size_content"
+        android:textSize="@dimen/size_sub_title"
         />
 
     <TextView
         android:id="@+id/bt_submit"
-        android:text="@string/edit_input"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="@dimen/feed_back_item_height"
+        android:layout_marginLeft="@dimen/edit_code_et_margin"
+        android:layout_marginRight="@dimen/edit_code_et_margin"
+        android:background="@drawable/selector_button_corner_circle_solid_small_gradient"
+        android:gravity="center"
+        android:text="@string/edit_input"
+        android:textColor="@color/selector_edit_code_textcolor"
+        android:textSize="@dimen/size_content"/>
 
 </LinearLayout>

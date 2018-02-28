@@ -86,4 +86,7 @@ public class MineTaskItemView extends FrameLayout {
     public void setTvButtonTextColor(int textColor) {
         mTvButton.setTextColor(textColor);
     }
+    public TextView getButton(){
+        return mTvButton;
+    }
 }

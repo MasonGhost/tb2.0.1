@@ -24,6 +24,7 @@
             android:paddingLeft="@dimen/toolbar_padding_left"
             android:paddingRight="@dimen/toolbar_padding_right"
             android:maxLines="1"
+            android:textStyle="bold"
             android:ellipsize="end"
             android:layout_marginLeft="@dimen/toolbar_center_margin"
             android:layout_marginRight="@dimen/toolbar_center_margin"

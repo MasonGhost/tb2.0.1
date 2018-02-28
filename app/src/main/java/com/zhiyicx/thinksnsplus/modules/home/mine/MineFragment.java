@@ -27,6 +27,7 @@ import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputAc
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.mycode.MyCodeActivity;
+import com.zhiyicx.thinksnsplus.modules.invite.eidtcode.EditInviteCodeActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.CertificationTypePopupWindow;
@@ -176,6 +177,12 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 , getString(R.string.edit_invite_code), getString(R.string.edit_invite_code_fomart, 8, mPresenter.getWalletGoldName()), false, R
                         .drawable
                         .selector_button_corner_circle_solid_small_gradient);
+        mMtiEditInviteCode.getButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(mActivity, EditInviteCodeActivity.class));
+            }
+        });
 
         setMineTaskViewData(mMtiShareDynamic, "5", true, "1/4", getColor(R.color.themeColor)
                 , getString(R.string.share_dynamic), getString(R.string.share_dynamic_fomart, 5, mPresenter.getWalletGoldName()), true, 0);
