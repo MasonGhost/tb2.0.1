@@ -684,7 +684,12 @@
         <!--邀请好友-->
         <activity android:name=".modules.rank.tb.invitation.InvitationActivity"
                   android:screenOrientation="portrait"/>
-        <activity android:name=".modules.settings.privacy.PrivacyActivity"/>
+        <!--隐私管理-->
+        <activity android:name=".modules.settings.privacy.PrivacyActivity"
+                  android:screenOrientation="portrait"/>
+        <!--钱包-->
+        <activity android:name=".modules.wallet.tb.WalletActivity"
+                  android:screenOrientation="portrait"/>
 
     </application>
 

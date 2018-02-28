@@ -1015,6 +1015,7 @@
     <string name="private_manager">隐私管理</string>
     <string name="open_join_rank">参与排名</string>
     <string name="setting_rank">隐私设置</string>
+    <string name="recently_deal_recorder">近期交易记录</string>
     <string name="open_join_rank_dec">关闭后您的排名将不会出现在排行榜中</string>
 
     <string-array name="integration_recharge_withdrawal_type">

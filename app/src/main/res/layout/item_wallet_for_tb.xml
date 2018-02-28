@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/withdrawal_detail_item_height"
+    android:background="@color/white"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/iv_wallet_income"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginRight="@dimen/spacing_mid"
+        android:src="@mipmap/ico_in"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_wallet_dec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            tools:text="sssss"
+            android:textColor="@color/general_for_loading_more"
+            android:textSize="@dimen/size_icon_assist"/>
+
+        <TextView
+            android:id="@+id/tv_wallet_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            tools:text="sssss"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_content"/>
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tv_wallet_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:enabled="false"
+        android:gravity="right"
+        android:textColor="@color/selector_withdrawalstext_color"
+        android:textSize="@dimen/size_sub_title"
+        tools:text="-780"/>
+
+</LinearLayout>
