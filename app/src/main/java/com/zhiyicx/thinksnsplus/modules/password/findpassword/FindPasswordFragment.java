@@ -85,11 +85,6 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
     }
 
     @Override
-    protected String setCenterTitle() {
-        return getString(R.string.find_password);
-    }
-
-    @Override
     protected String setRightTitle() {
         return getString(R.string.find_password_by_email);
     }

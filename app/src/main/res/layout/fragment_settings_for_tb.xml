@@ -1,0 +1,110 @@
+<com.wcy.overscroll.OverScrollLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/overscroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bgColor">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!--认证-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_set_vertify"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                android:visibility="gone"
+                app:leftText="@string/vertify"
+                app:leftTextLeftPadding="@dimen/spacing_mid"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+
+            <!--账号管理-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_account_manager"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_height="@dimen/full_button_height"
+                app:leftText="@string/private_manager"
+                app:leftTextLeftPadding="@dimen/spacing_mid"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+
+            <!--意见反馈-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_feedback"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                app:leftText="@string/feed_back"
+                app:leftTextLeftPadding="@dimen/spacing_mid"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"
+                app:showLine="true"/>
+
+            <!--隐私管理-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_private_manager"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                app:leftText="@string/private_manager"
+                app:leftTextLeftPadding="@dimen/spacing_mid"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+
+            <!--修改密码-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_change_password"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                app:leftText="@string/change_password"
+                app:leftTextLeftPadding="@dimen/spacing_mid"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+
+
+            <!--清理缓存-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_clean_cache"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                app:leftText="@string/clean_cache"
+                app:leftTextLeftPadding="@dimen/spacing_mid"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+            <!--关于我们-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_about_us"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                app:leftText="@string/about_us"
+                app:leftTextLeftPadding="@dimen/spacing_mid"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+            <!--检查版本更新-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_check_version"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_height="@dimen/full_button_height"
+                app:leftText="@string/check_version"
+                app:leftTextLeftPadding="@dimen/spacing_mid"
+                app:rightImage="@mipmap/ic_arrow_smallgrey">
+            </com.zhiyicx.baseproject.widget.button.CombinationButton>
+
+            <!--退出登录-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_login_out"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                app:leftText="@string/login_out"
+                app:leftTextColor="@color/themeColor"
+                app:leftTextLeftPadding="@dimen/spacing_mid"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"
+                app:showLine="false"/>
+
+            <include
+                layout="@layout/view_choose_item"/>
+        </LinearLayout>
+    </ScrollView>
+</com.wcy.overscroll.OverScrollLayout>

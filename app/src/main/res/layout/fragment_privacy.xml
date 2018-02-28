@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_small"
+        android:layout_marginRight="@dimen/spacing_small"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/tv_privacy_rank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:text="@string/open_join_rank"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_content"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_privacy_rank"
+            android:layout_marginBottom="@dimen/spacing_large"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:text="@string/open_join_rank_dec"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_icon_assist"/>
+
+        <CheckBox
+            android:id="@+id/ck_rank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:button="@drawable/selector_open_close_stated"
+            android:checked="true"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

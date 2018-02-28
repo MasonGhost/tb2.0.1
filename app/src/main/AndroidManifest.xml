@@ -684,6 +684,7 @@
         <!--邀请好友-->
         <activity android:name=".modules.rank.tb.invitation.InvitationActivity"
                   android:screenOrientation="portrait"/>
+        <activity android:name=".modules.settings.privacy.PrivacyActivity"/>
 
     </application>
 

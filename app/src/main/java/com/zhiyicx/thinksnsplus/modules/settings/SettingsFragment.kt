@@ -39,6 +39,7 @@ import com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US
 import com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA
 import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity
+import com.zhiyicx.thinksnsplus.modules.settings.privacy.PrivacyActivity
 
 /**
  * @Describe
@@ -48,6 +49,10 @@ import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity
  */
 class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContract.View {
 
+
+    @BindView(R.id.bt_private_manager)
+    @JvmField
+    var mBtPrivateManager: CombinationButton? = null
     @BindView(R.id.bt_login_out)
     @JvmField
     var mBtLoginOut: CombinationButton? = null
@@ -94,7 +99,8 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
     private var mCleanCachePopupWindow: ActionPopupWindow? = null// 清理缓存选择弹框
 
     override fun getBodyLayoutId(): Int {
-        return R.layout.fragment_settings
+//        return R.layout.fragment_settings
+        return R.layout.fragment_settings_for_tb
     }
 
     override fun setCenterTitle(): String {
@@ -189,13 +195,13 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe { aVoid -> showSnackSuccessMessage("vertify") }
-        // 账户管理页面
-        RxView.clicks(mBtAccountManager!!)
+        // 隐私管理页面
+        RxView.clicks(mBtPrivateManager!!)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe { aVoid ->
-                    // 跳转账户管理页面
-                    val intent = Intent(activity, AccountManagementActivity::class.java)
+                    // 跳转隐私管理页面
+                    val intent = Intent(activity, PrivacyActivity::class.java)
                     startActivity(intent)
                 }
         // 修改密码
