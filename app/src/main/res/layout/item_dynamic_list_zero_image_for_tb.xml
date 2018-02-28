@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/item_contaienr"
     android:background="@color/white"
     android:descendantFocusability="blocksDescendants"
     android:paddingTop="@dimen/spacing_mid"
@@ -44,6 +45,7 @@
         android:background="@drawable/shape_dynamic_top_flag"
         android:gravity="center"
         android:maxLines="1"
+        android:visibility="gone"
         android:textColor="@color/dyanmic_top_flag"
         android:textSize="@dimen/size_advert_launche"
         tools:text="@string/dynamic_top_flag"/>
@@ -74,6 +76,7 @@
         android:background="@drawable/shape_bg_circle_radus_gray"
         android:gravity="center"
         android:maxLines="1"
+        android:visibility="gone"
         android:paddingBottom="@dimen/spacing_small_3dp"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_normal"

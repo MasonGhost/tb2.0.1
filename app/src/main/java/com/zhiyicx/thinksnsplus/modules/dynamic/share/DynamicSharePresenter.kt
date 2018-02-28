@@ -1,8 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.share
 
-import com.zhiyicx.common.mvp.BasePresenter
 import com.zhiyicx.common.utils.ToastUtils
-
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter
 import javax.inject.Inject
 
 /**
@@ -13,7 +12,7 @@ import javax.inject.Inject
  */
 
 class DynamicSharePresenter @Inject
-constructor(rootView: DynamicShareContract.View) : BasePresenter<DynamicShareContract.View>(rootView), DynamicShareContract.Presenter {
+constructor(rootView: DynamicShareContract.View) : AppBasePresenter<DynamicShareContract.View>(rootView), DynamicShareContract.Presenter {
 
 
     override fun submitInviteCode(inviteCode: String) {

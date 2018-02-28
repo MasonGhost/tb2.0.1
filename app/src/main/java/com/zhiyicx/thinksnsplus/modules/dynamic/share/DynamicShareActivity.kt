@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.share
 
 import com.zhiyicx.baseproject.base.TSActivity
 import com.zhiyicx.thinksnsplus.base.AppApplication
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.TBDynamicFragment
 
 /**
  * @Describe 填写邀请码
@@ -13,6 +14,8 @@ import com.zhiyicx.thinksnsplus.base.AppApplication
 class DynamicShareActivity : TSActivity<DynamicSharePresenter, DynamicShareFragment>() {
 
     override fun componentInject() {
+
+
         DaggerDynamicShareComponent
                 .builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
@@ -23,7 +26,7 @@ class DynamicShareActivity : TSActivity<DynamicSharePresenter, DynamicShareFragm
     }
 
     override fun getFragment(): DynamicShareFragment {
-        return DynamicShareFragment.newInstance()
+        return DynamicShareFragment.newInstance(intent.extras.getSerializable(TBDynamicFragment.BUNDLE_SHARE_DATA) as DynamicShareBean)
     }
 
 

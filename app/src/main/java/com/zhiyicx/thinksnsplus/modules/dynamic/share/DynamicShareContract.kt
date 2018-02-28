@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.share
 
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter
 import com.zhiyicx.common.mvp.i.IBasePresenter
 import com.zhiyicx.common.mvp.i.IBaseView
 
@@ -14,7 +15,7 @@ interface DynamicShareContract {
 
     interface View : IBaseView<Presenter>
 
-    interface Presenter : IBasePresenter {
+    interface Presenter : IBaseTouristPresenter {
         /**
          * 提交邀请码
          *
