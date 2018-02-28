@@ -116,7 +116,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_user_info;
+//        return R.layout.fragment_user_info;
+        return R.layout.fragment_user_info_for_tb;
     }
 
     @Override
