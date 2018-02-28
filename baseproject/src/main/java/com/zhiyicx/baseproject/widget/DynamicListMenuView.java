@@ -105,7 +105,7 @@ public class DynamicListMenuView extends LinearLayout {
 
     private void init(Context context, AttributeSet attrs) {
         mContext = context;
-        LayoutInflater.from(context).inflate(R.layout.view_dynamic_list_menu, this);
+        initLayout(context);
         mLlDynamicListLike = findViewById(R.id.ll_dynamic_list_like);
         mLlDynamicListComment = findViewById(R.id.ll_dynamic_list_comment);
         mLlDynamicListPageviews = findViewById(R.id.ll_dynamic_list_pageviews);
@@ -123,6 +123,11 @@ public class DynamicListMenuView extends LinearLayout {
         setData();
         setOrientation(HORIZONTAL);
     }
+
+    protected void initLayout(Context context) {
+        LayoutInflater.from(context).inflate(R.layout.view_dynamic_list_menu, this);
+    }
+
 
     private void initListener() {
         RxView.clicks(mLlDynamicListLike)
@@ -286,11 +291,13 @@ public class DynamicListMenuView extends LinearLayout {
                         postion, isNeedSetText, isNeedImage);
                 break;
             case ITEM_POSITION_1:
-                setAdvertItemState(isChecked, mLlDynamicListComment, mIvDynamicListComment, mTvDynamicListComment, postion, isNeedSetText, isNeedImage);
+                setAdvertItemState(isChecked, mLlDynamicListComment, mIvDynamicListComment, mTvDynamicListComment, postion, isNeedSetText,
+                        isNeedImage);
 
                 break;
             case ITEM_POSITION_2:
-                setAdvertItemState(isChecked, mLlDynamicListPageviews, mIvDynamicListShare, mTvDynamicListPageviewst, postion, isNeedSetText, isNeedImage);
+                setAdvertItemState(isChecked, mLlDynamicListPageviews, mIvDynamicListShare, mTvDynamicListPageviewst, postion, isNeedSetText,
+                        isNeedImage);
                 break;
             case ITEM_POSITION_3:
                 setAdvertItemState(isChecked, mFlDynamicListMore, mIvDynamicListMore, null, postion, isNeedSetText, isNeedImage);

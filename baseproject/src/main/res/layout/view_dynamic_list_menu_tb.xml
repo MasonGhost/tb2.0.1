@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <FrameLayout
+        android:id="@+id/fl_dynamic_list_more"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/iv_dynamic_list_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingBottom="@dimen/spacing_mid"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingTop="@dimen/spacing_mid"
+            tool:src="@mipmap/home_ico_more"
+            />
+    </FrameLayout>
+
+    <View
+        style="@style/style_divider_veitical_light"
+        android:layout_marginBottom="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_normal"
+        />
+
+    <LinearLayout
+        android:id="@+id/ll_dynamic_list_like"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/spacing_mid"
+        android:paddingTop="@dimen/spacing_mid">
+
+        <ImageView
+            android:id="@+id/iv_dynamic_list_like"
+            android:layout_width="@dimen/icon_for_assist_small"
+            android:layout_height="@dimen/icon_for_assist_small"
+            tool:src="@mipmap/home_ico_good_normal"
+            />
+
+        <TextView
+            android:id="@+id/tv_dynamic_list_like"
+            android:layout_width="wrap_content"
+            android:maxWidth="@dimen/dynamic_menu_text_with"
+            android:layout_height="@dimen/icon_for_assist_small"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/textview_spacing_offset_height"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/spacing_mid_small_8dp"
+            android:textColor="@color/normal_for_disable_button_text"
+            android:textSize="@dimen/size_icon_assist"
+            tool:text="1284万"
+            />
+    </LinearLayout>
+
+    <View
+        style="@style/style_divider_veitical_light"
+        android:layout_marginBottom="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_normal"
+        />
+
+    <LinearLayout
+        android:id="@+id/ll_dynamic_list_comment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/spacing_mid"
+        android:paddingTop="@dimen/spacing_mid">
+
+        <ImageView
+            android:id="@+id/iv_dynamic_list_comment"
+            android:layout_width="@dimen/icon_for_assist_small"
+            android:layout_height="@dimen/icon_for_assist_small"
+            tool:src="@mipmap/home_ico_comment_normal"
+            />
+
+        <TextView
+            android:id="@+id/tv_dynamic_list_comment"
+            android:layout_width="wrap_content"
+            android:maxWidth="@dimen/dynamic_menu_text_with"
+            android:layout_height="@dimen/icon_for_assist_small"
+            android:layout_marginTop="@dimen/textview_spacing_offset_height"
+            android:paddingLeft="@dimen/spacing_mid_small_8dp"
+            android:textColor="@color/normal_for_disable_button_text"
+            android:textSize="@dimen/size_icon_assist"
+            tool:text="1284万"
+            />
+    </LinearLayout>
+
+    <View
+        style="@style/style_divider_veitical_light"
+        android:layout_marginBottom="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_normal"
+        />
+
+    <LinearLayout
+        android:id="@+id/ll_dynamic_list_pageviews"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/spacing_mid"
+        android:paddingTop="@dimen/spacing_mid"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_dynamic_list_pageviews"
+            android:layout_width="@dimen/icon_for_assist_small"
+            android:layout_height="@dimen/icon_for_assist_small"
+            tool:src="@mipmap/home_ico_eye_normal"
+            />
+
+        <TextView
+            android:id="@+id/tv_dynamic_list_pageviews"
+            android:layout_width="wrap_content"
+            android:maxWidth="@dimen/dynamic_menu_text_with"
+            android:layout_height="@dimen/icon_for_assist_small"
+            android:layout_marginTop="@dimen/textview_spacing_offset_height"
+            android:paddingLeft="@dimen/spacing_mid_small_8dp"
+            android:textColor="@color/normal_for_disable_button_text"
+            android:textSize="@dimen/size_icon_assist"
+            tool:text="1284万"
+            />
+    </LinearLayout>
+
+
+</LinearLayout>
+

@@ -19,6 +19,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.TBDynamicFragment;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -148,14 +149,14 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     protected List<Fragment> initFragments() {
         if (mFragmentList == null) {
             mFragmentList = new ArrayList();
-            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));
-            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
+            mFragmentList.add(TBDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));
+            mFragmentList.add(TBDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
             // 游客处理
             if (TouristConfig.FOLLOW_CAN_LOOK || mIAuthRepository.isLogin()) {
-                mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
+                mFragmentList.add(TBDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
             } else {
                 // 用于viewpager 占位
-                mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_EMPTY, this));
+                mFragmentList.add(TBDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_EMPTY, this));
             }
         }
         return mFragmentList;

@@ -120,9 +120,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private String mDynamicType = ApiConfig.DYNAMIC_TYPE_NEW;
 
     private ActionPopupWindow mDeletCommentPopWindow;
-    private ActionPopupWindow mOtherDynamicPopWindow;
+    protected ActionPopupWindow mOtherDynamicPopWindow;
 
-    private ActionPopupWindow mMyDynamicPopWindow;
+    protected ActionPopupWindow mMyDynamicPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
     private ActionPopupWindow mReSendDynamicPopWindow;
     private PayPopWindow mPayImagePopWindow;
@@ -338,12 +338,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         /*
          关注
           */
-        dynamicListItemForZeroImage.setOnFollowlistener(new DynamicListItemForZeroImage.OnFollowClickLisitener() {
-            @Override
-            public void onFollowClick(UserInfoBean userInfoBean) {
-                mPresenter.followUser(userInfoBean);
-            }
-        });
+        dynamicListItemForZeroImage.setOnFollowlistener(userInfoBean -> mPresenter.followUser(userInfoBean));
         setAdapter(adapter, dynamicListItemForZeroImage);
         setAdapter(adapter, new DynamicListItemForOneImage(getContext()));
         setAdapter(adapter, new DynamicListItemForTwoImage(getContext()));
@@ -660,7 +655,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      *
      * @param dataPosition
      */
-    private void handleLike(int dataPosition) {
+    protected void handleLike(int dataPosition) {
         // 先更新界面，再后台处理
         mListDatas.get(dataPosition).setHas_digg(!mListDatas.get(dataPosition)
                 .isHas_digg());
@@ -831,9 +826,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
      */
-    private void initOtherDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, final int
+    protected void initOtherDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, final int
             position,
-                                             boolean isCollected, final Bitmap shareBitmap) {
+                                               boolean isCollected, final Bitmap shareBitmap) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
                 // 广告不处理
                 .item3Str(dynamicBean.getFeed_from() == -1 ? "" : getString(R.string.report))
@@ -893,8 +888,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
      */
-    private void initMyDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, final int position,
-                                          boolean isCollected, final Bitmap shareBitMap) {
+    protected void initMyDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, final int position,
+                                            boolean isCollected, final Bitmap shareBitMap) {
 
         Long feed_id = dynamicBean.getMaxId();
         boolean feedIdIsNull = feed_id == null || feed_id == 0;

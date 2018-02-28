@@ -317,7 +317,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         }
     }
 
-    private void setUserInfoClick(View view, final DynamicDetailBeanV2 dynamicBean) {
+    protected void setUserInfoClick(View view, final DynamicDetailBeanV2 dynamicBean) {
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {

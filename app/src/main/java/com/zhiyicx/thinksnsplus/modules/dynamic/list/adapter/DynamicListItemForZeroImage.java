@@ -1,14 +1,24 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
+import android.support.annotation.DrawableRes;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.baseproject.widget.textview.SpanTextViewWithEllipsize;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.SkinUtils;
+import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.concurrent.TimeUnit;
@@ -23,6 +33,24 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public class DynamicListItemForZeroImage extends DynamicListBaseItem {
+
+    protected
+    @DrawableRes
+    int[] mImageNormalResourceIds = new int[]{
+            com.zhiyicx.baseproject.R.mipmap.home_ico_good_normal,
+            com.zhiyicx.baseproject.R.mipmap.home_ico_comment_normal,
+            com.zhiyicx.baseproject.R.mipmap.home_ico_eye_normal,
+            com.zhiyicx.baseproject.R.mipmap.home_ico_more,
+    };// 图片 ids 正常状态
+    protected
+    @DrawableRes
+    int[] mImageCheckedResourceIds = new int[]{
+            com.zhiyicx.baseproject.R.mipmap.home_ico_good_high,
+            com.zhiyicx.baseproject.R.mipmap.home_ico_comment_normal,
+            com.zhiyicx.baseproject.R.mipmap.home_ico_eye_normal,
+            com.zhiyicx.baseproject.R.mipmap.home_ico_more,
+    };// 图片 ids 选中状态
+
     private OnFollowClickLisitener mOnFollowlistener;
 
     public DynamicListItemForZeroImage(Context context) {
@@ -46,7 +74,141 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
 
     @Override
     public void convert(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2 lastT, int position, int itemCounts) {
-        super.convert(holder, dynamicBean, lastT, position, itemCounts);
+        try {
+            // 防止个人中心没后头像错误
+            try {
+                ImageUtils.loadCircleUserHeadPic(dynamicBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
+                setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
+            } catch (Exception ignored) {
+            }
+            holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
+            holder.setText(R.id.tv_time, dynamicBean.getFriendlyTime());
+            holder.setVisible(R.id.tv_title, View.GONE);
+            TextView contentView = holder.getView(R.id.tv_content);
+            // 置顶标识 ,防止没有置顶布局错误
+            try {
+                // 待审核 也隐藏
+                TextView topFlagView = holder.getView(R.id.tv_top_flag);
+                topFlagView.setVisibility(dynamicBean.getTop() == DynamicDetailBeanV2.TOP_SUCCESS ?
+                        View.VISIBLE : View.GONE);
+                topFlagView.setText(mContext.getString(dynamicBean.getTop() ==
+                        DynamicDetailBeanV2.TOP_REVIEW ?
+                        R.string.review_ing : R.string.dynamic_top_flag));
+            } catch (Exception ignored) {
+            }
+
+            String content = dynamicBean.getFriendlyContent();
+            contentView.setVisibility(TextUtils.isEmpty(content) ? View.GONE : View.VISIBLE);
+            if (!TextUtils.isEmpty(content)) {
+
+                boolean canLookWords = dynamicBean.getPaid_node() == null || dynamicBean
+                        .getPaid_node().isPaid();
+
+                int startPosition = dynamicBean.getStartPosition();
+
+                if (canLookWords) {
+                    TextViewUtils.newInstance(contentView, content)
+                            .spanTextColor(SkinUtils.getColor(R
+                                    .color.normal_for_assist_text))
+                            .position(startPosition, content.length())
+                            .dataPosition(holder.getAdapterPosition())
+                            .maxLines(contentView.getResources().getInteger(R.integer
+                                    .dynamic_list_content_show_lines))
+                            .onSpanTextClickListener(mOnSpanTextClickListener)
+                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText()
+                                    .toString()), false))
+                            .disPlayText(true)
+                            .build();
+                } else {
+                    TextViewUtils.newInstance(contentView, content)
+                            .spanTextColor(SkinUtils.getColor(R
+                                    .color.normal_for_assist_text))
+                            .position(startPosition, content.length())
+                            .dataPosition(holder.getAdapterPosition())
+                            .maxLines(contentView.getResources().getInteger(R.integer
+                                    .dynamic_list_content_show_lines))
+                            .onSpanTextClickListener(mOnSpanTextClickListener)
+                            .note(dynamicBean.getPaid_node().getNode())
+                            .amount(dynamicBean.getPaid_node().getAmount())
+                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText()
+                                    .toString()), false))
+                            .disPlayText(false)
+                            .build();
+                }
+                contentView.setVisibility(View.VISIBLE);
+            }
+
+            setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
+            contentView.setOnClickListener(v -> holder.getConvertView().performClick());
+            holder.setVisible(R.id.dlmv_menu, showToolMenu ? View.VISIBLE : View.GONE);
+            // 分割线跟随工具栏显示隐藏
+            holder.setVisible(R.id.v_line, showToolMenu ? View.VISIBLE : View.GONE);
+            // user_id = -1 广告
+            if (showToolMenu && dynamicBean.getUser_id() > 0) {
+                // 显示工具栏
+                DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
+                dynamicListMenuView.setImageNormalResourceIds(mImageNormalResourceIds);
+                dynamicListMenuView.setImageCheckedResourceIds(mImageCheckedResourceIds);
+                // 点赞
+                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
+                        .getFeed_digg_count()), dynamicBean.isHas_digg(), 0);
+                // 分享数量
+                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean.getFeed_view_count()),
+                        false, 2);
+                // 控制更多按钮的显示隐藏
+                dynamicListMenuView.setItemPositionVisiable(0, getVisibleOne());
+                dynamicListMenuView.setItemPositionVisiable(1, getVisibleTwo());
+                dynamicListMenuView.setItemPositionVisiable(2, getVisibleThree());
+                dynamicListMenuView.setItemPositionVisiable(3, getVisibleFour());
+                // 设置工具栏的点击事件
+                dynamicListMenuView.setItemOnClick((parent, v, menuPostion) -> {
+                    if (mOnMenuItemClickLisitener != null) {
+                        mOnMenuItemClickLisitener.onMenuItemClick(v, position, menuPostion);
+                    }
+                });
+            }
+
+            holder.setVisible(R.id.fl_tip, showReSendBtn ? View.VISIBLE : View.GONE);
+            if (showReSendBtn) {
+                // 设置动态发送状态
+                if (dynamicBean.getState() == DynamicBean.SEND_ERROR) {
+                    holder.setVisible(R.id.fl_tip, View.VISIBLE);
+                } else {
+                    holder.setVisible(R.id.fl_tip, View.GONE);
+                }
+                RxView.clicks(holder.getView(R.id.fl_tip))
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                        .subscribe(aVoid -> {
+                            if (mOnReSendClickListener != null) {
+                                mOnReSendClickListener.onReSendClick(position);
+                            }
+                        });
+            }
+
+            if (showCommentList) {
+                holder.setVisible(R.id.dcv_comment, View.VISIBLE);
+
+                // 设置评论内容
+                DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
+                if (dynamicBean.getComments() == null || dynamicBean.getComments().isEmpty()) {
+                    comment.setVisibility(View.GONE);
+                } else {
+                    comment.setVisibility(View.VISIBLE);
+                }
+
+                comment.setData(dynamicBean);
+                comment.setOnCommentClickListener(mOnCommentClickListener);
+                comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
+                comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
+
+            } else {
+                holder.setVisible(R.id.dcv_comment, View.GONE);
+            }
+
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
         SpanTextViewWithEllipsize contentView = holder.getView(R.id.tv_content);
         contentView.setMaxlines(contentView.getResources().getInteger(R.integer
                 .dynamic_list_content_show_lines));
@@ -63,6 +225,14 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
         }
     }
 
+    @Override
+    protected int getVisibleTwo() {
+        return View.GONE;
+    }
+
+    /**
+     * 关注点击监听
+     */
     public interface OnFollowClickLisitener {
         void onFollowClick(UserInfoBean userInfoBean);
     }

@@ -56,8 +56,8 @@
         android:layout_alignStart="@+id/tv_title"
         android:layout_below="@+id/tv_name"
         android:layout_marginBottom="@dimen/spacing_mid_tb"
-        android:maxLines="1"
         android:layout_toRightOf="@id/iv_headpic"
+        android:maxLines="1"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_small"
         android:textColor="@color/general_for_hint"
@@ -78,9 +78,9 @@
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_small_3dp"
+        android:text="@string/add_follow"
         android:textColor="@color/themeColor"
-        android:textSize="@dimen/size_advert_launche"
-        android:text="@string/add_follow"/>
+        android:textSize="@dimen/size_advert_launche"/>
 
     <TextView
         android:id="@+id/tv_title"
@@ -103,13 +103,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_title"
-        android:paddingRight="@dimen/spacing_normal"
         android:ellipsize="end"
-        android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal_tb"
         android:letterSpacing="0.1"
+        android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal_tb"
         android:maxLines="@integer/dynamic_list_content_show_lines"
         android:paddingBottom="@dimen/dynamic_image_padding_bottom"
         android:paddingLeft="@dimen/spacing_normal"
+        android:paddingRight="@dimen/spacing_normal"
         android:singleLine="false"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_sub_title"
@@ -135,18 +135,12 @@
         android:layout_below="@+id/tv_from"
         android:background="@color/general_for_line_light"/>
 
-    <com.zhiyicx.baseproject.widget.DynamicListMenuView
+    <com.zhiyicx.baseproject.widget.TBDynamicListMenuView
         android:id="@+id/dlmv_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/v_line"
-        android:layout_marginRight="@dimen/spacing_mid"
-        android:layout_marginTop="@dimen/divider_line"
-        android:layout_toRightOf="@+id/iv_headpic"
-        android:paddingLeft="@dimen/spacing_normal"
-        android:paddingRight="@dimen/spacing_tiny">
-
-    </com.zhiyicx.baseproject.widget.DynamicListMenuView>
+        android:layout_marginTop="@dimen/divider_line"/>
 
     <include
         android:id="@+id/fl_tip"
