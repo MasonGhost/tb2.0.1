@@ -11,223 +11,193 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true">
-
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_gravity="center"
-                android:textStyle="bold"
-                android:text="@string/tb_login_name"
-                android:textColor="@color/themeColor"
-                android:textSize="@dimen/size_login_bold"
-                android:layout_marginBottom="@dimen/spacing_bigger_large"
-                android:layout_marginTop="@dimen/spacing_bigger_large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true">
 
             <LinearLayout
-                android:visibility="gone"
-                android:layout_marginRight="@dimen/spacing_mid"
-                android:layout_marginLeft="@dimen/spacing_mid"
-                android:background="@drawable/shape_corner_small_white_tb_login"
-                style="@style/style_edit_white_container">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
-                    style="@style/style_small_text"
-                    android:text="@string/username"/>
-
-                <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
-                    android:id="@+id/et_regist_username"
-                    style="@style/style_edit"
-                    android:hint="@string/username_input_hint"
-                    android:inputType="textPersonName"
-                    android:maxLength="@integer/username_max_length"/>
-            </LinearLayout>
-
-            <ImageView style="@style/style_divider_horizontal_light"/>
-
-            <RelativeLayout
-                android:layout_marginTop="@dimen/spacing_mid"
-                android:layout_marginRight="@dimen/spacing_mid"
-                android:layout_marginLeft="@dimen/spacing_mid"
-                android:background="@drawable/shape_corner_small_white_tb_login"
-                style="@style/style_edit_white_container">
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_toLeftOf="@+id/rl_send_vertify_code_container"
-                    android:layout_toStartOf="@+id/rl_send_vertify_code_container">
-                    <!--手机注册-->
-                    <LinearLayout
-                        android:background="@drawable/shape_corner_small_white_tb_login"
-                        android:id="@+id/ll_register_by_phone"
-                        style="@style/style_edit_white_container">
-
-                        <TextView
-                            style="@style/style_small_text"
-                            android:text="@string/phone_number"/>
-
-                        <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
-                            android:id="@+id/et_regist_phone"
-                            style="@style/style_edit"
-                            android:hint="@string/phone_number_input_hint"
-                            android:inputType="phone"
-                            android:maxLength="@integer/phone_number_length"/>
-                    </LinearLayout>
-
-                    <!--邮箱注册-->
-                    <LinearLayout
-                        android:visibility="gone"
-                        android:id="@+id/ll_register_by_email"
-                        style="@style/style_edit_white_container">
-
-                        <TextView
-                            style="@style/style_small_text"
-                            android:text="@string/email_address"/>
-
-                        <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
-                            android:id="@+id/et_register_email"
-                            style="@style/style_edit"
-                            android:hint="@string/email_address_input_hint"
-                            android:inputType="textEmailAddress"/>
-                    </LinearLayout>
-
-                </FrameLayout>
-
-
-                <RelativeLayout
-                    android:id="@+id/rl_send_vertify_code_container"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:paddingLeft="@dimen/spacing_mid"
-                    android:paddingRight="@dimen/spacing_mid"
-                    >
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/spacing_bigger_large"
+                    android:layout_marginTop="@dimen/spacing_bigger_large"
+                    android:text="@string/tb_login_name"
+                    android:textColor="@color/themeColor"
+                    android:textSize="@dimen/size_login_bold"
+                    android:textStyle="bold"/>
+
+                <LinearLayout
+                    style="@style/style_edit_white_container"
+                    android:layout_marginLeft="@dimen/spacing_mid"
+                    android:layout_marginRight="@dimen/spacing_mid"
+                    android:background="@drawable/shape_corner_small_white_tb_login"
+                    android:visibility="gone">
 
                     <TextView
-                        android:id="@+id/bt_regist_send_vertify_code"
+                        style="@style/style_small_text"
+                        android:text="@string/username"/>
+
+                    <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
+                        android:id="@+id/et_regist_username"
+                        style="@style/style_edit"
+                        android:hint="@string/username_input_hint"
+                        android:inputType="textPersonName"
+                        android:maxLength="@integer/username_max_length"/>
+                </LinearLayout>
+
+                <ImageView style="@style/style_divider_horizontal_light"/>
+
+
+                <LinearLayout
+                    android:id="@+id/ll_register_by_phone"
+                    style="@style/style_edit_white_container"
+                    android:layout_marginLeft="@dimen/spacing_mid"
+                    android:layout_marginRight="@dimen/spacing_mid"
+                    android:background="@drawable/selector_corner_small_white_tb_login">
+
+                    <TextView
+                        style="@style/style_small_text"
+                        android:text="@string/phone_number"/>
+
+                    <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
+                        android:id="@+id/et_regist_phone"
+                        style="@style/style_edit"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:hint="@string/phone_number_input_hint"
+                        android:inputType="phone"
+                        android:maxLength="@integer/phone_number_length"/>
+
+
+                    <RelativeLayout
+                        android:id="@+id/rl_send_vertify_code_container"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:background="@null"
-                        android:enabled="false"
-                        android:gravity="center"
-                        android:minWidth="@dimen/button_send_vertify_code_min_width"
-                        android:text="@string/send_vertify_code"
-                        android:textColor="@color/selector_text_color"
-                        android:textSize="@dimen/size_content"/>
+                        android:paddingLeft="@dimen/spacing_mid"
+                        android:paddingRight="@dimen/spacing_mid"
+                        >
 
-                    <ImageView
-                        android:id="@+id/iv_vertify_loading"
-                        android:layout_width="@dimen/icon_for_assist_small"
-                        android:layout_height="@dimen/icon_for_assist_small"
-                        android:layout_centerInParent="true"
-                        android:src="@drawable/frame_loading_grey"
-                        android:visibility="invisible"
+                        <TextView
+                            android:id="@+id/bt_regist_send_vertify_code"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:background="@null"
+                            android:enabled="false"
+                            android:gravity="center"
+                            android:minWidth="@dimen/button_send_vertify_code_min_width"
+                            android:text="@string/send_vertify_code"
+                            android:textColor="@color/selector_text_color"
+                            android:textSize="@dimen/size_content"/>
+
+                        <ImageView
+                            android:id="@+id/iv_vertify_loading"
+                            android:layout_width="@dimen/icon_for_assist_small"
+                            android:layout_height="@dimen/icon_for_assist_small"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/frame_loading_grey"
+                            android:visibility="invisible"
+                            />
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    style="@style/style_edit_white_container"
+                    android:layout_marginLeft="@dimen/spacing_mid"
+                    android:layout_marginRight="@dimen/spacing_mid"
+                    android:layout_marginTop="@dimen/spacing_mid"
+                    android:background="@drawable/selector_corner_small_white_tb_login">
+
+                    <TextView
+                        style="@style/style_small_text"
+                        android:text="@string/vertify_code"/>
+
+                    <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
+                        android:id="@+id/et_regist_vertify_code"
+                        style="@style/style_edit"
+                        android:hint="@string/vertify_code_input_hint"
+                        android:inputType="number"
+                        android:maxLength="@integer/vertiry_code_lenght"/>
+                </LinearLayout>
+
+                <ImageView style="@style/style_divider_horizontal_light"/>
+
+                <LinearLayout
+                    style="@style/style_edit_white_container"
+                    android:layout_marginLeft="@dimen/spacing_mid"
+                    android:layout_marginRight="@dimen/spacing_mid"
+                    android:layout_marginTop="@dimen/spacing_mid"
+                    android:background="@drawable/selector_corner_small_white_tb_login">
+
+                    <TextView
+                        style="@style/style_small_text"
+                        android:text="@string/password"/>
+
+                    <com.zhiyicx.baseproject.widget.edittext.PasswordEditText
+                        android:id="@+id/et_regist_password"
+                        style="@style/style_passward_edit"
+                        android:hint="@string/password_input_hint"
+                        android:inputType="textPassword"
+                        android:maxLength="@integer/password_maxlenght"/>
+
+                </LinearLayout>
+
+
+                <include
+                    layout="@layout/include_error_tip_text"/>
+
+                <com.zhiyicx.baseproject.widget.button.LoadingButton
+                    android:id="@+id/bt_regist_regist"
+                    style="@style/style_login_button"
+                    android:layout_marginTop="@dimen/button_login_margin_top"
+                    android:background="@drawable/selector_button_corner_circle_solid_small_gradient"
+                    android:enabled="false"
+                    app:text="@string/regist"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_mid"
+                    android:layout_marginRight="@dimen/spacing_mid"
+                    >
+                    <!--随便逛逛-->
+                    <TextView
+                        android:id="@+id/tv_look_around"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/spacing_mid"
+                        android:paddingTop="@dimen/spacing_mid"
+                        android:text="@string/no_login"
+                        android:textColor="@color/normal_for_assist_text"
+                        android:textSize="@dimen/size_content_comment"
+                        android:visibility="gone"
                         />
+
                 </RelativeLayout>
 
 
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_marginTop="@dimen/spacing_mid"
-                android:layout_marginRight="@dimen/spacing_mid"
-                android:layout_marginLeft="@dimen/spacing_mid"
-                android:background="@drawable/shape_corner_small_white_tb_login"
-                style="@style/style_edit_white_container">
-
-                <TextView
-                    style="@style/style_small_text"
-                    android:text="@string/vertify_code"/>
-
-                <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
-                    android:id="@+id/et_regist_vertify_code"
-                    style="@style/style_edit"
-                    android:hint="@string/vertify_code_input_hint"
-                    android:inputType="number"
-                    android:maxLength="@integer/vertiry_code_lenght"/>
             </LinearLayout>
+        </ScrollView>
 
-            <ImageView style="@style/style_divider_horizontal_light"/>
-
-            <LinearLayout
-                android:layout_marginTop="@dimen/spacing_mid"
-                android:layout_marginRight="@dimen/spacing_mid"
-                android:layout_marginLeft="@dimen/spacing_mid"
-                android:background="@drawable/shape_corner_small_white_tb_login"
-                style="@style/style_edit_white_container">
-
-                <TextView
-                    style="@style/style_small_text"
-                    android:text="@string/password"/>
-
-                <com.zhiyicx.baseproject.widget.edittext.PasswordEditText
-                    android:id="@+id/et_regist_password"
-                    style="@style/style_passward_edit"
-                    android:hint="@string/password_input_hint"
-                    android:inputType="textPassword"
-                    android:maxLength="@integer/password_maxlenght"/>
-
-            </LinearLayout>
-
-
-            <include
-                layout="@layout/include_error_tip_text"/>
-
-            <com.zhiyicx.baseproject.widget.button.LoadingButton
-                android:id="@+id/bt_regist_regist"
-                style="@style/style_login_button"
-                android:background="@drawable/selector_button_corner_circle_solid_small_gradient"
-                android:layout_marginTop="@dimen/button_login_margin_top"
-                android:enabled="false"
-                app:text="@string/regist"/>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_mid"
-                android:layout_marginRight="@dimen/spacing_mid"
-                >
-                <!--随便逛逛-->
-                <TextView
-                    android:id="@+id/tv_look_around"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/spacing_mid"
-                    android:paddingTop="@dimen/spacing_mid"
-                    android:text="@string/no_login"
-                    android:textColor="@color/normal_for_assist_text"
-                    android:textSize="@dimen/size_content_comment"
-                    android:visibility="gone"
-                    />
-
-            </RelativeLayout>
-
-
-        </LinearLayout>
-    </ScrollView>
-
-    <TextView
-        android:id="@+id/tv_app_rule"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:padding="@dimen/spacing_large"
-       />
+        <TextView
+            android:id="@+id/tv_app_rule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:padding="@dimen/spacing_large"
+            />
     </FrameLayout>
 
 </com.wcy.overscroll.OverScrollLayout>

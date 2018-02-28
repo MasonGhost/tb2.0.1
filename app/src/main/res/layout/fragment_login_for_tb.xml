@@ -30,7 +30,7 @@
             <LinearLayout
                 android:layout_marginRight="@dimen/spacing_mid"
                 android:layout_marginLeft="@dimen/spacing_mid"
-                android:background="@drawable/shape_corner_small_white_tb_login"
+                android:background="@drawable/selector_corner_small_white_tb_login"
                 style="@style/style_edit_white_container">
 
                 <TextView
@@ -68,7 +68,7 @@
                 android:layout_marginTop="@dimen/spacing_mid"
                 android:layout_marginRight="@dimen/spacing_mid"
                 android:layout_marginLeft="@dimen/spacing_mid"
-                android:background="@drawable/shape_corner_small_white_tb_login"
+                android:background="@drawable/selector_corner_small_white_tb_login"
                 style="@style/style_edit_white_container">
 
                 <TextView

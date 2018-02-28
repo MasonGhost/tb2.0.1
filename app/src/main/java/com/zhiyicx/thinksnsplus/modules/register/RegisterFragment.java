@@ -402,6 +402,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
 
     @Override
     protected void setRightClick() {
+        mActivity.finish();
         // 修改UI
 //        resetUI();
 //        setRegisterType();
