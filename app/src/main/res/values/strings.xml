@@ -1011,6 +1011,7 @@
     <string name="read_latest_info">随时查看最新资讯</string>
     <string name="cancel_follow">取消关注</string>
     <string name="edit_input">填写</string>
+    <string name="input_invite_code_hint">输入好友邀请码</string>
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>
         <item>提取记录</item>

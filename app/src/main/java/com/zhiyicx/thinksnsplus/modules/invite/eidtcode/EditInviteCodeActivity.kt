@@ -16,7 +16,7 @@ class EditInviteCodeActivity : TSActivity<EditInviteCodePresenter, EditInviteCod
         DaggerEditInviteCodeComponent
                 .builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-//                .settingsPresenterModule(EditInviteCodePresenterModule(mContanierFragment))
+                .editInviteCodePresenterModule(EditInviteCodePresenterModule(mContanierFragment))
                 .build()
                 .inject(this)
 
