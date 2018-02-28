@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/bgpic_top_375"/>
+
+    <EditText
+        android:id="@+id/tv_feedback_contract"
+        style="@style/style_edit_cursor"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/feed_back_item_height"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:hint="@string/hint_phone_or_email"
+        android:textColor="@color/important_for_content"
+        android:textColorHint="@color/general_for_hint"
+        android:textSize="@dimen/size_content"
+        />
+
+    <TextView
+        android:id="@+id/bt_submit"
+        android:text="@string/edit_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
