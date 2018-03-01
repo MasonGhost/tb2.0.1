@@ -98,7 +98,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_title"
         android:ellipsize="end"
-        android:letterSpacing="0.1"
+        android:letterSpacing="0.08"
         android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal_tb"
         android:maxLines="@integer/dynamic_list_content_show_lines"
         android:paddingBottom="@dimen/dynamic_image_padding_bottom"

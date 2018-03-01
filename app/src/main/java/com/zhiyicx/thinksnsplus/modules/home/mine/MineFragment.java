@@ -26,10 +26,12 @@ import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
+import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.mycode.MyCodeActivity;
+import com.zhiyicx.thinksnsplus.modules.tb.invitation.InvitationActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.invitation.editcode.EditInviteCodeActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -184,6 +186,13 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 , getString(R.string.invite_friend_str), getString(R.string.invite_friend_str_fomart, 100, mPresenter.getWalletGoldName()), false,
                 R.drawable
                         .selector_button_corner_circle_solid_small_gradient);
+        mMtiInviteFriends.getButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(mActivity, InvitationActivity.class));
+            }
+        });
+
         setMineTaskViewData(mMtiEditInviteCode, "8", true, getString(R.string.go_edit_invite_code), getColor(R.color.white)
                 , getString(R.string.edit_invite_code), getString(R.string.edit_invite_code_fomart, 8, mPresenter.getWalletGoldName()), false, R
                         .drawable
@@ -197,6 +206,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
         setMineTaskViewData(mMtiShareDynamic, "5", true, "1/4", getColor(R.color.themeColor)
                 , getString(R.string.share_dynamic), getString(R.string.share_dynamic_fomart, 5, mPresenter.getWalletGoldName()), true, 0);
+        mMtiShareDynamic.setprogress(25);
         setMineTaskViewData(mMtiCertify, "50", true, getString(R.string.immediate_certify), getColor(R.color.white)
                 , getString(R.string.certification), getString(R.string.certification_format, 50, mPresenter.getWalletGoldName()), false, R.drawable
                         .selector_button_corner_circle_solid_small_gradient);
@@ -311,9 +321,15 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         }
     }
 
-    @OnClick({R.id.ll_fans_container, R.id.ll_follow_container, R.id.iv_setting, R.id.tv_check_in})
+    @OnClick({R.id.ll_fans_container, R.id.ll_follow_container, R.id.iv_setting, R.id.tv_check_in, R.id.iv_head_icon})
     public void onClick(View view) {
         switch (view.getId()) {
+               /*
+             个人资料
+             */
+            case R.id.iv_head_icon:
+                startActivity(new Intent(getActivity(), UserInfoActivity.class));
+                break;
             /*
              签到
              */
@@ -344,38 +360,10 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 itFollow.putExtras(bundleFollow);
                 startActivity(itFollow);
                 break;
-//            case R.id.bt_personal_page:
-//                PersonalCenterFragment.startToPersonalCenter(mActivity, mUserInfoBean);
-//                break;
-//
             case R.id.iv_setting:
                 startActivity(new Intent(mActivity, SettingsActivity.class));
                 break;
-//            case R.id.bt_certification:
-//                // 弹窗选择个人或者机构，被驳回也只能重新申请哦 (*^__^*)
-//                if (mUserCertificationInfo != null
-//                        && mUserCertificationInfo.getId() != 0
-//                        && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
-//                    Intent intentToDetail = new Intent(mActivity, CertificationDetailActivity.class);
-//                    Bundle bundleData = new Bundle();
-//                    if (mUserCertificationInfo.getCertification_name().equals(SendCertificationBean.USER)) {
-//                        // 跳转个人认证
-//                        bundleData.putInt(BUNDLE_DETAIL_TYPE, 0);
-//                    } else {
-//                        // 跳转企业认证
-//                        bundleData.putInt(BUNDLE_DETAIL_TYPE, 1);
-//                    }
-//                    bundleData.putParcelable(BUNDLE_DETAIL_DATA, mUserCertificationInfo);
-//                    intentToDetail.putExtra(BUNDLE_DETAIL_TYPE, bundleData);
-//                    startActivity(intentToDetail);
-//                } else {
-//                    initCertificationTypePop();
-//                }
-//                break;
-//            case R.id.bt_my_friends:
-//                // 我的朋友
-//                startActivity(new Intent(mActivity, MyFriendsListActivity.class));
-//                break;
+
             default:
         }
     }
@@ -430,15 +418,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     public void updateCertification(UserCertificationInfo data) {
         if (data != null && data.getId() != 0) {
             mUserCertificationInfo = data;
-//            if (data.getStatus() == UserCertificationInfo.CertifyStatusEnum.PASS.value) {
-//                mBtCertification.setRightText(getString(R.string.certification_state_success));
-//            } else if (data.getStatus() == UserCertificationInfo.CertifyStatusEnum.REVIEWING.value) {
-//                mBtCertification.setRightText(getString(R.string.certification_state_ing));
-//            } else if (data.getStatus() == UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
-//                mBtCertification.setRightText(getString(R.string.certification_state_failed));
-//            }
         } else {
-//            mBtCertification.setRightText("");
         }
         if (mCertificationWindow != null) {
             mCertificationWindow.dismiss();
@@ -474,8 +454,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
      * 更新签到信息
      */
     private void updateCheckInInfo() {
-        mTvCheck_in.setEnabled(false);
-        mTvCheck_in.setText(getString(R.string.checked));
+        mTvCheck_in.setEnabled(!mCheckInBean.isChecked_in());
+        mTvCheck_in.setText(getString(mCheckInBean.isChecked_in() ? R.string.checked : R.string.check_in));
         mTvContiniuousCheckInTip.setText(ColorPhrase.from(getString(R.string.has_continiuous_check_in_format, "<" +
                 mCheckInBean.getLast_checkin_count() + ">")).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(getContext(), R.color.checkin_nums_color))

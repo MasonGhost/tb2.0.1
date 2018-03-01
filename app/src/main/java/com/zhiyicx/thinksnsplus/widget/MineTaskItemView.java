@@ -79,6 +79,21 @@ public class MineTaskItemView extends FrameLayout {
         mProgressBar.setVisibility(visiable ? VISIBLE : GONE);
     }
 
+    /**
+     * 0~100
+     *
+     * @param progress
+     */
+    public void setprogress(int progress) {
+        if (progress < 0) {
+            progress = 0;
+        }
+        if (progress > 100) {
+            progress = 100;
+        }
+        mProgressBar.setProgress(progress);
+    }
+
     public void setTvButtonBackground(int resId) {
         mTvButton.setBackgroundResource(resId);
     }
@@ -86,7 +101,8 @@ public class MineTaskItemView extends FrameLayout {
     public void setTvButtonTextColor(int textColor) {
         mTvButton.setTextColor(textColor);
     }
-    public TextView getButton(){
+
+    public TextView getButton() {
         return mTvButton;
     }
 }
