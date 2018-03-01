@@ -82,7 +82,7 @@ public class TabSelectView extends FrameLayout {
     }
 
     private void initView(Context context) {
-        LayoutInflater.from(context).inflate(R.layout.toolbar_for_viewpager, this);
+        LayoutInflater.from(context).inflate(getLayout(), this);
         mMagicIndicator = (MagicIndicator) findViewById(R.id.mg_indicator);
         divider = findViewById(R.id.divider);
         tvToolbarLeft = (TextView) findViewById(R.id.tv_toolbar_left);
@@ -91,6 +91,10 @@ public class TabSelectView extends FrameLayout {
         mTabSpacing = getResources().getDimensionPixelOffset(R.dimen.spacing_large);
         showDivider(true);// 默认展示分割线
         setLeftImg(R.mipmap.topbar_back);// 默认左边为箭头
+    }
+
+    protected int getLayout() {
+        return R.layout.toolbar_for_viewpager;
     }
 
     public void initTabView(ViewPager viewPager, List<String> stringList) {
@@ -157,7 +161,12 @@ public class TabSelectView extends FrameLayout {
             tvToolbarRight.setBackgroundResource(backgroud);
         }
     }
-
+    public void setRightImg(int imgRes) {
+        if (imgRes != 0 ) {
+            tvToolbarRight.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), imgRes), null, null, null);
+            tvToolbarRight.setVisibility(View.VISIBLE);
+        }
+    }
     /**
      * 设置文字颜色
      *
