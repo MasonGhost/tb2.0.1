@@ -43,6 +43,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.SendDynamicDataBeanV2GreenDaoI
 import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.modules.tb.share.DynamicShareFragment;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 

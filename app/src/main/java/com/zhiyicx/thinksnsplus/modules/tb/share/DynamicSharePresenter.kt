@@ -15,6 +15,9 @@ class DynamicSharePresenter @Inject
 constructor(rootView: DynamicShareContract.View) : AppBasePresenter<DynamicShareContract.View>(rootView), DynamicShareContract.Presenter {
 
 
+    /**
+     *
+     */
     override fun submitInviteCode(inviteCode: String) {
         ToastUtils.showLongToast(inviteCode)
     }

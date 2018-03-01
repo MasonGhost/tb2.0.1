@@ -15,16 +15,23 @@ import com.zhiyicx.thinksnsplus.R
 import com.zhiyicx.thinksnsplus.utils.ImageUtils
 import java.util.concurrent.TimeUnit
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.support.v4.app.Fragment
+import android.text.TextUtils
 import android.widget.ScrollView
 import com.trycatch.mysnackbar.Prompt
 import com.trycatch.mysnackbar.TSnackbar
+import com.zhiyicx.baseproject.config.ApiConfig
 import com.zhiyicx.baseproject.config.ApiConfig.URL_INVITE_FIRENDS_FORMAT
 import com.zhiyicx.baseproject.config.PathConfig
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl
 import com.zhiyicx.baseproject.utils.ExcutorUtil
-import com.zhiyicx.common.utils.DeviceUtils
-import com.zhiyicx.common.utils.DrawableProvider
-import com.zhiyicx.common.utils.FileUtils
-import com.zhiyicx.common.utils.TimeUtils
+import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener
+import com.zhiyicx.common.thridmanager.share.Share
+import com.zhiyicx.common.thridmanager.share.ShareContent
+import com.zhiyicx.common.thridmanager.share.SharePolicy
+import com.zhiyicx.common.utils.*
 import com.zhiyicx.thinksnsplus.base.AppApplication
 import rx.Observable
 import rx.Subscription
@@ -40,7 +47,7 @@ import java.util.*
  * @Date 2017/1/9
  * @Contact master.jungle68@gmail.com
  */
-class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), DynamicShareContract.View {
+class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), DynamicShareContract.View, OnShareCallbackListener {
 
 
     @BindView(R.id.ll_share_container)
@@ -95,6 +102,9 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
 
     private var mDynamicShareBean: DynamicShareBean? = null
 
+    private var mSharePolicy: SharePolicy? = null
+
+
     override fun getBodyLayoutId(): Int {
         return R.layout.fragment_dyanmic_share
     }
@@ -113,6 +123,10 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
         mDlmvMenu.visibility = View.GONE
         mDcvComment.visibility = View.GONE
         initListener()
+        mSharePolicy = UmengSharePolicyImpl(activity)
+
+        (mSharePolicy as UmengSharePolicyImpl).setOnShareCallbackListener(this)
+
     }
 
     override fun initData() {
@@ -139,12 +153,25 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
         RxView.clicks(mIvWechat)
                 .throttleFirst(ConstantConfig.JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe { activity.finish() }
+                .subscribe {
+
+                    val shareContent = ShareContent()
+                    shareContent.bitmap = ImageUtils.getBitmapByView2(mScrollView);
+                    (mSharePolicy as UmengSharePolicyImpl).setShareContent(shareContent)
+                    (mSharePolicy as UmengSharePolicyImpl).shareWechat(activity, this@DynamicShareFragment)
+
+                }
         // 朋友圈
         RxView.clicks(mIvWechatFriends)
                 .throttleFirst(ConstantConfig.JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe { activity.finish() }
+                .subscribe {
+                    val shareContent = ShareContent()
+                    shareContent.bitmap = ImageUtils.getBitmapByView2(mScrollView);
+                    (mSharePolicy as UmengSharePolicyImpl).setShareContent(shareContent)
+                    (mSharePolicy as UmengSharePolicyImpl).shareMoment(activity, this@DynamicShareFragment)
+
+                }
         // 保存
         RxView.clicks(mIvSave)
                 .throttleFirst(ConstantConfig.JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
@@ -155,23 +182,6 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
                 }
     }
 
-    // 截取指定图
-    private fun takeScreenShot(): Bitmap {
-        // View是你需要截图的View
-        val view = activity.window.decorView
-        view.isDrawingCacheEnabled = true
-        view.buildDrawingCache()
-        val b1 = view.drawingCache
-
-        // 获取屏幕长和高
-        val width = DeviceUtils.getScreenWidth(activity)
-        val height = DeviceUtils.getScreenHeight(activity)
-        // 去掉标题栏
-        // Bitmap b = Bitmap.createBitmap(b1, 0, 25, 320, 455);
-        val b = Bitmap.createBitmap(b1, 0, 0, width, height - mLlBottom_container.height)
-        view.destroyDrawingCache()
-        return b
-    }
 
     private fun getSaveBitmapResultObservable(bitmap: Bitmap, name: String) {
         mSaveImageSubscription = Observable.just(1)
@@ -221,6 +231,21 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
     fun getInviteLink(): String {
         return String.format(Locale.getDefault(), URL_INVITE_FIRENDS_FORMAT, AppApplication.getMyUserIdWithdefault())
     }
+
+    override fun onStart(share: Share) {}
+
+    override fun onSuccess(share: Share) {
+        showSnackSuccessMessage(context.getString(R.string.share_sccuess))
+    }
+
+    override fun onError(share: Share, throwable: Throwable) {
+        showSnackErrorMessage(context.getString(R.string.share_fail))
+    }
+
+    override fun onCancel(share: Share) {
+        showSnackSuccessMessage(context.getString(R.string.share_cancel))
+    }
+
     companion object {
         const val BUNDLE_SHARE_BEAN = "share_bean"
 
