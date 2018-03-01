@@ -37,6 +37,7 @@ public class ApiConfig {
     public static final String URL_ABOUT_US = "api/" + API_VERSION_2 + "/aboutus";// 关于我们网站
     public static final String URL_JIPU_SHOP = "http://demo.jipukeji.com";// 极铺购物地址
     public static final String URL_INTEGRATION_SHOP = "api/" + API_VERSION_2 + "/currency/shop";// 积分商城地址
+    public static final String URL_INVITE_FIRENDS_FORMAT = APP_DOMAIN + "api/" + API_VERSION_2 + "/invite/%d";// 邀请好友地址
 
     // 图片地址 V2
     public static final String IMAGE_PATH_V2 = "api/" + API_VERSION_2 + "/files/%s?w=%d&h=%d&q=%d";
@@ -604,7 +605,8 @@ public class ApiConfig {
     /**
      * 审核圈子加入请求
      */
-    public static final String APP_PATH_DEAL_CIRCLE_MEMBER_JOIN = "api/" + API_VERSION_2 + "/plus-group/currency-groups/{circle_id}/members/{member_id}/audit";
+    public static final String APP_PATH_DEAL_CIRCLE_MEMBER_JOIN = "api/" + API_VERSION_2 +
+            "/plus-group/currency-groups/{circle_id}/members/{member_id}/audit";
 
     /**
      * 加入圈子

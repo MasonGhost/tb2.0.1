@@ -2,11 +2,14 @@ package com.zhiyicx.thinksnsplus.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
@@ -19,12 +22,18 @@ import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Locale;
+
+import cn.bingoogolapple.qrcode.zxing.QRCodeEncoder;
 
 /**
  * @Describe
@@ -435,6 +444,69 @@ public class ImageUtils {
                 .placeholder(R.drawable.shape_default_error_image)
                 .into(imageView);
 
+    }
+
+    public static Bitmap create2Code(String str, int size) {
+        Bitmap result = QRCodeEncoder.syncEncodeQRCode(str, size);
+        if (result != null) {
+            Bitmap logo = BitmapFactory.decodeResource(AppApplication.getContext().getResources(), R.mipmap.login_qq);
+            Canvas canvas = new Canvas(result);
+            canvas.drawBitmap(logo, result.getWidth() / 2 - logo.getWidth() / 2, result.getHeight() / 2 - logo.getHeight() / 2, null);
+        }
+        return result;
+    }
+
+
+    /**
+     * 截取scrollview的屏幕
+     **/
+    public static Bitmap getBitmapByView(ScrollView scrollView) {
+        int h = 0;
+        Bitmap bitmap = null;
+        // 获取listView实际高度
+        for (int i = 0; i < scrollView.getChildCount(); i++) {
+            h += scrollView.getChildAt(i).getHeight();
+        }
+        // 创建对应大小的bitmap
+        bitmap = Bitmap.createBitmap(scrollView.getWidth(), h,
+                Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(bitmap);
+        scrollView.draw(canvas);
+        // 测试输出
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream("/sdcard/screen_test.png");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            if (null != out) {
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                out.flush();
+                out.close();
+            }
+        } catch (IOException e) {
+            // TODO: handle exception
+        }
+        return bitmap;
+    }
+
+    /**
+     * 截取scrollview的屏幕
+     **/
+    public static Bitmap getBitmapByView2(ScrollView scrollView) {
+        int h = 0;
+        Bitmap bitmap = null;
+        // 获取scrollview实际高度
+        for (int i = 0; i < scrollView.getChildCount(); i++) {
+            h += scrollView.getChildAt(i).getHeight();
+        }
+        // 创建对应大小的bitmap
+        bitmap = Bitmap.createBitmap(scrollView.getWidth(), h,
+                Bitmap.Config.RGB_565);
+        final Canvas canvas = new Canvas(bitmap);
+        scrollView.draw(canvas);
+        return bitmap;
     }
 
 }

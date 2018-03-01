@@ -6,6 +6,7 @@
     >
 
     <ScrollView
+        android:id="@+id/sl_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/ll_bottom_container">
@@ -120,7 +121,7 @@
                     android:visibility="gone"
                     tools:text="了解到富士康垃圾管理的高考了了"/>
 
-                <com.zhiyicx.baseproject.widget.textview.SpanTextViewWithEllipsize
+                <TextView
                     android:id="@+id/tv_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -128,7 +129,6 @@
                     android:ellipsize="end"
                     android:letterSpacing="0.08"
                     android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal_tb"
-                    android:maxLines="@integer/dynamic_list_content_show_lines"
                     android:paddingBottom="@dimen/dynamic_image_padding_bottom"
                     android:paddingLeft="@dimen/spacing_normal"
                     android:paddingRight="@dimen/spacing_normal"

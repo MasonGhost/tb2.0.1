@@ -23,8 +23,11 @@ import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.io.File;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -33,6 +36,8 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.URL_INVITE_FIRENDS_FORMAT;
 
 /**
  * @Author Jliuer
@@ -92,8 +97,8 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
     @Override
     protected void initData() {
         // 设置 二维码
-        ExcutorUtil.getSingleCustomExecutor().execute(() ->
-                mIv2code.post(() -> mIv2code.setImageBitmap(create2Code("ssss", mIv2code.getHeight()))));
+        mIv2code.post(() -> mIv2code.setImageBitmap(ImageUtils.create2Code(getInviteLink(), mIv2code.getHeight())));
+        mTvInvitationCode.setText(String.valueOf(AppApplication.getMyUserIdWithdefault()));
     }
 
     @Override
@@ -120,6 +125,9 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
                 break;
             // 复制链接
             case R.id.tv_copy:
+                if (copyStr2Clipboard(getInviteLink())) {
+                    ToastUtils.showToast("复制成功，可以发给朋友们了。");
+                }
                 break;
             // 保存
             case R.id.tv_save:
@@ -141,15 +149,6 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
         return result;
     }
 
-    private Bitmap create2Code(String str, int size) {
-        Bitmap result = QRCodeEncoder.syncEncodeQRCode(str, size);
-        if (result != null) {
-            Bitmap logo = BitmapFactory.decodeResource(getResources(), R.mipmap.login_qq);
-            Canvas canvas = new Canvas(result);
-            canvas.drawBitmap(logo, result.getWidth() / 2 - logo.getWidth() / 2, result.getHeight() / 2 - logo.getHeight() / 2, null);
-        }
-        return result;
-    }
 
     private boolean copyStr2Clipboard(String str) {
         ClipboardManager cm = (ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -207,5 +206,9 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
             mSaveImageSubscription.unsubscribe();
         }
         super.onDestroy();
+    }
+
+    public String getInviteLink() {
+        return String.format(Locale.getDefault(), URL_INVITE_FIRENDS_FORMAT, AppApplication.getMyUserIdWithdefault());
     }
 }

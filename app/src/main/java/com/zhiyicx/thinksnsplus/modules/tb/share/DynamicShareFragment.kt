@@ -15,7 +15,23 @@ import com.zhiyicx.thinksnsplus.R
 import com.zhiyicx.thinksnsplus.utils.ImageUtils
 import java.util.concurrent.TimeUnit
 import android.graphics.Bitmap
+import android.widget.ScrollView
+import com.trycatch.mysnackbar.Prompt
+import com.trycatch.mysnackbar.TSnackbar
+import com.zhiyicx.baseproject.config.ApiConfig.URL_INVITE_FIRENDS_FORMAT
+import com.zhiyicx.baseproject.config.PathConfig
+import com.zhiyicx.baseproject.utils.ExcutorUtil
 import com.zhiyicx.common.utils.DeviceUtils
+import com.zhiyicx.common.utils.DrawableProvider
+import com.zhiyicx.common.utils.FileUtils
+import com.zhiyicx.common.utils.TimeUtils
+import com.zhiyicx.thinksnsplus.base.AppApplication
+import rx.Observable
+import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import java.io.File
+import java.util.*
 
 
 /**
@@ -62,7 +78,7 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
     lateinit var mTvTime: TextView
 
     @BindView(R.id.tv_content)
-    lateinit var mTvContent: SpanTextViewWithEllipsize
+    lateinit var mTvContent: TextView
 
     @BindView(R.id.v_line)
     lateinit var mVline: View
@@ -74,6 +90,8 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
     lateinit var mItemContainer: View
     @BindView(R.id.ll_bottom_container)
     lateinit var mLlBottom_container: View
+    @BindView(R.id.sl_container)
+    lateinit var mScrollView: ScrollView
 
     private var mDynamicShareBean: DynamicShareBean? = null
 
@@ -85,6 +103,9 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
     override fun setUseSatusbar() = true
     override fun showToolbar() = false
     override fun showToolBarDivider() = false
+
+    lateinit var mSavingTSnackbar: TSnackbar
+    lateinit var mSaveImageSubscription: Subscription
 
     override fun initView(rootView: View) {
         mDynamicShareBean = arguments.getSerializable(BUNDLE_SHARE_BEAN) as DynamicShareBean?
@@ -102,11 +123,10 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
         ImageUtils.loadCircleUserHeadPic(mDynamicShareBean!!.userInfoBean, mIvHeadePic)
         mTvName.text = mDynamicShareBean!!.userInfoBean.name
         mTvTime.text = mDynamicShareBean!!.time
-        mTvContent.setMaxlines(Int.MAX_VALUE)
         mTvContent.text = mDynamicShareBean!!.content
         mTvQRTip.text = getString(R.string.scan_get_candy, mPresenter.walletGoldName)
 
-
+        mIvQR.post({ mIvQR.setImageBitmap(ImageUtils.create2Code(getInviteLink(), mIvQR.getHeight())) })
     }
 
     private fun initListener() {
@@ -130,8 +150,8 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
                 .throttleFirst(ConstantConfig.JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe {
+                    getSaveBitmapResultObservable(ImageUtils.getBitmapByView2(mScrollView), TimeUtils.getYeayMonthDay(System.currentTimeMillis()))
 
-                    mIvQR.setImageBitmap(takeScreenShot())
                 }
     }
 
@@ -153,6 +173,54 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
         return b
     }
 
+    private fun getSaveBitmapResultObservable(bitmap: Bitmap, name: String) {
+        mSaveImageSubscription = Observable.just(1)
+                .subscribeOn(Schedulers.io())
+                // .subscribeOn(Schedulers.io())  Animators may only be run on Looper threads
+                .doOnSubscribe {
+                    mSavingTSnackbar = TSnackbar.make(mSnackRootView, getString(R.string.save_pic_ing), TSnackbar.LENGTH_INDEFINITE)
+                            .setPromptThemBackground(Prompt.SUCCESS)
+                            .addIconProgressLoading(0, true, false)
+                            .setMinHeight(0, resources.getDimensionPixelSize(R.dimen.toolbar_height))
+                    mSavingTSnackbar.show()
+                }
+                .map { integer ->
+                    val imgName = name + ".jpg"
+                    val imgPath = PathConfig.PHOTO_SAVA_PATH
+                    DrawableProvider.saveBitmap(bitmap, imgName, imgPath)
+                }
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { result ->
+                    var data: String = result
+                    when (result) {
+                        "-1" -> data = getString(R.string.save_failure1)
+                        "-2" -> data = getString(R.string.save_failure2)
+                        else -> {
+                            val file = File(data)
+                            if (file.exists()) {
+                                data = getString(R.string.save_success) + data
+                                FileUtils.insertPhotoToAlbumAndRefresh(mActivity, file)
+                            }
+                        }
+                    }
+                    if (mSavingTSnackbar != null) {
+                        mSavingTSnackbar.dismiss()
+                    }
+                    showSnackSuccessMessage(data)
+                }
+    }
+
+    override fun onDestroy() {
+        if (mSaveImageSubscription != null && mSaveImageSubscription.isUnsubscribed()) {
+            mSaveImageSubscription.unsubscribe()
+        }
+        super.onDestroy()
+    }
+
+    fun getInviteLink(): String {
+        return String.format(Locale.getDefault(), URL_INVITE_FIRENDS_FORMAT, AppApplication.getMyUserIdWithdefault())
+    }
     companion object {
         const val BUNDLE_SHARE_BEAN = "share_bean"
 
