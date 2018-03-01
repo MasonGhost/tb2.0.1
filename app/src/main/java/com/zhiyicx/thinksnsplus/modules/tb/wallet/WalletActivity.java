@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
  * @Description tb 钱包
  */
 public class WalletActivity extends TSActivity<WalletPresenter, WalletFragment> {
+    
     @Override
     protected WalletFragment getFragment() {
         return new WalletFragment();

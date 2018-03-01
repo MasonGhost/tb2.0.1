@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -16,13 +18,24 @@ import javax.inject.Inject;
  * @Author Jliuer
  * @Date 2018/02/28/14:31
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 贡献列表
  */
 public class ContributionListFragment extends TSListFragment<ContributionListContract.Presenter, ContributionData>
         implements ContributionListContract.View {
 
-    public static final String TYPE_TOTAL = "totla";
+    /**
+     * 累计贡献
+     */
+    public static final String TYPE_TOTAL = "total";
+
+    /**
+     * 今日贡献
+     */
     public static final String TYPE_TODAY = "today";
+
+    /**
+     * bundle key
+     */
     public static final String TYPE = "type";
 
     @Inject
@@ -38,7 +51,10 @@ public class ContributionListFragment extends TSListFragment<ContributionListCon
 
     @Override
     protected void initData() {
-
+        DaggerContributionListComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .contributionListPresenterModule(new ContributionListPresenterModule(this))
+                .build().inject(this);
         super.initData();
     }
 

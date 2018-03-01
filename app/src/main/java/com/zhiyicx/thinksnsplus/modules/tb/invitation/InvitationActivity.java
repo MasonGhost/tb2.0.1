@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.tb.invitation;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.rank.tb.invitation.DaggerInvitationComponent;
 
 /**
  * @Author Jliuer
