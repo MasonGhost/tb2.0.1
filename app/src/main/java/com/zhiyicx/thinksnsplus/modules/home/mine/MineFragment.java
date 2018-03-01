@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -84,6 +85,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     MineTaskItemView mMtiShareDynamic;
     @BindView(R.id.mti_certify)
     MineTaskItemView mMtiCertify;
+    @BindView(R.id.iv_setting)
+    ImageView mIvSetting;
 
     @BindView(R.id.overscroll)
     OverScrollLayout mOverScrollLayout;
@@ -164,6 +167,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                     }
                     mFrameLayout.setAlpha(mCurrentAlpha);
                     mTvMine.setAlpha(mCurrentAlpha);
+                    mIvSetting.setImageResource(mCurrentAlpha > 0.5 ? R.mipmap.ico_setting_black : R.mipmap.ico_setting);
                 });
 
     }
