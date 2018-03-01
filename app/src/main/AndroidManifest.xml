@@ -691,8 +691,10 @@
         <activity
             android:name=".modules.dynamic.share.DynamicShareActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".modules.rank.tb.invitation.InvitationActivity"
-                  android:screenOrientation="portrait"/>
+        <!--搜索机构用户-->
+        <activity
+            android:name=".modules.mechanism.search.SearchMechanismUserActivity"
+            android:screenOrientation="portrait"/>
         <!--隐私管理-->
         <activity android:name=".modules.settings.privacy.PrivacyActivity"
                   android:screenOrientation="portrait"/>

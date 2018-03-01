@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.home.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -22,6 +23,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.TBDynamicFragment;
+import com.zhiyicx.thinksnsplus.modules.mechanism.search.SearchMechanismUserActivity;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -109,7 +111,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
         mTsvToolbar.setLeftImg(0);
         mTsvToolbar.setRightImg(R.mipmap.ico_search_normal);
         mTsvToolbar.setRightClickListener(this, () -> {
-
+            startActivity(new Intent(mActivity, SearchMechanismUserActivity.class));
         });
     }
 

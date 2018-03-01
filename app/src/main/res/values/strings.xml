@@ -1028,6 +1028,7 @@
     <string name="tb_coin_website">官方网站</string>
     <string name="tb_coin_look_info">区块浏览</string>
     <string name="tb_coin_book">白皮书</string>
+    <string name="search_mechainsim">搜索机构</string>
 
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>
