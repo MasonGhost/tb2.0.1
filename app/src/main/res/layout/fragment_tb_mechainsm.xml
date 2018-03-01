@@ -41,10 +41,10 @@
         </LinearLayout>
 
         <include
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_line"
-            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
-            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"/>
 
         <!--英文名-->
         <LinearLayout
@@ -77,10 +77,10 @@
         </LinearLayout>
 
         <include
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_line"
-            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
-            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"/>
 
 
         <!--简介-->
@@ -116,10 +116,10 @@
         </LinearLayout>
 
         <include
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_line"
-            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
-            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"/>
 
         <!--发行时间-->
         <LinearLayout
@@ -152,10 +152,10 @@
         </LinearLayout>
 
         <include
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_line"
-            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
-            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"/>
 
         <!--发行总量-->
         <LinearLayout
@@ -188,10 +188,10 @@
         </LinearLayout>
 
         <include
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_line"
-            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
-            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"/>
 
         <!--流通总量-->
         <LinearLayout
@@ -224,10 +224,10 @@
         </LinearLayout>
 
         <include
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_line"
-            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
-            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"/>
 
 
         <!--发行价格-->
@@ -261,10 +261,10 @@
         </LinearLayout>
 
         <include
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_line"
-            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
-            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"/>
 
 
         <!--上线交所-->
@@ -298,10 +298,10 @@
         </LinearLayout>
 
         <include
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_line"
-            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
-            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"/>
 
         <!--社交媒体-->
         <LinearLayout
@@ -334,10 +334,10 @@
         </LinearLayout>
 
         <include
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_line"
-            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
-            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"/>
 
         <!--官方网站-->
         <LinearLayout
@@ -370,10 +370,10 @@
         </LinearLayout>
 
         <include
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_line"
-            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
-            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"/>
 
         <!--区块浏览-->
         <LinearLayout
@@ -406,10 +406,10 @@
         </LinearLayout>
 
         <include
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_line"
-            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
-            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"/>
 
 
         <!--白皮书-->
@@ -445,10 +445,10 @@
         </LinearLayout>
 
         <include
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_line"
-            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
-            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"/>
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
