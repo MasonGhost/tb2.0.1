@@ -32,7 +32,7 @@
                     android:id="@+id/rl_userinfo_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/themeColor"
+                    android:background="@mipmap/bgpic_top_480"
                     >
                     <!--头像-->
                     <com.zhiyicx.baseproject.widget.UserAvatarView
@@ -147,7 +147,7 @@
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/size_mine_big_mum"
                                 android:textStyle="bold"
-                                tools:text="12233"/>
+                                android:text="0"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -314,7 +314,7 @@
             android:layout_gravity="center_vertical|right"
             android:paddingLeft="@dimen/spacing_mid"
             android:paddingRight="@dimen/spacing_mid"
-            android:src="@drawable/setting"/>
+            android:src="@mipmap/ico_setting"/>
 
     </FrameLayout>
 

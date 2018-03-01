@@ -8,9 +8,9 @@
         android:id="@+id/ll_bottom_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/custom_navigationbar_height"
-        android:baselineAligned="false"
         android:layout_alignParentBottom="true"
         android:background="@color/home_bottom_navigate_bg"
+        android:baselineAligned="false"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -37,7 +37,6 @@
                 android:textColor="@color/home_bottom_navigate_text_normal"
                 android:textSize="@dimen/size_note_assist"/>
         </LinearLayout>
-
 
 
         <LinearLayout
@@ -83,9 +82,15 @@
         </LinearLayout>
     </LinearLayout>
 
+    <View
+        android:id="@+id/line_bottom"
+        style="@style/style_divider_horizontal"
+        android:layout_above="@id/ll_bottom_container"
+        />
+
     <com.zhiyicx.common.widget.NoPullViewPager
         android:id="@+id/vp_home"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/ll_bottom_container"/>
+        android:layout_above="@id/line_bottom"/>
 </RelativeLayout>
