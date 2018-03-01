@@ -4,6 +4,13 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import javax.inject.Inject;
 
 /**
  * @Author Jliuer
@@ -11,11 +18,15 @@ import com.zhiyicx.baseproject.base.TSListFragment;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class ContributionListFragment extends TSListFragment<ContributionListContract.Presenter, ContributionData> {
+public class ContributionListFragment extends TSListFragment<ContributionListContract.Presenter, ContributionData>
+        implements ContributionListContract.View {
 
     public static final String TYPE_TOTAL = "totla";
     public static final String TYPE_TODAY = "today";
     public static final String TYPE = "type";
+
+    @Inject
+    ContributionListPresenter mContributionListPresenter;
 
     public static ContributionListFragment newInstance(String type) {
         ContributionListFragment contributionListFragment = new ContributionListFragment();
@@ -23,6 +34,12 @@ public class ContributionListFragment extends TSListFragment<ContributionListCon
         bundle.putString(TYPE, type);
         contributionListFragment.setArguments(bundle);
         return contributionListFragment;
+    }
+
+    @Override
+    protected void initData() {
+
+        super.initData();
     }
 
     @Override
@@ -37,6 +54,25 @@ public class ContributionListFragment extends TSListFragment<ContributionListCon
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        return null;
+
+        CommonAdapter adapter = new CommonAdapter<ContributionData>(mActivity, R.layout.item_contribution, mListDatas) {
+            @Override
+            protected void convert(ViewHolder holder, ContributionData contributionData, int position) {
+                // 设置头像
+                UserAvatarView userAvatarView = holder.getView(R.id.iv_headpic);
+                ImageUtils.loadCircleUserHeadPic(null, userAvatarView);
+
+                // 排名
+                holder.setText(R.id.tv_rank, "");
+
+                // 用户名
+                holder.setText(R.id.tv_name, "");
+
+                // 总数？
+                holder.setText(R.id.tv_total, "");
+            }
+        };
+        return adapter;
+
     }
 }

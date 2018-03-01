@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.tb.wallet;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 /**
  * @Author Jliuer
@@ -8,14 +9,17 @@ import com.zhiyicx.baseproject.base.TSActivity;
  * @Email Jliuer@aliyun.com
  * @Description tb 钱包
  */
-public class WalletActivity extends TSActivity<WalletPresenter,WalletFragment> {
+public class WalletActivity extends TSActivity<WalletPresenter, WalletFragment> {
     @Override
     protected WalletFragment getFragment() {
-        return null;
+        return new WalletFragment();
     }
 
     @Override
     protected void componentInject() {
-
+        DaggerWalletComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .walletPresenterModule(new WalletPresenterModule(mContanierFragment))
+                .build().inject(this);
     }
 }

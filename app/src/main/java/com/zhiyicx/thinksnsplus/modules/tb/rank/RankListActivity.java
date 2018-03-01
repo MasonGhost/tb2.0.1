@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.tb.rank;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 /**
  * @Author Jliuer
@@ -17,6 +18,9 @@ public class RankListActivity extends TSActivity<RankListPresenter, RankListFrag
 
     @Override
     protected void componentInject() {
-
+        DaggerRankListComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .rankListPresenterModule(new RankListPresenterModule(mContanierFragment))
+                .build().inject(this);
     }
 }

@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_mid"
         android:layout_marginRight="@dimen/spacing_mid"
-        android:src="@mipmap/ico_in"/>
+        android:src="@mipmap/ico_out"/>
 
     <LinearLayout
         android:layout_width="0dp"
