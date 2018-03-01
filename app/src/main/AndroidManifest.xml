@@ -696,13 +696,13 @@
             android:name=".modules.tb.search.SearchMechanismUserActivity"
             android:screenOrientation="portrait"/>
         <!--隐私管理-->
-        <activity android:name=".modules.settings.privacy.PrivacyActivity"
+        <activity android:name=".modules.tb.privacy.PrivacyActivity"
                   android:screenOrientation="portrait"/>
         <!--钱包-->
         <activity android:name=".modules.tb.wallet.WalletActivity"
                   android:screenOrientation="portrait"/>
         <!--机构中心-->
-        <activity android:name=".modules.personal_center.tb.MechainsmCenterContainerActivity"
+        <activity android:name=".modules.tb.mechainism.MechainsmCenterContainerActivity"
                   android:screenOrientation="portrait"/>
 
     </application>

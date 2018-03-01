@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -52,6 +53,7 @@
 
         <ImageView
             android:id="@+id/iv_2code"
+            android:src="@mipmap/pic_adver_logo"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_gravity="center"
@@ -66,14 +68,15 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/tv_get_tb_coin"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/scan_get_candy"
                 android:textColor="@color/normal_for_assist_text"
                 android:textSize="@dimen/size_content_assist"/>
 
-            <view
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/divider_line"
                 android:layout_marginTop="@dimen/spacing_mid_small_8dp"
@@ -94,6 +97,7 @@
 
 
     <LinearLayout
+        android:id="@+id/ll_thirdpart_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginLeft="@dimen/spacing_normal_large"
@@ -108,9 +112,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawablePadding="@dimen/spacing_normal"
-            android:drawableTop="@mipmap/login_qq"
+            android:drawableTop="@mipmap/ico_wechat"
             android:gravity="center"
-            android:text="@string/third_qq"
+            android:text="@string/third_wechat"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_icon_assist"/>
 
@@ -120,9 +124,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawablePadding="@dimen/spacing_normal"
-            android:drawableTop="@mipmap/login_weibo"
+            android:drawableTop="@mipmap/ico_circles"
             android:gravity="center"
-            android:text="@string/third_weibo"
+            android:text="@string/third_wechat_friends"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_icon_assist"/>
 
@@ -132,9 +136,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawablePadding="@dimen/spacing_normal"
-            android:drawableTop="@mipmap/login_wechat"
+            android:drawableTop="@mipmap/ico_copylink"
             android:gravity="center"
-            android:text="@string/third_wechat"
+            android:text="@string/copy_link"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_icon_assist"/>
 
@@ -144,7 +148,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawablePadding="@dimen/spacing_normal"
-            android:drawableTop="@mipmap/login_wechat"
+            android:drawableTop="@mipmap/ico_save"
             android:gravity="center"
             android:text="@string/third_wechat"
             android:textColor="@color/important_for_content"

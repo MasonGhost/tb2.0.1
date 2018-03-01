@@ -398,7 +398,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     private void setAccountListPopHeight(int size) {
 //        if (size > 3) {
-        mEtCompleteInput.setDropDownHeight((int) DeviceUtils.dpToPixel(getContext(), 140));
+        mEtCompleteInput.setDropDownHeight((int) DeviceUtils.dpToPixel(getContext(), 100));
 //        } else {
 //            mEtCompleteInput.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
 //        }

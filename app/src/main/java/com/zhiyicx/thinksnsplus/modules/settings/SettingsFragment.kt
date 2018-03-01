@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
-
+import butterknife.BindView
 import com.jakewharton.rxbinding.view.RxView
 import com.jakewharton.rxbinding.widget.RxRadioGroup
 import com.zhiyicx.appupdate.AppUpdateManager
@@ -19,28 +19,22 @@ import com.zhiyicx.appupdate.AppVersionBean
 import com.zhiyicx.appupdate.CustomVersionDialogActivity
 import com.zhiyicx.baseproject.base.TSFragment
 import com.zhiyicx.baseproject.config.ApiConfig
-import com.zhiyicx.baseproject.utils.WindowUtils
+import com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US
 import com.zhiyicx.baseproject.widget.button.CombinationButton
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow
+import com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME
 import com.zhiyicx.common.utils.DeviceUtils
 import com.zhiyicx.common.utils.SharePreferenceUtils
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA
 import com.zhiyicx.thinksnsplus.R
+import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity
 import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity
 import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordActivity
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity
-import com.zhiyicx.thinksnsplus.modules.settings.account.AccountManagementActivity
-import com.zhiyicx.thinksnsplus.widget.CheckVersionPopupWindow
+import com.zhiyicx.thinksnsplus.modules.tb.invitation.InvitationActivity
+import com.zhiyicx.thinksnsplus.modules.tb.privacy.PrivacyActivity
 import java.util.concurrent.TimeUnit
-
-import butterknife.BindView
-
-import com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US
-import com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME
-import com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA
-import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity
-import com.zhiyicx.thinksnsplus.modules.personal_center.tb.MechainsmCenterContainerActivity
-import com.zhiyicx.thinksnsplus.modules.settings.privacy.PrivacyActivity
 
 /**
  * @Describe
@@ -202,8 +196,8 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
                 .compose(this.bindToLifecycle())
                 .subscribe { aVoid ->
                     // 跳转隐私管理页面
-                    val intent = Intent(activity, MechainsmCenterContainerActivity::class.java)
 //                    val intent = Intent(activity, PrivacyActivity::class.java)
+                    val intent = Intent(activity, InvitationActivity::class.java)
                     startActivity(intent)
                 }
         // 修改密码

@@ -94,6 +94,9 @@
     <string name="third_qq">QQ</string>
     <string name="third_weibo">微博</string>
     <string name="third_wechat">微信</string>
+    <string name="third_wechat_friends">朋友圈</string>
+    <string name="copy_link">复制链接</string>
+
 
     <!-- 拍照相册相关 -->
     <string name="choose_from_photo">从相册中选择</string>

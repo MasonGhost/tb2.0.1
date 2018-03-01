@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.personal_center.tb;
+package com.zhiyicx.thinksnsplus.modules.tb.mechainism;
 
 import android.view.View;
 

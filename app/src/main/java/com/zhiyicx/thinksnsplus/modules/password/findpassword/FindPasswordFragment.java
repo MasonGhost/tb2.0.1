@@ -85,11 +85,6 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
     }
 
     @Override
-    protected String setRightTitle() {
-        return getString(R.string.find_password_by_email);
-    }
-
-    @Override
     protected int setToolBarBackgroud() {
         return R.color.white;
     }

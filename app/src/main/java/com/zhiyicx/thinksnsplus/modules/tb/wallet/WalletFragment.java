@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -34,7 +35,7 @@ public class WalletFragment extends TSListFragment<WalletContract.Presenter, Wal
                 // 收支描述
                 holder.setText(R.id.tv_wallet_dec, "sss");
 
-                // 收支时间
+                // 收支时间 TimeUtils.getYeayMonthDay()
                 holder.setText(R.id.tv_wallet_time, "sss");
 
                 // 收支金额

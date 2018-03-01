@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.settings.privacy;
+package com.zhiyicx.thinksnsplus.modules.tb.privacy;
 
 import android.view.View;
 
@@ -11,7 +11,7 @@ import com.zhiyicx.thinksnsplus.R;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class PrivacyFragment extends TSFragment {
+public class PrivacyFragment extends TSFragment<PrivacyContract.Presenter> implements PrivacyContract.View {
 
     @Override
     protected String setCenterTitle() {

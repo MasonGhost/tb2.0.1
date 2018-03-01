@@ -1,6 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.settings.privacy;
-
-import android.support.v4.app.Fragment;
+package com.zhiyicx.thinksnsplus.modules.tb.privacy;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 
@@ -8,12 +6,12 @@ import com.zhiyicx.baseproject.base.TSActivity;
  * @Author Jliuer
  * @Date 2018/02/28/18:36
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 隐私管理
  */
-public class PrivacyActivity extends TSActivity {
+public class PrivacyActivity extends TSActivity<PrivacyPresenter, PrivacyFragment> {
 
     @Override
-    protected Fragment getFragment() {
+    protected PrivacyFragment getFragment() {
         return new PrivacyFragment();
     }
 
