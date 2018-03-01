@@ -17,8 +17,11 @@
         android:src="@mipmap/ico_in"/>
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
         android:orientation="vertical">
 
         <TextView
@@ -26,22 +29,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            tools:text="sssss"
-            android:textColor="@color/general_for_loading_more"
-            android:textSize="@dimen/size_icon_assist"/>
+            android:textColor="@color/tb_wallet_record_import_color"
+            android:textSize="@dimen/size_content_assist"
+            tools:text="sssss"/>
 
         <TextView
             android:id="@+id/tv_wallet_time"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_normal"
-            android:layout_weight="1"
+            android:layout_marginTop="@dimen/spacing_small"
             android:ellipsize="end"
-            tools:text="sssss"
             android:maxLines="1"
             android:singleLine="true"
-            android:textColor="@color/important_for_content"
-            android:textSize="@dimen/size_content"/>
+            android:textColor="@color/tb_wallet_record_color"
+            android:textSize="@dimen/size_icon_assist"
+            tools:text="sssss"/>
 
     </LinearLayout>
 

@@ -1017,6 +1017,17 @@
     <string name="setting_rank">隐私设置</string>
     <string name="recently_deal_recorder">近期交易记录</string>
     <string name="open_join_rank_dec">关闭后您的排名将不会出现在排行榜中</string>
+    <string name="tb_mechainism_cn_name">中文名称</string>
+    <string name="tb_mechainism_en_name">英文名称</string>
+    <string name="tb_coin_publish_time">发行时间</string>
+    <string name="tb_coin_publish_count">发行总量</string>
+    <string name="tb_coin_publish_price">发行价格</string>
+    <string name="tb_coin_publish_currency">流通总量</string>
+    <string name="tb_coin_online_com">上线交所</string>
+    <string name="tb_coin_media">社交媒体</string>
+    <string name="tb_coin_website">官方网站</string>
+    <string name="tb_coin_look_info">区块浏览</string>
+    <string name="tb_coin_book">白皮书</string>
 
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>
@@ -1026,5 +1037,10 @@
     <string-array name="integration_contribution_type">
         <item>累计贡献</item>
         <item>今日贡献</item>
+    </string-array>
+
+    <string-array name="integration_mechanism_type">
+        <item>主页</item>
+        <item>快讯</item>
     </string-array>
 </resources>

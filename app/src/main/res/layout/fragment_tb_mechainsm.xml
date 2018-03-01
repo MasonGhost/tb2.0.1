@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!--中文名-->
+        <LinearLayout
+            android:id="@+id/ll_cn_name_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/userinfo_btn_height"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="@dimen/mechainism_name_hint_with"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:text="@string/tb_mechainism_cn_name"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_sub_title"/>
+
+            <TextView
+                android:id="@+id/tv_cn_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/important_for_content"
+                android:textColorHint="@color/general_for_hint"
+                android:textSize="@dimen/size_sub_title"
+                tools:text="tym"/>
+
+        </LinearLayout>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_line"
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
+        <!--英文名-->
+        <LinearLayout
+            android:id="@+id/ll_en_name_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/userinfo_btn_height"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="@dimen/mechainism_name_hint_with"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:text="@string/tb_mechainism_en_name"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_sub_title"/>
+
+            <TextView
+                android:id="@+id/tv_en_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/important_for_content"
+                android:textColorHint="@color/general_for_hint"
+                android:textSize="@dimen/size_sub_title"
+                tools:text="tym"/>
+
+        </LinearLayout>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_line"
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
+
+        <!--简介-->
+        <LinearLayout
+            android:id="@+id/ll_introduce_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/userinfo_btn_height"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="@dimen/mechainism_name_hint_with"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:text="@string/introduce"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_sub_title"/>
+
+            <TextView
+                android:id="@+id/tv_introduce"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/important_for_content"
+                android:textColorHint="@color/general_for_hint"
+                android:textSize="@dimen/size_sub_title"
+                tools:text="tymjfiowaefjisdnfkldssssssssssssssssssssssssssssssssss
+                sssssssdsoifff
+                ieafhoieeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"/>
+
+        </LinearLayout>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_line"
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
+        <!--发行时间-->
+        <LinearLayout
+            android:id="@+id/ll_coin_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/userinfo_btn_height"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="@dimen/mechainism_name_hint_with"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:text="@string/tb_coin_publish_time"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_sub_title"/>
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/important_for_content"
+                android:textColorHint="@color/general_for_hint"
+                android:textSize="@dimen/size_sub_title"
+                tools:text="tym"/>
+
+        </LinearLayout>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_line"
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
+        <!--发行总量-->
+        <LinearLayout
+            android:id="@+id/ll_count_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/userinfo_btn_height"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="@dimen/mechainism_name_hint_with"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:text="@string/tb_coin_publish_count"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_sub_title"/>
+
+            <TextView
+                android:id="@+id/tv_count"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/important_for_content"
+                android:textColorHint="@color/general_for_hint"
+                android:textSize="@dimen/size_sub_title"
+                tools:text="tym"/>
+
+        </LinearLayout>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_line"
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
+        <!--流通总量-->
+        <LinearLayout
+            android:id="@+id/ll_currency_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/userinfo_btn_height"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="@dimen/mechainism_name_hint_with"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:text="@string/tb_coin_publish_currency"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_sub_title"/>
+
+            <TextView
+                android:id="@+id/tv_currency"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/important_for_content"
+                android:textColorHint="@color/general_for_hint"
+                android:textSize="@dimen/size_sub_title"
+                tools:text="tym"/>
+
+        </LinearLayout>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_line"
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
+
+        <!--发行价格-->
+        <LinearLayout
+            android:id="@+id/ll_price_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/userinfo_btn_height"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="@dimen/mechainism_name_hint_with"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:text="@string/tb_coin_publish_price"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_sub_title"/>
+
+            <TextView
+                android:id="@+id/tv_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/important_for_content"
+                android:textColorHint="@color/general_for_hint"
+                android:textSize="@dimen/size_sub_title"
+                tools:text="tym"/>
+
+        </LinearLayout>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_line"
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
+
+        <!--上线交所-->
+        <LinearLayout
+            android:id="@+id/ll_online_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/userinfo_btn_height"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="@dimen/mechainism_name_hint_with"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:text="@string/tb_coin_online_com"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_sub_title"/>
+
+            <TextView
+                android:id="@+id/tv_online"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/important_for_content"
+                android:textColorHint="@color/general_for_hint"
+                android:textSize="@dimen/size_sub_title"
+                tools:text="tym"/>
+
+        </LinearLayout>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_line"
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
+        <!--社交媒体-->
+        <LinearLayout
+            android:id="@+id/ll_media_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/userinfo_btn_height"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="@dimen/mechainism_name_hint_with"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:text="@string/tb_coin_media"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_sub_title"/>
+
+            <TextView
+                android:id="@+id/tv_media"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/important_for_content"
+                android:textColorHint="@color/general_for_hint"
+                android:textSize="@dimen/size_sub_title"
+                tools:text="tym"/>
+
+        </LinearLayout>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_line"
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
+        <!--官方网站-->
+        <LinearLayout
+            android:id="@+id/ll_website_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/userinfo_btn_height"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="@dimen/mechainism_name_hint_with"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:text="@string/tb_coin_website"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_sub_title"/>
+
+            <TextView
+                android:id="@+id/tv_website"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/important_for_content"
+                android:textColorHint="@color/general_for_hint"
+                android:textSize="@dimen/size_sub_title"
+                tools:text="tym"/>
+
+        </LinearLayout>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_line"
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
+        <!--区块浏览-->
+        <LinearLayout
+            android:id="@+id/ll_info_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/userinfo_btn_height"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="@dimen/mechainism_name_hint_with"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:text="@string/tb_coin_look_info"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_sub_title"/>
+
+            <TextView
+                android:id="@+id/tv_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/important_for_content"
+                android:textColorHint="@color/general_for_hint"
+                android:textSize="@dimen/size_sub_title"
+                tools:text="tym"/>
+
+        </LinearLayout>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_line"
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
+
+        <!--白皮书-->
+        <LinearLayout
+            android:id="@+id/ll_book_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/userinfo_btn_height"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="@dimen/mechainism_name_hint_with"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:text="@string/tb_coin_book"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_sub_title"/>
+
+            <TextView
+                android:id="@+id/tv_book"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableLeft="@mipmap/ico_pdf"
+                android:drawablePadding="@dimen/spacing_small"
+                android:textColor="@color/important_for_content"
+                android:textColorHint="@color/general_for_hint"
+                android:textSize="@dimen/size_sub_title"
+                tools:text="tym"/>
+
+        </LinearLayout>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_line"
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
+            layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

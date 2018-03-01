@@ -39,6 +39,7 @@ import com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US
 import com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA
 import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity
+import com.zhiyicx.thinksnsplus.modules.personal_center.tb.MechainsmCenterContainerActivity
 import com.zhiyicx.thinksnsplus.modules.settings.privacy.PrivacyActivity
 
 /**
@@ -201,7 +202,8 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
                 .compose(this.bindToLifecycle())
                 .subscribe { aVoid ->
                     // 跳转隐私管理页面
-                    val intent = Intent(activity, PrivacyActivity::class.java)
+                    val intent = Intent(activity, MechainsmCenterContainerActivity::class.java)
+//                    val intent = Intent(activity, PrivacyActivity::class.java)
                     startActivity(intent)
                 }
         // 修改密码

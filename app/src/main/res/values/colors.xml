@@ -36,5 +36,9 @@
     <color name="qa_anonymity_color">#FBFBFB</color>
     <color name="alpha_white_mine">#66ffffff</color>
     <color name="reward_des_color">#bfbfbf</color>
+
+    <!--TB-->
     <color name="tb_point_color">#ee6464</color>
+    <color name="tb_wallet_record_import_color">#4d4d4d</color>
+    <color name="tb_wallet_record_color">#bfbfbf</color>
 </resources>
