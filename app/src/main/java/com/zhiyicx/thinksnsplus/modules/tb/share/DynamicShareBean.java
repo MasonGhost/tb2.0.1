@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.share;
+package com.zhiyicx.thinksnsplus.modules.tb.share;
 
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 

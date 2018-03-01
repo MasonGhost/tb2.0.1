@@ -1,11 +1,11 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.share
+package com.zhiyicx.thinksnsplus.modules.tb.share
 
 import com.zhiyicx.baseproject.base.TSActivity
 import com.zhiyicx.thinksnsplus.base.AppApplication
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.TBDynamicFragment
 
 /**
- * @Describe 填写邀请码
+ * @Describe 快讯分享
  * @Author Jungle68
  * @Date 2017/1/9
  * @Contact master.jungle68@gmail.com

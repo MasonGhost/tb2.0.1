@@ -689,7 +689,7 @@
             android:screenOrientation="portrait"/>
         <!--快讯分享页-->
         <activity
-            android:name=".modules.dynamic.share.DynamicShareActivity"
+            android:name=".modules.tb.share.DynamicShareActivity"
             android:screenOrientation="portrait"/>
         <!--搜索机构用户-->
         <activity

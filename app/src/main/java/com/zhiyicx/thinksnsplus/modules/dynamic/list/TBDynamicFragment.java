@@ -1,20 +1,17 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
-import com.zhiyicx.thinksnsplus.modules.dynamic.share.DynamicShareActivity;
-import com.zhiyicx.thinksnsplus.modules.dynamic.share.DynamicShareBean;
+import com.zhiyicx.thinksnsplus.modules.tb.share.DynamicShareActivity;
+import com.zhiyicx.thinksnsplus.modules.tb.share.DynamicShareBean;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;

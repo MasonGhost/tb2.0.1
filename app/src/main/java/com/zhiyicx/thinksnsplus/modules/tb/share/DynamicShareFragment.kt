@@ -1,8 +1,7 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.share
+package com.zhiyicx.thinksnsplus.modules.tb.share
 
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -16,10 +15,6 @@ import com.zhiyicx.thinksnsplus.R
 import com.zhiyicx.thinksnsplus.utils.ImageUtils
 import java.util.concurrent.TimeUnit
 import android.graphics.Bitmap
-import android.opengl.ETC1.getHeight
-import android.opengl.ETC1.getWidth
-import android.app.Activity
-import android.graphics.Rect
 import com.zhiyicx.common.utils.DeviceUtils
 
 
