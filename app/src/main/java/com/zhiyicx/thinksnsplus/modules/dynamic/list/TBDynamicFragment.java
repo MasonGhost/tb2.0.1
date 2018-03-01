@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +13,8 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.share.DynamicShareActivity;
+import com.zhiyicx.thinksnsplus.modules.dynamic.share.DynamicShareBean;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -25,6 +28,7 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
  * @contact master.jungle68@gmail.com
  */
 public class TBDynamicFragment extends DynamicFragment {
+    public static final String BUNDLE_SHARE_DATA = "data";
 
     public static TBDynamicFragment newInstance(String dynamicType, OnCommentClickListener l) {
         TBDynamicFragment fragment = new TBDynamicFragment();
@@ -54,14 +58,14 @@ public class TBDynamicFragment extends DynamicFragment {
 
             case 2:
                 // 分享
-                Bitmap shareBitMap = null;
-                try {
-                    ImageView imageView = (ImageView) layoutManager.findViewByPosition
-                            (dataPosition + mHeaderAndFooterWrapper.getHeadersCount()).findViewById(R.id.siv_0);
-                    shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView
-                            .getDrawable(), R.mipmap.icon);
-                } catch (Exception e) {
-                }
+                Intent intent = new Intent(mActivity, DynamicShareActivity.class);
+                Bundle bundle = new Bundle();
+                DynamicShareBean dynamicShareBean = new DynamicShareBean(mListDatas.get(dataPosition).getUserInfoBean(), mListDatas.get
+                        (dataPosition).getFriendlyTime(), mListDatas.get(dataPosition).getFeed_content());
+                bundle.putSerializable(BUNDLE_SHARE_DATA, dynamicShareBean);
+                intent.putExtras(bundle);
+                startActivity(intent);
+
                 break;
 
             case 3:

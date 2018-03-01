@@ -1,9 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.home.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.zhiyicx.baseproject.base.ITSListView;
@@ -11,6 +13,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
+import com.zhiyicx.baseproject.widget.TabSelectView;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -20,6 +23,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.TBDynamicFragment;
+import com.zhiyicx.thinksnsplus.modules.mechanism.search.SearchMechanismUserActivity;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -43,6 +47,8 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     View mStatusBarPlaceholder;
     @BindView(R.id.v_shadow)
     View mVShadow;
+//    @BindView(R.id.iv_search)
+//    ImageView mIvSearch;
 
     @Inject
     AuthRepository mIAuthRepository;
@@ -89,6 +95,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
         AppApplication.AppComponentHolder.getAppComponent().inject(this);
         super.initView(rootView);
         initToolBar();
+//        mIvSearch.setVisibility(View.VISIBLE);
     }
 
     private void initToolBar() {
@@ -102,6 +109,10 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
         }
         //不需要返回键
         mTsvToolbar.setLeftImg(0);
+        mTsvToolbar.setRightImg(R.mipmap.ico_search_normal);
+        mTsvToolbar.setRightClickListener(this, () -> {
+            startActivity(new Intent(mActivity, SearchMechanismUserActivity.class));
+        });
     }
 
     @Override
