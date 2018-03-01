@@ -5,10 +5,16 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.TBDynamicFragment;
+import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +28,7 @@ import butterknife.BindView;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MechanismCenterContainerFragment extends TSViewPagerFragment {
+public class MechanismCenterContainerFragment extends TSViewPagerFragment implements DynamicFragment.OnCommentClickListener {
 
     @BindView(R.id.mechainism_appbar_layout)
     AppBarLayout mAppBarLayout;
@@ -68,9 +74,14 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment {
         if (mFragmentList == null) {
             mFragmentList = new ArrayList();
             mFragmentList.add(MechanismCenterFragment.newInstance());
-            mFragmentList.add(MechanismCenterFragment.newInstance());
+            mFragmentList.add(TBDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
         }
         return mFragmentList;
+    }
+
+    @Override
+    public void onButtonMenuShow(boolean isShow) {
+
     }
 
     @Override
