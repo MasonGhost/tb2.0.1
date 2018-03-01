@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.wxapi;
+package com.tnt.tokenbook.wxapi;
 
 
 import com.umeng.socialize.weixin.view.WXCallbackActivity;

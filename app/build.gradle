@@ -46,19 +46,20 @@ android {
 
         multiDexEnabled true
     }
-
+// sha1  879aca7f39b4a43cb9432e2df1ee4e7
+//    5D:DF:A7:29:71:32:75:77:54:B6:D7:5A:A5:CA:F5:F0:70:0D:51:1
     signingConfigs {
         release {
-            storeFile file('../thinksnsplus.jks')
-            storePassword 'thinksnsplus2017'
-            keyAlias 'thinksnsplus'
-            keyPassword 'thinksnsplus2017'
+            storeFile file('../tokenbook.jks')
+            storePassword 'TokenBook201819820307'
+            keyAlias 'tokenbook'
+            keyPassword 'TokenBook201819820307'
         }
         debug {
-            storeFile file('../thinksnsplus.jks')
-            storePassword 'thinksnsplus2017'
-            keyAlias 'thinksnsplus'
-            keyPassword 'thinksnsplus2017'
+            storeFile file('../tokenbook.jks')
+            storePassword 'TokenBook201819820307'
+            keyAlias 'tokenbook'
+            keyPassword 'TokenBook201819820307'
         }
     }
 

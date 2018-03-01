@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus;
+package com.tnt.tokenbook;
 
 import com.umeng.socialize.media.WBShareCallBackActivity;
 

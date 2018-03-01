@@ -27,8 +27,8 @@ public static final int *;
 -keep class com.zhiyicx.thinksnsplus.data.beans.** { *; } #实体类不参与混淆
 -keep class com.zhiyicx.thinksnsplus.widget.** { *; } #自定义控件不参与混淆
 -keep class com.zhiyicx.thinksnsplus.utils.** { *; }
--keep class com.zhiyicx.thinksnsplus.wxapi.** { *; }
--keep class com.zhiyicx.thinksnsplus.WBShareActivity { *; }
+-keep class com.tnt.tokenbook.wxapi.** { *; }
+-keep class com.tnt.tokenbook.WBShareActivity { *; }
 
 ################mysnackbar###############
 -keep class com.trycatch.mysnackbar.** { *; }

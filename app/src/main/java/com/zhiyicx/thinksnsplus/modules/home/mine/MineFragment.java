@@ -23,6 +23,7 @@ import com.zhiyicx.thinksnsplus.config.NotificationConfig;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
+import com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.mycode.MyCodeActivity;
@@ -190,6 +191,15 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         setMineTaskViewData(mMtiCertify, "50", true, getString(R.string.immediate_certify), getColor(R.color.white)
                 , getString(R.string.certification), getString(R.string.certification_format, 50, mPresenter.getWalletGoldName()), false, R.drawable
                         .selector_button_corner_circle_solid_small_gradient);
+        mMtiCertify.getButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent itFollow = new Intent(getActivity(), FindSomeOneContainerActivity.class);
+                Bundle bundleFollow = new Bundle();
+                itFollow.putExtras(bundleFollow);
+                startActivity(itFollow);
+            }
+        });
     }
 
     private void setMineTaskViewData(MineTaskItemView mineTaskViewData, String point, boolean isAdd, String buttonText, int buttonTextColor, String

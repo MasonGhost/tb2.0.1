@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.tb.invitation.editcode
 
 import com.zhiyicx.baseproject.base.TSActivity
 import com.zhiyicx.thinksnsplus.base.AppApplication
+import com.zhiyicx.thinksnsplus.modules.tb.invitation.editcode.DaggerEditInviteCodeComponent
 
 /**
  * @Describe 填写邀请码
