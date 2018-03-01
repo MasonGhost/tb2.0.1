@@ -14,6 +14,8 @@ import android.view.MotionEvent;
 
 public class NoPullViewPager extends ViewPager {
 
+    private boolean mCanScroll;
+
     public NoPullViewPager(Context context) {
         super(context);
     }
@@ -24,16 +26,24 @@ public class NoPullViewPager extends ViewPager {
         // TODO Auto-generated constructor stub
     }
 
-
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent arg0) {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean onTouchEvent(MotionEvent arg0) {
+        if (!mCanScroll) {
+            return false;
+        }
+        return super.onTouchEvent(arg0);
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent arg0) {
-        return false;
+    public boolean onInterceptTouchEvent(MotionEvent arg0) {
+        if (!mCanScroll) {
+            return false;
+        }
+        return super.onInterceptTouchEvent(arg0);
+    }
+
+    public void setCanScroll(boolean canScroll) {
+        mCanScroll = canScroll;
     }
 
 }

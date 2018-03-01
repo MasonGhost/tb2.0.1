@@ -1,14 +1,21 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center.tb;
 
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import butterknife.BindView;
 
 /**
  * @Author Jliuer
@@ -17,6 +24,9 @@ import java.util.List;
  * @Description
  */
 public class MechanismCenterContainerFragment extends TSViewPagerFragment {
+
+    @BindView(R.id.mechainism_appbar_layout)
+    AppBarLayout mAppBarLayout;
 
     @Override
     protected boolean setUseSatusbar() {
@@ -68,6 +78,26 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment {
     protected void initView(View rootView) {
         super.initView(rootView);
         mTsvToolbar.setLeftImg(0);
+        initListener();
+    }
+
+    private void initListener() {
+        mAppBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+            float statusBarHeight = (float) DeviceUtils.getStatuBarHeight(mActivity);
+            float point = (float) Math.abs(verticalOffset) / (float) appBarLayout.getTotalScrollRange();
+            float statusPer = statusBarHeight / (float) appBarLayout.getTotalScrollRange();
+            float paddingTop = (float) appBarLayout.getTotalScrollRange() * (statusPer + point - 1);
+            if (mVpFragment instanceof NoPullViewPager) {
+                NoPullViewPager viewPager = (NoPullViewPager) mVpFragment;
+                viewPager.setCanScroll(point == 1);
+            }
+            LogUtils.d(point);
+            if (paddingTop < 0) {
+                return;
+            }
+            mTsvToolbar.setPadding(0, (int) paddingTop, 0, 0);
+
+        });
     }
 
     @Override

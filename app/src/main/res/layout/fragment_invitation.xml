@@ -6,82 +6,92 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/iv_top_logo"
-        android:background="@mipmap/bgpic_top_375"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="188"/>
-
     <LinearLayout
+        android:id="@+id/ll_share_contianer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="133"
-        android:gravity="center_vertical"
+        android:layout_weight="456"
         android:orientation="vertical">
 
-        <TextView
-            android:textStyle="bold"
-            android:id="@+id/tv_invitation_code"
+        <ImageView
+            android:id="@+id/iv_top_logo"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/important_for_content"
-            android:textSize="@dimen/size_bold"
-            tools:text="238ss"/>
+            android:layout_height="0dp"
+            android:layout_weight="188"
+            android:background="@mipmap/bgpic_top_375"/>
 
-        <TextView
-            android:id="@+id/tv_click_copy"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_height="0dp"
+            android:layout_weight="133"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_invitation_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_bold"
+                android:textStyle="bold"
+                tools:text="238ss"/>
+
+            <TextView
+                android:id="@+id/tv_click_copy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:gravity="center"
+                android:text="@string/copy_invitation_code"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_icon_assist"/>
+
+        </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/iv_2code"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="84"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="80"
             android:gravity="center"
-            android:text="@string/copy_invitation_code"
-            android:textColor="@color/normal_for_assist_text"
-            android:textSize="@dimen/size_icon_assist"/>
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/scan_get_candy"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_content_assist"/>
+
+            <view
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/divider_line"
+                android:layout_marginTop="@dimen/spacing_mid_small_8dp"
+                android:background="@drawable/light_linear_driver"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_mid_small_8dp"
+                android:gravity="center"
+                android:text="@string/read_latest_info"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_icon_assist"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-
-    <ImageView
-        android:layout_gravity="center"
-        android:id="@+id/iv_2code"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="84"/>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="80"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/scan_get_candy"
-            android:textColor="@color/normal_for_assist_text"
-            android:textSize="@dimen/size_content_assist"/>
-
-        <view
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/divider_line"
-            android:layout_marginTop="@dimen/spacing_mid_small_8dp"
-            android:background="@drawable/light_linear_driver"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_mid_small_8dp"
-            android:gravity="center"
-            android:text="@string/read_latest_info"
-            android:textColor="@color/normal_for_assist_text"
-            android:textSize="@dimen/size_icon_assist"/>
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -130,15 +140,15 @@
 
         <TextView
             android:id="@+id/tv_save"
-            android:gravity="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/important_for_content"
-            android:textSize="@dimen/size_icon_assist"
             android:drawablePadding="@dimen/spacing_normal"
             android:drawableTop="@mipmap/login_wechat"
-            android:text="@string/third_wechat"/>
+            android:gravity="center"
+            android:text="@string/third_wechat"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_icon_assist"/>
 
     </LinearLayout>
 
