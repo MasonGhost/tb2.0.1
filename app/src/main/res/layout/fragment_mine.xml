@@ -34,6 +34,14 @@
                     android:layout_height="wrap_content"
                     android:background="@mipmap/bgpic_top_480"
                     >
+
+                    <View
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="55dp"
+                        android:background="@drawable/shape_circle_boder_themecolor"
+                        />
                     <!--头像-->
                     <com.zhiyicx.baseproject.widget.UserAvatarView
                         android:id="@+id/iv_head_icon"
@@ -41,7 +49,6 @@
                         android:layout_height="@dimen/headpic_for_user_center"
                         android:layout_centerHorizontal="true"
                         android:layout_marginBottom="@dimen/spacing_normal"
-                        android:layout_marginLeft="@dimen/spacing_normal"
                         android:layout_marginTop="@dimen/spacing_huge_60"
                         android:src="@mipmap/pic_default_secret"
                         app:ts_avatare_size="@dimen/headpic_for_user_center"/>
@@ -144,10 +151,10 @@
                                 android:id="@+id/tv_friends_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:text="0"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/size_mine_big_mum"
-                                android:textStyle="bold"
-                                android:text="0"/>
+                                android:textStyle="bold"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -165,9 +172,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
-                    android:orientation="horizontal"
-                    android:paddingBottom="@dimen/spacing_normal"
-                    android:paddingTop="@dimen/spacing_normal">
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/tv_task_tip"
@@ -285,8 +290,8 @@
         android:id="@+id/fl_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:alpha="0"
+        android:background="@color/white"
         />
 
     <FrameLayout
@@ -300,9 +305,9 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/toolbar_height"
             android:layout_gravity="center"
+            android:alpha="0"
             android:gravity="center"
             android:text="@string/mine"
-            android:alpha="0"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_primary_title"
             android:textStyle="bold"/>

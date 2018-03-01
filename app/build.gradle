@@ -40,14 +40,14 @@ android {
         // 极光推送
         manifestPlaceholders = [
                 JPUSH_PKGNAME: applicationId,
-                JPUSH_APPKEY : "85f8e1049e913108b9d9bc67", //JPush上注册的包名对应的appkey.
+                JPUSH_APPKEY : "00d5d5802657d1a1a75d28cd", //JPush上注册的包名对应的appkey.
                 JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
         ]
 
         multiDexEnabled true
     }
 // sha1  879aca7f39b4a43cb9432e2df1ee4e7
-//    5D:DF:A7:29:71:32:75:77:54:B6:D7:5A:A5:CA:F5:F0:70:0D:51:1
+//    5D:DF:A7:29:71:32:75:77:54:B6:D7:5A:A5:CA:F5:F0:70:0D:51:1E
     signingConfigs {
         release {
             storeFile file('../tokenbook.jks')

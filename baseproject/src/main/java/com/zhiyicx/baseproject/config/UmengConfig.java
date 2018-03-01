@@ -11,8 +11,8 @@ public class UmengConfig {
     /**
      * QQ
      */
-    public static String QQ_APPID = "1105978541";
-    public static String QQ_SECRETKEY = "Q47tAluWzkd0v4Rp";
+    public static String QQ_APPID = "1106671829";
+    public static String QQ_SECRETKEY = "DtEImkNPgeafKW5G";
     /**
      * 微信
      */
