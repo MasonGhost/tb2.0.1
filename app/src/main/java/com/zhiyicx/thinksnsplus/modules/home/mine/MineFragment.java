@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.home.mine;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -15,11 +16,13 @@ import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
+import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.NotificationConfig;
+import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
@@ -85,6 +88,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     MineTaskItemView mMtiCertify;
     @BindView(R.id.iv_setting)
     ImageView mIvSetting;
+    @BindView(R.id.tv_check_in)
+    TextView mTvCheck_in;
 
     @BindView(R.id.overscroll)
     OverScrollLayout mOverScrollLayout;
@@ -109,6 +114,10 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     private UserCertificationInfo mUserCertificationInfo;
     private float mCurrentAlpha = 0;
+    /**
+     * 签到数据
+     */
+    private CheckInBean mCheckInBean;
 
     public static MineFragment newInstance() {
         MineFragment fragment = new MineFragment();
@@ -228,9 +237,12 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     private void reLoadUserInfo(boolean isVisibleToUser) {
         if (isVisibleToUser && mPresenter != null) {
+            if (mCheckInBean == null) {
+                mPresenter.getCheckInfo();
+            }
             mPresenter.getUserInfoFromDB();
             mPresenter.updateUserInfo();
-            mPresenter.getCertificationInfo();
+//            mPresenter.getCertificationInfo();
         }
     }
 
@@ -299,9 +311,15 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         }
     }
 
-    @OnClick({R.id.ll_fans_container, R.id.ll_follow_container, R.id.iv_setting})
+    @OnClick({R.id.ll_fans_container, R.id.ll_follow_container, R.id.iv_setting, R.id.tv_check_in})
     public void onClick(View view) {
         switch (view.getId()) {
+            /*
+             签到
+             */
+            case R.id.tv_check_in:
+                mPresenter.checkIn();
+                break;
                 /*
                   粉丝列表
                  */
@@ -425,6 +443,44 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         if (mCertificationWindow != null) {
             mCertificationWindow.dismiss();
         }
+    }
+
+    /**
+     * 签到成功
+     */
+    @Override
+    public void checkinSucces() {
+        if (mCheckInBean != null) {
+            mCheckInBean.setChecked_in(true);
+            mCheckInBean.setLast_checkin_count(mCheckInBean.getLast_checkin_count() + 1);
+            mCheckInBean.setCheckin_count(mCheckInBean.getCheckin_count() + 1);
+            updateCheckInInfo();
+        }
+
+    }
+
+    /**
+     * 获取签到信息成功回调
+     *
+     * @param data
+     */
+    @Override
+    public void getCheckInInfoSuccess(CheckInBean data) {
+        mCheckInBean = data;
+        updateCheckInInfo();
+    }
+
+    /**
+     * 更新签到信息
+     */
+    private void updateCheckInInfo() {
+        mTvCheck_in.setEnabled(false);
+        mTvCheck_in.setText(getString(R.string.checked));
+        mTvContiniuousCheckInTip.setText(ColorPhrase.from(getString(R.string.has_continiuous_check_in_format, "<" +
+                mCheckInBean.getLast_checkin_count() + ">")).withSeparator("<>")
+                .innerColor(ContextCompat.getColor(getContext(), R.color.checkin_nums_color))
+                .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
+                .format());
     }
 
     private void initCertificationTypePop() {

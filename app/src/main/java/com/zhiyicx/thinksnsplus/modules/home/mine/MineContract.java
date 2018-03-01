@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.home.mine;
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
@@ -35,6 +36,9 @@ public interface MineContract {
 
         void updateCertification(UserCertificationInfo info);
 
+        void checkinSucces();
+
+        void getCheckInInfoSuccess(CheckInBean data);
     }
 
     interface Presenter extends IBaseTouristPresenter {
@@ -57,6 +61,10 @@ public interface MineContract {
         int getBalanceRatio();
 
         void getCertificationInfo();
+
+        void checkIn();
+
+        void getCheckInfo();
     }
 
 }

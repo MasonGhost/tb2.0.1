@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
+import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.cache.CacheBean;
 
 import java.util.List;
@@ -45,10 +46,18 @@ public class CheckInBean extends CacheBean {
      * checkin_count : 2
      * last_checkin_count : 2
      * attach_balance : 0
+     * {
+     * "check_in_status": true,// 今日签到状态
+     * "check_in_reward": 1,// 签到奖励
+     * "check_in_count": 3 // 连续签到天数
+     * }
      */
     private List<UserInfoBean> rank_users;
+    @SerializedName(value = "checked_in", alternate = "check_in_status")
     private boolean checked_in;
+    private int check_in_reward;
     private int checkin_count;
+    @SerializedName(value = "last_checkin_count", alternate = "check_in_count")
     private int last_checkin_count;
     private int attach_balance;
 
@@ -92,14 +101,11 @@ public class CheckInBean extends CacheBean {
         this.attach_balance = attach_balance;
     }
 
-    @Override
-    public String toString() {
-        return "CheckInBean{" +
-                "rank_users=" + rank_users +
-                ", checked_in=" + checked_in +
-                ", checkin_count=" + checkin_count +
-                ", last_checkin_count=" + last_checkin_count +
-                ", attach_balance=" + attach_balance +
-                '}';
+    public int getCheck_in_reward() {
+        return check_in_reward;
+    }
+
+    public void setCheck_in_reward(int check_in_reward) {
+        this.check_in_reward = check_in_reward;
     }
 }

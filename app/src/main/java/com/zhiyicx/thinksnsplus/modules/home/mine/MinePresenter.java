@@ -4,12 +4,14 @@ import android.os.Bundle;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.NotificationConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -192,5 +194,56 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
             mRootView.updateCertification(info);
         }
     }
+
+    /**
+     * 获取签到信息
+     */
+    @Override
+    public void getCheckInfo() {
+        Subscription subscribe = mUserInfoRepository.getCheckInInfo()
+                .subscribe(new BaseSubscribeForV2<CheckInBean>() {
+                    @Override
+                    protected void onSuccess(CheckInBean data) {
+                        mRootView.getCheckInInfoSuccess(data);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
+                    }
+                });
+        addSubscrebe(subscribe);
+    }
+
+    /**
+     * 签到
+     */
+    @Override
+    public void checkIn() {
+        Subscription subscription = mUserInfoRepository.checkIn()
+                .subscribe(new BaseSubscribeForV2<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        mRootView.checkinSucces();
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
+                    }
+                });
+        addSubscrebe(subscription);
+    }
+
 
 }

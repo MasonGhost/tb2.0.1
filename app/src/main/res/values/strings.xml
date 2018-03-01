@@ -996,7 +996,7 @@
     <string name="everyday_task">每日任务</string>
     <string name="reward_des">奖励说明</string>
     <string name="everyday_check_in">每日签到</string>
-    <string name="has_continiuous_check_in_format">已经连续签到%d天</string>
+    <string name="has_continiuous_check_in_format">已经连续签到%s天</string>
     <string name="immedite_invitation">立即邀请</string>
     <string name="edit_invite_code">填写邀请码</string>
     <string name="go_edit_invite_code">去填写</string>

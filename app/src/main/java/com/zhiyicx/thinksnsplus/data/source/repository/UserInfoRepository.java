@@ -743,7 +743,6 @@ public class UserInfoRepository implements IUserInfoRepository {
         return mUserInfoClient.getCheckInInfo()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-
     }
 
     /**
