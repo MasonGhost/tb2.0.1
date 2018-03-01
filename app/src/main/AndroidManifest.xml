@@ -672,20 +672,20 @@
             android:screenOrientation="portrait"/>
         <!--填写邀请码-->
         <activity
-            android:name=".modules.invite.eidtcode.EditInviteCodeActivity"
+            android:name=".modules.tb.invitation.editcode.EditInviteCodeActivity"
             android:screenOrientation="portrait"/>
 
         <!--TB 排行榜-->
         <activity
-            android:name=".modules.rank.tb.rank.RankListActivity"
+            android:name=".modules.tb.rank.RankListActivity"
             android:screenOrientation="portrait"/>
         <!--贡献-->
         <activity
-            android:name=".modules.rank.tb.contribution.ContributionActivity"
+            android:name=".modules.tb.contribution.ContributionActivity"
             android:screenOrientation="portrait"/>
         <!--邀请好友-->
         <activity
-            android:name=".modules.rank.tb.invitation.InvitationActivity"
+            android:name=".modules.tb.invitation.InvitationActivity"
             android:screenOrientation="portrait"/>
         <!--快讯分享页-->
         <activity
@@ -693,13 +693,13 @@
             android:screenOrientation="portrait"/>
         <!--搜索机构用户-->
         <activity
-            android:name=".modules.mechanism.search.SearchMechanismUserActivity"
+            android:name=".modules.tb.search.SearchMechanismUserActivity"
             android:screenOrientation="portrait"/>
         <!--隐私管理-->
         <activity android:name=".modules.settings.privacy.PrivacyActivity"
                   android:screenOrientation="portrait"/>
         <!--钱包-->
-        <activity android:name=".modules.wallet.tb.WalletActivity"
+        <activity android:name=".modules.tb.wallet.WalletActivity"
                   android:screenOrientation="portrait"/>
         <!--机构中心-->
         <activity android:name=".modules.personal_center.tb.MechainsmCenterContainerActivity"

@@ -2,8 +2,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import org.greenrobot.greendao.test.AbstractDaoTestLongPk;
 
-import com.zhiyicx.thinksnsplus.modules.mechanism.search.SearchHistoryBean;
-import com.zhiyicx.thinksnsplus.data.beans.SearchHistoryBeanDao;
+import com.zhiyicx.thinksnsplus.modules.tb.search.SearchHistoryBean;
 
 public class SearchHistoryBeanTest extends AbstractDaoTestLongPk<SearchHistoryBeanDao, SearchHistoryBean> {
 

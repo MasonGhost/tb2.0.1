@@ -5,7 +5,7 @@ import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.beans.SearchHistoryBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
-import com.zhiyicx.thinksnsplus.modules.mechanism.search.SearchHistoryBean;
+import com.zhiyicx.thinksnsplus.modules.tb.search.SearchHistoryBean;
 
 import java.util.List;
 
