@@ -4,6 +4,8 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +16,7 @@ import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PathConfig;
+import com.zhiyicx.baseproject.utils.ExcutorUtil;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FileUtils;
@@ -43,6 +46,8 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
     ImageView mIvTopLogo;
     @BindView(R.id.tv_invitation_code)
     TextView mTvInvitationCode;
+    @BindView(R.id.tv_get_tb_coin)
+    TextView mTvGetTbCoin;
     @BindView(R.id.tv_click_copy)
     TextView mTvClickCopy;
     @BindView(R.id.iv_2code)
@@ -75,14 +80,20 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
     }
 
     @Override
-    protected void initView(View rootView) {
+    protected String setCenterTitle() {
+        return getString(R.string.invataion_friends);
+    }
 
+    @Override
+    protected void initView(View rootView) {
+        mTvGetTbCoin.setText(getString(R.string.scan_get_candy, mPresenter.getWalletGoldName()));
     }
 
     @Override
     protected void initData() {
         // 设置 二维码
-        mIv2code.setImageBitmap(create2Code("ssss", mIv2code.getHeight()));
+        ExcutorUtil.getSingleCustomExecutor().execute(() ->
+                mIv2code.post(() -> mIv2code.setImageBitmap(create2Code("ssss", mIv2code.getHeight()))));
     }
 
     @Override
@@ -97,12 +108,9 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
             case R.id.tv_invitation_code:
 
             case R.id.tv_click_copy:
-                ClipboardManager cm = (ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData mClipData = ClipData.newPlainText(getString(R.string.tb_login_name), mTvInvitationCode.getText());
-                if (cm != null) {
-                    cm.setPrimaryClip(mClipData);
+                if (copyStr2Clipboard(mTvInvitationCode.getText().toString())) {
+                    ToastUtils.showToast("复制成功，可以发给朋友们了。");
                 }
-                ToastUtils.showToast("复制成功，可以发给朋友们了。");
                 break;
             // 微信
             case R.id.tv_wx:
@@ -135,7 +143,22 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
 
     private Bitmap create2Code(String str, int size) {
         Bitmap result = QRCodeEncoder.syncEncodeQRCode(str, size);
+        if (result != null) {
+            Bitmap logo = BitmapFactory.decodeResource(getResources(), R.mipmap.login_qq);
+            Canvas canvas = new Canvas(result);
+            canvas.drawBitmap(logo, result.getWidth() / 2 - logo.getWidth() / 2, result.getHeight() / 2 - logo.getHeight() / 2, null);
+        }
         return result;
+    }
+
+    private boolean copyStr2Clipboard(String str) {
+        ClipboardManager cm = (ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData mClipData = ClipData.newPlainText(getString(R.string.tb_login_name), str);
+        if (cm != null) {
+            cm.setPrimaryClip(mClipData);
+            return true;
+        }
+        return false;
     }
 
     private void getSaveBitmapResultObservable(final Bitmap bitmap, final String name) {
