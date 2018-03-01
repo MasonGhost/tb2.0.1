@@ -374,7 +374,7 @@ public class DynamicDetailHeader {
         if (content.contains(Link.DEFAULT_NET_SITE)) {
             Link commentNameLink = new Link(MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE)
                     .setTextColor(ContextCompat.getColor(mContext, R.color
-                            .themeColor))
+                            .net_link_color))
                     .setLinkMetadata(LinkMetadata.builder()
                             .putString(LinkMetadata.METADATA_KEY_COTENT, dynamicDetailBeanV2.getFeed_content())
                             .putSerializableObj(LinkMetadata.METADATA_KEY_TYPE, LinkMetadata.SpanType.NET_SITE)

@@ -83,6 +83,19 @@
                     android:text="@string/user_name"
                     android:textColor="@color/normal_for_assist_text"
                     android:textSize="@dimen/size_sub_title"/>
+                <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
+                    android:id="@+id/et_user_name"
+                    style="@style/style_edit_cursor"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:hint="@string/edit_user_name"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:paddingRight="@dimen/spacing_mid"
+                    android:textColor="@color/important_for_content"
+                    android:textColorHint="@color/general_for_hint"
+                    android:textSize="@dimen/size_sub_title"/>
 
             </LinearLayout>
 
@@ -208,7 +221,6 @@
                             android:visibility="visible"/>
 
                     <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
-                        android:id="@+id/et_user_name"
                         style="@style/style_edit_cursor"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

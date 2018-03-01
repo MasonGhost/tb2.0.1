@@ -36,6 +36,7 @@
                     >
 
                     <View
+                        android:id="@+id/v_userinfo"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
                         android:layout_centerHorizontal="true"
@@ -50,8 +51,10 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginBottom="@dimen/spacing_normal"
                         android:layout_marginTop="@dimen/spacing_huge_60"
+                        android:clickable="false"
                         android:src="@mipmap/pic_default_secret"
                         app:ts_avatare_size="@dimen/headpic_for_user_center"/>
+
                     <!--用户名-->
                     <TextView
                         android:id="@+id/tv_user_name"

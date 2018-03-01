@@ -30,7 +30,8 @@
         android:maxLines="1"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingStart="@dimen/spacing_normal"
-        android:paddingTop="@dimen/spacing_small"
+        android:paddingTop="@dimen/spacing_tiny"
+        android:textStyle="bold"
         android:textColor="@color/themeColor"
         android:textSize="@dimen/size_icon_assist"
         tools:text="张三"/>

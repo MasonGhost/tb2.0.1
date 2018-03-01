@@ -321,13 +321,13 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         }
     }
 
-    @OnClick({R.id.ll_fans_container, R.id.ll_follow_container, R.id.iv_setting, R.id.tv_check_in, R.id.iv_head_icon})
+    @OnClick({R.id.ll_fans_container, R.id.ll_follow_container, R.id.iv_setting, R.id.tv_check_in, R.id.v_userinfo})
     public void onClick(View view) {
         switch (view.getId()) {
                /*
              个人资料
              */
-            case R.id.iv_head_icon:
+            case R.id.v_userinfo:
                 startActivity(new Intent(getActivity(), UserInfoActivity.class));
                 break;
             /*
@@ -454,8 +454,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
      * 更新签到信息
      */
     private void updateCheckInInfo() {
-        mTvCheck_in.setEnabled(!mCheckInBean.isChecked_in());
         mTvCheck_in.setText(getString(mCheckInBean.isChecked_in() ? R.string.checked : R.string.check_in));
+        mTvCheck_in.setEnabled(!mCheckInBean.isChecked_in());
         mTvContiniuousCheckInTip.setText(ColorPhrase.from(getString(R.string.has_continiuous_check_in_format, "<" +
                 mCheckInBean.getLast_checkin_count() + ">")).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(getContext(), R.color.checkin_nums_color))
