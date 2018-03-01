@@ -138,4 +138,5 @@
     <dimen name="tbrank_title_height">44dp</dimen>
     <dimen name="mechainism_name_hint_with">70dp</dimen>
     <dimen name="tb_mechainism_divier_marginleft">83dp</dimen>
+    <dimen name="share_qr_code_with">85dp</dimen>
 </resources>
