@@ -702,7 +702,7 @@
         <activity android:name=".modules.tb.wallet.WalletActivity"
                   android:screenOrientation="portrait"/>
         <!--机构中心-->
-        <activity android:name=".modules.personal_center.tb.MechainsmCenterContainerActivity"
+        <activity android:name=".modules.tb.mechainism.MechainsmCenterContainerActivity"
                   android:screenOrientation="portrait"/>
 
     </application>

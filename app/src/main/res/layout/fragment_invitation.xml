@@ -109,9 +109,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawablePadding="@dimen/spacing_normal"
-            android:drawableTop="@mipmap/login_qq"
+            android:drawableTop="@mipmap/ico_wechat"
             android:gravity="center"
-            android:text="@string/third_qq"
+            android:text="@string/third_wechat"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_icon_assist"/>
 
@@ -121,9 +121,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawablePadding="@dimen/spacing_normal"
-            android:drawableTop="@mipmap/login_weibo"
+            android:drawableTop="@mipmap/ico_circles"
             android:gravity="center"
-            android:text="@string/third_weibo"
+            android:text="@string/third_wechat_friends"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_icon_assist"/>
 
@@ -133,9 +133,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawablePadding="@dimen/spacing_normal"
-            android:drawableTop="@mipmap/login_wechat"
+            android:drawableTop="@mipmap/ico_copylink"
             android:gravity="center"
-            android:text="@string/third_wechat"
+            android:text="@string/copy_link"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_icon_assist"/>
 
@@ -145,9 +145,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawablePadding="@dimen/spacing_normal"
-            android:drawableTop="@mipmap/login_wechat"
+            android:drawableTop="@mipmap/ico_save"
             android:gravity="center"
-            android:text="@string/third_wechat"
+            android:text="@string/save"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_icon_assist"/>
 

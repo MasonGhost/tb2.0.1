@@ -1,8 +1,7 @@
-package com.zhiyicx.thinksnsplus.modules.personal_center.tb;
+package com.zhiyicx.thinksnsplus.modules.tb.mechainism;
 
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;

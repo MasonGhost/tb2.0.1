@@ -32,6 +32,7 @@ import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity
 import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordActivity
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity
+import com.zhiyicx.thinksnsplus.modules.tb.invitation.InvitationActivity
 import com.zhiyicx.thinksnsplus.modules.tb.privacy.PrivacyActivity
 import java.util.concurrent.TimeUnit
 
@@ -195,7 +196,8 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
                 .compose(this.bindToLifecycle())
                 .subscribe { aVoid ->
                     // 跳转隐私管理页面
-                    val intent = Intent(activity, PrivacyActivity::class.java)
+//                    val intent = Intent(activity, PrivacyActivity::class.java)
+                    val intent = Intent(activity, InvitationActivity::class.java)
                     startActivity(intent)
                 }
         // 修改密码

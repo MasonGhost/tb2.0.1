@@ -10,16 +10,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.pdf417.encoder.BarcodeMatrix;
 import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PathConfig;
-import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FileUtils;
@@ -87,6 +81,7 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
 
     @Override
     protected void initData() {
+        // 设置 二维码
         mIv2code.setImageBitmap(create2Code("ssss", mIv2code.getHeight()));
     }
 
@@ -144,9 +139,10 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
     }
 
     private void getSaveBitmapResultObservable(final Bitmap bitmap, final String name) {
-        mSaveImageSubscription = Observable.just(1)// 不能empty否则map无法进行转换
+        mSaveImageSubscription = Observable.just(1)
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(() -> {// .subscribeOn(Schedulers.io())  Animators may only be run on Looper threads
+                // .subscribeOn(Schedulers.io())  Animators may only be run on Looper threads
+                .doOnSubscribe(() -> {
                     mSavingTSnackbar = TSnackbar.make(mSnackRootView, getString(R.string.save_pic_ing), TSnackbar.LENGTH_INDEFINITE)
                             .setPromptThemBackground(Prompt.SUCCESS)
                             .addIconProgressLoading(0, true, false)
@@ -158,7 +154,6 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
                     String imgPath = PathConfig.PHOTO_SAVA_PATH;
                     return DrawableProvider.saveBitmap(bitmap, imgName, imgPath);
                 })
-                // subscribeOn & doOnSubscribe 的特殊性质
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
