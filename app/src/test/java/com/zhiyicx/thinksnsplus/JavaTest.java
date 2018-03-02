@@ -210,7 +210,8 @@ public class JavaTest {
             for (int i = 0; i < count; i++) {
                 System.out.println("reg::" + i + ":::" + matcher.group(i));
             }
-        }while (matcher1.find()) {
+        }
+        while (matcher1.find()) {
             int count = matcher1.groupCount();
             for (int i = 0; i < count; i++) {
                 System.out.println("reg1::" + i + ":::" + matcher1.group(i));
@@ -737,7 +738,7 @@ public class JavaTest {
                 "\"updated_at\":\"2017-04-28 07:49:48\",\"parent\":null}}}]";
         List<LocationContainerBean> lodAta = new Gson().fromJson(data, new
                 TypeToken<List<LocationContainerBean>>() {
-        }.getType());
+                }.getType());
         List<LocationBean> result = new ArrayList<>();
 
         for (LocationContainerBean locationContainerBean : lodAta) {
@@ -1853,7 +1854,7 @@ public class JavaTest {
         System.out.println("rechargeTypes = " + rechargeTypes.size());
         if (rechargeTypes.size() == 0 && mSystemConfigBean.getWalletTransform() == null ||
                 !mSystemConfigBean.getWalletTransform()
-                .isOpen()) {
+                        .isOpen()) {
             System.out.println(" 1  = ");
         } else {
             System.out.println(" 2  = ");
@@ -1861,11 +1862,18 @@ public class JavaTest {
         }
         if (rechargeTypes.size() == 0 && (mSystemConfigBean.getWalletTransform() == null ||
                 !mSystemConfigBean.getWalletTransform()
-                .isOpen())) {
+                        .isOpen())) {
             System.out.println(" 1  = ");
         } else {
             System.out.println(" 2  = ");
 
         }
+    }
+
+    @Test
+    public void testMovmum() {
+        int a = 10889;
+        System.out.println("b = " + (a << 1));
+        System.out.println("c = " + (a >> 1));
     }
 }

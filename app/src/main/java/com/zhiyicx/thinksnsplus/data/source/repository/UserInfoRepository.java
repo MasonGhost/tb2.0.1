@@ -106,7 +106,7 @@ public class UserInfoRepository implements IUserInfoRepository {
 
     @Override
     public Observable<AuthBean> registerByPhone(String phone, String name, String vertifyCode, String password) {
-        return mRegisterClient.register(phone, null, name, password, RegisterClient.REGITER_TYPE_SMS, vertifyCode,"personal")
+        return mRegisterClient.register(phone, null, name, password, RegisterClient.REGITER_TYPE_SMS, vertifyCode, "personal")
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .flatMap(authBean -> {
                     mAuthRepository.saveAuthBean(authBean);
@@ -121,7 +121,7 @@ public class UserInfoRepository implements IUserInfoRepository {
 
     @Override
     public Observable<AuthBean> registerByEmail(String email, String name, String vertifyCode, String password) {
-        return mRegisterClient.register(null, email, name, password, RegisterClient.REGITER_TYPE_EMAIL, vertifyCode,"personal")
+        return mRegisterClient.register(null, email, name, password, RegisterClient.REGITER_TYPE_EMAIL, vertifyCode, "personal")
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .flatMap(authBean -> {
                     mAuthRepository.saveAuthBean(authBean);
@@ -356,7 +356,9 @@ public class UserInfoRepository implements IUserInfoRepository {
     public Observable<UserInfoBean> getLocalUserInfoBeforeNet(long user_id) {
         UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(user_id);
         if (userInfoBean != null) {
-            return Observable.just(userInfoBean);
+
+            return Observable.just(userInfoBean)
+                    .observeOn(AndroidSchedulers.mainThread());
         }
         List<Object> user_ids = new ArrayList<>();
         user_ids.add(user_id);

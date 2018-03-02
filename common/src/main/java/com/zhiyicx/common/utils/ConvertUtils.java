@@ -143,7 +143,7 @@ public class ConvertUtils {
             if (number >= 100000) {
                 return number / 10000 + "W";
             } else {
-                return number / 10000 + "." + ((number / 10) / 1000) + "W";
+                return number / 10000 + "." + ((number - number / 10000 * 10000) / 1000) + "W";
             }
         }
         return String.valueOf(number);

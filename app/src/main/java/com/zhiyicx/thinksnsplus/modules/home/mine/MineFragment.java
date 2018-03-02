@@ -31,9 +31,12 @@ import com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContain
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.mycode.MyCodeActivity;
+import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.invitation.InvitationActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.invitation.editcode.EditInviteCodeActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
+import com.zhiyicx.thinksnsplus.modules.tb.rank.RankListActivity;
+import com.zhiyicx.thinksnsplus.modules.tb.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.CertificationTypePopupWindow;
 import com.zhiyicx.thinksnsplus.widget.MineTaskItemView;
@@ -321,7 +324,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         }
     }
 
-    @OnClick({R.id.ll_fans_container, R.id.ll_follow_container, R.id.iv_setting, R.id.tv_check_in, R.id.v_userinfo})
+    @OnClick({R.id.ll_fans_container, R.id.ll_follow_container,R.id.ll_friends, R.id.iv_setting, R.id.tv_check_in, R.id.v_userinfo})
     public void onClick(View view) {
         switch (view.getId()) {
                /*
@@ -337,28 +340,24 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 mPresenter.checkIn();
                 break;
                 /*
-                  粉丝列表
+                  排行榜
                  */
             case R.id.ll_fans_container:
-                long fansUserId = AppApplication.getmCurrentLoginAuth().getUser_id();
-                Bundle bundleFans = new Bundle();
-                bundleFans.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FANS_FRAGMENT_PAGE);
-                bundleFans.putLong(FollowFansListFragment.PAGE_DATA, fansUserId);
-                Intent itFans = new Intent(mActivity, FollowFansListActivity.class);
-                itFans.putExtras(bundleFans);
-                startActivity(itFans);
+             startActivity(new Intent(mActivity,RankListActivity.class));
                 break;
                 /*
-                 关注列表
+                 钱包
                  */
             case R.id.ll_follow_container:
-                long followUserId = AppApplication.getmCurrentLoginAuth().getUser_id();
-                Bundle bundleFollow = new Bundle();
-                bundleFollow.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FOLLOW_FRAGMENT_PAGE);
-                bundleFollow.putLong(FollowFansListFragment.PAGE_DATA, followUserId);
-                Intent itFollow = new Intent(mActivity, FollowFansListActivity.class);
-                itFollow.putExtras(bundleFollow);
-                startActivity(itFollow);
+                startActivity(new Intent(mActivity,WalletActivity.class));
+
+                break;
+                /*
+                好友
+                 */
+                case R.id.ll_friends:
+                startActivity(new Intent(mActivity,ContributionActivity.class));
+
                 break;
             case R.id.iv_setting:
                 startActivity(new Intent(mActivity, SettingsActivity.class));
@@ -395,12 +394,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         String followedCount = String.valueOf(userInfoBean.getExtra().getFollowers_count());
         mTvFansCount.setText(ConvertUtils.numberConvert(Integer.parseInt(followedCount)));
         // 设置关注数
-        String followingCount = String.valueOf(userInfoBean.getExtra().getFollowings_count());
-        mTvFollowCount.setText(ConvertUtils.numberConvert(Integer.parseInt(followingCount)));
-        double myMoney = 0;
-        if (userInfoBean.getWallet() != null) {
-            myMoney = userInfoBean.getWallet().getBalance();
-        }
+        mTvFollowCount.setText(ConvertUtils.numberConvert(userInfoBean.getWallet() != null?(int)userInfoBean.getWallet().getBalance():0));
         this.mUserInfoBean = userInfoBean;
     }
 

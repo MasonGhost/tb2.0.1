@@ -109,7 +109,7 @@
                                 android:layout_below="@+id/tv_fans_count"
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginTop="@dimen/spacing_small_4dp"
-                                android:text="@string/fans"
+                                android:text="@string/rank"
                                 android:textColor="@color/alpha_white_mine"
                                 android:textSize="@dimen/size_icon_assist"/>
                         </RelativeLayout>
@@ -136,7 +136,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/spacing_small_4dp"
-                                android:text="@string/follow"
+                                android:text="@string/wallet"
                                 android:textColor="@color/alpha_white_mine"
                                 android:textSize="@dimen/size_icon_assist"/>
                         </LinearLayout>

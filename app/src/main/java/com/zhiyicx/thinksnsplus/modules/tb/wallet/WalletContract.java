@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.tb.wallet;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 /**
  * @Author Jliuer
@@ -10,6 +11,10 @@ import com.zhiyicx.baseproject.base.ITSListView;
  * @Description
  */
 public interface WalletContract {
-    interface View extends ITSListView<WalletData,Presenter>{}
-    interface Presenter extends ITSListPresenter<WalletData>{}
+    interface View extends ITSListView<WalletData,Presenter>{
+        void updateUserInfo(UserInfoBean data);
+    }
+    interface Presenter extends ITSListPresenter<WalletData>{
+        void getUserInfo();
+    }
 }

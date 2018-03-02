@@ -57,7 +57,7 @@
             tools:text="1"/>
     </LinearLayout>
 
-    <view
+    <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_line"
         android:background="@drawable/light_linear_driver"/>

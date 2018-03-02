@@ -1,48 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/tv_account_unit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/themeColor"
-        android:paddingBottom="@dimen/spacing_big_large"
-        android:paddingLeft="@dimen/spacing_mid"
-        android:paddingStart="@dimen/spacing_mid"
-        android:paddingTop="@dimen/spacing_big_large"
-        android:text="@string/account_balance"
-        android:textColor="@color/white"
-        android:textSize="@dimen/size_icon_assist"/>
-
-    <TextView
-        android:id="@+id/tv_mine_money"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/themeColor"
-        android:ellipsize="end"
-        android:gravity="left"
-        android:includeFontPadding="false"
-        android:maxLines="1"
-        android:paddingBottom="@dimen/spacing_large"
-        android:paddingLeft="@dimen/spacing_mid"
-        android:textColor="@color/white"
-        android:textSize="@dimen/withdrawal_detail_textsize"
-        tools:text="@string/default_mongy"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/load_more_height"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/spacing_mid"
-        android:text="@string/recently_deal_recorder"
-        android:textColor="@color/normal_for_assist_text"
-        android:textSize="@dimen/size_content_comment"/>
+    android:layout_height="match_parent">
 
     <include layout="@layout/fragment_tslist"/>
 
-</LinearLayout>
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/wallet_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:minHeight="@dimen/toolbar_height"
+        android:titleMargin="0dp"
+        tools:ignore="UnusedAttribute">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height">
+
+            <TextView
+                android:id="@+id/wallet_tv_toolbar_center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="@dimen/toolbar_center_margin"
+                android:layout_marginRight="@dimen/toolbar_center_margin"
+                android:drawablePadding="@dimen/spacing_small"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/toolbar_padding_left"
+                android:paddingRight="@dimen/toolbar_padding_right"
+                android:textColor="@color/white"
+                android:textSize="@dimen/toolbar_center_text_size"
+                android:textStyle="bold"
+                android:text="@string/wallet"
+                />
+
+            <TextView
+                android:id="@+id/wallet_tv_toolbar_left"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:drawablePadding="@dimen/spacing_small"
+                android:gravity="center"
+                android:paddingLeft="@dimen/toolbar_padding_left"
+                android:drawableLeft="@mipmap/topbar_back_white"
+                android:paddingRight="@dimen/toolbar_padding_right"
+                android:textColor="@color/toolbar_text_corlor_normal"
+                android:textSize="@dimen/toolbar_left_text_size"
+                tools:text="左边"
+                />
+
+            <ImageView
+                android:id="@+id/wallet_iv_refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/tv_toolbar_left"
+                android:src="@drawable/frame_loading_grey"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/wallet_tv_toolbar_right_left"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_gravity="right"
+                android:layout_toLeftOf="@+id/tv_toolbar_right"
+                android:drawablePadding="@dimen/spacing_small"
+                android:gravity="center"
+                android:paddingLeft="@dimen/toolbar_padding_left"
+                android:textColor="@color/selector_theme_color_toolbar_text_color"
+                android:textSize="@dimen/toolbar_right_text_size"
+                tools:text="右边"
+                />
+
+            <TextView
+                android:id="@+id/wallet_tv_toolbar_right"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="right"
+                android:drawablePadding="@dimen/spacing_small"
+                android:gravity="center"
+                android:paddingLeft="@dimen/toolbar_padding_left"
+                android:paddingRight="@dimen/toolbar_padding_right"
+                android:textColor="@color/selector_theme_color_toolbar_text_color"
+                android:textSize="@dimen/toolbar_right_text_size"
+                tools:text="右边"
+                />
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+
+</FrameLayout>
