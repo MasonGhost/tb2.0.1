@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -402,5 +403,5 @@ public interface IUserInfoRepository {
      *
      * @return 快讯分享统计
      */
-    Observable<BaseJsonV2> dynamicShareCount();
+    Observable<BaseJsonV2> shareCount(String type, String id);
 }

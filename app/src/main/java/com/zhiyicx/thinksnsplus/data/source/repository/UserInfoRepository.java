@@ -980,10 +980,31 @@ public class UserInfoRepository implements IUserInfoRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     * 非必须, 快讯分享需传:feed
+     */
+    public enum SHARETYPEENUM {
+        FEED("feed");
+
+        public String value;
+
+        SHARETYPEENUM(String value) {
+            this.value = value;
+        }
+    }
+
+    /**
+     * 分享统计
+     *
+     * @param type
+     * @param id
+     * @return
+     */
     @Override
-    public Observable<BaseJsonV2> dynamicShareCount() {
-        return mUserInfoClient.dynamicShareCount()
+    public Observable<BaseJsonV2> shareCount(String type, String id) {
+        return mUserInfoClient.shareCount(type, id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
 }

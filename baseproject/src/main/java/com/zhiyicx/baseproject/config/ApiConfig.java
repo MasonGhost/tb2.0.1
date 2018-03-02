@@ -18,7 +18,7 @@ public class ApiConfig {
      */
     public static final int DEFAULT_MAX_RETRY_COUNT = 5;
 
-    public static final String API_VERSION_2 = "v2/tbm";
+    public static final String API_VERSION_2 = "v2";
     /**
      * 网络根地址  http://192.168.10.222/
      * 测试服务器：http://192.168.2.222:8080/mockjs/2/test-get-repose-head-normal?
@@ -52,7 +52,7 @@ public class ApiConfig {
     /**
      * 登录 Login
      */
-    public static final String APP_PATH_LOGIN = "api/" + API_VERSION_2 + "/login";
+    public static final String APP_PATH_LOGIN = "api/" + API_VERSION_2 + "/tbm/login";
 
     /**
      * 密码 PasswordClient
@@ -62,7 +62,7 @@ public class ApiConfig {
     /**
      * 注册 RegitstClient
      */
-    public static final String APP_PATH_REGISTER = "api/" + API_VERSION_2 + "/register";// 注册
+    public static final String APP_PATH_REGISTER = "api/" + API_VERSION_2 + "/tbm/register";// 注册
     /**
      * 用户 UserInfoClient
      */
@@ -871,7 +871,7 @@ public class ApiConfig {
      * 用户相关
      */
     // 获取当前用户
-    public static final String APP_PATH_GET_CURRENT_USER_INFO = "api/" + API_VERSION_2 + "/user";
+    public static final String APP_PATH_GET_CURRENT_USER_INFO = "api/" + API_VERSION_2 + "/tbm/user";
     // 获取指定用户
     public static final String APP_PATH_GET_SPECIFIED_USER_INFO = "api/" + API_VERSION_2 + "/users/{user_id}";
     // 批量获取指定用户
@@ -897,9 +897,9 @@ public class ApiConfig {
      * 签到
      */
     // 获取签到信息
-    public static final String APP_PATH_GET_CHECK_IN_INFO = "api/" + API_VERSION_2 + "/user/checkin";
+    public static final String APP_PATH_GET_CHECK_IN_INFO = "api/" + API_VERSION_2 + "/tbm/user/checkin";
     // 签到
-    public static final String APP_PATH_CHECK_IN = "api/" + API_VERSION_2 + "/user/checkin";
+    public static final String APP_PATH_CHECK_IN = "api/" + API_VERSION_2 + "/tbm/user/checkin";
     // 连续签到排行榜
     public static final String APP_PATH_GET_CHECK_IN_RANKS = "api/" + API_VERSION_2 + "/checkin-ranks";
     /**
@@ -1022,11 +1022,11 @@ public class ApiConfig {
 
 
     // TB 财富排行榜
-    public static final String APP_PATH_RANK_TB = "api/" + API_VERSION_2 + "/user/ranks";
+    public static final String APP_PATH_RANK_TB = "api/" + API_VERSION_2 + "/tbm/user/ranks";
     // 好友贡献榜
-    public static final String APP_PATH_RANK_TB_CONTRUBITHION = "api/" + API_VERSION_2 + "/friend/contribution/ranks";
+    public static final String APP_PATH_RANK_TB_CONTRUBITHION = "api/" + API_VERSION_2 + "/tbm/friend/contribution/ranks";
     // 分享快讯统计
-    public static final String APP_PATH_SHARE_DYNAMIC_COUNT = "api/" + API_VERSION_2 + "/user/share";
+    public static final String APP_PATH_SHARE_DYNAMIC_COUNT = "api/" + API_VERSION_2 + "/tbm/share";
 
 
 }

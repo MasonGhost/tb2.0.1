@@ -543,9 +543,12 @@ public interface UserInfoClient {
                                                            @Query("offset") int size, @Query("type") String type);
 
     /**
+     * 分享统计
      *
-     * @return 快讯统计
+     * @param type type	string	非必须, 快讯分享需传:feed
+     * @param id   id	int	非必须, 分享资源id
+     * @return
      */
     @POST(ApiConfig.APP_PATH_SHARE_DYNAMIC_COUNT)
-    Observable<BaseJsonV2> dynamicShareCount();
+    Observable<BaseJsonV2> shareCount(@Field("type") String type, @Field("id") String id);
 }
