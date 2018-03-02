@@ -107,6 +107,25 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     @SerializedName("new_wallet")
     private WalletBean wallet;
 
+    private int user_rank;
+    private int friend_count;
+
+
+    public int getUser_rank() {
+        return user_rank;
+    }
+
+    public void setUser_rank(int user_rank) {
+        this.user_rank = user_rank;
+    }
+
+    public int getFriend_count() {
+        return friend_count;
+    }
+
+    public void setFriend_count(int friend_count) {
+        this.friend_count = friend_count;
+    }
     /**
      * 积分
      */
@@ -406,29 +425,13 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         private int checkin_count;
         private int last_checkin_count;
         private String updated_at;
-        private int user_rank;
-        private int friend_count;
+
         private int tb_mark_count;// tb mark 总数
         private int invite_count;// 邀请好友数
 
         public UserInfoExtraBean() {
         }
 
-        public int getUser_rank() {
-            return user_rank;
-        }
-
-        public void setUser_rank(int user_rank) {
-            this.user_rank = user_rank;
-        }
-
-        public int getFriend_count() {
-            return friend_count;
-        }
-
-        public void setFriend_count(int friend_count) {
-            this.friend_count = friend_count;
-        }
 
         public Long getUser_id() {
             return user_id;
@@ -574,8 +577,6 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
             dest.writeInt(this.checkin_count);
             dest.writeInt(this.last_checkin_count);
             dest.writeString(this.updated_at);
-            dest.writeInt(this.user_rank);
-            dest.writeInt(this.friend_count);
             dest.writeInt(this.tb_mark_count);
             dest.writeInt(this.invite_count);
         }
@@ -594,8 +595,6 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
             this.checkin_count = in.readInt();
             this.last_checkin_count = in.readInt();
             this.updated_at = in.readString();
-            this.user_rank = in.readInt();
-            this.friend_count = in.readInt();
             this.tb_mark_count = in.readInt();
             this.invite_count = in.readInt();
         }
@@ -672,33 +671,6 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     }
 
 
-    @Generated(hash = 1966286923)
-    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex, String location,
-            boolean following, boolean follower, String created_at, String updated_at, String avatar, String cover,
-            IntegrationBean currency, UserInfoExtraBean extra, VerifiedBean verified, List<UserTagBean> tags,
-            String im_pwd_hash, boolean initial_password, boolean has_deleted) {
-        this.user_id = user_id;
-        this.name = name;
-        this.phone = phone;
-        this.email = email;
-        this.intro = intro;
-        this.sex = sex;
-        this.location = location;
-        this.following = following;
-        this.follower = follower;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.avatar = avatar;
-        this.cover = cover;
-        this.currency = currency;
-        this.extra = extra;
-        this.verified = verified;
-        this.tags = tags;
-        this.im_pwd_hash = im_pwd_hash;
-        this.initial_password = initial_password;
-        this.has_deleted = has_deleted;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -725,6 +697,9 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         dest.writeString(this.avatar);
         dest.writeString(this.cover);
         dest.writeParcelable(this.wallet, flags);
+        dest.writeInt(this.user_rank);
+        dest.writeInt(this.friend_count);
+        dest.writeSerializable(this.currency);
         dest.writeParcelable(this.extra, flags);
         dest.writeParcelable(this.verified, flags);
         dest.writeTypedList(this.tags);
@@ -753,12 +728,45 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.avatar = in.readString();
         this.cover = in.readString();
         this.wallet = in.readParcelable(WalletBean.class.getClassLoader());
+        this.user_rank = in.readInt();
+        this.friend_count = in.readInt();
+        this.currency = (IntegrationBean) in.readSerializable();
         this.extra = in.readParcelable(UserInfoExtraBean.class.getClassLoader());
         this.verified = in.readParcelable(VerifiedBean.class.getClassLoader());
         this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
         this.im_pwd_hash = in.readString();
         this.initial_password = in.readByte() != 0;
         this.has_deleted = in.readByte() != 0;
+    }
+
+    @Generated(hash = 854944651)
+    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
+            String location, boolean following, boolean follower, String created_at, String updated_at,
+            String avatar, String cover, int user_rank, int friend_count, IntegrationBean currency,
+            UserInfoExtraBean extra, VerifiedBean verified, List<UserTagBean> tags, String im_pwd_hash,
+            boolean initial_password, boolean has_deleted) {
+        this.user_id = user_id;
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.intro = intro;
+        this.sex = sex;
+        this.location = location;
+        this.following = following;
+        this.follower = follower;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.avatar = avatar;
+        this.cover = cover;
+        this.user_rank = user_rank;
+        this.friend_count = friend_count;
+        this.currency = currency;
+        this.extra = extra;
+        this.verified = verified;
+        this.tags = tags;
+        this.im_pwd_hash = im_pwd_hash;
+        this.initial_password = initial_password;
+        this.has_deleted = has_deleted;
     }
 
     public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {
@@ -772,35 +780,4 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
             return new UserInfoBean[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "UserInfoBean{" +
-                "user_id=" + user_id +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", intro='" + intro + '\'' +
-                ", sex=" + sex +
-                ", sexString='" + sexString + '\'' +
-                ", location='" + location + '\'' +
-                ", province='" + province + '\'' +
-                ", city='" + city + '\'' +
-                ", area='" + area + '\'' +
-                ", following=" + following +
-                ", follower=" + follower +
-                ", created_at='" + created_at + '\'' +
-                ", updated_at='" + updated_at + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", cover='" + cover + '\'' +
-                ", wallet=" + wallet +
-                ", currency=" + currency +
-                ", extra=" + extra +
-                ", verified=" + verified +
-                ", tags=" + tags +
-                ", im_pwd_hash='" + im_pwd_hash + '\'' +
-                ", initial_password=" + initial_password +
-                ", has_deleted=" + has_deleted +
-                '}';
-    }
 }

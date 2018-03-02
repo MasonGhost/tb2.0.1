@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
@@ -18,7 +19,9 @@ import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.functions.Func1;
 
 /**
  * @Describe
@@ -175,12 +178,20 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.View>
         }
         mRootView.setRegisterBtEnabled(false);
         Subscription registerSub = mUserInfoRepository.registerByPhone(phone, name, vertifyCode, password)
+                .flatMap(authBean -> {
+                    // 保存登录认证信息
+                    mAuthRepository.saveAuthBean(authBean);
+                    return mUserInfoRepository.getCurrentLoginUserInfo()
+                            .map(userInfoBean -> {
+                                authBean.setUser(userInfoBean);
+                                authBean.setUser_id(userInfoBean.getUser_id());
+                                return authBean;
+                            });
+                })
                 .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
                     public void onSuccess(AuthBean data) {
                         mRootView.setRegisterBtEnabled(true);
-
-                        // 保存登录认证信息
                         mAuthRepository.saveAuthBean(data);
                         mUserInfoBeanGreenDao.insertOrReplace(data.getUser());
                         // IM 登录 需要 token ,所以需要先保存登录信息
@@ -311,19 +322,19 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.View>
      * @return
      */
     private boolean checkUsername(String name) {
-        if (!RegexUtils.isUsernameLength(name, mContext.getResources().getInteger(R.integer.username_min_length), mContext.getResources()
-                .getInteger(R.integer.username_max_length))) {
-            mRootView.showMessage(mContext.getString(R.string.username_toast_hint));
-            return true;
-        }
-        if (RegexUtils.isUsernameNoNumberStart(name)) {// 数字开头
-            mRootView.showMessage(mContext.getString(R.string.username_toast_not_number_start_hint));
-            return true;
-        }
-        if (!RegexUtils.isUsername(name)) {// 用户名只能包含数字、字母和下划线
-            mRootView.showMessage(mContext.getString(R.string.username_toast_not_symbol_hint));
-            return true;
-        }
+//        if (!RegexUtils.isUsernameLength(name, mContext.getResources().getInteger(R.integer.username_min_length), mContext.getResources()
+//                .getInteger(R.integer.username_max_length))) {
+//            mRootView.showMessage(mContext.getString(R.string.username_toast_hint));
+//            return true;
+//        }
+//        if (RegexUtils.isUsernameNoNumberStart(name)) {// 数字开头
+//            mRootView.showMessage(mContext.getString(R.string.username_toast_not_number_start_hint));
+//            return true;
+//        }
+//        if (!RegexUtils.isUsername(name)) {// 用户名只能包含数字、字母和下划线
+//            mRootView.showMessage(mContext.getString(R.string.username_toast_not_symbol_hint));
+//            return true;
+//        }
         return false;
     }
 

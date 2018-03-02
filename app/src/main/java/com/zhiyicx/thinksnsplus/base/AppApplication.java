@@ -130,7 +130,7 @@ public class AppApplication extends TSApplication {
         if (!TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve())) {
             LogUtils.d(TAG, "---------------start IM---------------------");
 //            ZBIMSDK.init(getContext());
-            initIm();
+//            initIm();
         }
         // 开启后台任务
         BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();

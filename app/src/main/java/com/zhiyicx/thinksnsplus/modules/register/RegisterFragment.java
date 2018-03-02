@@ -263,10 +263,9 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                 .compose(this.bindToLifecycle())
                 .compose(mRxPermissions.ensureEach(Manifest.permission.READ_PHONE_STATE))
                 .subscribe(permission -> {
-                    String userName = mEtRegistUsername.getText().toString().trim();
                     if (mPresenter
                             .getSystemConfigBean().getSite().getReserved_nickname()
-                            .contains(mEtRegistUsername.getText().toString().trim())) {
+                            .contains(mEtRegistPhone.getText().toString().trim())) {
                         showMessage(getString(R.string.can_not_use_protected_name));
                         return;
                     }
@@ -275,7 +274,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                     if (permission.granted) {
                         // 手机号注册
                         if (mCurrentRegisterType == REGISTER_PHONE) {
-                            mPresenter.register(mEtRegistUsername.getText().toString().trim()
+                            mPresenter.register(mEtRegistPhone.getText().toString().trim()
                                     , mEtRegistPhone.getText().toString().trim()
                                     , mEtRegistVertifyCode.getText().toString().trim()
                                     , mEtRegistPassword.getText().toString().trim()

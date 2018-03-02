@@ -53,7 +53,8 @@
                         android:maxLength="@integer/username_max_length"/>
                 </LinearLayout>
 
-                <ImageView style="@style/style_divider_horizontal_light"/>
+                <ImageView style="@style/style_divider_horizontal_light"
+                    android:visibility="gone"/>
 
 
                 <LinearLayout

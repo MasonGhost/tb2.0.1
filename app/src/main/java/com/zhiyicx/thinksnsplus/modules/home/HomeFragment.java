@@ -348,7 +348,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             }
         });
         // 设置 IM 监听
-        mPresenter.initIM();
+//        mPresenter.initIM();
     }
 
     /**

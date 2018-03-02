@@ -63,6 +63,16 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.View> impleme
         mRootView.setLogining();
         Subscription subscription = mUserInfoRepository.loginV2(phone, password)
                 .subscribeOn(Schedulers.io())
+                .flatMap(authBean -> {
+                    // 保存登录认证信息
+                    mAuthRepository.saveAuthBean(authBean);
+                    return mUserInfoRepository.getCurrentLoginUserInfo()
+                            .map(userInfoBean -> {
+                                authBean.setUser(userInfoBean);
+                                authBean.setUser_id(userInfoBean.getUser_id());
+                                return authBean;
+                            });
+                })
                 .observeOn(Schedulers.io())
                 .map(data -> {
                     mAuthRepository.clearAuthBean();

@@ -432,7 +432,7 @@ public interface UserInfoClient {
      *
      * @return
      */
-    @PUT(APP_PATH_CHECK_IN)
+    @GET(APP_PATH_CHECK_IN)
     Observable<Object> checkIn();
 
     /**
