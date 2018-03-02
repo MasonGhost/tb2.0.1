@@ -45,6 +45,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IUserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
+import com.zhiyicx.thinksnsplus.modules.tb.rank.RankData;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.simple.eventbus.EventBus;
@@ -953,6 +954,16 @@ public class UserInfoRepository implements IUserInfoRepository {
     @Override
     public Observable<Object> cancleFollowUser(long userId) {
         return mFollowFansClient.cancelFollowUser(userId);
+    }
+
+
+    /*******************************************  TB  *********************************************/
+
+    @Override
+    public Observable<List<RankData>> getTBRank(Long limit, int size) {
+        return mUserInfoClient.getTBRank(limit, size)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
 }

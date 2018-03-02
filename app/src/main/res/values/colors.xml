@@ -44,4 +44,7 @@
     <color name="share_qr_code_tip_text_color">#4d4d4d</color>
     <color name="checkin_nums_color">#ee6462</color>
     <color name="net_link_color">#f3bb4d</color>
+    <color name="rank1">#e94240</color>
+    <color name="rank2">#f27538</color>
+    <color name="rank3">#f2b237</color>
 </resources>

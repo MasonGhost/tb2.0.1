@@ -1,11 +1,17 @@
 package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+
+import java.util.List;
 
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REPORT_USER;
@@ -105,5 +111,7 @@ public interface IReportRepository {
      * @return
      */
     Observable<ReportResultBean> reportUser(String userId, String reason);
+
+
 
 }

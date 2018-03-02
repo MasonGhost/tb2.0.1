@@ -1017,4 +1017,8 @@ public class ApiConfig {
     // 资讯排行
     public static final String APP_PATH_RANK_NEWS = "api/" + API_VERSION_2 + "/news/ranks";
     /*资讯 end*/
+
+    // TB 财富排行榜
+    public static final String APP_PATH_RANK_TB= "api/" + API_VERSION_2 + "/user/ranks";
+
 }

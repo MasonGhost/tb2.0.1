@@ -402,12 +402,32 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         private int answers_count;
         private int feeds_count;
         private int count; // 排行数量 如粉丝排行榜即为粉丝数 根据点赞数来排行的 则为点赞的数量
-        private int rank;
+        private int rank; // 排名名次
         private int checkin_count;
         private int last_checkin_count;
         private String updated_at;
+        private int user_rank;
+        private int friend_count;
+        private int tb_mark_count;// tb mark 总数
+        private int invite_count;// 邀请好友数
 
         public UserInfoExtraBean() {
+        }
+
+        public int getUser_rank() {
+            return user_rank;
+        }
+
+        public void setUser_rank(int user_rank) {
+            this.user_rank = user_rank;
+        }
+
+        public int getFriend_count() {
+            return friend_count;
+        }
+
+        public void setFriend_count(int friend_count) {
+            this.friend_count = friend_count;
         }
 
         public Long getUser_id() {
@@ -518,6 +538,21 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
             this.last_checkin_count = last_checkin_count;
         }
 
+        public int getTb_mark_count() {
+            return tb_mark_count;
+        }
+
+        public void setTb_mark_count(int tb_mark_count) {
+            this.tb_mark_count = tb_mark_count;
+        }
+
+        public int getInvite_count() {
+            return invite_count;
+        }
+
+        public void setInvite_count(int invite_count) {
+            this.invite_count = invite_count;
+        }
 
         @Override
         public int describeContents() {
@@ -539,6 +574,10 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
             dest.writeInt(this.checkin_count);
             dest.writeInt(this.last_checkin_count);
             dest.writeString(this.updated_at);
+            dest.writeInt(this.user_rank);
+            dest.writeInt(this.friend_count);
+            dest.writeInt(this.tb_mark_count);
+            dest.writeInt(this.invite_count);
         }
 
         protected UserInfoExtraBean(Parcel in) {
@@ -555,6 +594,10 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
             this.checkin_count = in.readInt();
             this.last_checkin_count = in.readInt();
             this.updated_at = in.readString();
+            this.user_rank = in.readInt();
+            this.friend_count = in.readInt();
+            this.tb_mark_count = in.readInt();
+            this.invite_count = in.readInt();
         }
 
         public static final Creator<UserInfoExtraBean> CREATOR = new Creator<UserInfoExtraBean>() {
@@ -568,25 +611,6 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
                 return new UserInfoExtraBean[size];
             }
         };
-
-        @Override
-        public String toString() {
-            return "UserInfoExtraBean{" +
-                    "user_id=" + user_id +
-                    ", likes_count=" + likes_count +
-                    ", comments_count=" + comments_count +
-                    ", followers_count=" + followers_count +
-                    ", followings_count=" + followings_count +
-                    ", questions_count=" + questions_count +
-                    ", answers_count=" + answers_count +
-                    ", feeds_count=" + feeds_count +
-                    ", count=" + count +
-                    ", rank=" + rank +
-                    ", checkin_count=" + checkin_count +
-                    ", last_checkin_count=" + last_checkin_count +
-                    ", updated_at='" + updated_at + '\'' +
-                    '}';
-        }
     }
 
 

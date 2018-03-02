@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.data.beans.request.BindAccountRequstBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.DeleteUserPhoneOrEmailRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.ThirdAccountBindRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequestBean;
+import com.zhiyicx.thinksnsplus.modules.tb.rank.RankData;
 
 import java.util.HashMap;
 import java.util.List;
@@ -519,5 +520,15 @@ public interface UserInfoClient {
     @FormUrlEncoded
     @POST(APP_PATH_REPORT_USER)
     Observable<ReportResultBean> reportUser(@Path("user_id") String userId, @Field("reason") String reason);
+
+
+    /*******************************************  TB  *********************************************/
+
+    /**
+     * 财富排行榜
+     */
+    @GET(ApiConfig.APP_PATH_RANK_TB)
+    Observable<List<RankData>> getTBRank(@Query("limit") Long limit,
+                                         @Query("offset") int size);
 
 }

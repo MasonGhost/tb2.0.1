@@ -17,9 +17,9 @@
             android:layout_height="match_parent"
             android:layout_weight="76"
             android:gravity="center"
-            android:textColor="@color/themeColor"
+            android:textColor="@color/normal_for_assist_text"
             android:textSize="@dimen/size_sub_title"
-            tools:text="1"/>
+            android:text="@string/rank_name"/>
 
 
         <TextView
@@ -31,9 +31,9 @@
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:singleLine="true"
-            android:textColor="@color/important_for_content"
-            android:textSize="@dimen/size_content_assist"
-            tools:text="1"/>
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_sub_title"
+            android:text="@string/user"/>
 
 
         <TextView
@@ -42,9 +42,9 @@
             android:layout_height="match_parent"
             android:layout_weight="100"
             android:gravity="center"
-            android:textColor="@color/important_for_content"
-            android:textSize="@dimen/size_content_assist"
-            tools:text="1"/>
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_sub_title"
+            android:text="@string/friends"/>
 
         <TextView
             android:id="@+id/tv_tbmark"
@@ -52,9 +52,9 @@
             android:layout_height="match_parent"
             android:layout_weight="100"
             android:gravity="center"
-            android:textColor="@color/important_for_content"
-            android:textSize="@dimen/size_content_assist"
-            tools:text="1"/>
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_sub_title"
+            android:text="TBMark"/>
     </LinearLayout>
 
     <View

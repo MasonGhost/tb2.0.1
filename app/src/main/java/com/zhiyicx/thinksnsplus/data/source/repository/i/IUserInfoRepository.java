@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.modules.tb.rank.RankData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -375,5 +376,10 @@ public interface IUserInfoRepository {
     Observable<Object> followUser(long followedId);
 
     Observable<Object> cancleFollowUser(long followedId);
+    /*******************************************  TB  *********************************************/
 
+    /**
+     * 财富排行榜
+     */
+    Observable<List<RankData>> getTBRank(Long limit, int size);
 }

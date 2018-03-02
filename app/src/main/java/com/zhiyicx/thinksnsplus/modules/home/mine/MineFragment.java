@@ -324,7 +324,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         }
     }
 
-    @OnClick({R.id.ll_fans_container, R.id.ll_follow_container,R.id.ll_friends, R.id.iv_setting, R.id.tv_check_in, R.id.v_userinfo})
+    @OnClick({R.id.ll_fans_container, R.id.ll_follow_container, R.id.ll_friends, R.id.iv_setting, R.id.tv_check_in, R.id.v_userinfo})
     public void onClick(View view) {
         switch (view.getId()) {
                /*
@@ -343,20 +343,20 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                   排行榜
                  */
             case R.id.ll_fans_container:
-             startActivity(new Intent(mActivity,RankListActivity.class));
+                startActivity(new Intent(mActivity, RankListActivity.class));
                 break;
                 /*
                  钱包
                  */
             case R.id.ll_follow_container:
-                startActivity(new Intent(mActivity,WalletActivity.class));
+                startActivity(new Intent(mActivity, WalletActivity.class));
 
                 break;
                 /*
                 好友
                  */
-                case R.id.ll_friends:
-                startActivity(new Intent(mActivity,ContributionActivity.class));
+            case R.id.ll_friends:
+                startActivity(new Intent(mActivity, ContributionActivity.class));
 
                 break;
             case R.id.iv_setting:
@@ -390,11 +390,12 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         }
         // 设置用户名
         mTvUserName.setText(userInfoBean.getName());
-        // 设置粉丝数
-        String followedCount = String.valueOf(userInfoBean.getExtra().getFollowers_count());
+        // 排行榜
+        String followedCount = String.valueOf(userInfoBean.getExtra().getUser_rank());
         mTvFansCount.setText(ConvertUtils.numberConvert(Integer.parseInt(followedCount)));
-        // 设置关注数
-        mTvFollowCount.setText(ConvertUtils.numberConvert(userInfoBean.getWallet() != null?(int)userInfoBean.getWallet().getBalance():0));
+        // 钱包
+        mTvFollowCount.setText(ConvertUtils.numberConvert(userInfoBean.getWallet() != null ? (int) userInfoBean.getWallet().getBalance() : 0));
+        mTvFriendsCount.setText(String.valueOf(userInfoBean.getExtra().getFriend_count()));
         this.mUserInfoBean = userInfoBean;
     }
 

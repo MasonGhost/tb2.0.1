@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.tb.rank;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 /**
  * @Author Jliuer
@@ -8,5 +9,5 @@ import com.zhiyicx.baseproject.base.BaseListBean;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class RankData extends BaseListBean {
+public class RankData extends UserInfoBean {
 }

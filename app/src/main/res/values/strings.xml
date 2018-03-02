@@ -1030,6 +1030,8 @@
     <string name="tb_coin_book">白皮书</string>
     <string name="search_mechainsim">搜索机构</string>
     <string name="invataion_friends">邀请好友</string>
+    <string name="rank_name">排名</string>
+    <string name="user">用户</string>
 
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>
