@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.data.beans.request.BindAccountRequstBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.DeleteUserPhoneOrEmailRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.ThirdAccountBindRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequestBean;
+import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
 import com.zhiyicx.thinksnsplus.modules.tb.rank.RankData;
 
 import java.util.HashMap;
@@ -531,4 +532,13 @@ public interface UserInfoClient {
     Observable<List<RankData>> getTBRank(@Query("limit") Long limit,
                                          @Query("offset") int size);
 
+    /**
+     * @param limit limit	int	条目数
+     * @param size  offset	int	翻页标示
+     * @param type  type	string	默认: all, all-累计贡献排行 day-日贡献排行
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_RANK_TB_CONTRUBITHION)
+    Observable<List<ContributionData>> getContributionRank(@Query("limit") Long limit,
+                                                           @Query("offset") int size, @Query("type") String type);
 }

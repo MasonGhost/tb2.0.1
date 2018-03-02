@@ -10,6 +10,8 @@ import com.zhiyicx.baseproject.base.ITSListView;
  * @Description
  */
 public interface ContributionListContract {
-    interface View extends ITSListView<ContributionData,Presenter>{}
+    interface View extends ITSListView<ContributionData,Presenter>{
+        String getType();
+    }
     interface Presenter extends ITSListPresenter<ContributionData>{}
 }

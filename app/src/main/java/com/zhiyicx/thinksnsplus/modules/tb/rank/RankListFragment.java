@@ -9,9 +9,14 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -99,5 +104,10 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
             }
         };
         return adapter;
+    }
+
+    @Override
+    protected Long getMaxId(@NotNull List<RankData> data) {
+        return (long) mListDatas.size();
     }
 }

@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
@@ -13,12 +14,15 @@ import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
 import com.zhiyicx.thinksnsplus.modules.tb.rank.RankData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -357,12 +361,14 @@ public interface IUserInfoRepository {
 
     /**
      * 获取认证信息
+     *
      * @return
      */
     Observable<UserCertificationInfo> getCertificationInfo();
 
     /**
      * 提交认证信息
+     *
      * @param bean
      * @return
      */
@@ -382,4 +388,12 @@ public interface IUserInfoRepository {
      * 财富排行榜
      */
     Observable<List<RankData>> getTBRank(Long limit, int size);
+
+    /**
+     * @param limit limit	int	条目数
+     * @param size  offset	int	翻页标示
+     * @param type  type	string	默认: all, all-累计贡献排行 day-日贡献排行
+     * @return
+     */
+    Observable<List<ContributionData>> getContributionRank(Long limit, int size, String type);
 }

@@ -1020,5 +1020,7 @@ public class ApiConfig {
 
     // TB 财富排行榜
     public static final String APP_PATH_RANK_TB= "api/" + API_VERSION_2 + "/user/ranks";
+    // 好友贡献榜
+    public static final String APP_PATH_RANK_TB_CONTRUBITHION= "api/" + API_VERSION_2 + "/friend/contribution/ranks";
 
 }

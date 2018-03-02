@@ -45,6 +45,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IUserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
+import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
 import com.zhiyicx.thinksnsplus.modules.tb.rank.RankData;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -962,6 +963,19 @@ public class UserInfoRepository implements IUserInfoRepository {
     @Override
     public Observable<List<RankData>> getTBRank(Long limit, int size) {
         return mUserInfoClient.getTBRank(limit, size)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param limit limit	int	条目数
+     * @param size  offset	int	翻页标示
+     * @param type  type	string	默认: all, all-累计贡献排行 day-日贡献排行
+     * @return
+     */
+    @Override
+    public Observable<List<ContributionData>> getContributionRank(Long limit, int size, String type){
+        return mUserInfoClient.getContributionRank(limit, size,type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
