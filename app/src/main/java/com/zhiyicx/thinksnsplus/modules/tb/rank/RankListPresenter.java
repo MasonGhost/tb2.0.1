@@ -41,7 +41,6 @@ public class RankListPresenter extends AppBasePresenter<RankListContract.View> i
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.showSnackErrorMessage(message);
                         mRootView.onResponseError(null, isLoadMore);
 
                     }

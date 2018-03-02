@@ -43,7 +43,6 @@ public class ContributionListPresenter extends AppBasePresenter<ContributionList
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.showSnackErrorMessage(message);
                         mRootView.onResponseError(null, isLoadMore);
 
                     }
