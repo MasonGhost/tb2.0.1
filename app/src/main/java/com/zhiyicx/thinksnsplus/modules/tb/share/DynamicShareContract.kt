@@ -22,6 +22,8 @@ interface DynamicShareContract {
          * @param inviteCode 邀请码
          */
         fun submitInviteCode(inviteCode: String)
+
+        fun shareTask(sourceId:String)
     }
 
 }

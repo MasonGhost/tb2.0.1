@@ -18,7 +18,7 @@ public class ApiConfig {
      */
     public static final int DEFAULT_MAX_RETRY_COUNT = 5;
 
-    public static final String API_VERSION_2 = "v2";
+    public static final String API_VERSION_2 = "v2/tbm";
     /**
      * 网络根地址  http://192.168.10.222/
      * 测试服务器：http://192.168.2.222:8080/mockjs/2/test-get-repose-head-normal?
@@ -28,7 +28,7 @@ public class ApiConfig {
 
     public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 自定义证书时使用false
     public static final String APP_DOMAIN_DEV = "http://dev.zhibocloud.cn/";// 模拟在线正式服务器
-    public static final String APP_DOMAIN_TEST = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
+    public static final String APP_DOMAIN_TEST = "http://www.tokenbook.one/";// 在线测试服务器
     public static final String APP_DOMAIN_FORMAL = "http://www.tokenbook.one/";// 正式服务器
     public static final String APP_DOMAIN_FOR_TEARCHER_QIAO = "http://192.168.2.200/";// 乔老师本地服务器
 
@@ -52,7 +52,7 @@ public class ApiConfig {
     /**
      * 登录 Login
      */
-    public static final String APP_PATH_LOGIN = "api/" + API_VERSION_2 + "/tokens";
+    public static final String APP_PATH_LOGIN = "api/" + API_VERSION_2 + "/login";
 
     /**
      * 密码 PasswordClient
@@ -899,7 +899,7 @@ public class ApiConfig {
     // 获取签到信息
     public static final String APP_PATH_GET_CHECK_IN_INFO = "api/" + API_VERSION_2 + "/user/checkin";
     // 签到
-    public static final String APP_PATH_CHECK_IN = "api/" + API_VERSION_2 + "/user/checkin/currency";
+    public static final String APP_PATH_CHECK_IN = "api/" + API_VERSION_2 + "/user/checkin";
     // 连续签到排行榜
     public static final String APP_PATH_GET_CHECK_IN_RANKS = "api/" + API_VERSION_2 + "/checkin-ranks";
     /**
@@ -1018,9 +1018,15 @@ public class ApiConfig {
     public static final String APP_PATH_RANK_NEWS = "api/" + API_VERSION_2 + "/news/ranks";
     /*资讯 end*/
 
+    /*******************************************  TB  *********************************************/
+
+
     // TB 财富排行榜
-    public static final String APP_PATH_RANK_TB= "api/" + API_VERSION_2 + "/user/ranks";
+    public static final String APP_PATH_RANK_TB = "api/" + API_VERSION_2 + "/user/ranks";
     // 好友贡献榜
-    public static final String APP_PATH_RANK_TB_CONTRUBITHION= "api/" + API_VERSION_2 + "/friend/contribution/ranks";
+    public static final String APP_PATH_RANK_TB_CONTRUBITHION = "api/" + API_VERSION_2 + "/friend/contribution/ranks";
+    // 分享快讯统计
+    public static final String APP_PATH_SHARE_DYNAMIC_COUNT = "api/" + API_VERSION_2 + "/user/share";
+
 
 }

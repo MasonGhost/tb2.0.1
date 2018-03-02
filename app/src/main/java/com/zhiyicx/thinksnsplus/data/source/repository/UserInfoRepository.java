@@ -974,10 +974,16 @@ public class UserInfoRepository implements IUserInfoRepository {
      * @return
      */
     @Override
-    public Observable<List<ContributionData>> getContributionRank(Long limit, int size, String type){
-        return mUserInfoClient.getContributionRank(limit, size,type)
+    public Observable<List<ContributionData>> getContributionRank(Long limit, int size, String type) {
+        return mUserInfoClient.getContributionRank(limit, size, type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    @Override
+    public Observable<BaseJsonV2> dynamicShareCount() {
+        return mUserInfoClient.dynamicShareCount()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 }

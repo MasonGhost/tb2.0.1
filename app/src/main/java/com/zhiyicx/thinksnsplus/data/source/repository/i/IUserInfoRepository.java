@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -396,4 +397,10 @@ public interface IUserInfoRepository {
      * @return
      */
     Observable<List<ContributionData>> getContributionRank(Long limit, int size, String type);
+
+    /**
+     *
+     * @return 快讯分享统计
+     */
+    Observable<BaseJsonV2> dynamicShareCount();
 }

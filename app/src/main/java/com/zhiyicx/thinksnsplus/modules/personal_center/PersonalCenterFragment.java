@@ -66,6 +66,7 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHe
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.tb.mechainism.MechainsmCenterContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
@@ -183,7 +184,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         if (!TextUtils.isEmpty(tsHelperUrl)) {
             CustomWEBActivity.startToWEBActivity(context, tsHelperUrl);
         } else {
-            Intent intent = new Intent(context, PersonalCenterActivity.class);
+            Intent intent = new Intent(context, MechainsmCenterContainerActivity.class);
             Bundle bundle = new Bundle();
             bundle.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, userInfoBean);
             intent.putExtras(bundle);

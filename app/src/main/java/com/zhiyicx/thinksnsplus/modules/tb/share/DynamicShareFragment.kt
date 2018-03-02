@@ -235,6 +235,7 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
     override fun onStart(share: Share) {}
 
     override fun onSuccess(share: Share) {
+        mPresenter.shareTask(mDynamicShareBean!!.id)
         showSnackSuccessMessage(context.getString(R.string.share_sccuess))
     }
 

@@ -12,14 +12,16 @@ import java.io.Serializable;
  */
 public class DynamicShareBean implements Serializable {
     private static final long serialVersionUID = -5645852412255261880L;
+    private String id;
     private UserInfoBean mUserInfoBean;
     private String time;
     private String content;
 
-    public DynamicShareBean(UserInfoBean userInfoBean, String time, String content) {
+    public DynamicShareBean(UserInfoBean userInfoBean, String time, String content, String id) {
         mUserInfoBean = userInfoBean;
         this.time = time;
         this.content = content;
+        this.id=id;
     }
 
     public UserInfoBean getUserInfoBean() {
@@ -44,5 +46,13 @@ public class DynamicShareBean implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

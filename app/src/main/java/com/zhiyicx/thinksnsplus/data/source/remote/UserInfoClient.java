@@ -541,4 +541,11 @@ public interface UserInfoClient {
     @GET(ApiConfig.APP_PATH_RANK_TB_CONTRUBITHION)
     Observable<List<ContributionData>> getContributionRank(@Query("limit") Long limit,
                                                            @Query("offset") int size, @Query("type") String type);
+
+    /**
+     *
+     * @return 快讯统计
+     */
+    @POST(ApiConfig.APP_PATH_SHARE_DYNAMIC_COUNT)
+    Observable<BaseJsonV2> dynamicShareCount();
 }
