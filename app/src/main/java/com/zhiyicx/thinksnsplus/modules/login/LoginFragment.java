@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -85,6 +86,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     TextView mTvLoginByWechat;
     @BindView(R.id.fl_placeholder)
     View mFlPlaceholder;
+    @BindView(R.id.ll_phone)
+    LinearLayout mLlPhone;
 
     private boolean mIsPhoneEdited;
     private boolean mIsPasswordEdited;
@@ -367,7 +370,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     private void initAccount() {
         List<String> list = new ArrayList<>();
 
-        mEtCompleteInput.setDropDownBackgroundResource(R.color.white);
+        mEtCompleteInput.setDropDownBackgroundResource(android.R.color.transparent);
         mAccountList.addAll(mPresenter.getAllAccountList());
         if (mAccountAdapter == null) {
             mAccountAdapter = new AccountAdapter(getContext(), mAccountList, this);
@@ -380,7 +383,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         }
         setAccountListPopHeight(mAccountList.size());
 //        mArrayAdapter = new ArrayAdapter(getContext(), R.layout.item_account, R.id.tv_account_name, list);
-        mEtCompleteInput.setAdapter(mAccountAdapter);
+
+//        mEtCompleteInput.setAdapter(mAccountAdapter);
     }
 
     @Override
@@ -398,7 +402,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     private void setAccountListPopHeight(int size) {
 //        if (size > 3) {
-        mEtCompleteInput.setDropDownHeight((int) DeviceUtils.dpToPixel(getContext(), 100));
+        mEtCompleteInput.setDropDownHeight((int) DeviceUtils.dpToPixel(getContext(), 60));
 //        } else {
 //            mEtCompleteInput.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
 //        }

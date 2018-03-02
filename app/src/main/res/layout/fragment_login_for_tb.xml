@@ -22,12 +22,13 @@
                 android:text="@string/tb_login_name"
                 android:textColor="@color/themeColor"
                 android:textSize="@dimen/size_login_bold"
-                android:layout_marginBottom="@dimen/spacing_bigger_large"
-                android:layout_marginTop="@dimen/spacing_bigger_large"
+                android:layout_marginBottom="@dimen/spacing_bigger_large_35"
+                android:layout_marginTop="@dimen/spacing_bigger_large_35"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <LinearLayout
+                android:id="@+id/ll_phone"
                 android:layout_marginRight="@dimen/spacing_mid"
                 android:layout_marginLeft="@dimen/spacing_mid"
                 android:background="@drawable/selector_corner_small_white_tb_login"
@@ -41,6 +42,7 @@
                     android:id="@+id/et_complete_input"
                     style="@style/style_edit"
                     android:layout_width="0dp"
+                    android:layout_marginLeft="0dp"
                     android:layout_weight="1"
                     android:completionThreshold="@integer/login_hint_mix_count"
                     android:hint="@string/login_account_hint"
@@ -78,6 +80,7 @@
                 <com.zhiyicx.baseproject.widget.edittext.PasswordEditText
                     android:id="@+id/et_login_password"
                     style="@style/style_passward_edit"
+                    android:layout_marginLeft="0dp"
                     android:hint="@string/password_input_hint"
                     android:inputType="text"
                     android:text=""/>
@@ -90,7 +93,7 @@
             <com.zhiyicx.baseproject.widget.button.LoadingButton
                 android:id="@+id/bt_login_login"
                 style="@style/style_login_button"
-                android:layout_marginTop="@dimen/button_login_margin_top"
+                android:layout_marginTop="@dimen/spacing_normal"
                 android:enabled="false"
                 app:text="@string/bt_login"/>
 
