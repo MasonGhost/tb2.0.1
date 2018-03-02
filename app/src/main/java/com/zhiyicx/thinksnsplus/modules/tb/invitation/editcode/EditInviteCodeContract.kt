@@ -12,7 +12,9 @@ import com.zhiyicx.common.mvp.i.IBaseView
 
 interface EditInviteCodeContract {
 
-    interface View : IBaseView<Presenter>
+    interface View : IBaseView<Presenter> {
+        fun submitCallBack(b: Boolean)
+    }
 
     interface Presenter : IBasePresenter {
         /**

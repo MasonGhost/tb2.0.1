@@ -9,7 +9,9 @@ import com.jakewharton.rxbinding.view.RxView
 import com.jakewharton.rxbinding.widget.RxTextView
 import com.zhiyicx.baseproject.base.TSFragment
 import com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow
 import com.zhiyicx.thinksnsplus.R
+import com.zhiyicx.thinksnsplus.widget.popwindow.TBCenterInfoPopWindow
 import java.util.concurrent.TimeUnit
 
 /**
@@ -25,6 +27,10 @@ class EditInviteCodeFragment : TSFragment<EditInviteCodeContract.Presenter>(), E
     lateinit var mEtCode: EditText
     @BindView(R.id.bt_submit)
     lateinit var mBtSubmit: TextView
+
+    private var mTBCenterInfoPopWindow: TBCenterInfoPopWindow? = null
+
+
 
     override fun getBodyLayoutId(): Int {
         return R.layout.fragment_edit_invite_code
@@ -55,6 +61,38 @@ class EditInviteCodeFragment : TSFragment<EditInviteCodeContract.Presenter>(), E
         RxTextView.afterTextChangeEvents(mEtCode)
                 .subscribe { event -> mBtSubmit.isEnabled = !TextUtils.isEmpty(event.editable()) }
     }
+
+    override fun submitCallBack(b: Boolean) {
+        if(b){
+
+        }else{
+            showPopupWindow(getString(R.string.invite_firend_tip),getString(R.string.invite_firend_tip_fail))
+        }
+    }
+    /**
+     * 初始化登录选择弹框
+     */
+    private fun showPopupWindow(title: String, des: String) {
+        if (mTBCenterInfoPopWindow != null) {
+            mTBCenterInfoPopWindow!!.show()
+            return
+        }
+        mTBCenterInfoPopWindow = TBCenterInfoPopWindow.builder()
+                .titleStr(title)
+                .desStr(des)
+                .item1Str(getString(R.string.get_it))
+                .item1Color(R.color.white)
+                .isOutsideTouch(true)
+                .isFocus(true)
+//                .animationStyle(R.style.style_actionPopupAnimation)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(activity)
+                .buildCenterPopWindowItem1ClickListener { mTBCenterInfoPopWindow!!.hide() }
+                .parentView(view)
+                .build()
+        mTBCenterInfoPopWindow!!.show()
+    }
+
 
     companion object {
 

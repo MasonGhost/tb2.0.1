@@ -17,14 +17,18 @@ import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PathConfig;
 import com.zhiyicx.baseproject.utils.ExcutorUtil;
+import com.zhiyicx.baseproject.widget.popwindow.CenterAlertPopWindow;
+import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.widget.popwindow.TBCenterInfoPopWindow;
 
 import java.io.File;
 import java.util.Locale;
@@ -77,6 +81,8 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
 
     private TSnackbar mSavingTSnackbar;
     private Subscription mSaveImageSubscription;
+
+
 
     public static InvitationFragment newInstance(Bundle bundle) {
         InvitationFragment invitationFragment = new InvitationFragment();

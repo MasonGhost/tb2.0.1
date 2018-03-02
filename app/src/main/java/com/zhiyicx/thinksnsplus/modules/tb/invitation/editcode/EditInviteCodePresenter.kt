@@ -17,6 +17,6 @@ constructor(rootView: EditInviteCodeContract.View) : BasePresenter<EditInviteCod
 
 
     override fun submitInviteCode(inviteCode: String) {
-        ToastUtils.showLongToast(inviteCode)
+        mRootView.submitCallBack(false)
     }
 }
