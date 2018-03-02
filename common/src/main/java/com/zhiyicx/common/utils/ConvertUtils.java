@@ -139,11 +139,11 @@ public class ConvertUtils {
      * @return
      */
     public static String numberConvert(int number) {
-        if (number > 9999) {
+        if (number > 999) {
             if (number >= 100000) {
-                return number / 10000 + "W";
+                return number / 1000 + "k";
             } else {
-                return number / 10000 + "." + ((number - number / 10000 * 10000) / 1000) + "W";
+                return number / 1000 + "." + ((number - number / 1000 * 1000) / 100) + "k";
             }
         }
         return String.valueOf(number);
