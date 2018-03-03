@@ -579,11 +579,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
      * 签到成功
      */
     @Override
-    public void checkinSucces() {
+    public void checkinSucces(CheckInBean data) {
+        mCheckInBean=data;
         if (mCheckInBean != null) {
-            mCheckInBean.setChecked_in(true);
-            mCheckInBean.setLast_checkin_count(mCheckInBean.getLast_checkin_count() + 1);
-            mCheckInBean.setCheckin_count(mCheckInBean.getCheckin_count() + 1);
             if (mUserInfoBean.getWallet() == null) {
                 mUserInfoBean.setWallet(new WalletBean());
             }

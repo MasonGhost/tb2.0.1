@@ -38,7 +38,7 @@ public interface MineContract {
 
         void updateCertification(UserCertificationInfo info);
 
-        void checkinSucces();
+        void  checkinSucces(CheckInBean data);
 
         void getCheckInInfoSuccess(CheckInBean data);
 

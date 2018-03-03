@@ -80,7 +80,7 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.View> impleme
                     // 保存auth信息
                     mAuthRepository.saveAuthBean(data);
                     // IM 登录 需要 token ,所以需要先保存登录信息
-                    handleIMLogin();
+//                    handleIMLogin();
                     // 钱包信息我也不知道在哪儿获取
                     mWalletRepository.getWalletConfigWhenStart(Long.parseLong(data.getUser_id() + ""));
                     mUserInfoBeanGreenDao.insertOrReplace(data.getUser());

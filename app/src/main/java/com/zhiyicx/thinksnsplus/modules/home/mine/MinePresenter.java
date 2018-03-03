@@ -230,10 +230,12 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
     @Override
     public void checkIn() {
         Subscription subscription = mUserInfoRepository.checkIn()
-                .subscribe(new BaseSubscribeForV2<Object>() {
+                .flatMap(o -> mUserInfoRepository.getCheckInInfo())
+                .subscribe(new BaseSubscribeForV2<CheckInBean>() {
                     @Override
-                    protected void onSuccess(Object data) {
-                        mRootView.checkinSucces();
+                    protected void onSuccess(CheckInBean data) {
+                        mRootView.checkinSucces(data);
+
                     }
 
                     @Override
