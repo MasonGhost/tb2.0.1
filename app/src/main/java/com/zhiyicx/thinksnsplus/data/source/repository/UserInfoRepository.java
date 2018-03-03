@@ -1065,4 +1065,18 @@ public class UserInfoRepository implements IUserInfoRepository {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    @Override
+    public Observable<String> changeRankStatus() {
+        return mUserInfoClient.changeRankStatus()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<String> getRankStatus() {
+        return  mUserInfoClient.getRankStatus()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 }

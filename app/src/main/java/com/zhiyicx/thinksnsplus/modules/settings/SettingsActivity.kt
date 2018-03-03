@@ -25,7 +25,5 @@ class SettingsActivity : TSActivity<SettingsPresenter, SettingsFragment>() {
     override fun getFragment(): SettingsFragment {
         return SettingsFragment.newInstance()
     }
-
-
 }
 

@@ -580,6 +580,7 @@ public interface UserInfoClient {
     @GET(APP_PAHT_WALLET_RECHARGE_SUCCESS_LIST)
     Observable<List<RechargeSuccessBean>> getRechargeSuccessList(@Query("limit") int limit, @Query("after") int after, @Query("action") String
             action);
+
     /**
      * 获取任务奖励说明
      *
@@ -588,4 +589,16 @@ public interface UserInfoClient {
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_SUBMIT_INVITE_CODE)
     Observable<BaseJsonV2> submitInviteCode(@Field("user_id") int user_id);
+
+    /**
+     * 修改是否参与排名
+     */
+    @GET(ApiConfig.APP_PATH_CHANGE_RANK_STATUS)
+    Observable<String> changeRankStatus();
+
+    /**
+     * 获取是否排名状态
+     */
+    @GET(ApiConfig.APP_PATH_GET_RANK_STATUS)
+    Observable<String> getRankStatus();
 }

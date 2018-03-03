@@ -149,10 +149,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
      */
     @Transient
     private boolean isOpen;
-    /**
-     * 分享统计
-     */
-    private int shareCount;
 
     public boolean isOpen() {
         return isOpen;
@@ -160,14 +156,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
 
     public void setOpen(boolean open) {
         isOpen = open;
-    }
-
-    public int getShareCount() {
-        return shareCount;
-    }
-
-    public void setShareCount(int shareCount) {
-        this.shareCount = shareCount;
     }
 
     public String getFriendlyTime() {
@@ -1066,6 +1054,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         dest.writeValue(this.feed_mark);
         dest.writeByte(this.has_digg ? (byte) 1 : (byte) 0);
         dest.writeByte(this.has_collect ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.share_count);
         dest.writeLong(this.amount);
         dest.writeTypedList(this.likes);
         dest.writeByte(this.paid ? (byte) 1 : (byte) 0);
@@ -1086,7 +1075,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         dest.writeString(this.userCenterFriendlyTimeDonw);
         dest.writeString(this.friendlyContent);
         dest.writeByte(this.isOpen ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.shareCount);
     }
 
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
@@ -1157,6 +1145,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
         this.has_digg = in.readByte() != 0;
         this.has_collect = in.readByte() != 0;
+        this.share_count = in.readInt();
         this.amount = in.readLong();
         this.likes = in.createTypedArrayList(DynamicLikeBean.CREATOR);
         this.paid = in.readByte() != 0;
@@ -1178,15 +1167,14 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.userCenterFriendlyTimeDonw = in.readString();
         this.friendlyContent = in.readString();
         this.isOpen = in.readByte() != 0;
-        this.shareCount = in.readInt();
     }
 
-    @Generated(hash = 200868220)
+    @Generated(hash = 1392056256)
     public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id, String feed_content, int feed_from,
             int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash,
             int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, int share_count, long amount, List<DynamicLikeBean> likes,
             boolean paid, List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node, Long hot_creat_time, boolean isFollowed, int state, int top,
-            List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward, int shareCount) {
+            List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward) {
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -1217,7 +1205,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.top = top;
         this.digUserInfoList = digUserInfoList;
         this.reward = reward;
-        this.shareCount = shareCount;
     }
 
     public static final Creator<DynamicDetailBeanV2> CREATOR = new Creator<DynamicDetailBeanV2>() {

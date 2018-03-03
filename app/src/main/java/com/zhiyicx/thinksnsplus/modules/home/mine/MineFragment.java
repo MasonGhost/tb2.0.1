@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,7 +17,6 @@ import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
-import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -33,14 +33,11 @@ import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
-import com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContainerActivity;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.mycode.MyCodeActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.invitation.InvitationActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.invitation.editcode.EditInviteCodeActivity;
-import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.rank.RankListActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity;
@@ -63,8 +60,6 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskBean.TBTASKTRIGGER.CERTIFICATION;
-import static com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskBean.TBTASKTRIGGER.EDIT_INVITE_CODE;
-import static com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskBean.TBTASKTRIGGER.INVITE_FIRENDS;
 import static com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskBean.TBTASKTRIGGER.SHARE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
@@ -405,6 +400,14 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 break;
 
             default:
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            mUserInfoBean.setRank_status(data.getIntExtra("rankStatus", 0));
         }
     }
 
