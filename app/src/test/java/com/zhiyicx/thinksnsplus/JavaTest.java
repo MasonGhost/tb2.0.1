@@ -9,6 +9,7 @@ import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
+import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
@@ -1875,5 +1876,8 @@ public class JavaTest {
         int a = 10889;
         System.out.println("b = " + (a << 1));
         System.out.println("c = " + (a >> 1));
+
+        SystemConfigBean systemConfigBean=  new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
+        System.out.println("systemConfigBean = " + systemConfigBean.toString());
     }
 }

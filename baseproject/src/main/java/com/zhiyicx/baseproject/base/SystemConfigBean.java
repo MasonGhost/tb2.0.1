@@ -722,6 +722,16 @@ public class SystemConfigBean implements Serializable {
             public void setEnable(int enable) {
                 this.enable = enable;
             }
+
+            @Override
+            public String toString() {
+                return "GoldNameBean{" +
+                        "id=" + id +
+                        ", name='" + name + '\'' +
+                        ", unit='" + unit + '\'' +
+                        ", enable=" + enable +
+                        '}';
+            }
         }
 
         @Override
@@ -737,6 +747,7 @@ public class SystemConfigBean implements Serializable {
                     ", gold=" + gold +
                     ", reward=" + reward +
                     ", gold_name=" + gold_name +
+                    ", integration_gold_name=" + integration_gold_name +
                     '}';
         }
     }
@@ -762,6 +773,14 @@ public class SystemConfigBean implements Serializable {
         public void setPay(boolean pay) {
             this.pay = pay;
         }
+
+        @Override
+        public String toString() {
+            return "NewsConfig{" +
+                    "verified=" + verified +
+                    ", pay=" + pay +
+                    '}';
+        }
     }
 
     public static class Appversion implements Serializable {
@@ -774,6 +793,13 @@ public class SystemConfigBean implements Serializable {
 
         public void setOpen(boolean open) {
             this.open = open;
+        }
+
+        @Override
+        public String toString() {
+            return "Appversion{" +
+                    "open=" + open +
+                    '}';
         }
     }
 
@@ -822,6 +848,8 @@ public class SystemConfigBean implements Serializable {
             return "Feed{" +
                     "reward=" + reward +
                     ", paycontrol=" + paycontrol +
+                    ", items=" + Arrays.toString(items) +
+                    ", limit=" + limit +
                     '}';
         }
     }

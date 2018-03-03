@@ -225,9 +225,9 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EMClient.getInstance().removeConnectionListener(this);
-        EMClient.getInstance().chatManager().removeMessageListener(this);
-        ChatClient.getInstance(mContext).onDestroy();
+//        EMClient.getInstance().removeConnectionListener(this);
+//        EMClient.getInstance().chatManager().removeMessageListener(this);
+//        ChatClient.getInstance(mContext).onDestroy();
     }
 
     @Override

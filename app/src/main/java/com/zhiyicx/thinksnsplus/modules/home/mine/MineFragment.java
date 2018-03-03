@@ -418,11 +418,10 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     private void updateTaskInfo() {
         if (mTBTaskContainerBean.getTasks() != null) {
-            setMineTaskViewData(mMtiInviteFriends, String.valueOf(mTBTaskContainerBean.getExtras().getInvite_friend().getReward()), true, getString(R.string.immedite_invitation),
+            setMineTaskViewData(mMtiInviteFriends, String.valueOf(mTBTaskContainerBean.getExtras().getInvite_friend().getReward()), true, getString
+                            (R.string.immedite_invitation),
                     getColor(R.color.white)
-                    , getString(R.string.invite_friend_str), getString(R.string.invite_friend_str_fomart, mTBTaskContainerBean.getExtras().getInvite_friend().getReward(),
-                            mPresenter.getWalletGoldName
-                                    ()),
+                    , mTBTaskContainerBean.getExtras().getInvite_friend().getTitle(), mTBTaskContainerBean.getExtras().getInvite_friend().getDesc(),
                     false,
                     R.drawable
                             .selector_button_corner_circle_solid_small_gradient);
@@ -433,14 +432,14 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 }
             });
 
-            setMineTaskViewData(mMtiEditInviteCode, String.valueOf(mTBTaskContainerBean.getExtras().getInvite_codeX().getReward()), true, getString(mTBTaskContainerBean.isInvite_code()?R.string.has_invite_code:R.string.go_edit_invite_code),
+            setMineTaskViewData(mMtiEditInviteCode, String.valueOf(mTBTaskContainerBean.getExtras().getInvite_codeX().getReward()), true, getString
+                            (mTBTaskContainerBean.isInvite_code() != null ? R.string.has_invite_code : R.string.go_edit_invite_code),
                     getColor(R.color.white)
-                    , getString(R.string.edit_invite_code), getString(R.string.edit_invite_code_fomart, mTBTaskContainerBean.getExtras().getInvite_codeX().getReward(), mPresenter
-                            .getWalletGoldName()),
+                    , mTBTaskContainerBean.getExtras().getInvite_codeX().getTitle(), mTBTaskContainerBean.getExtras().getInvite_codeX().getDesc(),
                     false, R
                             .drawable
                             .selector_button_corner_circle_solid_small_gradient);
-            mMtiEditInviteCode.setEnabled(mTBTaskContainerBean.isInvite_code());
+            mMtiEditInviteCode.setEnabled(mTBTaskContainerBean.isInvite_code() == null);
 
             mMtiEditInviteCode.getButton().setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -452,32 +451,33 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
             for (TBTaskBean tbTaskBean : mTBTaskContainerBean.getTasks()) {
                 if (SHARE.value.equals(tbTaskBean.getTrigger())) {
-                    setMineTaskViewData(mMtiShareDynamic, String.valueOf(tbTaskBean.getAmount()), true, "1/4", getColor(R.color.themeColor)
-                            , getString(R.string.share_dynamic), getString(R.string.share_dynamic_fomart, tbTaskBean.getAmount(), mPresenter
-                                    .getWalletGoldName()), true,
+                    setMineTaskViewData(mMtiShareDynamic, String.valueOf(tbTaskBean.getAmount()), true, tbTaskBean.getNotes().size()
+                                    + "/" + tbTaskBean.getFrequency(),
+                            getColor(R.color.themeColor)
+                            , tbTaskBean.getName(), tbTaskBean.getDescription(), true,
                             0);
-                    mMtiShareDynamic.setprogress(25);
+                    mMtiShareDynamic.setprogress(tbTaskBean.getNotes().size()*100/tbTaskBean.getFrequency());
                 } else if (CERTIFICATION.value.equals(tbTaskBean.getTrigger())) {
 
 
                     setMineTaskViewData(mMtiCertify, String.valueOf(tbTaskBean.getAmount()), true, getString(R.string.immediate_certify), getColor
                                     (R.color.white)
-                            , getString(R.string.certification), getString(R.string.certification_format, tbTaskBean.getAmount(), mPresenter
-                                    .getWalletGoldName()),
+                            , tbTaskBean.getName(), tbTaskBean.getDescription(),
                             false, R
                                     .drawable
                                     .selector_button_corner_circle_solid_small_gradient);
-                    mMtiCertify.getButton().setEnabled(false);
                     /**
                      * 0待审核 1已通过 2已驳回 3未认证
                      */
                     switch (mTBTaskContainerBean.getCertified()) {
                         case 0:
                             mMtiCertify.setButtonText(getString(R.string.review_ing));
+                            mMtiCertify.getButton().setEnabled(false);
 
                             break;
                         case 1:
                             mMtiCertify.setButtonText(getString(R.string.has_certifyed));
+                            mMtiCertify.getButton().setEnabled(false);
 
                             break;
 

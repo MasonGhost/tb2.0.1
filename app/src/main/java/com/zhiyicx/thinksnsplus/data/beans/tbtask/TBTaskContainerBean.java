@@ -23,7 +23,7 @@ public class TBTaskContainerBean {
 
     private List<TBTaskBean> tasks;
     private int certified;
-    private boolean invite_code;
+    private InviteCodeBean invite_code;
 
 
     public List<TBTaskBean> getTasks() {
@@ -42,11 +42,11 @@ public class TBTaskContainerBean {
         this.certified = certified;
     }
 
-    public boolean isInvite_code() {
+    public InviteCodeBean isInvite_code() {
         return invite_code;
     }
 
-    public void setInvite_code(boolean invite_code) {
+    public void setInvite_code(InviteCodeBean invite_code) {
         this.invite_code = invite_code;
     }
 
@@ -114,6 +114,45 @@ public class TBTaskContainerBean {
 
         public void setReward(int reward) {
             this.reward = reward;
+        }
+    }
+
+    public static class InviteCodeBean {
+        private long user_id;
+        private long parent_user_id;
+        private String created_at;
+        private String updated_at;
+
+        public long getUser_id() {
+            return user_id;
+        }
+
+        public void setUser_id(long user_id) {
+            this.user_id = user_id;
+        }
+
+        public long getParent_user_id() {
+            return parent_user_id;
+        }
+
+        public void setParent_user_id(long parent_user_id) {
+            this.parent_user_id = parent_user_id;
+        }
+
+        public String getCreated_at() {
+            return created_at;
+        }
+
+        public void setCreated_at(String created_at) {
+            this.created_at = created_at;
+        }
+
+        public String getUpdated_at() {
+            return updated_at;
+        }
+
+        public void setUpdated_at(String updated_at) {
+            this.updated_at = updated_at;
         }
     }
 
