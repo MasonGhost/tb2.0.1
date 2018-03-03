@@ -546,6 +546,17 @@ public interface UserInfoClient {
                                                            @Query("offset") int size, @Query("type") String type);
 
     /**
+     * @param name  user	user  	string    	yes    	用户名模糊匹配
+     * @param limit limit	int	条目数
+     * @param size  offset	int	翻页标示
+     * @param type  type	string	默认: all, all-累计贡献排行 day-日贡献排行
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_RANK_TB_CONTRUBITHION)
+    Observable<List<UserInfoBean>> searchMerchainsimUser(@Query("limit") Long limit,
+                                                      @Query("offset") int size, @Query("user") String name, @Query("type") String type);
+
+    /**
      * 分享统计
      *
      * @param type type	string	非必须, 快讯分享需传:feed

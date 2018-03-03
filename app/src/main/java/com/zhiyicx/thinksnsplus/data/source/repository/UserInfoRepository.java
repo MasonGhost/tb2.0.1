@@ -1058,4 +1058,19 @@ public class UserInfoRepository implements IUserInfoRepository {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    /**
+     *
+     * @param limit limit	int	条目数
+     * @param size  offset	int	翻页标示
+     * @param name  user	user  	string    	yes    	用户名模糊匹配
+     * @param type  type	string	默认: all, all-累计贡献排行 day-日贡献排行
+     * @return
+     */
+    @Override
+    public Observable<List<UserInfoBean>> searchMerchainsimUser(Long limit, int size, String name, String type) {
+        return mUserInfoClient.searchMerchainsimUser(limit, size, name, type)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 }

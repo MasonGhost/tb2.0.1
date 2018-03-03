@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.tb.search;
 
 import android.text.TextUtils;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -66,7 +67,7 @@ public class SearchMechanismUserPresenter extends AppBasePresenter<SearchMechani
             searchSub.unsubscribe();
         }
 
-        searchSub = mUserInfoRepository.searchUserInfo(null, name, null, null, null)
+        searchSub = mUserInfoRepository.searchMerchainsimUser((long) TSListFragment.DEFAULT_PAGE_SIZE, mRootView.getListDatas().size(), name, "group")
                 .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
                     @Override
                     protected void onSuccess(List<UserInfoBean> data) {

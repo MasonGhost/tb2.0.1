@@ -1034,5 +1034,12 @@ public class ApiConfig {
      */
     public static final String APP_PATH_GET_TASTK_REWARD_RULE = "api/" + API_VERSION_2 + "/tbm/task/explain";
 
+    /*
+     * 搜索机构用户
+     */
+    public static final String APP_PATH_SEARCH_MERCHANSIM_USER = "api/" + API_VERSION_2 + "/tbm/search/user";
+
+
+
 
 }

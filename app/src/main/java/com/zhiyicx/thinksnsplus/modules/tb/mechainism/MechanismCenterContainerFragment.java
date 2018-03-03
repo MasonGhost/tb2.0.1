@@ -155,7 +155,7 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
                 getActivity().finish();
                 break;
             case R.id.iv_more:
-                
+
                 break;
                 default:
         }
