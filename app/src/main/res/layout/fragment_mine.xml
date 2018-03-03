@@ -264,26 +264,32 @@
                     android:id="@+id/mti_invite_friends"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small"/>
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:visibility="gone"/>
                 <!--填写邀请码-->
                 <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
                     android:id="@+id/mti_edit_invite_code"
                     android:layout_width="match_parent"
-
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small"/>
+
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:visibility="gone"/>
                 <!--分享快讯-->
                 <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
                     android:id="@+id/mti_share_dynamic"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small"/>
+
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:visibility="gone"/>
                 <!--认证-->
                 <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
                     android:id="@+id/mti_certify"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small"/>
+
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:visibility="gone"/>
 
 
             </LinearLayout>

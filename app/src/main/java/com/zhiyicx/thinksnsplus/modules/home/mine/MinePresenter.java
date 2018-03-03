@@ -16,6 +16,8 @@ import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserCertificationInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -55,6 +57,8 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
 
     @Inject
     UserCertificationInfoGreenDaoImpl mUserCertificationInfoGreenDao;
+
+    Subscription mRuleSubscribe;
 
     @Inject
     public MinePresenter(MineContract.View rootView) {
@@ -246,4 +250,29 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
     }
 
 
+    @Override
+    public void getTaskInfo() {
+        Subscription subscribe = mUserInfoRepository.getTaskInfo()
+                .subscribe(new BaseSubscribeForV2<TBTaskContainerBean>() {
+                    @Override
+                    protected void onSuccess(TBTaskContainerBean data) {
+                        mRootView.getTaskInfoSuccess(data);
+                    }
+                });
+    }
+
+    @Override
+    public void getTaskRewardRule() {
+        if (mRuleSubscribe != null && !mRuleSubscribe.isUnsubscribed()) {
+            mRuleSubscribe.unsubscribe();
+        }
+
+        mRuleSubscribe = mUserInfoRepository.getTaskRewardRule()
+                .subscribe(new BaseSubscribeForV2<TBTaskRewardRuleBean>() {
+                    @Override
+                    protected void onSuccess(TBTaskRewardRuleBean data) {
+                        mRootView.getTaskRewardRuleSuccess(data);
+                    }
+                });
+    }
 }

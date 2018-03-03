@@ -1034,6 +1034,9 @@
     <string name="user">用户</string>
     <string name="invite_firend_tip">邀请好友提示</string>
     <string name="invite_firend_tip_fail">该用户比你晚注册，邀请关系不成立</string>
+    <string name="has_certifyed">已认证</string>
+    <string name="has_reflected">被驳回</string>
+    <string name="has_invite_code">已填写</string>
 
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>

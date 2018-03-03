@@ -19,12 +19,16 @@ import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.NotificationConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContainerActivity;
@@ -37,9 +41,12 @@ import com.zhiyicx.thinksnsplus.modules.tb.invitation.editcode.EditInviteCodeAct
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.rank.RankListActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.wallet.WalletActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.CertificationTypePopupWindow;
 import com.zhiyicx.thinksnsplus.widget.MineTaskItemView;
+import com.zhiyicx.thinksnsplus.widget.popwindow.TBCenterInfoPopWindow;
 
 import javax.inject.Inject;
 
@@ -49,6 +56,10 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
+import static com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskBean.TBTASKTRIGGER.CERTIFICATION;
+import static com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskBean.TBTASKTRIGGER.EDIT_INVITE_CODE;
+import static com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskBean.TBTASKTRIGGER.INVITE_FIRENDS;
+import static com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskBean.TBTASKTRIGGER.SHARE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
 
@@ -116,13 +127,19 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     public MinePresenter mMinePresenter;
 
     private UserInfoBean mUserInfoBean;
+    private TBTaskContainerBean mTBTaskContainerBean;
 
     private UserCertificationInfo mUserCertificationInfo;
     private float mCurrentAlpha = 0;
+
+    TBCenterInfoPopWindow mTBCenterInfoPopWindow;
+
     /**
      * 签到数据
      */
     private CheckInBean mCheckInBean;
+    private TBTaskRewardRuleBean mTBTaskRewardRuleBean;
+
 
     public static MineFragment newInstance() {
         MineFragment fragment = new MineFragment();
@@ -185,48 +202,15 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     private void onPresenterInjected() {
-        setMineTaskViewData(mMtiInviteFriends, "100", true, getString(R.string.immedite_invitation), getColor(R.color.white)
-                , getString(R.string.invite_friend_str), getString(R.string.invite_friend_str_fomart, 100, mPresenter.getWalletGoldName()), false,
-                R.drawable
-                        .selector_button_corner_circle_solid_small_gradient);
-        mMtiInviteFriends.getButton().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(mActivity, InvitationActivity.class));
-            }
-        });
-
-        setMineTaskViewData(mMtiEditInviteCode, "8", true, getString(R.string.go_edit_invite_code), getColor(R.color.white)
-                , getString(R.string.edit_invite_code), getString(R.string.edit_invite_code_fomart, 8, mPresenter.getWalletGoldName()), false, R
-                        .drawable
-                        .selector_button_corner_circle_solid_small_gradient);
-        mMtiEditInviteCode.getButton().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(mActivity, EditInviteCodeActivity.class));
-            }
-        });
-
-        setMineTaskViewData(mMtiShareDynamic, "5", true, "1/4", getColor(R.color.themeColor)
-                , getString(R.string.share_dynamic), getString(R.string.share_dynamic_fomart, 5, mPresenter.getWalletGoldName()), true, 0);
-        mMtiShareDynamic.setprogress(25);
-        setMineTaskViewData(mMtiCertify, "50", true, getString(R.string.immediate_certify), getColor(R.color.white)
-                , getString(R.string.certification), getString(R.string.certification_format, 50, mPresenter.getWalletGoldName()), false, R.drawable
-                        .selector_button_corner_circle_solid_small_gradient);
-        mMtiCertify.getButton().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent itFollow = new Intent(getActivity(), FindSomeOneContainerActivity.class);
-                Bundle bundleFollow = new Bundle();
-                itFollow.putExtras(bundleFollow);
-                startActivity(itFollow);
-            }
-        });
+        if (mTBTaskContainerBean == null && mPresenter != null) {
+            mPresenter.getTaskInfo();
+        }
     }
 
     private void setMineTaskViewData(MineTaskItemView mineTaskViewData, String point, boolean isAdd, String buttonText, int buttonTextColor, String
             title, String des,
                                      boolean progressShow, int buttonBgRes) {
+        mineTaskViewData.setVisibility(View.VISIBLE);
         mineTaskViewData.setPoint(point);
         mineTaskViewData.setPointSymbol(isAdd);
         mineTaskViewData.setButtonText(buttonText);
@@ -246,6 +230,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         reLoadUserInfo(isVisibleToUser);
+        if (mTBTaskContainerBean == null && mPresenter != null) {
+            mPresenter.getTaskInfo();
+        }
     }
 
     private void reLoadUserInfo(boolean isVisibleToUser) {
@@ -324,9 +311,33 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         }
     }
 
-    @OnClick({R.id.ll_fans_container, R.id.ll_follow_container, R.id.ll_friends, R.id.iv_setting, R.id.tv_check_in, R.id.v_userinfo})
+    @Override
+    public void getTaskRewardRuleSuccess(TBTaskRewardRuleBean data) {
+        this.mTBTaskRewardRuleBean = data;
+        goRuleDetail();
+    }
+
+    private void goRuleDetail() {
+        Intent intent = new Intent(getActivity(), WalletRuleActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(WalletRuleFragment.BUNDLE_RULE, mTBTaskRewardRuleBean.getExplain());
+        bundle.putString(WalletRuleFragment.BUNDLE_TITLE, getString(R.string.reward_des));
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @OnClick({R.id.ll_fans_container, R.id.ll_follow_container, R.id.ll_friends, R.id.iv_setting, R.id.tv_check_in, R.id.v_userinfo, R.id
+            .tv_reward_des})
     public void onClick(View view) {
         switch (view.getId()) {
+
+            case R.id.tv_reward_des:
+                if (mTBTaskRewardRuleBean == null) {
+                    mPresenter.getTaskRewardRule();
+                } else {
+                    goRuleDetail();
+                }
+                break;
                /*
              个人资料
              */
@@ -400,6 +411,114 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     @Override
+    public void getTaskInfoSuccess(TBTaskContainerBean data) {
+        this.mTBTaskContainerBean = data;
+        updateTaskInfo();
+    }
+
+    private void updateTaskInfo() {
+        if (mTBTaskContainerBean.getTasks() != null) {
+            setMineTaskViewData(mMtiInviteFriends, String.valueOf(mTBTaskContainerBean.getExtras().getInvite_friend().getReward()), true, getString(R.string.immedite_invitation),
+                    getColor(R.color.white)
+                    , getString(R.string.invite_friend_str), getString(R.string.invite_friend_str_fomart, mTBTaskContainerBean.getExtras().getInvite_friend().getReward(),
+                            mPresenter.getWalletGoldName
+                                    ()),
+                    false,
+                    R.drawable
+                            .selector_button_corner_circle_solid_small_gradient);
+            mMtiInviteFriends.getButton().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(mActivity, InvitationActivity.class));
+                }
+            });
+
+            setMineTaskViewData(mMtiEditInviteCode, String.valueOf(mTBTaskContainerBean.getExtras().getInvite_codeX().getReward()), true, getString(mTBTaskContainerBean.isInvite_code()?R.string.has_invite_code:R.string.go_edit_invite_code),
+                    getColor(R.color.white)
+                    , getString(R.string.edit_invite_code), getString(R.string.edit_invite_code_fomart, mTBTaskContainerBean.getExtras().getInvite_codeX().getReward(), mPresenter
+                            .getWalletGoldName()),
+                    false, R
+                            .drawable
+                            .selector_button_corner_circle_solid_small_gradient);
+            mMtiEditInviteCode.setEnabled(mTBTaskContainerBean.isInvite_code());
+
+            mMtiEditInviteCode.getButton().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(mActivity, EditInviteCodeActivity.class));
+                }
+            });
+
+
+            for (TBTaskBean tbTaskBean : mTBTaskContainerBean.getTasks()) {
+                if (SHARE.value.equals(tbTaskBean.getTrigger())) {
+                    setMineTaskViewData(mMtiShareDynamic, String.valueOf(tbTaskBean.getAmount()), true, "1/4", getColor(R.color.themeColor)
+                            , getString(R.string.share_dynamic), getString(R.string.share_dynamic_fomart, tbTaskBean.getAmount(), mPresenter
+                                    .getWalletGoldName()), true,
+                            0);
+                    mMtiShareDynamic.setprogress(25);
+                } else if (CERTIFICATION.value.equals(tbTaskBean.getTrigger())) {
+
+
+                    setMineTaskViewData(mMtiCertify, String.valueOf(tbTaskBean.getAmount()), true, getString(R.string.immediate_certify), getColor
+                                    (R.color.white)
+                            , getString(R.string.certification), getString(R.string.certification_format, tbTaskBean.getAmount(), mPresenter
+                                    .getWalletGoldName()),
+                            false, R
+                                    .drawable
+                                    .selector_button_corner_circle_solid_small_gradient);
+                    mMtiCertify.getButton().setEnabled(false);
+                    /**
+                     * 0待审核 1已通过 2已驳回 3未认证
+                     */
+                    switch (mTBTaskContainerBean.getCertified()) {
+                        case 0:
+                            mMtiCertify.setButtonText(getString(R.string.review_ing));
+
+                            break;
+                        case 1:
+                            mMtiCertify.setButtonText(getString(R.string.has_certifyed));
+
+                            break;
+
+                        case 2:
+                            mMtiCertify.setButtonText(getString(R.string.has_reflected));
+
+                            break;
+                        case 3:
+                            mMtiCertify.setButtonText(getString(R.string.immediate_certify));
+
+                            break;
+
+                        default:
+
+                    }
+
+                    mMtiCertify.getButton().setOnClickListener(v -> {
+                        mTBCenterInfoPopWindow = TBCenterInfoPopWindow.builder()
+                                .titleStr("温馨提示")
+                                .desStr("程序猿哥哥努力加班中...")
+                                .item1Str(getString(R.string.get_it))
+                                .item1Color(R.color.white)
+                                .isOutsideTouch(true)
+                                .isFocus(true)
+//                .animationStyle(R.style.style_actionPopupAnimation)
+                                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                                .with(mActivity)
+                                .buildCenterPopWindowItem1ClickListener(() -> mTBCenterInfoPopWindow.hide())
+                                .parentView(v)
+                                .build();
+                        mTBCenterInfoPopWindow.show();
+                    });
+                }
+
+
+            }
+        }
+
+    }
+
+    @Override
     public void setNewFollowTip(int count) {
         mVvFansNewCount.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(count)));
     }
@@ -448,6 +567,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     /**
      * 更新签到信息
      */
+
     private void updateCheckInInfo() {
         mTvCheck_in.setText(getString(mCheckInBean.isChecked_in() ? R.string.checked : R.string.check_in));
         mTvCheck_in.setEnabled(!mCheckInBean.isChecked_in());

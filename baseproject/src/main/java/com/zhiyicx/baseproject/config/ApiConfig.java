@@ -1029,6 +1029,10 @@ public class ApiConfig {
     public static final String APP_PATH_SHARE_DYNAMIC_COUNT = "api/" + API_VERSION_2 + "/tbm/share";
     // 任务接口信息
     public static final String APP_PATH_GET_TASTK_INFO = "api/" + API_VERSION_2 + "/tbm/user/tasks";
+    /*
+    任务说明
+     */
+    public static final String APP_PATH_GET_TASTK_REWARD_RULE = "api/" + API_VERSION_2 + "/tbm/task/explain";
 
 
 }

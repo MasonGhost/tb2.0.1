@@ -14,6 +14,8 @@ import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
 import com.zhiyicx.thinksnsplus.modules.tb.rank.RankData;
 
@@ -404,4 +406,18 @@ public interface IUserInfoRepository {
      * @return 快讯分享统计
      */
     Observable<BaseJsonV2> shareCount(String type, String id);
+
+    /**
+     * 获取任务信息
+     *
+     * @return
+     */
+    Observable<TBTaskContainerBean> getTaskInfo();
+
+    /**
+     * 获取任务奖励说明
+     *
+     * @return
+     */
+    Observable<TBTaskRewardRuleBean> getTaskRewardRule();
 }
