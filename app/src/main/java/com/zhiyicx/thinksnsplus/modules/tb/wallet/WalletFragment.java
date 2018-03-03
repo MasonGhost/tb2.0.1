@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
@@ -58,6 +59,7 @@ public class WalletFragment extends TSListFragment<WalletContract.Presenter, Rec
         super.initView(rootView);
         mWalletToolbar.setPadding(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0);
         mTvToolbarLeft.setOnClickListener(v -> getActivity().finish());
+        mRvList.setBackgroundResource(R.color.bgColor);
     }
 
     @Override

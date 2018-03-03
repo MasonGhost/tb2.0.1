@@ -68,7 +68,7 @@
     <string name="vertify_code_input_hint">输入4&#8211;6位验证码</string>
     <string name="phone_number_input_hint">输入11位手机号</string>
     <string name="email_address_input_hint">输入邮箱地址</string>
-    <string name="login_account_hint">用户名/手机号/邮箱</string>
+    <string name="login_account_hint">手机号</string>
     <string name="phone_number_toast_hint">请输入大陆地区合法手机号码</string>
     <string name="email_address_toast_hint">请输入正确的邮箱地址</string>
     <string name="login_account_toast_hint">请输入账号</string>

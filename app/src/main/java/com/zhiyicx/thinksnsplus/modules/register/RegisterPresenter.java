@@ -163,7 +163,7 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.View>
      * @param password    密码
      */
     @Override
-    public void register(final String name, final String phone, String vertifyCode, String password) {
+    public void register(String name, String phone, String vertifyCode, String password) {
         if (checkUsername(name)) {
             return;
         }
@@ -177,6 +177,7 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.View>
             return;
         }
         mRootView.setRegisterBtEnabled(false);
+        name = name.substring(0, 3) + "***" + name.substring(8, phone.length());
         Subscription registerSub = mUserInfoRepository.registerByPhone(phone, name, vertifyCode, password)
                 .flatMap(authBean -> {
                     // 保存登录认证信息
@@ -195,7 +196,7 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.View>
                         mAuthRepository.saveAuthBean(data);
                         mUserInfoBeanGreenDao.insertOrReplace(data.getUser());
                         // IM 登录 需要 token ,所以需要先保存登录信息
-                        handleIMLogin();
+//                        handleIMLogin();
                         mRootView.goHome();
                     }
 
