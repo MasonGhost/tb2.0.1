@@ -35,6 +35,8 @@ import com.zhiyicx.thinksnsplus.data.beans.request.BindAccountRequstBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.DeleteUserPhoneOrEmailRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.ThirdAccountBindRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequestBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -1009,7 +1011,6 @@ public class UserInfoRepository implements IUserInfoRepository {
     }
 
     /**
-     *
      * @return 钱包历史记录
      */
     @Override
@@ -1038,7 +1039,23 @@ public class UserInfoRepository implements IUserInfoRepository {
                     }
                     return getUserInfo(user_ids).map(userinfobeans -> rechargeListBeen);
                 }).subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io());
+    }
+
+    /**
+     * @return 获取任务信息
+     */
+    @Override
+    public Observable<TBTaskContainerBean> getTaskInfo() {
+        return mUserInfoClient.getTaskInfo()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<TBTaskRewardRuleBean> getTaskRewardRule() {
+        return mUserInfoClient.getTaskRewardRule()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 }

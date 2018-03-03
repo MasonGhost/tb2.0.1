@@ -6,6 +6,8 @@ import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
 
 /**
  * @author LiuChao
@@ -39,6 +41,10 @@ public interface MineContract {
         void checkinSucces();
 
         void getCheckInInfoSuccess(CheckInBean data);
+
+        void getTaskInfoSuccess(TBTaskContainerBean data);
+
+        void getTaskRewardRuleSuccess(TBTaskRewardRuleBean data);
     }
 
     interface Presenter extends IBaseTouristPresenter {
@@ -65,6 +71,11 @@ public interface MineContract {
         void checkIn();
 
         void getCheckInfo();
+
+        void getTaskInfo();
+
+        void getTaskRewardRule();
+
     }
 
 }

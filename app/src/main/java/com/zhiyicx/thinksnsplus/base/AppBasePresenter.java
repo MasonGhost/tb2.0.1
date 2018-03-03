@@ -6,6 +6,7 @@ import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -185,8 +186,8 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
     @Override
     public String getWalletGoldName() {
         try {
+            LogUtils.d(getSystemConfigBean().getSite());
             return getSystemConfigBean().getSite().getGold_name().getName();
-
         } catch (Exception e) {
             return mContext.getResources().getString(R.string.tb_gold_name);
         }

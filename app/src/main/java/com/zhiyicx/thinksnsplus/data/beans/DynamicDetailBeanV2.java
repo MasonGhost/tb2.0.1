@@ -1181,11 +1181,11 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.shareCount = in.readInt();
     }
 
-    @Generated(hash = 1352146341)
+    @Generated(hash = 200868220)
     public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id, String feed_content, int feed_from,
             int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash,
-            int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, long amount, List<DynamicLikeBean> likes, boolean paid,
-            List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node, Long hot_creat_time, boolean isFollowed, int state, int top,
+            int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, int share_count, long amount, List<DynamicLikeBean> likes,
+            boolean paid, List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node, Long hot_creat_time, boolean isFollowed, int state, int top,
             List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward, int shareCount) {
         this.id = id;
         this.created_at = created_at;
@@ -1204,6 +1204,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.feed_mark = feed_mark;
         this.has_digg = has_digg;
         this.has_collect = has_collect;
+        this.share_count = share_count;
         this.amount = amount;
         this.likes = likes;
         this.paid = paid;

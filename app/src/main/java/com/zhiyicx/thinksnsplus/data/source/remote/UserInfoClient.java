@@ -20,6 +20,8 @@ import com.zhiyicx.thinksnsplus.data.beans.request.BindAccountRequstBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.DeleteUserPhoneOrEmailRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.ThirdAccountBindRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequestBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
 import com.zhiyicx.thinksnsplus.modules.tb.rank.RankData;
 
@@ -558,8 +560,16 @@ public interface UserInfoClient {
      *
      * @return
      */
-    @POST(ApiConfig.APP_PATH_GET_TASTK_INFO)
-    Observable<BaseJsonV2> getTaskInfo();
+    @GET(ApiConfig.APP_PATH_GET_TASTK_INFO)
+    Observable<TBTaskContainerBean> getTaskInfo();
+
+    /**
+     * 获取任务奖励说明
+     *
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_TASTK_REWARD_RULE)
+    Observable<TBTaskRewardRuleBean> getTaskRewardRule();
 
     /**
      * @param limit
