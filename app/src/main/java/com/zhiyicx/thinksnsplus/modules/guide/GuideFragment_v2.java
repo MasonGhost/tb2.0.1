@@ -49,7 +49,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     private List<RealAdvertListBean> mBootAdverts;
 
     private long mStartTime;
-    private static final int MIN_SHOW_DUIDE_PAGE_TIME = 5000;
+    private static final int MIN_SHOW_DUIDE_PAGE_TIME = 3500;
 
 
     /**

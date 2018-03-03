@@ -82,6 +82,11 @@ public class ContributionListFragment extends TSListFragment<ContributionListCon
     }
 
     @Override
+    protected boolean setUseSatusbar() {
+        return false;
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
 
         CommonAdapter adapter = new CommonAdapter<ContributionData>(mActivity, R.layout.item_contribution, mListDatas) {
