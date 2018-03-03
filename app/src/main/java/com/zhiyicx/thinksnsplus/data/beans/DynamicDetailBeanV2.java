@@ -76,6 +76,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
      * feed_mark : 12
      * has_digg : true
      * has_collect : false
+     * share_count : 3
      * amount : 20
      * paid : true
      * images : [{"file":4,"size":null,"amount":100,"type":"download","paid":false},{"file":5,
@@ -103,6 +104,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     @SerializedName("has_like")
     private boolean has_digg;
     private boolean has_collect;
+    private int share_count;
     private long amount;
     @Convert(converter = LikeBeanConvert.class, columnType = String.class)
     private List<DynamicLikeBean> likes;
@@ -404,6 +406,14 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
 
     public void setHas_collect(boolean has_collect) {
         this.has_collect = has_collect;
+    }
+
+    public int getShare_count() {
+        return share_count;
+    }
+
+    public void setShare_count(int share_count) {
+        this.share_count = share_count;
     }
 
     public boolean isPaid() {

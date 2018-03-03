@@ -109,7 +109,7 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
                 dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
                         .getFeed_digg_count()), dynamicBean.isHas_digg(), 0);
                 // 分享数量
-                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean.getFeed_view_count()),
+                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean.getShare_count()),
                         false, 2);
                 // 控制更多按钮的显示隐藏
                 dynamicListMenuView.setItemPositionVisiable(0, getVisibleOne());
