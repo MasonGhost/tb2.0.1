@@ -511,7 +511,7 @@ public class ApiConfig {
 
     public static final String APP_PATH_STORAGE_UPLAOD_FILE = "api/" + API_VERSION_2 + "/files";// 文件上传 V2
 
-    public static final String APP_PATH_STORAGE_GET_FILE = "api/" + API_VERSION_2 + "/files/{file}";// 文件获取 V2
+    public static final String APP_PATH_STORAGE_GET_FILE =APP_DOMAIN+ "api/" + API_VERSION_2 + "/files/%s";// 文件获取 V2
 
     // 标签
     public static final String APP_PATH_GET_ALL_TAGS = "api/" + API_VERSION_2 + "/tags";// 获取全部标签标签

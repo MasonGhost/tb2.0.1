@@ -88,6 +88,7 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
     private Subscription mSaveImageSubscription;
 
     private UmengSharePolicyImpl mSharePolicy;
+    private TBShareLinkBean mTBShareLinkBean;
 
 
     public static InvitationFragment newInstance(Bundle bundle) {
@@ -116,6 +117,7 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
 
     @Override
     public void getShareLinkSuccess(TBShareLinkBean data) {
+        this.mTBShareLinkBean=data;
         // 设置 二维码
         mIv2code.setImageBitmap(ImageUtils.create2Code(data.getLink(), mIv2code.getHeight()));
 
@@ -154,7 +156,7 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
                 break;
             // 复制链接
             case R.id.tv_copy:
-                if (copyStr2Clipboard(getInviteLink())) {
+                if (copyStr2Clipboard(mTBShareLinkBean.getLink())) {
                     ToastUtils.showToast("复制成功，可以发给朋友们了。");
                 }
                 break;

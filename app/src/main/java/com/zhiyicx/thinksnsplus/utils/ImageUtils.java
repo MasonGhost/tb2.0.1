@@ -451,7 +451,7 @@ public class ImageUtils {
         if (result != null) {
             Bitmap logo = BitmapFactory.decodeResource(AppApplication.getContext().getResources(), R.mipmap.icon);
             Canvas canvas = new Canvas(result);
-            canvas.drawBitmap(logo, result.getWidth() / 2 - logo.getWidth() / 2, result.getHeight() / 2 - logo.getHeight() / 2, null);
+            canvas.drawBitmap(logo, result.getWidth() / 4 - logo.getWidth() / 4, result.getHeight() / 4 - logo.getHeight() / 4, null);
         }
         return result;
     }

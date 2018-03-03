@@ -1,44 +1,32 @@
 package com.zhiyicx.thinksnsplus.modules.tb.mechainism;
 
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding.view.RxView;
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloadSampleListener;
+import com.liulishuo.filedownloader.FileDownloader;
+import com.liulishuo.filedownloader.util.FileDownloadUtils;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
-import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
-import com.zhiyicx.thinksnsplus.utils.MarkDownRule;
 
-import java.util.concurrent.TimeUnit;
+import java.io.File;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
 import br.tiagohm.markdownview.MarkdownView;
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import rx.Subscription;
-
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Author Jliuer
@@ -96,17 +84,21 @@ public class MechanismCenterFragment extends TSFragment {
     @BindView(R.id.ll_book_container)
     LinearLayout mLlBookContainer;
     @BindView(R.id.mv_content)
-     MarkdownView mContent;
-
+    MarkdownView mContent;
+    @BindView(R.id.progressBar)
+    ProgressBar mProgressBar;
 
 
     private UserInfoBean mUserInfoBean;
+    private int downloadId2;
+    private MerchainInfo mMerchainInfo;
 
 
     @Inject
     UserInfoRepository mUserInfoRepository;
     private Subscription subscribe;
     private MerchainContentWebLoadView mMerchainContentWebLoadView;
+    private String mPath;
 
     public static MechanismCenterFragment newInstance(Bundle bundle) {
         MechanismCenterFragment mechanismCenterFragment = new MechanismCenterFragment();
@@ -141,9 +133,12 @@ public class MechanismCenterFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
+        FileDownloader.setup(mActivity);
+        mPath = FileDownloadUtils.getDefaultSaveRootPath() + File.separator + "tbm";
+
         AppApplication.AppComponentHolder.getAppComponent().inject(this);
         mUserInfoBean = getArguments().getParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA);
-         mMerchainContentWebLoadView=new MerchainContentWebLoadView(mActivity,rootView);
+        mMerchainContentWebLoadView = new MerchainContentWebLoadView(mActivity, rootView);
     }
 
     @Override
@@ -152,6 +147,7 @@ public class MechanismCenterFragment extends TSFragment {
                 .subscribe(new BaseSubscribeForV2<MerchainInfo>() {
                     @Override
                     protected void onSuccess(MerchainInfo data) {
+                        mMerchainInfo = data;
                         updateMerchainInfo(data);
                     }
                 });
@@ -166,9 +162,83 @@ public class MechanismCenterFragment extends TSFragment {
         mTvBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (mMerchainInfo == null || mMerchainInfo.getPhoto() == 0) {
+                    return;
+                }
+                downloadId2 = createDownloadTask().start();
             }
         });
+    }
+
+    private BaseDownloadTask createDownloadTask() {
+        final String url;
+
+        url = String.format(Locale.getDefault(), ApiConfig.APP_PATH_STORAGE_GET_FILE, mMerchainInfo.getPhoto() + "");
+
+        return FileDownloader.getImpl().create(url + "?token=" + AppApplication.getmCurrentLoginAuth().getToken())
+                .setPath(mPath + ".pdf", false)
+                .setCallbackProgressTimes(300)
+                .setMinIntervalUpdateSpeed(400)
+                .setListener(new FileDownloadSampleListener() {
+
+                    @Override
+                    protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                        super.pending(task, soFarBytes, totalBytes);
+                        System.out.println(" ------pending--------" + soFarBytes);
+
+                    }
+
+                    @Override
+                    protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                        super.progress(task, soFarBytes, totalBytes);
+                        mProgressBar.setVisibility(View.VISIBLE);
+                        if (totalBytes == -1) {
+                            // chunked transfer encoding data
+                            mProgressBar.setIndeterminate(true);
+                        } else {
+                            mProgressBar.setMax(totalBytes);
+                            mProgressBar.setProgress(soFarBytes);
+                        }
+                        System.out.println(" ------progress--------" + soFarBytes);
+
+                    }
+
+                    @Override
+                    protected void error(BaseDownloadTask task, Throwable e) {
+                        super.error(task, e);
+                        System.out.println(" ------error--------");
+
+                    }
+
+                    @Override
+                    protected void connected(BaseDownloadTask task, String etag, boolean isContinue, int soFarBytes, int totalBytes) {
+                        super.connected(task, etag, isContinue, soFarBytes, totalBytes);
+                        System.out.println(" ------connected--------");
+
+
+                    }
+
+                    @Override
+                    protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                        super.paused(task, soFarBytes, totalBytes);
+                        System.out.println(" ------paused--------");
+
+                    }
+
+                    @Override
+                    protected void completed(BaseDownloadTask task) {
+                        super.completed(task);
+                        mProgressBar.setVisibility(View.GONE);
+                        showSnackSuccessMessage("下载成功，文件位于 tbm 下");
+                    }
+
+                    @Override
+                    protected void warn(BaseDownloadTask task) {
+                        super.warn(task);
+                        System.out.println(" ------warn--------");
+
+                    }
+                });
     }
 
     @Override
@@ -182,5 +252,12 @@ public class MechanismCenterFragment extends TSFragment {
         if (subscribe != null && subscribe.isUnsubscribed()) {
             subscribe.unsubscribe();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        FileDownloader.getImpl().pause(downloadId2);
+
     }
 }
