@@ -47,13 +47,8 @@ public class PrivacyFragment extends TSFragment<PrivacyContract.Presenter> imple
     }
 
     @Override
-    public void onChangeRankStatus(boolean rank) {
+    public void onChangeRankStatus() {
         ckRank.setEnabled(true);
-        if (rank) {
-            ToastUtils.showToast("设置成功");
-        } else {
-            ToastUtils.showToast("取消成功");
-        }
     }
 
     @Override
