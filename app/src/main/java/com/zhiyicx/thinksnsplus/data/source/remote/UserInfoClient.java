@@ -552,7 +552,7 @@ public interface UserInfoClient {
      * @param type  type	string	默认: all, all-累计贡献排行 day-日贡献排行
      * @return
      */
-    @GET(ApiConfig.APP_PATH_RANK_TB_CONTRUBITHION)
+    @GET(ApiConfig.APP_PATH_SEARCH_MERCHANSIM_USER)
     Observable<List<UserInfoBean>> searchMerchainsimUser(@Query("limit") Long limit,
                                                       @Query("offset") int size, @Query("user") String name, @Query("type") String type);
 

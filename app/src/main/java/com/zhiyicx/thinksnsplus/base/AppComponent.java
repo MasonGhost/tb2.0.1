@@ -14,6 +14,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.QA_Fragment;
+import com.zhiyicx.thinksnsplus.modules.tb.mechainism.MechanismCenterContainerFragment;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 
 import javax.inject.Singleton;
@@ -42,6 +43,7 @@ public interface AppComponent extends InjectComponent<AppApplication> {
     void inject(SendComment sendComment);
 
     void inject(QA_Fragment qa_fragment);
+    void inject(MechanismCenterContainerFragment mechanismCenterContainerFragment);
 
     /**
      * 以下是想往外提供的东西
