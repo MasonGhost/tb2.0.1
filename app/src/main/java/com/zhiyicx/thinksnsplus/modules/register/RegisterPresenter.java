@@ -242,7 +242,7 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.View>
                         mAuthRepository.saveAuthBean(data);
                         mUserInfoBeanGreenDao.insertOrReplace(data.getUser());
                         // IM 登录 需要 token ,所以需要先保存登录信息
-                        handleIMLogin();
+//                        handleIMLogin();
                         mRootView.goHome();
                     }
 

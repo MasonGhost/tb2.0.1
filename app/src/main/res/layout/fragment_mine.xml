@@ -258,14 +258,24 @@
                         android:textSize="@dimen/size_icon_assist"
                         />
 
+                    <com.zhiyicx.thinksnsplus.widget.checkin.CheckInView
+                        android:id="@+id/checkin_view"
+                        android:layout_below="@+id/tv_continiuous_check_in_tip"
+                        android:layout_width="match_parent"
+                       android:layout_margin="@dimen/spacing_normal"
+                        android:layout_height="wrap_content"/>
+
+
                 </RelativeLayout>
                 <!--邀请好友-->
+
                 <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
                     android:id="@+id/mti_invite_friends"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_small"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    />
                 <!--填写邀请码-->
                 <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
                     android:id="@+id/mti_edit_invite_code"
