@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
+import com.zhiyicx.thinksnsplus.modules.tb.mechainism.MerchainInfo;
 import com.zhiyicx.thinksnsplus.modules.tb.rank.RankData;
 
 import java.util.ArrayList;
@@ -440,4 +441,11 @@ public interface IUserInfoRepository {
     Observable<List<UserInfoBean>> searchMerchainsimUser(Long limit,
                                                          int size, String name, String type);
 
+    /**
+     * 获取机构信息
+     *
+     * @param user_id
+     * @return
+     */
+    Observable<MerchainInfo> getMerchainUserInfo( int user_id);
 }

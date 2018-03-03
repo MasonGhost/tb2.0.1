@@ -23,6 +23,7 @@ import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequest
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
+import com.zhiyicx.thinksnsplus.modules.tb.mechainism.MerchainInfo;
 import com.zhiyicx.thinksnsplus.modules.tb.rank.RankData;
 
 import java.util.HashMap;
@@ -554,7 +555,7 @@ public interface UserInfoClient {
      */
     @GET(ApiConfig.APP_PATH_SEARCH_MERCHANSIM_USER)
     Observable<List<UserInfoBean>> searchMerchainsimUser(@Query("limit") Long limit,
-                                                      @Query("offset") int size, @Query("user") String name, @Query("type") String type);
+                                                         @Query("offset") int size, @Query("user") String name, @Query("type") String type);
 
     /**
      * 分享统计
@@ -591,4 +592,14 @@ public interface UserInfoClient {
     @GET(APP_PAHT_WALLET_RECHARGE_SUCCESS_LIST)
     Observable<List<RechargeSuccessBean>> getRechargeSuccessList(@Query("limit") int limit, @Query("after") int after, @Query("action") String
             action);
+
+    /**
+     * 获取机构信息
+     *
+     * @param user_id
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_SEARCH_MERCHANSIM_INFO)
+    Observable<MerchainInfo> getMerchainUserInfo(@Query("user_id") int user_id);
+
 }

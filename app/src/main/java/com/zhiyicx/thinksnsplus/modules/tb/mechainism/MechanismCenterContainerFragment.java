@@ -199,7 +199,7 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
     protected void initMorePop() {
         mMorePop = ActionPopupWindow.builder()
                 .item1Str(mUserInfoBean.getFollower() ? getString(R.string.cancel_follow) : "")
-                .item2Str(AppApplication.getMyUserIdWithdefault() != mUserInfoBean.getUser_id() ? "" : getString(R.string.report))
+                .item2Str(AppApplication.getMyUserIdWithdefault() == mUserInfoBean.getUser_id() ? "" : getString(R.string.report))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)

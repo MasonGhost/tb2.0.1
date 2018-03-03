@@ -49,6 +49,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.i.IUserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
+import com.zhiyicx.thinksnsplus.modules.tb.mechainism.MerchainInfo;
 import com.zhiyicx.thinksnsplus.modules.tb.rank.RankData;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -1060,7 +1061,6 @@ public class UserInfoRepository implements IUserInfoRepository {
     }
 
     /**
-     *
      * @param limit limit	int	条目数
      * @param size  offset	int	翻页标示
      * @param name  user	user  	string    	yes    	用户名模糊匹配
@@ -1070,6 +1070,19 @@ public class UserInfoRepository implements IUserInfoRepository {
     @Override
     public Observable<List<UserInfoBean>> searchMerchainsimUser(Long limit, int size, String name, String type) {
         return mUserInfoClient.searchMerchainsimUser(limit, size, name, type)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 获取机构信息
+     *
+     * @param user_id
+     * @return
+     */
+    @Override
+    public Observable<MerchainInfo> getMerchainUserInfo(int user_id) {
+        return mUserInfoClient.getMerchainUserInfo(user_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

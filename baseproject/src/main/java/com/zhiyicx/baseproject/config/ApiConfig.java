@@ -1039,6 +1039,10 @@ public class ApiConfig {
      */
     public static final String APP_PATH_SEARCH_MERCHANSIM_USER = "api/" + API_VERSION_2 + "/tbm/search/user";
 
+    /*
+     * 获取认证机构信息
+     */
+    public static final String APP_PATH_SEARCH_MERCHANSIM_INFO = "api/" + API_VERSION_2 + "/tbm/orginfo";
 
 
 
