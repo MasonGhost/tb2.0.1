@@ -551,4 +551,13 @@ public interface UserInfoClient {
      */
     @POST(ApiConfig.APP_PATH_SHARE_DYNAMIC_COUNT)
     Observable<BaseJsonV2> shareCount(@Field("type") String type, @Field("id") String id);
+
+    /**
+     * 获取
+     *
+     * @return
+     */
+    @POST(ApiConfig.APP_PATH_GET_TASTK_INFO)
+    Observable<BaseJsonV2> getTaskInfo();
+
 }

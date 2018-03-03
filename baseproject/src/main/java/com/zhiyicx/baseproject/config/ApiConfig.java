@@ -1027,6 +1027,8 @@ public class ApiConfig {
     public static final String APP_PATH_RANK_TB_CONTRUBITHION = "api/" + API_VERSION_2 + "/tbm/friend/contribution/ranks";
     // 分享快讯统计
     public static final String APP_PATH_SHARE_DYNAMIC_COUNT = "api/" + API_VERSION_2 + "/tbm/share";
+    // 任务接口信息
+    public static final String APP_PATH_GET_TASTK_INFO = "api/" + API_VERSION_2 + "/tbm/user/tasks";
 
 
 }
