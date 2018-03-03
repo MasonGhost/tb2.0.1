@@ -8,46 +8,61 @@
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tool="http://schemas.android.com/tools"
-        android:layout_width="@dimen/ppw_center_width"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_popwindow_tb"
         android:gravity="center"
         android:orientation="vertical"
+        android:paddingBottom="@dimen/spacing_normal_large"
         android:paddingLeft="@dimen/margin_20"
-        android:paddingRight="@dimen/margin_20">
+        android:paddingRight="@dimen/margin_20"
+        android:paddingTop="@dimen/spacing_normal_large">
+
+        <ImageView
+            android:id="@+id/iv_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_bigger_large"
+            android:layout_marginRight="@dimen/spacing_bigger_large"
+            android:src="@mipmap/pic_coins"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/ppw_center_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_mid"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_primary_title"
-            android:layout_marginTop="@dimen/spacing_bigger_large"
             android:textStyle="bold"
+            android:visibility="gone"
             tool:text="title"/>
 
 
         <TextView
             android:id="@+id/ppw_center_description"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/ppw_center_width_tb"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_mid"
             android:paddingBottom="@dimen/spacing_normal"
+            android:gravity="center"
             android:textColor="@color/normal_for_assist_text"
             android:textSize="@dimen/size_content_assist"
+            android:visibility="gone"
             tool:text="我不要钱,控股发电技术管理经费控股发电技术管理经费的失落感"/>
 
         <TextView
             android:id="@+id/ppw_center_item"
             android:layout_width="180dp"
             android:layout_height="@dimen/load_more_height"
+            android:layout_marginBottom="@dimen/spacing_mid"
             android:layout_marginTop="@dimen/spacing_large"
             android:background="@drawable/selector_button_corner_circle_solid_small_gradient"
-            android:layout_marginBottom="@dimen/spacing_bigger_large"
             android:gravity="center"
             android:text="知道了"
             android:textColor="@color/white"
             android:textSize="@dimen/size_content"
+            android:visibility="gone"
             tool:ignore="XmlValues"/>
     </LinearLayout>
 </FrameLayout>

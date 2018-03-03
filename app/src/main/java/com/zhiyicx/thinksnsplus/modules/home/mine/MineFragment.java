@@ -16,6 +16,7 @@ import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
+import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -26,6 +27,7 @@ import com.zhiyicx.thinksnsplus.config.NotificationConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
@@ -46,7 +48,11 @@ import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.CertificationTypePopupWindow;
 import com.zhiyicx.thinksnsplus.widget.MineTaskItemView;
+import com.zhiyicx.thinksnsplus.widget.checkin.CheckInView;
 import com.zhiyicx.thinksnsplus.widget.popwindow.TBCenterInfoPopWindow;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -117,11 +123,22 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     FrameLayout mFrameLayout;
     @BindView(R.id.rl_userinfo_container)
     RelativeLayout mLayout;
+    @BindView(R.id.checkin_view)
+    CheckInView mCheckInView;
+
+    /**
+     * 签到提示弹框
+     */
+    private TBCenterInfoPopWindow mCheckTipPop;
+
     /**
      * 选择认证人类型的弹窗
      */
     private CertificationTypePopupWindow mCertificationWindow;
     private int mStatusHeight;
+
+    private List<String> signInData = new ArrayList<>();
+
 
     @Inject
     public MinePresenter mMinePresenter;
@@ -175,6 +192,19 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                     }
                 });
 
+        initCheckViewData();
+
+    }
+
+    private void initCheckViewData() {
+        signInData.add("第一天");
+        signInData.add("第二天");
+        signInData.add("第三天");
+        signInData.add("第四天");
+        signInData.add("第五天");
+        signInData.add("第六天");
+        signInData.add("第七天");
+        mCheckInView.setSignInData(signInData);
     }
 
     @Override
@@ -230,7 +260,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         reLoadUserInfo(isVisibleToUser);
-        if (mTBTaskContainerBean == null && mPresenter != null) {
+        if (mPresenter != null) {
             mPresenter.getTaskInfo();
         }
     }
@@ -456,7 +486,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                             getColor(R.color.themeColor)
                             , tbTaskBean.getName(), tbTaskBean.getDescription(), true,
                             0);
-                    mMtiShareDynamic.setprogress(tbTaskBean.getNotes().size()*100/tbTaskBean.getFrequency());
+                    mMtiShareDynamic.setprogress(tbTaskBean.getNotes().size() * 100 / tbTaskBean.getFrequency());
                 } else if (CERTIFICATION.value.equals(tbTaskBean.getTrigger())) {
 
 
@@ -548,9 +578,38 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             mCheckInBean.setChecked_in(true);
             mCheckInBean.setLast_checkin_count(mCheckInBean.getLast_checkin_count() + 1);
             mCheckInBean.setCheckin_count(mCheckInBean.getCheckin_count() + 1);
+            if (mUserInfoBean.getWallet() == null) {
+                mUserInfoBean.setWallet(new WalletBean());
+            }
+            mUserInfoBean.getWallet().setBalance(mUserInfoBean.getWallet().getBalance() + mCheckInBean.getCheck_in_reward());
+            setUserInfo(mUserInfoBean);
             updateCheckInInfo();
+            showCheckPop();
         }
 
+    }
+
+    private void showCheckPop() {
+        mCheckTipPop = TBCenterInfoPopWindow.builder()
+                .isOutsideTouch(true)
+                .imageResId(R.mipmap.pic_coins)
+                .titleColor(R.color.reward_conins_color)
+                .titleStr("+" + mCheckInBean.getCheck_in_reward())
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(mActivity)
+                .parentView(getContentView())
+                .build();
+        mCheckTipPop.show();
+        getContentView().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (getActivity() != null && mCheckTipPop != null && mCheckTipPop.isShowing()) {
+                    mCheckTipPop.hide();
+                }
+
+            }
+        }, 2500);
     }
 
     /**
@@ -576,18 +635,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 .innerColor(ContextCompat.getColor(getContext(), R.color.checkin_nums_color))
                 .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
                 .format());
+        mCheckInView.setCurretn(mCheckInBean.getLast_checkin_count() % 7);
     }
 
-    private void initCertificationTypePop() {
-        if (mCertificationWindow == null) {
-            mCertificationWindow = CertificationTypePopupWindow.Builder()
-                    .with(mActivity)
-                    .alpha(0.8f)
-                    .setListener(this)
-                    .build();
-        }
-        mCertificationWindow.show();
-    }
 
     @Override
     public void onTypeSelected(int position) {
@@ -605,4 +655,10 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         startActivity(intent);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissPop(mCertificationWindow);
+        dismissPop(mCheckTipPop);
+    }
 }

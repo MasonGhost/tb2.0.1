@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
@@ -29,6 +30,8 @@ public class TBCenterInfoPopWindow extends CustomPopupWindow {
     private int titleColor;
     private int desColor;
     private int item1Color;
+    private int imageResId;
+
 
     public static CBuilder builder() {
         return new CBuilder();
@@ -42,6 +45,7 @@ public class TBCenterInfoPopWindow extends CustomPopupWindow {
         this.titleColor = builder.titleColor;
         this.desColor = builder.desColor;
         this.item1Color = builder.item1Color;
+        this.imageResId = builder.imageResId;
         this.mCenterPopWindowItem1ClickListener = builder.mCenterPopWindowItem1ClickListener;
         initView();
     }
@@ -50,6 +54,11 @@ public class TBCenterInfoPopWindow extends CustomPopupWindow {
         initTextView(titleStr, titleColor, R.id.ppw_center_title, null);
         initTextView(desStr, desColor, R.id.ppw_center_description, null);
         initTextView(item1Str, item1Color, R.id.ppw_center_item, mCenterPopWindowItem1ClickListener);
+        if (imageResId != 0) {
+            ImageView imageView = (ImageView) mContentView.findViewById(R.id.iv_top);
+            imageView.setVisibility(View.VISIBLE);
+            imageView.setImageResource(imageResId);
+        }
     }
 
     protected void initTextView(String text, int colorId, int resId, final CenterPopWindowItem1ClickListener clickListener) {
@@ -82,6 +91,7 @@ public class TBCenterInfoPopWindow extends CustomPopupWindow {
         private int titleColor;
         private int desColor;
         private int item1Color;
+        private int imageResId;
 
         public CBuilder buildCenterPopWindowItem1ClickListener(CenterPopWindowItem1ClickListener mCenterPopWindowItem1ClickListener) {
             this.mCenterPopWindowItem1ClickListener = mCenterPopWindowItem1ClickListener;
@@ -113,6 +123,11 @@ public class TBCenterInfoPopWindow extends CustomPopupWindow {
 
         public CBuilder item1Color(int item1Color) {
             this.item1Color = item1Color;
+            return this;
+        }
+
+        public CBuilder imageResId(int resId) {
+            this.imageResId = resId;
             return this;
         }
 
@@ -166,6 +181,7 @@ public class TBCenterInfoPopWindow extends CustomPopupWindow {
             super.animationStyle(animationStyle);
             return this;
         }
+
         @Override
         public CBuilder parentView(View parentView) {
             super.parentView(parentView);

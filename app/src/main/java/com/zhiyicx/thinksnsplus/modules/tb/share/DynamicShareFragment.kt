@@ -222,8 +222,11 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
     }
 
     override fun onDestroy() {
-        if (mSaveImageSubscription != null && mSaveImageSubscription.isUnsubscribed()) {
-            mSaveImageSubscription.unsubscribe()
+        try {
+            if (mSaveImageSubscription != null && mSaveImageSubscription.isUnsubscribed()) {
+                mSaveImageSubscription.unsubscribe()
+            }
+        } catch (e: Exception) {
         }
         super.onDestroy()
     }
