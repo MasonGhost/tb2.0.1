@@ -62,7 +62,7 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
             dynamicListMenuView.setImageNormalResourceIds(getToolImages());
             dynamicListMenuView.setAdvertItemTextAndStatus("广告", dynamicBean.isHas_digg(), 0);
             dynamicListMenuView.setAdvertItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
-                    .getFeed_comment_count()), false, 1);
+                    .getShare_count()), false, 1);
             dynamicListMenuView.setAdvertItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
                             .getFeed_view_count() == 0 ? 1 : dynamicBean.getFeed_view_count()),
                     false, 2);// 浏览量没有 0

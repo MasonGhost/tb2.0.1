@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -21,7 +22,7 @@ import butterknife.BindView;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class WalletFragment extends TSListFragment<WalletContract.Presenter, WalletData> implements WalletContract.View {
+public class WalletFragment extends TSListFragment<WalletContract.Presenter, RechargeSuccessBean> implements WalletContract.View {
 
     @BindView(R.id.wallet_toolbar)
     Toolbar mWalletToolbar;
@@ -55,7 +56,7 @@ public class WalletFragment extends TSListFragment<WalletContract.Presenter, Wal
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        mWalletToolbar.setPadding(0, DeviceUtils.getStatuBarHeight(mActivity),0,0);
+        mWalletToolbar.setPadding(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0);
         mTvToolbarLeft.setOnClickListener(v -> getActivity().finish());
     }
 
@@ -74,23 +75,35 @@ public class WalletFragment extends TSListFragment<WalletContract.Presenter, Wal
     }
 
     @Override
+    public String getBillType() {
+        return ""/*{""--全部, "income"--收入, "expenses"--支出}*/;
+    }
+
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
-        CommonAdapter adapter = new CommonAdapter<WalletData>(mActivity, R.layout.item_wallet_for_tb, mListDatas) {
+        CommonAdapter adapter = new CommonAdapter<RechargeSuccessBean>(mActivity, R.layout.item_wallet_for_tb, mListDatas) {
             @Override
-            protected void convert(ViewHolder holder, WalletData walletData, int position) {
+            protected void convert(ViewHolder holder, RechargeSuccessBean rechargeSuccessBean, int position) {
 
                 // 收入or支出 图标不一样
                 // 收入 ico_in ，支出 ico_out
+                int action = rechargeSuccessBean.getAction();
                 ImageView imageView = holder.getImageViwe(R.id.iv_wallet_income);
+                if (action < -1) {
+                    imageView.setImageResource(R.mipmap.ico_out);
+                } else {
+                    imageView.setImageResource(R.mipmap.ico_in);
+                }
 
                 // 收支描述
-                holder.setText(R.id.tv_wallet_dec, "sss");
+                holder.setText(R.id.tv_wallet_dec, rechargeSuccessBean.getSubject());
 
                 // 收支时间 TimeUtils.getYeayMonthDay()
-                holder.setText(R.id.tv_wallet_time, "sss");
+                holder.setText(R.id.tv_wallet_time, rechargeSuccessBean.getCreated_at());
 
                 // 收支金额
-                holder.setText(R.id.tv_wallet_count, "sss");
+                holder.setText(R.id.tv_wallet_count, action < 0 ? "-" + rechargeSuccessBean.getAmount() : "+" + rechargeSuccessBean.getAmount());
             }
         };
         return adapter;

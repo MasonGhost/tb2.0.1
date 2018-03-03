@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.tb.wallet;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 /**
@@ -11,10 +12,12 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
  * @Description
  */
 public interface WalletContract {
-    interface View extends ITSListView<WalletData,Presenter>{
+    interface View extends ITSListView<RechargeSuccessBean,Presenter>{
         void updateUserInfo(UserInfoBean data);
+
+        String getBillType();
     }
-    interface Presenter extends ITSListPresenter<WalletData>{
+    interface Presenter extends ITSListPresenter<RechargeSuccessBean>{
         void getUserInfo();
     }
 }
