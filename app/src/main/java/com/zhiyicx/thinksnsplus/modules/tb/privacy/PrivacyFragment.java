@@ -27,7 +27,7 @@ public class PrivacyFragment extends TSFragment<PrivacyContract.Presenter> imple
 
     @Override
     protected void initView(View rootView) {
-        ckRank.setOnCheckedChangeListener(this);
+        ckRank.setEnabled(false);
     }
 
     @Override
@@ -42,20 +42,21 @@ public class PrivacyFragment extends TSFragment<PrivacyContract.Presenter> imple
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        ckRank.setEnabled(false);
         mPresenter.changeRankStatus(b);
     }
 
     @Override
-    public void onChangeRankStatus(boolean rank) {
-        if (rank) {
-            ToastUtils.showToast("设置成功");
-        } else {
-            ToastUtils.showToast("取消成功");
-        }
+    public void onChangeRankStatus() {
+        ckRank.setEnabled(true);
     }
 
     @Override
     public void onGetRankStatus(int rankStatus) {
-        ckRank.setChecked(rankStatus == 1);
+        ckRank.post(() -> {
+            ckRank.setEnabled(true);
+            ckRank.setChecked(rankStatus == 1);
+            ckRank.setOnCheckedChangeListener(this);
+        });
     }
 }

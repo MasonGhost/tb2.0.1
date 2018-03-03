@@ -606,7 +606,7 @@ public interface UserInfoClient {
     /**
      * 修改是否参与排名
      */
-    @GET(ApiConfig.APP_PATH_CHANGE_RANK_STATUS)
+    @POST(ApiConfig.APP_PATH_CHANGE_RANK_STATUS)
     Observable<String> changeRankStatus();
 
     /**

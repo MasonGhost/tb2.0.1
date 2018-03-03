@@ -11,7 +11,7 @@ import com.zhiyicx.common.mvp.i.IBaseView;
  */
 public interface PrivacyContract {
     interface View extends IBaseView<Presenter>{
-        void onChangeRankStatus(boolean rank);
+        void onChangeRankStatus();
 
         void onGetRankStatus(int rankStatus);
     }

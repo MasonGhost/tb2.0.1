@@ -27,7 +27,7 @@ public class PrivacyPresenter extends AppBasePresenter<PrivacyContract.View> imp
     @Override
     public void changeRankStatus(boolean rank) {
         addSubscrebe(mUserInfoRepository.changeRankStatus()
-                .subscribe(s -> mRootView.onChangeRankStatus(!rank)));
+                .subscribe(s -> mRootView.onChangeRankStatus()));
     }
 
     @Override
