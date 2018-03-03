@@ -3,13 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <LinearLayout
-        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <!--中文名-->
@@ -53,7 +53,8 @@
             android:layout_height="@dimen/userinfo_btn_height"
             android:background="@color/white"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="@dimen/mechainism_name_hint_with"
@@ -124,7 +125,8 @@
             android:layout_height="@dimen/userinfo_btn_height"
             android:background="@color/white"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="@dimen/mechainism_name_hint_with"
@@ -158,7 +160,8 @@
             android:layout_height="@dimen/userinfo_btn_height"
             android:background="@color/white"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="@dimen/mechainism_name_hint_with"
@@ -192,7 +195,8 @@
             android:layout_height="@dimen/userinfo_btn_height"
             android:background="@color/white"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="@dimen/mechainism_name_hint_with"
@@ -227,7 +231,8 @@
             android:layout_height="@dimen/userinfo_btn_height"
             android:background="@color/white"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="@dimen/mechainism_name_hint_with"
@@ -262,7 +267,8 @@
             android:layout_height="@dimen/userinfo_btn_height"
             android:background="@color/white"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="@dimen/mechainism_name_hint_with"
@@ -296,7 +302,8 @@
             android:layout_height="@dimen/userinfo_btn_height"
             android:background="@color/white"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="@dimen/mechainism_name_hint_with"
@@ -330,7 +337,8 @@
             android:layout_height="@dimen/userinfo_btn_height"
             android:background="@color/white"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="@dimen/mechainism_name_hint_with"
@@ -364,7 +372,8 @@
             android:layout_height="@dimen/userinfo_btn_height"
             android:background="@color/white"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="@dimen/mechainism_name_hint_with"
@@ -386,6 +395,30 @@
                 tools:text="tym"/>
 
         </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <br.tiagohm.markdownview.MarkdownView
+                android:id="@+id/mv_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_normal"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:visibility="visible"
+                tools:ignore="WebViewLayout"/>
+
+            <!--用来占位的-->
+            <ImageView
+                android:id="@+id/iv_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/default_pic_personal"
+                android:visibility="gone"/>
+        </FrameLayout>
+
 
         <View
             style="@style/style_divider_horizontal_light"
@@ -417,10 +450,10 @@
                 android:layout_weight="1"
                 android:drawableLeft="@mipmap/ico_pdf"
                 android:drawablePadding="@dimen/spacing_small"
+                android:text="TokenBook白皮书"
                 android:textColor="@color/important_for_content"
                 android:textColorHint="@color/general_for_hint"
-                android:textSize="@dimen/size_sub_title"
-                tools:text="tym"/>
+                android:textSize="@dimen/size_sub_title"/>
 
         </LinearLayout>
 

@@ -20,9 +20,11 @@ import com.zhiyicx.thinksnsplus.data.beans.request.BindAccountRequstBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.DeleteUserPhoneOrEmailRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.ThirdAccountBindRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequestBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
+import com.zhiyicx.thinksnsplus.modules.tb.mechainism.MerchainInfo;
 import com.zhiyicx.thinksnsplus.modules.tb.rank.RankData;
 
 import java.util.HashMap;
@@ -546,6 +548,17 @@ public interface UserInfoClient {
                                                            @Query("offset") int size, @Query("type") String type);
 
     /**
+     * @param name  user	user  	string    	yes    	用户名模糊匹配
+     * @param limit limit	int	条目数
+     * @param size  offset	int	翻页标示
+     * @param type  type	string	默认: all, all-累计贡献排行 day-日贡献排行
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_SEARCH_MERCHANSIM_USER)
+    Observable<List<UserInfoBean>> searchMerchainsimUser(@Query("limit") Long limit,
+                                                         @Query("offset") int size, @Query("user") String name, @Query("type") String type);
+
+    /**
      * 分享统计
      *
      * @param type type	string	非必须, 快讯分享需传:feed
@@ -601,4 +614,22 @@ public interface UserInfoClient {
      */
     @GET(ApiConfig.APP_PATH_GET_RANK_STATUS)
     Observable<String> getRankStatus();
+
+    /**
+     * 获取机构信息
+     *
+     * @param user_id
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_SEARCH_MERCHANSIM_INFO)
+    Observable<MerchainInfo> getMerchainUserInfo(@Query("user_id") int user_id);
+
+    /**
+     * 分享连接
+     *
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_SHARE_LINK_URL)
+    Observable<TBShareLinkBean> getShareLink();
+
 }

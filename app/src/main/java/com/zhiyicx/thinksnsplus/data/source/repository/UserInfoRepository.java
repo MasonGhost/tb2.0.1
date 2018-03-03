@@ -35,6 +35,7 @@ import com.zhiyicx.thinksnsplus.data.beans.request.BindAccountRequstBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.DeleteUserPhoneOrEmailRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.ThirdAccountBindRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequestBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
@@ -49,6 +50,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.i.IUserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
+import com.zhiyicx.thinksnsplus.modules.tb.mechainism.MerchainInfo;
 import com.zhiyicx.thinksnsplus.modules.tb.rank.RankData;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -1076,6 +1078,40 @@ public class UserInfoRepository implements IUserInfoRepository {
     @Override
     public Observable<String> getRankStatus() {
         return  mUserInfoClient.getRankStatus()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param limit limit	int	条目数
+     * @param size  offset	int	翻页标示
+     * @param name  user	user  	string    	yes    	用户名模糊匹配
+     * @param type  type	string	默认: all, all-累计贡献排行 day-日贡献排行
+     * @return
+     */
+    @Override
+    public Observable<List<UserInfoBean>> searchMerchainsimUser(Long limit, int size, String name, String type) {
+        return mUserInfoClient.searchMerchainsimUser(limit, size, name, type)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 获取机构信息
+     *
+     * @param user_id
+     * @return
+     */
+    @Override
+    public Observable<MerchainInfo> getMerchainUserInfo(int user_id) {
+        return mUserInfoClient.getMerchainUserInfo(user_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<TBShareLinkBean> getShareLink() {
+        return mUserInfoClient.getShareLink()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

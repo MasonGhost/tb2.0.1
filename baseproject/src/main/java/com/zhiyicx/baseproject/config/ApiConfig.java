@@ -1040,4 +1040,19 @@ public class ApiConfig {
     public static final String APP_PATH_CHANGE_RANK_STATUS = "api/" + API_VERSION_2 + "/tbm/user/rank/status";
     // 改变是否参与排名的状态
     public static final String APP_PATH_GET_RANK_STATUS = "api/" + API_VERSION_2 + "/tbm/user/rank/status";
+    /*
+     * 搜索机构用户
+     */
+    public static final String APP_PATH_SEARCH_MERCHANSIM_USER = "api/" + API_VERSION_2 + "/tbm/search/user";
+
+    /*
+     * 获取认证机构信息
+     */
+    public static final String APP_PATH_SEARCH_MERCHANSIM_INFO = "api/" + API_VERSION_2 + "/tbm/orginfo";
+
+    /*
+       * 分享连接
+       */
+    public static final String APP_PATH_SHARE_LINK_URL = "api/" + API_VERSION_2 + "/tbm/invite-link-builder";
+
 }

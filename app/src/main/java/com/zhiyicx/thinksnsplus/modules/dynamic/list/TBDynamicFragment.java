@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.zhiyicx.baseproject.config.TouristConfig;
@@ -9,7 +10,9 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.tb.share.DynamicShareActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.share.DynamicShareBean;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
@@ -36,6 +39,21 @@ public class TBDynamicFragment extends DynamicFragment {
         return fragment;
     }
 
+    public static TBDynamicFragment newInstance(String dynamicType, OnCommentClickListener l, UserInfoBean userInfoBean) {
+        TBDynamicFragment fragment = new TBDynamicFragment();
+        fragment.setOnCommentClickListener(l);
+        Bundle args = new Bundle();
+        args.putString(BUNDLE_DYNAMIC_TYPE, dynamicType);
+        args.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, userInfoBean);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mCurrentUserinfo = getArguments().getParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA);
+    }
 
     @Override
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
@@ -58,9 +76,9 @@ public class TBDynamicFragment extends DynamicFragment {
                 Intent intent = new Intent(mActivity, DynamicShareActivity.class);
                 Bundle bundle = new Bundle();
                 DynamicShareBean dynamicShareBean = new DynamicShareBean(mListDatas.get(dataPosition).getUserInfoBean(), mListDatas.get
-                        (dataPosition).getFriendlyTime(), mListDatas.get(dataPosition).getFeed_content(),String.valueOf(mListDatas.get(dataPosition)
+                        (dataPosition).getFriendlyTime(), mListDatas.get(dataPosition).getFeed_content(), String.valueOf(mListDatas.get(dataPosition)
                         .getId
-                        ()));
+                                ()));
                 bundle.putSerializable(BUNDLE_SHARE_DATA, dynamicShareBean);
                 intent.putExtras(bundle);
                 startActivity(intent);

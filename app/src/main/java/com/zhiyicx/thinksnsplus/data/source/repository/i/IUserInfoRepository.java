@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
@@ -12,15 +13,19 @@ import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
+import com.zhiyicx.thinksnsplus.modules.tb.mechainism.MerchainInfo;
 import com.zhiyicx.thinksnsplus.modules.tb.rank.RankData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -396,13 +401,11 @@ public interface IUserInfoRepository {
     Observable<List<ContributionData>> getContributionRank(Long limit, int size, String type);
 
     /**
-     *
      * @return 快讯分享统计
      */
     Observable<BaseJsonV2> shareCount(String type, String id);
 
     /**
-     *
      * @return 钱包历史记录
      */
     Observable<List<RechargeSuccessBean>> getBillList(int after, String action);
@@ -411,6 +414,7 @@ public interface IUserInfoRepository {
      * 处理钱包历史记录
      */
     Observable<List<RechargeSuccessBean>> dealRechargeList(Observable<List<RechargeSuccessBean>> data);
+
     /**
      * 获取任务信息
      *
@@ -440,4 +444,32 @@ public interface IUserInfoRepository {
      *获取是否参与排名
      */
     Observable<String> getRankStatus();
+
+
+    /**
+     * 搜索机构用户
+     *
+     * @param name  user	user  	string    	yes    	用户名模糊匹配
+     * @param limit limit	int	条目数
+     * @param size  offset	int	翻页标示
+     * @param type  type	string	默认: all, all-累计贡献排行 day-日贡献排行
+     * @return
+     */
+    Observable<List<UserInfoBean>> searchMerchainsimUser(Long limit,
+                                                         int size, String name, String type);
+
+    /**
+     * 获取机构信息
+     *
+     * @param user_id
+     * @return
+     */
+    Observable<MerchainInfo> getMerchainUserInfo( int user_id);
+
+    /**
+     * 分享连接
+     *
+     * @return
+     */
+    Observable<TBShareLinkBean> getShareLink();
 }

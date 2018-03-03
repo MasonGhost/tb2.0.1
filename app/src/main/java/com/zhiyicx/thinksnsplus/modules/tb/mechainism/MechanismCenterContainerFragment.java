@@ -1,26 +1,45 @@
 package com.zhiyicx.thinksnsplus.modules.tb.mechainism;
 
+import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.TBDynamicFragment;
-import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportType;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 
 /**
  * @Author Jliuer
@@ -32,6 +51,23 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
 
     @BindView(R.id.mechainism_appbar_layout)
     AppBarLayout mAppBarLayout;
+    @BindView(R.id.iv_head)
+    UserAvatarView mIvHeadIcon;
+    @BindView(R.id.tv_name)
+    TextView mTvUserName;
+    @BindView(R.id.tv_dec)
+    TextView mTvDes;
+    @BindView(R.id.ll_follow_container)
+    View mLlFollowContainer;
+
+    private UserInfoBean mUserInfoBean;
+
+    protected ActionPopupWindow mMorePop;
+
+
+    @Inject
+    UserInfoRepository mUserInfoRepository;
+
 
     @Override
     protected boolean setUseSatusbar() {
@@ -73,8 +109,9 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
     protected List<Fragment> initFragments() {
         if (mFragmentList == null) {
             mFragmentList = new ArrayList();
-            mFragmentList.add(MechanismCenterFragment.newInstance());
-            mFragmentList.add(TBDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
+            mFragmentList.add(MechanismCenterFragment.newInstance(getArguments()));
+            mFragmentList.add(TBDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this, getArguments().getParcelable(PersonalCenterFragment
+                    .PERSONAL_CENTER_DATA)));
         }
         return mFragmentList;
     }
@@ -87,6 +124,8 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        AppApplication.AppComponentHolder.getAppComponent().inject(this);
+
         mTsvToolbar.setLeftImg(0);
         initListener();
     }
@@ -117,6 +156,80 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
 
     @Override
     protected void initData() {
+        mUserInfoBean = getArguments().getParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA);
+        ImageUtils.loadCircleUserHeadPic(mUserInfoBean, mIvHeadIcon);
+        // 设置用户名
+        mTvUserName.setText(mUserInfoBean.getName());
+        mTvDes.setText(mUserInfoBean.getIntro());
+        updateUseFollow();
+    }
 
+    private void updateUseFollow() {
+        mLlFollowContainer.setVisibility(mUserInfoBean.getFollower() ? View.GONE : View.VISIBLE);
+    }
+
+    public static MechanismCenterContainerFragment newInstance(Bundle bundle) {
+        MechanismCenterContainerFragment mechanismCenterContainerFragment = new MechanismCenterContainerFragment();
+        mechanismCenterContainerFragment.setArguments(bundle);
+        return mechanismCenterContainerFragment;
+    }
+
+
+    @OnClick({R.id.iv_back, R.id.iv_more, R.id.tv_attention})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.iv_back:
+                getActivity().finish();
+                break;
+            case R.id.iv_more:
+                initMorePop();
+                break;
+            case R.id.tv_attention:
+                handleUser();
+                break;
+            default:
+        }
+    }
+
+    private void handleUser() {
+        mUserInfoRepository.handleFollow(mUserInfoBean);
+        updateUseFollow();
+    }
+
+    protected void initMorePop() {
+        mMorePop = ActionPopupWindow.builder()
+                .item1Str(mUserInfoBean.getFollower() ? getString(R.string.cancel_follow) : "")
+                .item2Str(AppApplication.getMyUserIdWithdefault() == mUserInfoBean.getUser_id() ? "" : getString(R.string.report))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(() -> {
+                    // 取消关注
+                    mUserInfoRepository.handleFollow(mUserInfoBean);
+                    mUserInfoBean.setFollower(false);
+                    mMorePop.hide();
+                    updateUseFollow();
+                })  // 关注
+                .item2ClickListener(() -> {                    // 举报帖子
+                    String img = "";
+                    ReportResourceBean reportResourceBean = new ReportResourceBean(mUserInfoBean, String.valueOf(mUserInfoBean
+                            .getUser_id()),
+                            "", img, "", ReportType.USER);
+                    ReportActivity.startReportActivity(mActivity, reportResourceBean);
+                    mMorePop.hide();
+                })
+                .bottomClickListener(() -> {
+                    mMorePop.hide();
+                })
+                .build();
+        mMorePop.show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissPop(mMorePop);
     }
 }

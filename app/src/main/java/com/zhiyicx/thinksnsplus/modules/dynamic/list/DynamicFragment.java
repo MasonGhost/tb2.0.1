@@ -128,6 +128,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private PayPopWindow mPayImagePopWindow;
 
     /**
+     * 当前动态所属用户
+     */
+    protected UserInfoBean mCurrentUserinfo;
+
+    /**
      * 当前评论的动态位置
      */
     private int mCurrentPostion;
@@ -1084,6 +1089,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mPresenter.handleViewCount(mListDatas.get(position).getId(), position);
     }
 
+    @Override
+    public UserInfoBean getMcurrentUser() {
+        return mCurrentUserinfo;
+    }
 
     public interface OnCommentClickListener {
         void onButtonMenuShow(boolean isShow);

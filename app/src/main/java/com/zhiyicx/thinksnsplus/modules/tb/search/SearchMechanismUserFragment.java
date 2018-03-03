@@ -19,6 +19,7 @@ import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
@@ -260,14 +261,8 @@ public class SearchMechanismUserFragment extends TSListFragment<SearchMechanismU
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-//
-//        UserInfoBean bean = mListDatas.get(position);
-//        Intent intent = new Intent();
-//        Bundle bundle = new Bundle();
-//        bundle.putParcelable(BUNDLE_DATA, bean);
-//        intent.putExtras(bundle);
-//        getActivity().setResult(RESULT_OK, intent);
-//        getActivity().finish();
+        PersonalCenterFragment.startToPersonalCenter(getContext(), mListDatas.get(position));
+
     }
 
     @Override

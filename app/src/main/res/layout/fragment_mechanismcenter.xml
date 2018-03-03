@@ -4,7 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
@@ -54,11 +53,31 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/iv_head"
+                    <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@mipmap/pic_default_man"/>
+                        android:layout_gravity="center">
+
+                        <View
+                            android:id="@+id/v_userinfo"
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
+                            android:layout_gravity="center"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/shape_circle_boder_themecolor"
+                            />
+                        <!--头像-->
+                        <com.zhiyicx.baseproject.widget.UserAvatarView
+                            android:id="@+id/iv_head"
+                            android:layout_width="@dimen/headpic_for_user_center"
+                            android:layout_height="@dimen/headpic_for_user_center"
+                            android:layout_gravity="center"
+                            android:layout_centerHorizontal="true"
+                            android:clickable="false"
+                            android:src="@mipmap/pic_default_secret"
+                            app:ts_avatare_size="@dimen/headpic_for_user_center"/>
+
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/tv_name"
@@ -88,9 +107,9 @@
         <com.zhiyicx.baseproject.widget.TabSelectView
             android:id="@+id/tsv_toolbar"
             android:layout_width="match_parent"
-            android:minHeight="@dimen/toolbar_with_tab_height"
             android:layout_height="wrap_content"
             android:background="@color/white"
+            android:minHeight="@dimen/toolbar_with_tab_height"
             app:layout_scrollFlags="scroll"/>
 
     </android.support.design.widget.AppBarLayout>
@@ -102,6 +121,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <LinearLayout
+        android:id="@+id/ll_follow_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
