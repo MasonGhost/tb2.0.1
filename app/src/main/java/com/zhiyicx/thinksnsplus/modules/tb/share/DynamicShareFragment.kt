@@ -195,7 +195,7 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
                             .setMinHeight(0, resources.getDimensionPixelSize(R.dimen.toolbar_height))
                     mSavingTSnackbar.show()
                 }
-                .map { integer ->
+                .map {
                     val imgName = name + ".jpg"
                     val imgPath = PathConfig.PHOTO_SAVA_PATH
                     DrawableProvider.saveBitmap(bitmap, imgName, imgPath)

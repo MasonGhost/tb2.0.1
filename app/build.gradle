@@ -221,7 +221,7 @@ dependencies {
     compile project(':richtexteditorlib')
     // database
     compile dataDependences.greendao
-    compile dataDependences.guava
+//    compile dataDependences.guava
     // jpush
     compile dataDependences.jiguangJpush
     compile dataDependences.jiguangJcore

@@ -252,59 +252,61 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        Subscription subscribe = Observable.just(1)
-                .observeOn(Schedulers.io())
-                .map(aLong -> {
-                    List<DynamicDetailBeanV2> datas;
-                    switch (mRootView.getDynamicType()) {
-                        case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
-                            if (!isLoadMore) {
-                                datas = getDynamicBeenFromDBV2();
-                                datas.addAll(mDynamicDetailBeanV2GreenDao.getFollowedDynamicList(maxId));
-                            } else {
-                                datas = mDynamicDetailBeanV2GreenDao.getFollowedDynamicList(maxId);
-                            }
-                            break;
-                        case ApiConfig.DYNAMIC_TYPE_HOTS:
-                            datas = mDynamicDetailBeanV2GreenDao.getHotDynamicList(maxId);
-                            List<DynamicDetailBeanV2> topHotDynamics = mTopDynamicBeanGreenDao.getTopDynamicByType(TYPE_HOT);
-                            if (topHotDynamics != null) {
-                                datas.addAll(0, topHotDynamics);
-                            }
-                            break;
-                        case ApiConfig.DYNAMIC_TYPE_NEW:
-                            // 刷新
-                            if (!isLoadMore) {
-                                datas = getDynamicBeenFromDBV2();
-                                datas.addAll(mDynamicDetailBeanV2GreenDao.getNewestDynamicList(maxId));
-                                List<DynamicDetailBeanV2> topNewDynamics = mTopDynamicBeanGreenDao.getTopDynamicByType(TYPE_NEW);
-                                if (topNewDynamics != null) {
-                                    datas.addAll(0, topNewDynamics);
-                                }
-                            } else {
-                                datas = mDynamicDetailBeanV2GreenDao.getNewestDynamicList(maxId);
-                            }
-                            break;
-                        case ApiConfig.DYNAMIC_TYPE_MY_COLLECTION:
-                            datas = mDynamicDetailBeanV2GreenDao.getMyCollectDynamic();
-                            break;
-                        default:
-                            datas = new ArrayList<>();
-                    }
-                    for (int i = 0; i < datas.size(); i++) {
-                        // 处理友好显示数据
-                        datas.get(i).handleData();
-                        if (datas.get(i).getFeed_mark() != null) {
-                            datas.get(i).setComments(mDynamicCommentBeanGreenDao.getLocalComments(datas.get(i).getFeed_mark()));
-                        }
-                    }
-                    return datas;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(dynamicDetailBeanV2s -> {
-                    mRootView.onCacheResponseSuccess(dynamicDetailBeanV2s, isLoadMore);
-                }, Throwable::printStackTrace);
-        addSubscrebe(subscribe);
+                    mRootView.onCacheResponseSuccess(null, isLoadMore);
+//        Subscription subscribe = Observable.just(1)
+//                .observeOn(Schedulers.io())
+//                .map(aLong -> {
+//                    List<DynamicDetailBeanV2> datas;
+//                    switch (mRootView.getDynamicType()) {
+//                        case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
+//                            if (!isLoadMore) {
+//                                datas = getDynamicBeenFromDBV2();
+//                                datas.addAll(mDynamicDetailBeanV2GreenDao.getFollowedDynamicList(maxId));
+//                            } else {
+//                                datas = mDynamicDetailBeanV2GreenDao.getFollowedDynamicList(maxId);
+//                            }
+//                            break;
+//                        case ApiConfig.DYNAMIC_TYPE_HOTS:
+//                            datas = mDynamicDetailBeanV2GreenDao.getHotDynamicList(maxId);
+//                            List<DynamicDetailBeanV2> topHotDynamics = mTopDynamicBeanGreenDao.getTopDynamicByType(TYPE_HOT);
+//                            if (topHotDynamics != null) {
+//                                datas.addAll(0, topHotDynamics);
+//                            }
+//                            break;
+//                        case ApiConfig.DYNAMIC_TYPE_NEW:
+//                            // 刷新
+//                            if (!isLoadMore) {
+//                                datas = getDynamicBeenFromDBV2();
+//                                datas.addAll(mDynamicDetailBeanV2GreenDao.getNewestDynamicList(maxId));
+//                                List<DynamicDetailBeanV2> topNewDynamics = mTopDynamicBeanGreenDao.getTopDynamicByType(TYPE_NEW);
+//                                if (topNewDynamics != null) {
+//                                    datas.addAll(0, topNewDynamics);
+//                                }
+//                            } else {
+//                                datas = mDynamicDetailBeanV2GreenDao.getNewestDynamicList(maxId);
+//                            }
+//                            break;
+//                        case ApiConfig.DYNAMIC_TYPE_MY_COLLECTION:
+//                            datas = mDynamicDetailBeanV2GreenDao.getMyCollectDynamic();
+//                            break;
+//                        default:
+//                            datas = new ArrayList<>();
+//                    }
+//                    for (int i = 0; i < datas.size(); i++) {
+//                        // 处理友好显示数据
+//                        datas.get(i).handleData();
+//                        if (datas.get(i).getFeed_mark() != null) {
+//                            datas.get(i).setComments(mDynamicCommentBeanGreenDao.getLocalComments(datas.get(i).getFeed_mark()));
+//                        }
+//                    }
+//                    return datas;
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(dynamicDetailBeanV2s -> {
+//                    mRootView.onCacheResponseSuccess(dynamicDetailBeanV2s, isLoadMore);
+//                }, Throwable::printStackTrace);
+//        addSubscrebe(subscribe);
+
 
     }
 

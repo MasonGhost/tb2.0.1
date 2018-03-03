@@ -12,6 +12,8 @@ public static final int *;
 -keep public class com.zhiyicx.common.R$*{
 public static final int *;
 }
+-keep public class com.liulishuo.**{*;}
+-keep interface  ccom.liulishuo.** { *; }
 
 -keep interface  com.zhiyicx.common.** { *; }
 
@@ -499,5 +501,9 @@ public static java.lang.String TABLENAME;
 -keepclassmembers class * extends android.webkit.WebViewClient {
     public void *(android.webkit.WebView, jav.lang.String);
 }
+
+
+
+
 #----------------------------------------------------------------------------
 #--

@@ -189,12 +189,12 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
         RxView.clicks(mBtSetVertify!!)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe { aVoid -> showSnackSuccessMessage("vertify") }
+                .subscribe { showSnackSuccessMessage("vertify") }
         // 隐私管理页面
         RxView.clicks(mBtPrivateManager!!)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe { aVoid ->
+                .subscribe {
                     // 跳转隐私管理页面
                     val intent = Intent(activity, PrivacyActivity::class.java)
 //                    val intent = Intent(activity, InvitationActivity::class.java)
@@ -204,12 +204,12 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
         RxView.clicks(mBtChangePassword!!)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe { aVoid -> startActivity(Intent(activity, ChangePasswordActivity::class.java)) }
+                .subscribe { startActivity(Intent(activity, ChangePasswordActivity::class.java)) }
         // 清理缓存
         RxView.clicks(mBtCleanCache!!)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe { aVoid ->
+                .subscribe {
                     initCleanCachePopupWindow()
                     mCleanCachePopupWindow!!.show()
                 }
@@ -217,12 +217,12 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
         RxView.clicks(mBtAboutUs!!)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe { aVoid -> CustomWEBActivity.startToWEBActivity(context, ApiConfig.APP_DOMAIN + URL_ABOUT_US, getString(R.string.about_us)) }
+                .subscribe { CustomWEBActivity.startToWEBActivity(context, ApiConfig.APP_DOMAIN + URL_ABOUT_US, getString(R.string.about_us)) }
         // 退出登录
         RxView.clicks(mBtLoginOut!!)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe { aVoid ->
+                .subscribe {
                     initLoginOutPopupWindow()
                     mLoginoutPopupWindow!!.show()
                 }
@@ -230,14 +230,14 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
         RxView.clicks(mBtCheckVersion!!)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe { aVoid ->
+                .subscribe {
                     mPresenter.checkUpdate()
                 }
         // 意见反馈
         RxView.clicks(mBtFeedback!!)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe { aVoid ->
+                .subscribe {
                     startActivity(Intent(mActivity, FeedBackActivity::class.java))
                 }
     }
