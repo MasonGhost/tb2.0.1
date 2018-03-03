@@ -85,7 +85,6 @@
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/bt_check_version"
                 android:layout_width="match_parent"
-                android:visibility="gone"
                 android:layout_height="@dimen/full_button_height"
                 app:leftText="@string/check_version"
                 app:leftTextLeftPadding="@dimen/spacing_mid"

@@ -139,9 +139,9 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
         });
 
         // 启动 app，如果本地没有最新数据，应跳到“热门”页面 关联 github  #113  #366
-        if (mDynamicBeanGreenDao.getNewestDynamicList(System.currentTimeMillis()).size() == 0) {
-            mVpFragment.setCurrentItem(1);
-        }
+//        if (mDynamicBeanGreenDao.getNewestDynamicList(System.currentTimeMillis()).size() == 0) {
+//            mVpFragment.setCurrentItem(1);
+//        }
 
     }
 

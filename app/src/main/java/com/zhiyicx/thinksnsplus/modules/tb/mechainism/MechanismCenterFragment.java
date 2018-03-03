@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.tb.mechainism;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -11,6 +12,7 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadSampleListener;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.liulishuo.filedownloader.util.FileDownloadUtils;
+import com.yalantis.ucrop.util.FileUtils;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.R;
@@ -135,7 +137,7 @@ public class MechanismCenterFragment extends TSFragment {
     @Override
     protected void initView(View rootView) {
         FileDownloader.setup(mActivity);
-        mPath = FileDownloadUtils.getDefaultSaveRootPath() + File.separator + "tbm";
+        mPath = FileDownloadUtils.getDefaultSaveRootPath() + File.separator + "tbm" + File.separator;
 
         AppApplication.AppComponentHolder.getAppComponent().inject(this);
         mUserInfoBean = getArguments().getParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA);
@@ -166,7 +168,12 @@ public class MechanismCenterFragment extends TSFragment {
                 if (mMerchainInfo == null || mMerchainInfo.getPhoto() == 0) {
                     return;
                 }
-                downloadId2 = createDownloadTask().start();
+                Intent intent = FileUtils.openFile(mPath + mMerchainInfo.getWhite_paper_name() + ".pdf");
+                if (intent == null) {
+                    downloadId2 = createDownloadTask().start();
+                }else {
+                    startActivity(intent);
+                }
             }
         });
         if (TextUtils.isEmpty(data.getWhite_paper_name())) {
@@ -183,7 +190,7 @@ public class MechanismCenterFragment extends TSFragment {
         url = String.format(Locale.getDefault(), ApiConfig.APP_PATH_STORAGE_GET_FILE, mMerchainInfo.getPhoto() + "");
 
         return FileDownloader.getImpl().create(url + "?token=" + AppApplication.getmCurrentLoginAuth().getToken())
-                .setPath(mPath + ".pdf", false)
+                .setPath(mPath + mMerchainInfo.getWhite_paper_name() + ".pdf", false)
                 .setCallbackProgressTimes(100)
                 .setMinIntervalUpdateSpeed(200)
                 .setListener(new FileDownloadSampleListener() {
@@ -237,6 +244,7 @@ public class MechanismCenterFragment extends TSFragment {
                         super.completed(task);
                         mProgressBar.setVisibility(View.GONE);
                         showSnackSuccessMessage("下载成功，文件位于 tbm 下");
+                       startActivity( FileUtils.openFile(mPath + mMerchainInfo.getWhite_paper_name() + ".pdf"));
                     }
 
                     @Override

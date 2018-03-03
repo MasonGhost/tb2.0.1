@@ -18,9 +18,9 @@ android {
     buildTypes {
         release {
             buildConfigField "boolean", "USE_DOMAIN_SWITCH", "false"  // 域名切换开关
-            buildConfigField "boolean", "USE_LOG", "false"            // 日志开关
+            buildConfigField "boolean", "USE_LOG", "true"            // 日志开关
             buildConfigField "boolean", "USE_CANARY", "false"         // Learcanary 内存检查开关
-            buildConfigField "boolean", "USE_ADVERT", "true"         // 广告开关
+            buildConfigField "boolean", "USE_ADVERT", "false"         // 广告开关
             buildConfigField "boolean", "USE_TOLL", "true"           // 置顶功能开关
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

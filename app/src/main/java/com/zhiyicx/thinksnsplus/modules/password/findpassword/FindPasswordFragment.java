@@ -90,6 +90,11 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
     }
 
     @Override
+    protected String setCenterTitle() {
+        return getString(R.string.forget_password);
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
         return true;
     }

@@ -89,13 +89,17 @@ public class ContributionListFragment extends TSListFragment<ContributionListCon
             protected void convert(ViewHolder holder, ContributionData contributionData, int position) {
                 // 设置头像
                 UserAvatarView userAvatarView = holder.getView(R.id.iv_headpic);
-                ImageUtils.loadCircleUserHeadPic(contributionData.getInviter(), userAvatarView);
+                if (contributionData.getInviter() != null) {
+                    ImageUtils.loadCircleUserHeadPic(contributionData.getInviter(), userAvatarView);
+                }
                 TextView tvRank = holder.getView(R.id.tv_rank);
                 // 排名
                 holder.setText(R.id.tv_rank, String.valueOf(position + 1));
 
                 // 用户名
-                holder.setText(R.id.tv_name, contributionData.getInviter().getName());
+                if (contributionData.getInviter() != null) {
+                    holder.setText(R.id.tv_name, contributionData.getInviter().getName());
+                }
 
                 // TBMark
                 holder.setText(R.id.tv_total, ConvertUtils.numberConvert(contributionData.getObtain()));
