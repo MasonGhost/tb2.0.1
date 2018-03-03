@@ -196,8 +196,8 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
                 .compose(this.bindToLifecycle())
                 .subscribe { aVoid ->
                     // 跳转隐私管理页面
-//                    val intent = Intent(activity, PrivacyActivity::class.java)
-                    val intent = Intent(activity, InvitationActivity::class.java)
+                    val intent = Intent(activity, PrivacyActivity::class.java)
+//                    val intent = Intent(activity, InvitationActivity::class.java)
                     startActivity(intent)
                 }
         // 修改密码

@@ -404,4 +404,15 @@ public interface IUserInfoRepository {
      * @return 快讯分享统计
      */
     Observable<BaseJsonV2> shareCount(String type, String id);
+
+    /**
+     *
+     * @return 钱包历史记录
+     */
+    Observable<List<RechargeSuccessBean>> getBillList(int after, String action);
+
+    /**
+     * 处理钱包历史记录
+     */
+    Observable<List<RechargeSuccessBean>> dealRechargeList(Observable<List<RechargeSuccessBean>> data);
 }

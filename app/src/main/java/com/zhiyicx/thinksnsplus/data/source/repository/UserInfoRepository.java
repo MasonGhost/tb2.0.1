@@ -25,6 +25,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
+import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
@@ -1007,4 +1008,37 @@ public class UserInfoRepository implements IUserInfoRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     *
+     * @return 钱包历史记录
+     */
+    @Override
+    public Observable<List<RechargeSuccessBean>> getBillList(int after, String action) {
+        return dealRechargeList(mUserInfoClient.getRechargeSuccessList(TSListFragment.DEFAULT_PAGE_SIZE, after, action));
+    }
+
+    @Override
+    public Observable<List<RechargeSuccessBean>> dealRechargeList(Observable<List<RechargeSuccessBean>> data) {
+        return data.observeOn(Schedulers.io())
+                .flatMap(rechargeListBeen -> {
+                    final List<Object> user_ids = new ArrayList<>();
+                    for (RechargeSuccessBean rechargeSuccessBean : rechargeListBeen) {
+                        if (rechargeSuccessBean.getChannel().equals("user") || rechargeSuccessBean.getChannel().equals("system")) //
+                        // @see{https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/wallet/charge.md}
+                        {
+                            user_ids.add(rechargeSuccessBean.getAccount());
+                            try {
+                                rechargeSuccessBean.setUser_id(Long.valueOf(rechargeSuccessBean.getAccount()));
+                            } catch (Exception e) {
+                            }
+                        } else {
+                            user_ids.add(rechargeSuccessBean.getUser_id());
+                        }
+
+                    }
+                    return getUserInfo(user_ids).map(userinfobeans -> rechargeListBeen);
+                }).subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 }
