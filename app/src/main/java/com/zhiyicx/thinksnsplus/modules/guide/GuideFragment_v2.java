@@ -48,6 +48,9 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
     private List<RealAdvertListBean> mBootAdverts;
 
+    private long mStartTime;
+    private static final int MIN_SHOW_DUIDE_PAGE_TIME = 5000;
+
 
     /**
      * Activity 手动调用处理
@@ -86,6 +89,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
     @Override
     protected void initView(View rootView) {
+        mStartTime = System.currentTimeMillis();
         RxView.clicks(mGuideText).throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> mPresenter.checkLogin());
@@ -141,6 +145,21 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     @Override
     public void startActivity(Class aClass) {
         repleaseAdvert();
+        /**
+         * 启动主页故意最低显示 5s
+         */
+        while (System.currentTimeMillis() - mStartTime < MIN_SHOW_DUIDE_PAGE_TIME) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        doGoNewPage(aClass);
+
+    }
+
+    private void doGoNewPage(Class aClass) {
         startActivity(new Intent(getActivity(), aClass));
         getActivity().finish();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
