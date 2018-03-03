@@ -1033,6 +1033,6 @@ public class ApiConfig {
     任务说明
      */
     public static final String APP_PATH_GET_TASTK_REWARD_RULE = "api/" + API_VERSION_2 + "/tbm/task/explain";
-
-
+    // 填写邀请码
+    public static final String APP_PATH_SUBMIT_INVITE_CODE = "api/" + API_VERSION_2 + "/tbm/invite";
 }

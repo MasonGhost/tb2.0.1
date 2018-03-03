@@ -13,7 +13,7 @@ import com.zhiyicx.common.mvp.i.IBaseView
 interface EditInviteCodeContract {
 
     interface View : IBaseView<Presenter> {
-        fun submitCallBack(b: Boolean)
+        fun submitCallBack(b: Boolean, msg: String)
     }
 
     interface Presenter : IBasePresenter {

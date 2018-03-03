@@ -424,4 +424,9 @@ public interface IUserInfoRepository {
      * @return
      */
     Observable<TBTaskRewardRuleBean> getTaskRewardRule();
+
+    /**
+     *填写邀请码
+     */
+    Observable<BaseJsonV2> submitInviteCode(int user_id);
 }

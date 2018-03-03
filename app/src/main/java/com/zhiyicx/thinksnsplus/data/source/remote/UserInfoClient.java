@@ -580,4 +580,12 @@ public interface UserInfoClient {
     @GET(APP_PAHT_WALLET_RECHARGE_SUCCESS_LIST)
     Observable<List<RechargeSuccessBean>> getRechargeSuccessList(@Query("limit") int limit, @Query("after") int after, @Query("action") String
             action);
+    /**
+     * 获取任务奖励说明
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(ApiConfig.APP_PATH_SUBMIT_INVITE_CODE)
+    Observable<BaseJsonV2> submitInviteCode(@Field("user_id") int user_id);
 }
