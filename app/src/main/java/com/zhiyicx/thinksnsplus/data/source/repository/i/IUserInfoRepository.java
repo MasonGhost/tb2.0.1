@@ -429,6 +429,22 @@ public interface IUserInfoRepository {
      */
     Observable<TBTaskRewardRuleBean> getTaskRewardRule();
 
+    /**
+     *填写邀请码
+     */
+    Observable<BaseJsonV2> submitInviteCode(int user_id);
+
+    /**
+     *修改是否参与排名
+     */
+    Observable<String> changeRankStatus();
+
+
+    /**
+     *获取是否参与排名
+     */
+    Observable<String> getRankStatus();
+
 
     /**
      * 搜索机构用户

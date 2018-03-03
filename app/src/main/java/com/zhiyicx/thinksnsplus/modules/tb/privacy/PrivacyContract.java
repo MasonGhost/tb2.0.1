@@ -10,6 +10,14 @@ import com.zhiyicx.common.mvp.i.IBaseView;
  * @Description
  */
 public interface PrivacyContract {
-    interface View extends IBaseView<Presenter>{}
-    interface Presenter extends IBaseTouristPresenter{}
+    interface View extends IBaseView<Presenter>{
+        void onChangeRankStatus(boolean rank);
+
+        void onGetRankStatus(int rankStatus);
+    }
+    interface Presenter extends IBaseTouristPresenter{
+        void changeRankStatus(boolean rank);
+
+        void getRankStatus();
+    }
 }

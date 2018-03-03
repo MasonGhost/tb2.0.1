@@ -50,6 +50,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
      * "avatar": "http://plus.io/api/v2/users/1/avatar", // 头像
      * "following": false,  基于这条消息的用户是否关注了我
      * "follower": false,   基于这条消息的用户是否被我关注了
+     * "rank_status": 1 是否参与排名
      * "extra": {
      * "user_id": 1,
      * "likes_count": 0, // 被喜欢统计数
@@ -109,7 +110,15 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
 
     private int user_rank;
     private int friend_count;
+    private int rank_status;
 
+    public int getRank_status() {
+        return rank_status;
+    }
+
+    public void setRank_status(int rank_status) {
+        this.rank_status = rank_status;
+    }
 
     public int getUser_rank() {
         return user_rank;
@@ -699,6 +708,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         dest.writeParcelable(this.wallet, flags);
         dest.writeInt(this.user_rank);
         dest.writeInt(this.friend_count);
+        dest.writeInt(this.rank_status);
         dest.writeSerializable(this.currency);
         dest.writeParcelable(this.extra, flags);
         dest.writeParcelable(this.verified, flags);
@@ -730,6 +740,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.wallet = in.readParcelable(WalletBean.class.getClassLoader());
         this.user_rank = in.readInt();
         this.friend_count = in.readInt();
+        this.rank_status = in.readInt();
         this.currency = (IntegrationBean) in.readSerializable();
         this.extra = in.readParcelable(UserInfoExtraBean.class.getClassLoader());
         this.verified = in.readParcelable(VerifiedBean.class.getClassLoader());
@@ -739,12 +750,12 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.has_deleted = in.readByte() != 0;
     }
 
-    @Generated(hash = 854944651)
+    @Generated(hash = 666655964)
     public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
             String location, boolean following, boolean follower, String created_at, String updated_at,
-            String avatar, String cover, int user_rank, int friend_count, IntegrationBean currency,
-            UserInfoExtraBean extra, VerifiedBean verified, List<UserTagBean> tags, String im_pwd_hash,
-            boolean initial_password, boolean has_deleted) {
+            String avatar, String cover, int user_rank, int friend_count, int rank_status,
+            IntegrationBean currency, UserInfoExtraBean extra, VerifiedBean verified,
+            List<UserTagBean> tags, String im_pwd_hash, boolean initial_password, boolean has_deleted) {
         this.user_id = user_id;
         this.name = name;
         this.phone = phone;
@@ -760,6 +771,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.cover = cover;
         this.user_rank = user_rank;
         this.friend_count = friend_count;
+        this.rank_status = rank_status;
         this.currency = currency;
         this.extra = extra;
         this.verified = verified;

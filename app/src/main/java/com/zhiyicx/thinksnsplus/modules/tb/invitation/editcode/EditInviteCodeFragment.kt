@@ -9,6 +9,7 @@ import com.jakewharton.rxbinding.view.RxView
 import com.jakewharton.rxbinding.widget.RxTextView
 import com.zhiyicx.baseproject.base.TSFragment
 import com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME
+import com.zhiyicx.common.utils.ToastUtils
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow
 import com.zhiyicx.thinksnsplus.R
 import com.zhiyicx.thinksnsplus.widget.popwindow.TBCenterInfoPopWindow
@@ -62,11 +63,11 @@ class EditInviteCodeFragment : TSFragment<EditInviteCodeContract.Presenter>(), E
                 .subscribe { event -> mBtSubmit.isEnabled = !TextUtils.isEmpty(event.editable()) }
     }
 
-    override fun submitCallBack(b: Boolean) {
+    override fun submitCallBack(b: Boolean, msg: String) {
         if(b){
-
+            ToastUtils.showToast(msg)
         }else{
-            showPopupWindow(getString(R.string.invite_firend_tip),getString(R.string.invite_firend_tip_fail))
+            showPopupWindow(getString(R.string.invite_firend_tip), msg)
         }
     }
     /**

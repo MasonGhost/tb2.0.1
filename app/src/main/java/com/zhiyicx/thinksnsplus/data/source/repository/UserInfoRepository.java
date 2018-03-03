@@ -1061,6 +1061,27 @@ public class UserInfoRepository implements IUserInfoRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    @Override
+    public Observable<BaseJsonV2> submitInviteCode(int user_id) {
+        return mUserInfoClient.submitInviteCode(user_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<String> changeRankStatus() {
+        return mUserInfoClient.changeRankStatus()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<String> getRankStatus() {
+        return  mUserInfoClient.getRankStatus()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     /**
      * @param limit limit	int	条目数
      * @param size  offset	int	翻页标示

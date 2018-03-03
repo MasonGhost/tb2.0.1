@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.view.View
@@ -32,7 +33,6 @@ import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity
 import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordActivity
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity
-import com.zhiyicx.thinksnsplus.modules.tb.invitation.InvitationActivity
 import com.zhiyicx.thinksnsplus.modules.tb.privacy.PrivacyActivity
 import java.util.concurrent.TimeUnit
 
@@ -241,7 +241,6 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
                     startActivity(Intent(mActivity, FeedBackActivity::class.java))
                 }
     }
-
 
     /**
      * 初始化清理缓存选择弹框

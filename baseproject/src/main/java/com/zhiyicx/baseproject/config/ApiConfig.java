@@ -1033,7 +1033,13 @@ public class ApiConfig {
     任务说明
      */
     public static final String APP_PATH_GET_TASTK_REWARD_RULE = "api/" + API_VERSION_2 + "/tbm/task/explain";
+    // 填写邀请码
+    public static final String APP_PATH_SUBMIT_INVITE_CODE = "api/" + API_VERSION_2 + "/tbm/invite";
 
+    // 改变是否参与排名的状态
+    public static final String APP_PATH_CHANGE_RANK_STATUS = "api/" + API_VERSION_2 + "/tbm/task/explain";
+    // 改变是否参与排名的状态
+    public static final String APP_PATH_GET_RANK_STATUS = "api/" + API_VERSION_2 + "/tbm/user/rank/status";
     /*
      * 搜索机构用户
      */

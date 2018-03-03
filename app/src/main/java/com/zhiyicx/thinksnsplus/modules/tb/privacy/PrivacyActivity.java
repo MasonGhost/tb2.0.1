@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.tb.privacy;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 /**
  * @Author Jliuer
@@ -17,6 +18,10 @@ public class PrivacyActivity extends TSActivity<PrivacyPresenter, PrivacyFragmen
 
     @Override
     protected void componentInject() {
-
+        DaggerPrivacyComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .privacyPresenterModule(new PrivacyPresenterModule(mContanierFragment))
+                .build()
+                .inject(this);
     }
 }
