@@ -33,7 +33,8 @@ public class ContributionListPresenter extends AppBasePresenter<ContributionList
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscribe = mUserInfoRepository.getContributionRank(maxId, TSListFragment.DEFAULT_PAGE_SIZE, mRootView.getType())
+        Subscription subscribe = mUserInfoRepository.getContributionRank((long)TSListFragment.DEFAULT_PAGE_SIZE,maxId.intValue(),  mRootView
+                .getType())
                 .subscribe(new BaseSubscribeForV2<List<ContributionData>>() {
                     @Override
                     protected void onSuccess(List<ContributionData> data) {

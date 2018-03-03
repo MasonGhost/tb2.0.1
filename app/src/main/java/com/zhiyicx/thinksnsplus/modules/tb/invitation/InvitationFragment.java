@@ -16,9 +16,13 @@ import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PathConfig;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.utils.ExcutorUtil;
 import com.zhiyicx.baseproject.widget.popwindow.CenterAlertPopWindow;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
+import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
+import com.zhiyicx.common.thridmanager.share.Share;
+import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FileUtils;
@@ -27,6 +31,7 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.popwindow.TBCenterInfoPopWindow;
 
@@ -49,7 +54,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.URL_INVITE_FIRENDS_FORMAT
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class InvitationFragment extends TSFragment<InvitationContract.Presenter> implements InvitationContract.View {
+public class InvitationFragment extends TSFragment<InvitationContract.Presenter> implements InvitationContract.View, OnShareCallbackListener {
 
     @BindView(R.id.iv_top_logo)
     ImageView mIvTopLogo;
@@ -82,6 +87,7 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
     private TSnackbar mSavingTSnackbar;
     private Subscription mSaveImageSubscription;
 
+    private UmengSharePolicyImpl mSharePolicy;
 
 
     public static InvitationFragment newInstance(Bundle bundle) {
@@ -102,9 +108,17 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
 
     @Override
     protected void initData() {
-        // 设置 二维码
-        mIv2code.post(() -> mIv2code.setImageBitmap(ImageUtils.create2Code(getInviteLink(), mIv2code.getHeight())));
+        mSharePolicy = new UmengSharePolicyImpl(mActivity);
+
         mTvInvitationCode.setText(String.valueOf(AppApplication.getMyUserIdWithdefault()));
+        mPresenter.getShareLink();
+    }
+
+    @Override
+    public void getShareLinkSuccess(TBShareLinkBean data) {
+        // 设置 二维码
+        mIv2code.setImageBitmap(ImageUtils.create2Code(data.getLink(), mIv2code.getHeight()));
+
     }
 
     @Override
@@ -125,9 +139,18 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
                 break;
             // 微信
             case R.id.tv_wx:
+
+                ShareContent shareContent = new ShareContent();
+                shareContent.setBitmap(takeScreenShot(mLlShareContianer));
+                mSharePolicy.setShareContent(shareContent);
+                mSharePolicy.shareWechat(mActivity, InvitationFragment.this);
                 break;
             // 朋友圈
             case R.id.tv_friend:
+                ShareContent shareContentFriend = new ShareContent();
+                shareContentFriend.setBitmap(takeScreenShot(mLlShareContianer));
+                mSharePolicy.setShareContent(shareContentFriend);
+                mSharePolicy.shareMoment(mActivity, InvitationFragment.this);
                 break;
             // 复制链接
             case R.id.tv_copy:
@@ -148,9 +171,9 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
     private Bitmap takeScreenShot(View view) {
         view.setDrawingCacheEnabled(true);
         view.buildDrawingCache();
-        int width = DeviceUtils.getScreenWidth(mActivity);
-        int height = DeviceUtils.getScreenHeight(mActivity);
-        Bitmap result = Bitmap.createBitmap(view.getDrawingCache(), 0, 0, width, height - mLlThirdPartContianer.getHeight());
+        int width = view.getWidth();
+        int height = view.getHeight();
+        Bitmap result = Bitmap.createBitmap(view.getDrawingCache(), 0, 0, width, height);
         view.destroyDrawingCache();
         return result;
     }
@@ -216,5 +239,27 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
 
     public String getInviteLink() {
         return String.format(Locale.getDefault(), URL_INVITE_FIRENDS_FORMAT, AppApplication.getMyUserIdWithdefault());
+    }
+
+    @Override
+    public void onStart(Share share) {
+
+    }
+
+    @Override
+    public void onSuccess(Share share) {
+        mPresenter.shareTask();
+        showSnackSuccessMessage(getString(R.string.share_sccuess));
+    }
+
+    @Override
+    public void onError(Share share, Throwable throwable) {
+        showSnackErrorMessage(getString(R.string.share_fail));
+    }
+
+    @Override
+    public void onCancel(Share share) {
+        showSnackSuccessMessage(getString(R.string.share_cancel));
+
     }
 }

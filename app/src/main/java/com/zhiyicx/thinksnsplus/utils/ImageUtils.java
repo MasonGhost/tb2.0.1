@@ -449,7 +449,7 @@ public class ImageUtils {
     public static Bitmap create2Code(String str, int size) {
         Bitmap result = QRCodeEncoder.syncEncodeQRCode(str, size);
         if (result != null) {
-            Bitmap logo = BitmapFactory.decodeResource(AppApplication.getContext().getResources(), R.mipmap.login_qq);
+            Bitmap logo = BitmapFactory.decodeResource(AppApplication.getContext().getResources(), R.mipmap.icon);
             Canvas canvas = new Canvas(result);
             canvas.drawBitmap(logo, result.getWidth() / 2 - logo.getWidth() / 2, result.getHeight() / 2 - logo.getHeight() / 2, null);
         }

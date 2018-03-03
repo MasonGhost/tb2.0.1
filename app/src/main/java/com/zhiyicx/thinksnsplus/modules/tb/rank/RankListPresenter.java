@@ -31,7 +31,7 @@ public class RankListPresenter extends AppBasePresenter<RankListContract.View> i
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscribe = mUserInfoRepository.getTBRank(maxId, TSListFragment.DEFAULT_PAGE_SIZE)
+        Subscription subscribe = mUserInfoRepository.getTBRank( (long)TSListFragment.DEFAULT_PAGE_SIZE,maxId.intValue())
                 .subscribe(new BaseSubscribeForV2<List<RankData>>() {
                     @Override
                     protected void onSuccess(List<RankData> data) {

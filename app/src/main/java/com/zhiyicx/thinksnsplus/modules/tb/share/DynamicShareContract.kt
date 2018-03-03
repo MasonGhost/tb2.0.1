@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.tb.share
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter
 import com.zhiyicx.common.mvp.i.IBasePresenter
 import com.zhiyicx.common.mvp.i.IBaseView
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean
 
 /**
  * @Describe
@@ -13,7 +14,9 @@ import com.zhiyicx.common.mvp.i.IBaseView
 
 interface DynamicShareContract {
 
-    interface View : IBaseView<Presenter>
+    interface View : IBaseView<Presenter> {
+        fun getShareLinkSuccess(data: TBShareLinkBean)
+    }
 
     interface Presenter : IBaseTouristPresenter {
         /**
@@ -24,6 +27,7 @@ interface DynamicShareContract {
         fun submitInviteCode(inviteCode: String)
 
         fun shareTask(sourceId:String)
+        fun getShareLink()
     }
 
 }

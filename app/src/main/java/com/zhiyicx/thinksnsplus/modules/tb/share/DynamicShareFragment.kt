@@ -33,6 +33,7 @@ import com.zhiyicx.common.thridmanager.share.ShareContent
 import com.zhiyicx.common.thridmanager.share.SharePolicy
 import com.zhiyicx.common.utils.*
 import com.zhiyicx.thinksnsplus.base.AppApplication
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean
 import rx.Observable
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
@@ -130,6 +131,7 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
     }
 
     override fun initData() {
+        mPresenter.getShareLink();
         if (mDynamicShareBean == null) {
             mItemContainer.visibility = View.GONE
             return
@@ -140,7 +142,6 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
         mTvContent.text = mDynamicShareBean!!.content
         mTvQRTip.text = getString(R.string.scan_get_candy, mPresenter.walletGoldName)
 
-        mIvQR.post({ mIvQR.setImageBitmap(ImageUtils.create2Code(getInviteLink(), mIvQR.getHeight())) })
     }
 
     private fun initListener() {
@@ -221,18 +222,14 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
                 }
     }
 
-    override fun onDestroy() {
-        try {
-            if (mSaveImageSubscription != null && mSaveImageSubscription.isUnsubscribed()) {
-                mSaveImageSubscription.unsubscribe()
-            }
-        } catch (e: Exception) {
-        }
-        super.onDestroy()
-    }
 
     fun getInviteLink(): String {
         return String.format(Locale.getDefault(), URL_INVITE_FIRENDS_FORMAT, AppApplication.getMyUserIdWithdefault())
+    }
+
+    override fun getShareLinkSuccess(data: TBShareLinkBean) {
+        mIvQR.setImageBitmap(ImageUtils.create2Code(data.link, mIvQR.getHeight()))
+
     }
 
     override fun onStart(share: Share) {}
@@ -248,6 +245,17 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
 
     override fun onCancel(share: Share) {
         showSnackSuccessMessage(context.getString(R.string.share_cancel))
+    }
+
+
+    override fun onDestroy() {
+        try {
+            if (mSaveImageSubscription != null && mSaveImageSubscription.isUnsubscribed()) {
+                mSaveImageSubscription.unsubscribe()
+            }
+        } catch (e: Exception) {
+        }
+        super.onDestroy()
     }
 
     companion object {
