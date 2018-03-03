@@ -1,26 +1,34 @@
 package com.zhiyicx.thinksnsplus.modules.tb.mechainism;
 
+import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.TBDynamicFragment;
-import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 
 /**
  * @Author Jliuer
@@ -32,6 +40,14 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
 
     @BindView(R.id.mechainism_appbar_layout)
     AppBarLayout mAppBarLayout;
+    @BindView(R.id.iv_head)
+    UserAvatarView mIvHeadIcon;
+    @BindView(R.id.tv_name)
+    TextView mTvUserName;
+    @BindView(R.id.tv_dec)
+    TextView mTvDes;
+    Unbinder unbinder;
+
 
     @Override
     protected boolean setUseSatusbar() {
@@ -73,8 +89,9 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
     protected List<Fragment> initFragments() {
         if (mFragmentList == null) {
             mFragmentList = new ArrayList();
-            mFragmentList.add(MechanismCenterFragment.newInstance());
-            mFragmentList.add(TBDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
+            mFragmentList.add(MechanismCenterFragment.newInstance(getArguments()));
+            mFragmentList.add(TBDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this, getArguments().getParcelable(PersonalCenterFragment
+                    .PERSONAL_CENTER_DATA)));
         }
         return mFragmentList;
     }
@@ -117,6 +134,30 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
 
     @Override
     protected void initData() {
+        UserInfoBean userInfoBean = getArguments().getParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA);
+        ImageUtils.loadCircleUserHeadPic(userInfoBean, mIvHeadIcon);
+        // 设置用户名
+        mTvUserName.setText(userInfoBean.getName());
+        mTvDes.setText(userInfoBean.getIntro());
+    }
 
+    public static MechanismCenterContainerFragment newInstance(Bundle bundle) {
+        MechanismCenterContainerFragment mechanismCenterContainerFragment = new MechanismCenterContainerFragment();
+        mechanismCenterContainerFragment.setArguments(bundle);
+        return mechanismCenterContainerFragment;
+    }
+
+
+    @OnClick({R.id.iv_back, R.id.iv_more})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.iv_back:
+                getActivity().finish();
+                break;
+            case R.id.iv_more:
+                
+                break;
+                default:
+        }
     }
 }

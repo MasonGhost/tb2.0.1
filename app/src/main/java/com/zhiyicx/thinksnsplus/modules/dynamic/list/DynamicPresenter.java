@@ -127,6 +127,76 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
      */
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
+        if (mRootView.getMcurrentUser() != null) {
+
+            Subscription subscription = mDynamicRepository.getDynamicListForSomeone(mRootView.getMcurrentUser().getUser_id(), maxId, mRootView
+                    .getDynamicType())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .map(dynamicDetailBeanV2s -> {
+                        List<DynamicDetailBeanV2> result = new ArrayList<>();
+
+                        for (DynamicDetailBeanV2 detailBeanV2 : dynamicDetailBeanV2s) {
+                            if (detailBeanV2.getUser_id() == mRootView.getMcurrentUser().getUser_id()) {
+                                result.add(detailBeanV2);
+                            }
+                        }
+                        return result;
+                    })
+                    .map(listBaseJson -> {
+                        // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                        if (!isLoadMore && AppApplication.getmCurrentLoginAuth().getUser_id() == mRootView.getMcurrentUser().getUser_id()) {
+                            List<DynamicDetailBeanV2> data = getDynamicBeenFromDBV2();
+                            try {
+                                //修改动态条数，把自己正在发布发加上
+//                                mRootView.updateDynamicCounts(data.size());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            data.addAll(listBaseJson);
+                        }
+                        // 把自己发的评论加到评论列表的前面
+                        for (int i = 0; i < listBaseJson.size(); i++) {
+                            // 处理友好显示数据
+                            listBaseJson.get(i).handleData();
+                            List<DynamicCommentBean> dynamicCommentBeen = mDynamicCommentBeanGreenDao.getMySendingComment(listBaseJson.get(i)
+                                    .getFeed_mark());
+                            if (!dynamicCommentBeen.isEmpty()) {
+                                dynamicCommentBeen.addAll(listBaseJson.get(i).getComments());
+                                listBaseJson.get(i).getComments().clear();
+                                listBaseJson.get(i).getComments().addAll(dynamicCommentBeen);
+                            }
+                        }
+
+                        return listBaseJson;
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new BaseSubscribeForV2<List<DynamicDetailBeanV2>>() {
+                        @Override
+                        protected void onSuccess(List<DynamicDetailBeanV2> data) {
+//                            mInterfaceNum++;
+                            mRootView.onNetResponseSuccess(data, isLoadMore);
+//                            allready();
+                        }
+
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            mRootView.showMessage(message);
+                        }
+
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            mRootView.onResponseError(throwable, isLoadMore);
+                        }
+                    });
+
+            addSubscrebe(subscription);
+
+            return;
+        }
+
+
         if (ApiConfig.DYNAMIC_TYPE_EMPTY.equals(mRootView.getDynamicType())) {
             mRootView.onNetResponseSuccess(new ArrayList<>(), isLoadMore);
             return;

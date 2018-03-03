@@ -1,9 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.tb.mechainism;
 
+import android.os.Bundle;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 
 /**
  * @Author Jliuer
@@ -12,9 +15,11 @@ import com.zhiyicx.thinksnsplus.R;
  * @Description
  */
 public class MechanismCenterFragment extends TSFragment {
+    private UserInfoBean mUserInfoBean;
 
-    public static MechanismCenterFragment newInstance() {
+    public static MechanismCenterFragment newInstance(Bundle bundle) {
         MechanismCenterFragment mechanismCenterFragment = new MechanismCenterFragment();
+        mechanismCenterFragment.setArguments(bundle);
         return mechanismCenterFragment;
     }
 
@@ -45,7 +50,7 @@ public class MechanismCenterFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
-
+        mUserInfoBean = getArguments().getParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA);
     }
 
     @Override
