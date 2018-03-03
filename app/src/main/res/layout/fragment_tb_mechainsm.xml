@@ -459,7 +459,7 @@
                 android:layout_weight="1"
                 android:drawableLeft="@mipmap/ico_pdf"
                 android:drawablePadding="@dimen/spacing_small"
-                android:text="TokenBook白皮书"
+                android:text="白皮书下载"
                 android:textColor="@color/important_for_content"
                 android:textColorHint="@color/general_for_hint"
                 android:textSize="@dimen/size_sub_title"/>

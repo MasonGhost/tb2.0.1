@@ -50,6 +50,7 @@ import com.zhiyicx.thinksnsplus.widget.popwindow.TBCenterInfoPopWindow;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -57,6 +58,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskBean.TBTASKTRIGGER.CERTIFICATION;
@@ -151,6 +153,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
      */
     private CheckInBean mCheckInBean;
     private TBTaskRewardRuleBean mTBTaskRewardRuleBean;
+    private Subscription mTimeerSub;
 
 
     public static MineFragment newInstance() {
@@ -470,7 +473,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                     false, R
                             .drawable
                             .selector_button_corner_circle_solid_small_gradient);
-            mMtiEditInviteCode.setEnabled(mTBTaskContainerBean.isInvite_code() == null);
+            mMtiEditInviteCode.getButton().setEnabled(mTBTaskContainerBean.isInvite_code() == null);
 
             mMtiEditInviteCode.getButton().setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -515,9 +518,11 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                         case 2:
                             mMtiCertify.setButtonText(getString(R.string.has_reflected));
 
+
                             break;
                         case 3:
                             mMtiCertify.setButtonText(getString(R.string.immediate_certify));
+
 
                             break;
 
@@ -602,15 +607,26 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 .parentView(getContentView())
                 .build();
         mCheckTipPop.show();
-        getContentView().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (getActivity() != null && mCheckTipPop != null && mCheckTipPop.isShowing()) {
-                    mCheckTipPop.hide();
-                }
+         mTimeerSub = Observable.timer(1000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+                        if (getActivity() != null && mCheckTipPop != null && mCheckTipPop.isShowing()) {
+                            mCheckTipPop.hide();
+                        }
+                    }
 
-            }
-        }, 2500);
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+
+                    }
+                });
     }
 
     /**
@@ -661,5 +677,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         super.onDestroyView();
         dismissPop(mCertificationWindow);
         dismissPop(mCheckTipPop);
+        if(mTimeerSub!=null&&mTimeerSub.isUnsubscribed()){
+            mTimeerSub.unsubscribe();
+        }
     }
 }

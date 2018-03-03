@@ -26,8 +26,17 @@ public class MerchainInfo {
     private String introduce;
     private String other_info;
     private int white_paper;
+    private String white_paper_name;
     private String created_at;
     private String updated_at;
+
+    public String getWhite_paper_name() {
+        return white_paper_name;
+    }
+
+    public void setWhite_paper_name(String white_paper_name) {
+        this.white_paper_name = white_paper_name;
+    }
 
     public int getPhoto() {
         return photo;

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.tb.mechainism;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -168,6 +169,12 @@ public class MechanismCenterFragment extends TSFragment {
                 downloadId2 = createDownloadTask().start();
             }
         });
+        if (TextUtils.isEmpty(data.getWhite_paper_name())) {
+            mLlBookContainer.setVisibility(View.GONE);
+        } else {
+            mLlBookContainer.setVisibility(View.VISIBLE);
+            mTvBook.setText(data.getWhite_paper_name());
+        }
     }
 
     private BaseDownloadTask createDownloadTask() {
@@ -177,8 +184,8 @@ public class MechanismCenterFragment extends TSFragment {
 
         return FileDownloader.getImpl().create(url + "?token=" + AppApplication.getmCurrentLoginAuth().getToken())
                 .setPath(mPath + ".pdf", false)
-                .setCallbackProgressTimes(300)
-                .setMinIntervalUpdateSpeed(400)
+                .setCallbackProgressTimes(100)
+                .setMinIntervalUpdateSpeed(200)
                 .setListener(new FileDownloadSampleListener() {
 
                     @Override
