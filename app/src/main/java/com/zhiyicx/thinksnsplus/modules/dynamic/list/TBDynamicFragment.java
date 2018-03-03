@@ -76,7 +76,7 @@ public class TBDynamicFragment extends DynamicFragment {
                 Intent intent = new Intent(mActivity, DynamicShareActivity.class);
                 Bundle bundle = new Bundle();
                 DynamicShareBean dynamicShareBean = new DynamicShareBean(mListDatas.get(dataPosition).getUserInfoBean(), mListDatas.get
-                        (dataPosition).getFriendlyTime(), mListDatas.get(dataPosition).getFeed_content(), String.valueOf(mListDatas.get(dataPosition)
+                        (dataPosition).getCreated_at(), mListDatas.get(dataPosition).getFeed_content(), String.valueOf(mListDatas.get(dataPosition)
                         .getId
                                 ()));
                 bundle.putSerializable(BUNDLE_SHARE_DATA, dynamicShareBean);

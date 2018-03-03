@@ -396,7 +396,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         // 初始化界面数据
         // 设置用户名
         mEtUserName.setText(mUserInfoBean.getName());
-        mEtUserName.setEnabled(false);
         // 设置性别
         mTvSex.setText(mUserInfoBean.getSexString());
         mTvSex.setTag(R.id.view_data, mUserInfoBean.getSex());// 设置性别编号

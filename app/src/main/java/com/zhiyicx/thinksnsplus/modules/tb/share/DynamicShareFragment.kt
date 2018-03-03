@@ -198,7 +198,7 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
                 .map {
                     val imgName = name + ".jpg"
                     val imgPath = PathConfig.PHOTO_SAVA_PATH
-                    DrawableProvider.saveBitmap(bitmap, imgName, imgPath)
+                    DrawableProvider.saveBitmap(bitmap, imgName, imgPath,mActivity.applicationContext)
                 }
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())

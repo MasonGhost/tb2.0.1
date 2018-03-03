@@ -1,5 +1,7 @@
 package com.zhiyicx.common.utils;
 
+import android.app.Application;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -267,14 +269,21 @@ public class DrawableProvider {
      * @param imgPath 图片目录
      * @return 失败返回各种提示，成功返回图片路径 -2 sd卡不存在 -1 图片保存失败 其他 图片保存成功
      */
-    public static String saveBitmap(Bitmap bm, String picName, String imgPath) {
+    public static String saveBitmap(Bitmap bm, String picName, String imgPath, Context context) {
+
         // 保存在sd卡中
         File dir = new File(Environment.getExternalStorageDirectory(), imgPath);
 
         if (!dir.exists() || !dir.isDirectory()) {
             // 如果没有这样的文件，或者有同名的文件但不是目录，就需要创建这样的目录
             if (!dir.mkdir()) {
-                return "-2";
+                String reulst = FileUtils.saveBitmapToFile(context.getApplicationContext(), bm, picName);
+                if (reulst == null) {
+                    return "-1";
+                } else {
+                    return reulst;
+                }
+
             }
         }
         try {

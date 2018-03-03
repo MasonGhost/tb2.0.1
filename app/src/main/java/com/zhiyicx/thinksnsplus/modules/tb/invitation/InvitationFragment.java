@@ -117,7 +117,7 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
 
     @Override
     public void getShareLinkSuccess(TBShareLinkBean data) {
-        this.mTBShareLinkBean=data;
+        this.mTBShareLinkBean = data;
         // 设置 二维码
         mIv2code.setImageBitmap(ImageUtils.create2Code(data.getLink(), mIv2code.getHeight()));
 
@@ -205,7 +205,7 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
                 .map(integer -> {
                     String imgName = name + ".jpg";
                     String imgPath = PathConfig.PHOTO_SAVA_PATH;
-                    return DrawableProvider.saveBitmap(bitmap, imgName, imgPath);
+                    return DrawableProvider.saveBitmap(bitmap, imgName, imgPath, mActivity.getApplicationContext());
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())

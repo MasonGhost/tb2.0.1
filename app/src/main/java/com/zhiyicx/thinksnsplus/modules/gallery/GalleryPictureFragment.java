@@ -575,7 +575,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .map(integer -> {
                     String imgName = ConvertUtils.getStringMD5(url) + ".jpg";
                     String imgPath = PathConfig.PHOTO_SAVA_PATH;
-                    return DrawableProvider.saveBitmap(bitmap, imgName, imgPath);
+                    return DrawableProvider.saveBitmap(bitmap, imgName, imgPath,mActivity.getApplicationContext());
                 })
                 // subscribeOn & doOnSubscribe 的特殊性质
                 .subscribeOn(AndroidSchedulers.mainThread())

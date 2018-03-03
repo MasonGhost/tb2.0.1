@@ -257,7 +257,7 @@ public class HeadPortraitViewFragment extends TSFragment<HeadPortraitViewContrac
                 .map(integer -> {
                     String imgName = ConvertUtils.getStringMD5(url) + ".jpg";
                     String imgPath = PathConfig.PHOTO_SAVA_PATH;
-                    return DrawableProvider.saveBitmap(bitmap, imgName, imgPath);
+                    return DrawableProvider.saveBitmap(bitmap, imgName, imgPath,mActivity.getApplicationContext());
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())// subscribeOn & doOnSubscribe 的特殊性质
                 .observeOn(AndroidSchedulers.mainThread())
