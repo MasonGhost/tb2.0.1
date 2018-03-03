@@ -1044,6 +1044,9 @@ public class ApiConfig {
      */
     public static final String APP_PATH_SEARCH_MERCHANSIM_INFO = "api/" + API_VERSION_2 + "/tbm/orginfo";
 
-
+    /*
+       * 分享连接
+       */
+    public static final String APP_PATH_SHARE_LINK_URL = "api/" + API_VERSION_2 + "/tbm/invite-link-builder";
 
 }

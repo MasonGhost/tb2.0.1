@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.data.beans.request.BindAccountRequstBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.DeleteUserPhoneOrEmailRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.ThirdAccountBindRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequestBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
@@ -601,5 +602,13 @@ public interface UserInfoClient {
      */
     @GET(ApiConfig.APP_PATH_SEARCH_MERCHANSIM_INFO)
     Observable<MerchainInfo> getMerchainUserInfo(@Query("user_id") int user_id);
+
+    /**
+     * 分享连接
+     *
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_SHARE_LINK_URL)
+    Observable<TBShareLinkBean> getShareLink();
 
 }

@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
@@ -448,4 +449,11 @@ public interface IUserInfoRepository {
      * @return
      */
     Observable<MerchainInfo> getMerchainUserInfo( int user_id);
+
+    /**
+     * 分享连接
+     *
+     * @return
+     */
+    Observable<TBShareLinkBean> getShareLink();
 }
