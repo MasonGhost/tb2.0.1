@@ -87,28 +87,10 @@ public class MerchainContentWebLoadView extends BaseWebLoad{
     }
 
     public void setDetail(MerchainInfo data) {
-        data.setOther_info("# 分享\n" +
-                "\n" +
-                "## 快讯分享\n" +
-                "\n" +
-                "\n" +
-                "### 参数\n" +
-                "| 名称 | 类型 | 描述 |\n" +
-                "|:----:|:----:|------|\n" +
-                "| type   | string  | 非必须, 快讯分享需传:feed|\n" +
-                "| id | int | 非必须, 分享资源id |\n" +
-                "```\n" +
-                "POST /tbm/share\n" +
-                "```\n" +
-                "### 响应\n" +
-                "```\n" +
-                "status 204\n" +
-                "```\n");
         if (data != null) {
             // 资讯content
             if (!TextUtils.isEmpty(data.getOther_info())) {
                 mContent.setVisibility(VISIBLE);
-                mIvDetail.setVisibility(VISIBLE);
                 mContent.addStyleSheet(MarkDownRule.generateStandardStyle());
                 mContent.loadMarkdown(dealPic(data.getOther_info()));
                 mContent.setWebChromeClient(mWebChromeClient);

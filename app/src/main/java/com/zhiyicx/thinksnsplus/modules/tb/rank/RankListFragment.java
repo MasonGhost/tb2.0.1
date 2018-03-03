@@ -58,40 +58,6 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
                 TextView tvRank = holder.getView(R.id.tv_rank);
                 // 排名
                 holder.setText(R.id.tv_rank, String.valueOf(rankData.getExtra().getRank()));
-                switch (rankData.getExtra().getRank()) {
-                    case 1:
-                        holder.setTextColor(R.id.tv_rank, R.color.rank1);
-                        holder.setTextColor(R.id.tv_friends, R.color.rank1);
-                        holder.setTextColor(R.id.tv_tbmark, R.color.rank1);
-                        tvRank.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-                        tvRank.setTypeface(tvRank.getTypeface(), Typeface.BOLD_ITALIC);
-                        break;
-                    case 2:
-                        holder.setTextColor(R.id.tv_rank, R.color.rank2);
-                        holder.setTextColor(R.id.tv_friends, R.color.rank2);
-                        holder.setTextColor(R.id.tv_tbmark, R.color.rank2);
-                        tvRank.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-                        tvRank.setTypeface(tvRank.getTypeface(), Typeface.BOLD_ITALIC);
-
-                        break;
-                    case 3:
-                        holder.setTextColor(R.id.tv_rank, R.color.rank3);
-                        holder.setTextColor(R.id.tv_friends, R.color.rank3);
-                        holder.setTextColor(R.id.tv_tbmark, R.color.rank3);
-                        tvRank.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-                        tvRank.setTypeface(tvRank.getTypeface(), Typeface.BOLD_ITALIC);
-
-                        break;
-
-                    default:
-                        holder.setTextColor(R.id.tv_rank, R.color.themeColor);
-                        holder.setTextColor(R.id.tv_friends, R.color.important_for_content);
-                        holder.setTextColor(R.id.tv_tbmark, R.color.important_for_content);
-                        tvRank.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-                        tvRank.setTypeface(tvRank.getTypeface(), Typeface.NORMAL);
-
-                }
-
 
                 // 用户名
                 holder.setText(R.id.tv_name, rankData.getName());
@@ -101,6 +67,41 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
 
                 // TBMark
                 holder.setText(R.id.tv_tbmark, ConvertUtils.numberConvert(rankData.getExtra().getTb_mark_count()));
+                switch (rankData.getExtra().getRank()) {
+                    case 1:
+                        holder.setTextColor(R.id.tv_rank, getColor(R.color.rank1));
+                        holder.setTextColor(R.id.tv_friends, getColor(R.color.rank1));
+                        holder.setTextColor(R.id.tv_tbmark, getColor(R.color.rank1));
+                        tvRank.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                        tvRank.setTypeface(tvRank.getTypeface(), Typeface.BOLD_ITALIC);
+                        break;
+                    case 2:
+                        holder.setTextColor(R.id.tv_rank,getColor( R.color.rank2));
+                        holder.setTextColor(R.id.tv_friends, getColor(R.color.rank2));
+                        holder.setTextColor(R.id.tv_tbmark, getColor(R.color.rank2));
+                        tvRank.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                        tvRank.setTypeface(tvRank.getTypeface(), Typeface.BOLD_ITALIC);
+
+                        break;
+                    case 3:
+                        holder.setTextColor(R.id.tv_rank, getColor(R.color.rank3));
+                        holder.setTextColor(R.id.tv_friends,getColor( R.color.rank3));
+                        holder.setTextColor(R.id.tv_tbmark, getColor(R.color.rank3));
+                        tvRank.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                        tvRank.setTypeface(tvRank.getTypeface(), Typeface.BOLD_ITALIC);
+
+                        break;
+
+                    default:
+                        holder.setTextColor(R.id.tv_rank, getColor(R.color.themeColor));
+                        holder.setTextColor(R.id.tv_friends,getColor( R.color.important_for_content));
+                        holder.setTextColor(R.id.tv_tbmark, getColor(R.color.important_for_content));
+                        tvRank.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                        tvRank.setTypeface(tvRank.getTypeface(), Typeface.NORMAL);
+
+                }
+
+
             }
         };
         return adapter;

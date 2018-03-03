@@ -163,6 +163,12 @@ public class MechanismCenterFragment extends TSFragment {
         mTvIntroduce.setText(data.getIntroduce());
         mTvTime.setText(data.getCreated_at());
         mMerchainContentWebLoadView.setDetail(data);
+        mTvBook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override

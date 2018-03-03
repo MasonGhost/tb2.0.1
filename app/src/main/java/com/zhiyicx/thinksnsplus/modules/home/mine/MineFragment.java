@@ -255,9 +255,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         reLoadUserInfo(isVisibleToUser);
-        if (mPresenter != null) {
-            mPresenter.getTaskInfo();
-        }
     }
 
     private void reLoadUserInfo(boolean isVisibleToUser) {
@@ -268,6 +265,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             mPresenter.getUserInfoFromDB();
             mPresenter.updateUserInfo();
 //            mPresenter.getCertificationInfo();
+            mPresenter.getTaskInfo();
         }
     }
 

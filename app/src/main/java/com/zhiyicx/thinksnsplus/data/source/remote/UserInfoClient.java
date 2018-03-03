@@ -601,7 +601,7 @@ public interface UserInfoClient {
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_SUBMIT_INVITE_CODE)
-    Observable<BaseJsonV2> submitInviteCode(@Field("user_id") int user_id);
+    Observable<BaseJsonV2> submitInviteCode(@Field("user_id") String user_id);
 
     /**
      * 修改是否参与排名

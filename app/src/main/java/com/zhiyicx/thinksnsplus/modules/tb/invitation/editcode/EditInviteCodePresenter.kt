@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.tb.invitation.editcode
 import com.zhiyicx.common.base.BaseJsonV2
 import com.zhiyicx.common.mvp.BasePresenter
 import com.zhiyicx.common.utils.ToastUtils
+import com.zhiyicx.thinksnsplus.R
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository
 import org.json.JSONObject
@@ -24,23 +25,24 @@ constructor(rootView: EditInviteCodeContract.View) : BasePresenter<EditInviteCod
 
 
     override fun submitInviteCode(inviteCode: String) {
-        val code: Int
-        try {
-            code = inviteCode.toInt()
-            addSubscrebe(mUserInfoRepository.submitInviteCode(code)
-                    .subscribe(object : BaseSubscribeForV2<BaseJsonV2<*>>() {
-                        override fun onSuccess(data: BaseJsonV2<*>) {
-                            val msg: String = JSONObject(data.toString()).optString("message")
-                            if (msg == "绑定成功") mRootView.submitCallBack(true, msg) else mRootView.submitCallBack(false, msg)
-                        }
+        addSubscrebe(mUserInfoRepository.submitInviteCode(inviteCode)
+                .subscribe(object : BaseSubscribeForV2<BaseJsonV2<*>>() {
+                    override fun onSuccess(data: BaseJsonV2<*>) {
+                        mRootView.submitCallBack(true, "")
 
-                        override fun onFailure(message: String?, code: Int) {
-                            super.onFailure(message, code)
-                            if (message == "绑定成功") mRootView.submitCallBack(true, message) else mRootView.submitCallBack(false, message!!)
-                        }
-                    }))
-        } catch (e: NumberFormatException) {
-            ToastUtils.showLongToast("邀请码格式错误")
-        }
+                    }
+
+                    override fun onFailure(message: String?, code: Int) {
+                        super.onFailure(message, code)
+                        mRootView.submitCallBack(false, message!!)
+                    }
+
+                    override fun onException(throwable: Throwable?) {
+                        super.onException(throwable)
+                        mRootView.submitCallBack(false, mContext.getString(R.string.err_net_not_work))
+
+                    }
+                }))
+
     }
 }

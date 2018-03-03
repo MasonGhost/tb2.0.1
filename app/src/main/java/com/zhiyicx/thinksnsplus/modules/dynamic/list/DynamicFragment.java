@@ -1074,19 +1074,19 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     private void goDynamicDetail(int position, boolean isLookMoreComment) {
-        // 还未发送成功的动态列表不查看详情
-        if (mListDatas.get(position).getId() == null || mListDatas.get(position).getId() == 0) {
-            return;
-        }
-        Intent intent = new Intent(getActivity(), DynamicDetailActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(DYNAMIC_DETAIL_DATA, mListDatas.get(position));
-        bundle.putString(DYNAMIC_DETAIL_DATA_TYPE, getDynamicType());
-        bundle.putInt(DYNAMIC_DETAIL_DATA_POSITION, position);
-        bundle.putBoolean(LOOK_COMMENT_MORE, isLookMoreComment);
-        intent.putExtras(bundle);
-        startActivity(intent);
-        mPresenter.handleViewCount(mListDatas.get(position).getId(), position);
+//        // 还未发送成功的动态列表不查看详情
+//        if (mListDatas.get(position).getId() == null || mListDatas.get(position).getId() == 0) {
+//            return;
+//        }
+//        Intent intent = new Intent(getActivity(), DynamicDetailActivity.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable(DYNAMIC_DETAIL_DATA, mListDatas.get(position));
+//        bundle.putString(DYNAMIC_DETAIL_DATA_TYPE, getDynamicType());
+//        bundle.putInt(DYNAMIC_DETAIL_DATA_POSITION, position);
+//        bundle.putBoolean(LOOK_COMMENT_MORE, isLookMoreComment);
+//        intent.putExtras(bundle);
+//        startActivity(intent);
+//        mPresenter.handleViewCount(mListDatas.get(position).getId(), position);
     }
 
     @Override

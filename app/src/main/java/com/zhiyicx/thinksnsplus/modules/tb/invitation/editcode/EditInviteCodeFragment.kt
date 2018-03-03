@@ -7,6 +7,7 @@ import android.widget.TextView
 import butterknife.BindView
 import com.jakewharton.rxbinding.view.RxView
 import com.jakewharton.rxbinding.widget.RxTextView
+import com.trycatch.mysnackbar.Prompt
 import com.zhiyicx.baseproject.base.TSFragment
 import com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME
 import com.zhiyicx.common.utils.ToastUtils
@@ -65,9 +66,16 @@ class EditInviteCodeFragment : TSFragment<EditInviteCodeContract.Presenter>(), E
 
     override fun submitCallBack(b: Boolean, msg: String) {
         if(b){
-            ToastUtils.showToast(msg)
+            showSnackSuccessMessage("填写完成")
         }else{
             showPopupWindow(getString(R.string.invite_firend_tip), msg)
+        }
+    }
+
+    override fun snackViewDismissWhenTimeOut(prompt: Prompt?) {
+        super.snackViewDismissWhenTimeOut(prompt)
+        if(activity!=null&&Prompt.SUCCESS==prompt){
+            activity.finish()
         }
     }
     /**

@@ -72,17 +72,6 @@ public class ContributionListFragment extends TSListFragment<ContributionListCon
     }
 
     @Override
-    protected void initView(View rootView) {
-        super.initView(rootView);
-    }
-
-    @Override
-    protected void initData() {
-
-        super.initData();
-    }
-
-    @Override
     protected boolean showToolBarDivider() {
         return false;
     }
@@ -103,43 +92,44 @@ public class ContributionListFragment extends TSListFragment<ContributionListCon
                 ImageUtils.loadCircleUserHeadPic(contributionData.getInviter(), userAvatarView);
                 TextView tvRank = holder.getView(R.id.tv_rank);
                 // 排名
-                holder.setText(R.id.tv_rank, String.valueOf(contributionData.getRank()));
-                switch (contributionData.getRank()) {
+                holder.setText(R.id.tv_rank, String.valueOf(position + 1));
+
+                // 用户名
+                holder.setText(R.id.tv_name, contributionData.getInviter().getName());
+
+                // TBMark
+                holder.setText(R.id.tv_total, ConvertUtils.numberConvert(contributionData.getObtain()));
+                switch (position + 1) {
                     case 1:
-                        holder.setTextColor(R.id.tv_rank, R.color.rank1);
-                        holder.setTextColor(R.id.tv_tbmark, R.color.rank1);
+                        holder.setTextColor(R.id.tv_rank, getColor(R.color.rank1));
+                        holder.setTextColor(R.id.tv_total, getColor(R.color.rank1));
                         tvRank.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
                         tvRank.setTypeface(tvRank.getTypeface(), Typeface.BOLD_ITALIC);
                         break;
                     case 2:
-                        holder.setTextColor(R.id.tv_rank, R.color.rank2);
-                        holder.setTextColor(R.id.tv_tbmark, R.color.rank2);
+                        holder.setTextColor(R.id.tv_rank, getColor(R.color.rank2));
+                        holder.setTextColor(R.id.tv_total, getColor(R.color.rank2));
                         tvRank.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
                         tvRank.setTypeface(tvRank.getTypeface(), Typeface.BOLD_ITALIC);
 
                         break;
                     case 3:
-                        holder.setTextColor(R.id.tv_rank, R.color.rank3);
-                        holder.setTextColor(R.id.tv_tbmark, R.color.rank3);
+                        holder.setTextColor(R.id.tv_rank, getColor(R.color.rank3));
+                        holder.setTextColor(R.id.tv_total, getColor(R.color.rank3));
                         tvRank.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
                         tvRank.setTypeface(tvRank.getTypeface(), Typeface.BOLD_ITALIC);
 
                         break;
 
                     default:
-                        holder.setTextColor(R.id.tv_rank, R.color.themeColor);
-                        holder.setTextColor(R.id.tv_tbmark, R.color.important_for_content);
+                        holder.setTextColor(R.id.tv_rank, getColor(R.color.themeColor));
+                        holder.setTextColor(R.id.tv_total, getColor(R.color.important_for_content));
                         tvRank.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
                         tvRank.setTypeface(tvRank.getTypeface(), Typeface.NORMAL);
 
                 }
 
 
-                // 用户名
-                holder.setText(R.id.tv_name, contributionData.getInviter().getName());
-
-                // TBMark
-                holder.setText(R.id.tv_tbmark, ConvertUtils.numberConvert(contributionData.getObtain()));
             }
         };
         return adapter;

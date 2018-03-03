@@ -235,5 +235,7 @@ dependencies {
     compile dataDependences.update
     implementation dataDependences.kotlin
     implementation dataDependences.ankoCommon
+    // 文件下载
+    compile 'com.liulishuo.filedownloader:library:1.7.1'
 
 }

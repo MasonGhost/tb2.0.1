@@ -1062,7 +1062,7 @@ public class UserInfoRepository implements IUserInfoRepository {
     }
 
     @Override
-    public Observable<BaseJsonV2> submitInviteCode(int user_id) {
+    public Observable<BaseJsonV2> submitInviteCode(String user_id) {
         return mUserInfoClient.submitInviteCode(user_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

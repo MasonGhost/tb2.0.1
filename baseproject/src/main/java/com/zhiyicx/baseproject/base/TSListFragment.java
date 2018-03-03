@@ -759,7 +759,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     @Override
     public void hideRefreshState(boolean isLoadMore) {
         if (isLoadMore) {
-            mRefreshlayout.finishLoadmore();
+//            mRefreshlayout.finishLoadmore();
+            mRefreshlayout.finishLoadmore(50);
         } else {
             mRefreshlayout.finishRefresh();
         }
