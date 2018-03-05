@@ -10,7 +10,7 @@ import com.zhiyicx.baseproject.base.TSActivity;
  * @Author Jliuer
  * @Date 17/10/27 14:04
  * @Email Jliuer@aliyun.com
- * @Description  用户协议
+ * @Description 用户协议
  */
 public class UserRuleActivity extends TSActivity {
 
@@ -24,8 +24,9 @@ public class UserRuleActivity extends TSActivity {
 
     }
 
-    public static void startUserRuleActivity(Context context, String rule) {
+    public static void startUserRuleActivity(Context context, String title, String rule) {
         Bundle bundle = new Bundle();
+        bundle.putString(UserRuleFragment.TITLE, title);
         bundle.putString(UserRuleFragment.RULE, rule);
         Intent intent = new Intent(context, UserRuleActivity.class);
         intent.putExtras(bundle);

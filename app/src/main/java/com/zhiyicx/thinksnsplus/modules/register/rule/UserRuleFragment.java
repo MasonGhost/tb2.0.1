@@ -2,6 +2,8 @@ package com.zhiyicx.thinksnsplus.modules.register.rule;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -19,6 +21,7 @@ import butterknife.BindView;
 public class UserRuleFragment extends TSFragment {
 
     public static final String RULE = "markdown_rule";
+    public static final String TITLE = "markdown_TITLE";
 
     @BindView(R.id.md_user_rule)
     MarkdownView mMarkdownView;
@@ -27,10 +30,6 @@ public class UserRuleFragment extends TSFragment {
 
     String mMarkDownRule;
 
-    @Override
-    protected String setCenterTitle() {
-        return getString(R.string.user_rule_register);
-    }
 
     @Override
     protected boolean showToolBarDivider() {
@@ -46,8 +45,14 @@ public class UserRuleFragment extends TSFragment {
     @Override
     protected void initView(View rootView) {
         mMarkDownRule = getArguments().getString(RULE, RULE);
-///        mMarkdownView.loadMarkdown(mMarkDownRule);
-        mTvContent.setText(mMarkDownRule);
+        setCenterText(getArguments().getString(TITLE, getString(R.string.user_rule_register)));
+        if (mMarkDownRule.contains("#")) {
+            mMarkdownView.setVisibility(View.VISIBLE);
+            mMarkdownView.loadMarkdown(mMarkDownRule);
+        } else {
+            mTvContent.setVisibility(View.VISIBLE);
+            mTvContent.setText(mMarkDownRule);
+        }
     }
 
     @Override
@@ -58,5 +63,39 @@ public class UserRuleFragment extends TSFragment {
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_user_rule;
+    }
+
+    @Override
+    public void onPause() {
+        mMarkdownView.onPause();
+        mMarkdownView.pauseTimers();
+        super.onPause();
+
+    }
+
+    @Override
+    public void onResume() {
+        mMarkdownView.onResume();
+        mMarkdownView.resumeTimers();
+        super.onResume();
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        destryWeb(mMarkdownView);
+    }
+
+    protected void destryWeb(WebView webView) {
+        if (webView != null) {
+            webView.clearHistory();
+            ((ViewGroup) webView.getParent()).removeView(webView);
+            webView.loadUrl("about:blank");
+            webView.stopLoading();
+            webView.setWebChromeClient(null);
+            webView.setWebViewClient(null);
+            webView.destroy();
+        }
     }
 }

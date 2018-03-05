@@ -303,7 +303,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
         RxView.clicks(mAppRule)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> UserRuleActivity.startUserRuleActivity(getActivity(),
+                .subscribe(aVoid -> UserRuleActivity.startUserRuleActivity(getActivity(), getString(R.string.user_rule_register),
                         mPresenter.getSystemConfigBean().getRegisterSettings().getContent()));
     }
 

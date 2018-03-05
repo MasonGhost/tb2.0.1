@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -292,6 +294,8 @@ public class MechanismCenterFragment extends TSFragment {
         if (subscribe != null && subscribe.isUnsubscribed()) {
             subscribe.unsubscribe();
         }
+        mMerchainContentWebLoadView.destroyedWeb();
+
     }
 
     @Override
@@ -300,4 +304,22 @@ public class MechanismCenterFragment extends TSFragment {
         FileDownloader.getImpl().pause(downloadId2);
 
     }
+
+
+    @Override
+    public void onPause() {
+        mMerchainContentWebLoadView.getContentWebView().onPause();
+        mMerchainContentWebLoadView.getContentWebView().pauseTimers();
+        super.onPause();
+
+    }
+
+    @Override
+    public void onResume() {
+        mMerchainContentWebLoadView.getContentWebView().onResume();
+        mMerchainContentWebLoadView.getContentWebView().resumeTimers();
+        super.onResume();
+
+    }
+
 }

@@ -34,6 +34,7 @@ import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.home.mine.mycode.MyCodeActivity;
+import com.zhiyicx.thinksnsplus.modules.register.rule.UserRuleActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.invitation.InvitationActivity;
@@ -344,12 +345,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     private void goRuleDetail() {
-        Intent intent = new Intent(getActivity(), WalletRuleActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(WalletRuleFragment.BUNDLE_RULE, mTBTaskRewardRuleBean.getExplain());
-        bundle.putString(WalletRuleFragment.BUNDLE_TITLE, getString(R.string.reward_des));
-        intent.putExtras(bundle);
-        startActivity(intent);
+        UserRuleActivity.startUserRuleActivity(getActivity(), getString(R.string.reward_des),
+                mTBTaskRewardRuleBean.getExplain());
     }
 
     @OnClick({R.id.ll_fans_container, R.id.ll_follow_container, R.id.ll_friends, R.id.iv_setting, R.id.tv_check_in, R.id.v_userinfo, R.id
@@ -374,7 +371,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
              签到
              */
             case R.id.tv_check_in:
-                mPresenter.checkIn();
+                if (mCheckInBean != null) {
+                    mPresenter.checkIn();
+                }
                 break;
                 /*
                   排行榜
@@ -580,7 +579,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
      */
     @Override
     public void checkinSucces(CheckInBean data) {
-        mCheckInBean=data;
+        mCheckInBean = data;
         if (mCheckInBean != null) {
             if (mUserInfoBean.getWallet() == null) {
                 mUserInfoBean.setWallet(new WalletBean());
@@ -605,7 +604,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 .parentView(getContentView())
                 .build();
         mCheckTipPop.show();
-         mTimeerSub = Observable.timer(1000, TimeUnit.MILLISECONDS)
+        mTimeerSub = Observable.timer(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Long>() {
                     @Override
@@ -675,7 +674,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         super.onDestroyView();
         dismissPop(mCertificationWindow);
         dismissPop(mCheckTipPop);
-        if(mTimeerSub!=null&&mTimeerSub.isUnsubscribed()){
+        if (mTimeerSub != null && mTimeerSub.isUnsubscribed()) {
             mTimeerSub.unsubscribe();
         }
     }
