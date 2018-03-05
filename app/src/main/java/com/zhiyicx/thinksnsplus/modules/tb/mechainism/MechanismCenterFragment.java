@@ -183,7 +183,7 @@ public class MechanismCenterFragment extends TSFragment {
         mTvBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mMerchainInfo == null || mMerchainInfo.getPhoto() == 0) {
+                if (mMerchainInfo == null || mMerchainInfo.getWhite_paper() == 0) {
                     return;
                 }
                 try {
@@ -209,7 +209,7 @@ public class MechanismCenterFragment extends TSFragment {
     private BaseDownloadTask createDownloadTask() {
         final String url;
 
-        url = String.format(Locale.getDefault(), ApiConfig.APP_PATH_STORAGE_GET_FILE, mMerchainInfo.getPhoto() + "");
+        url = String.format(Locale.getDefault(), ApiConfig.APP_PATH_STORAGE_GET_FILE, mMerchainInfo.getWhite_paper() + "");
 
         return FileDownloader.getImpl().create(url + "?token=" + AppApplication.getmCurrentLoginAuth().getToken())
                 .setPath(mPath + mMerchainInfo.getWhite_paper_name() + ".pdf", false)
@@ -283,7 +283,7 @@ public class MechanismCenterFragment extends TSFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (subscribe != null && subscribe.isUnsubscribed()) {
+        if (subscribe != null && !subscribe.isUnsubscribed()) {
             subscribe.unsubscribe();
         }
         mMerchainContentWebLoadView.destroyedWeb();

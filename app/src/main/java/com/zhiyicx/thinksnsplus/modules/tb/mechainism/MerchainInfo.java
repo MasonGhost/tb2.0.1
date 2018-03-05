@@ -20,7 +20,7 @@ public class MerchainInfo {
      * updated_at : 2018-03-01 05:50:15
      */
 
-    private int photo;
+    private String photo;
     private String nickname;
     private String remarks;
     private String introduce;
@@ -38,11 +38,11 @@ public class MerchainInfo {
         this.white_paper_name = white_paper_name;
     }
 
-    public int getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(int photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 

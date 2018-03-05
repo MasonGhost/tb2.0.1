@@ -17,6 +17,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
@@ -38,6 +39,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import rx.Observable;
+import rx.Subscription;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 
@@ -67,6 +70,7 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
 
     @Inject
     UserInfoRepository mUserInfoRepository;
+    private Subscription mUserinfoSub;
 
 
     @Override
@@ -125,9 +129,19 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
     protected void initView(View rootView) {
         super.initView(rootView);
         AppApplication.AppComponentHolder.getAppComponent().inject(this);
-
         mTsvToolbar.setLeftImg(0);
         initListener();
+    }
+
+    private void getUserinfo() {
+        mUserinfoSub = mUserInfoRepository.getSpecifiedUserInfo(mUserInfoBean.getUser_id(), null, null)
+                .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
+                    @Override
+                    protected void onSuccess(UserInfoBean data) {
+                        mUserInfoBean = data;
+                        updateUseFollow();
+                    }
+                });
     }
 
     private void initListener() {
@@ -157,11 +171,11 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
     @Override
     protected void initData() {
         mUserInfoBean = getArguments().getParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA);
+        getUserinfo();
         ImageUtils.loadCircleUserHeadPic(mUserInfoBean, mIvHeadIcon);
         // 设置用户名
         mTvUserName.setText(mUserInfoBean.getName());
         mTvDes.setText(mUserInfoBean.getIntro());
-        updateUseFollow();
     }
 
     private void updateUseFollow() {
@@ -231,5 +245,8 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
     public void onDestroyView() {
         super.onDestroyView();
         dismissPop(mMorePop);
+        if(mUserinfoSub != null && !mUserinfoSub.isUnsubscribed()){
+            mUserinfoSub.unsubscribe();
+        }
     }
 }
