@@ -73,7 +73,7 @@ public class NotificationAdapter extends CommonAdapter<TSPNotificationBean> {
     protected List<Link> setLiknks(final TSPNotificationBean tspNotificationBean, String content) {
         List<Link> links = new ArrayList<>();
         if (content.contains(Link.DEFAULT_NET_SITE)) {
-            Link commentNameLink = new Link(MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE)
+            Link commentNameLink = new Link(Link.DEFAULT_NET_SITE)
                     .setTextColor(ContextCompat.getColor(mContext, R.color
                             .net_link_color))
                     .setLinkMetadata(LinkMetadata.builder()

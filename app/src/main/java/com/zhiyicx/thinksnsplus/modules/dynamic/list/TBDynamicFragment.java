@@ -3,10 +3,14 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 
+import com.klinker.android.link_builder.Link;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
@@ -75,14 +79,17 @@ public class TBDynamicFragment extends DynamicFragment {
                 // 分享
                 Intent intent = new Intent(mActivity, DynamicShareActivity.class);
                 Bundle bundle = new Bundle();
-                DynamicShareBean dynamicShareBean = new DynamicShareBean(mListDatas.get(dataPosition).getUserInfoBean(), mListDatas.get
-                        (dataPosition).getCreated_at(), mListDatas.get(dataPosition).getFeed_content(), String.valueOf(mListDatas.get(dataPosition)
-                        .getId
-                                ()));
+                String content = mListDatas.get(dataPosition).getFeed_content();
+                if (!TextUtils.isEmpty(content)) {
+                    content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, "");
+                }
+                DynamicShareBean dynamicShareBean = new DynamicShareBean(mListDatas.get(dataPosition).getUserInfoBean(),
+                        TimeUtils.utc2LocalStr(mListDatas.get(dataPosition).getCreated_at()),
+                        content,
+                        String.valueOf(mListDatas.get(dataPosition).getId()));
                 bundle.putSerializable(BUNDLE_SHARE_DATA, dynamicShareBean);
                 intent.putExtras(bundle);
                 startActivity(intent);
-
                 break;
 
             case 3:

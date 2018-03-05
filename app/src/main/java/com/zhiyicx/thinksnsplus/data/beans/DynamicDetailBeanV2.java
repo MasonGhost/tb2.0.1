@@ -485,7 +485,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             }
         }
         if (feed_content != null) {
-            friendlyContent = feed_content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
+            friendlyContent = feed_content.replaceAll(MarkdownConfig.NETSITE_FORMAT, Link.DEFAULT_NET_SITE);
             startPosition = friendlyContent.length();
         }
         boolean canLookWords = paid_node == null || paid_node.isPaid();

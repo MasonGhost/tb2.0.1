@@ -148,7 +148,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         mImageContainerWith = DeviceUtils.getScreenWidth(context) - margin;
         // 最大高度是最大宽度的4/3 保持 宽高比 3：4
         mImageMaxHeight = mImageContainerWith * 4 / 3;
-        mMaxlinesShow= context.getResources().getInteger(R.integer
+        mMaxlinesShow = context.getResources().getInteger(R.integer
                 .dynamic_list_content_show_lines);
     }
 
@@ -225,7 +225,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .dataPosition(holder.getAdapterPosition())
                             .maxLines(mMaxlinesShow)
                             .onSpanTextClickListener(mOnSpanTextClickListener)
-                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText().toString()), false))
+                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText()
+                                    .toString()), false))
                             .disPlayText(true)
                             .build();
                 } else {
@@ -238,7 +239,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .onSpanTextClickListener(mOnSpanTextClickListener)
                             .note(dynamicBean.getPaid_node().getNode())
                             .amount(dynamicBean.getPaid_node().getAmount())
-                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText().toString()), false))
+                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText()
+                                    .toString()), false))
                             .disPlayText(false)
                             .build();
                 }
@@ -473,7 +475,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     protected List<Link> setLiknks(final DynamicDetailBeanV2 dynamicDetailBeanV2, String content) {
         List<Link> links = new ArrayList<>();
         if (content.contains(Link.DEFAULT_NET_SITE)) {
-            Link commentNameLink = new Link(MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE)
+            Link commentNameLink = new Link(Link.DEFAULT_NET_SITE)
                     .setTextColor(ContextCompat.getColor(mContext, R.color
                             .net_link_color))
                     .setLinkMetadata(LinkMetadata.builder()
@@ -487,6 +489,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                         LogUtils.d(clickedText);
                         Intent intent = new Intent();
                         intent.setAction("android.intent.action.VIEW");
+                        if (!clickedText.contains("http") || !clickedText.contains("ftp")) {
+                            clickedText = "http://" + clickedText;
+                        }
                         Uri content_url = Uri.parse(clickedText);
                         intent.setData(content_url);
                         mContext.startActivity(intent);

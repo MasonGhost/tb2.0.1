@@ -198,7 +198,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
             if (TextUtils.isEmpty(content)) {
                 contentView.setVisibility(View.GONE);
             } else {
-                content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
+                content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, Link.DEFAULT_NET_SITE);
                 contentView.setText(content);
                 ConvertUtils.stringLinkConvert(contentView, setLinkLinks(circlePostListBean, contentView.getText().toString()), false);
                 contentView.setVisibility(View.VISIBLE);
@@ -447,7 +447,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
     protected List<Link> setLinkLinks(final CirclePostListBean circlePostListBean, String content) {
         List<Link> links = new ArrayList<>();
         if (content.contains(Link.DEFAULT_NET_SITE)) {
-            Link link = new Link(MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE)
+            Link link = new Link(Link.DEFAULT_NET_SITE)
                     .setTextColor(ContextCompat.getColor(mContext, R.color
                             .net_link_color))
                     .setLinkMetadata(LinkMetadata.builder()

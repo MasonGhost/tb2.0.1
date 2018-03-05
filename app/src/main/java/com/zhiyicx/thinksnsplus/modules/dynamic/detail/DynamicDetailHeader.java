@@ -165,7 +165,7 @@ public class DynamicDetailHeader {
     }
 
     private void dealLinkWords(DynamicDetailBeanV2 dynamicBean, String content) {
-        content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
+        content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, Link.DEFAULT_NET_SITE);
         mContent.setText(content);
         ConvertUtils.stringLinkConvert(mContent, setLiknks(dynamicBean, mContent.getText().toString()), false);
     }
@@ -372,7 +372,7 @@ public class DynamicDetailHeader {
     protected List<Link> setLiknks(final DynamicDetailBeanV2 dynamicDetailBeanV2, String content) {
         List<Link> links = new ArrayList<>();
         if (content.contains(Link.DEFAULT_NET_SITE)) {
-            Link commentNameLink = new Link(MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE)
+            Link commentNameLink = new Link(Link.DEFAULT_NET_SITE)
                     .setTextColor(ContextCompat.getColor(mContext, R.color
                             .net_link_color))
                     .setLinkMetadata(LinkMetadata.builder()

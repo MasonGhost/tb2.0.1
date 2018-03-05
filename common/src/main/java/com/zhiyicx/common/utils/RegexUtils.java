@@ -328,7 +328,7 @@ public class RegexUtils {
 
     public static List<String> cutStringByNetSite(String targetStr) {
         List<String> splitTextList = new ArrayList<>();
-        Pattern pattern = Pattern.compile("((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2," +
+        Pattern pattern = Pattern.compile("((http|ftp|https)://){0,1}(?:www.)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2," +
                 "6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*" +
                 "(/[a-zA-Z0-9\\&%_\\./-~-]*)?");
         Matcher matcher1 = pattern.matcher(targetStr);
