@@ -422,13 +422,12 @@ public class RegexUtils {
     }
 
     public static String getMarkdownWords(String source) {
-        Matcher matcher = Pattern.compile("<div [^>]*class=\"block\"[^>]*>(<div[^>]*>(<div[^>]*>" +
-                "((<div[^>]*>[\\s\\S]*?</div>|[\\s\\S])*?</div>)|[\\s\\S])*?</div>|[\\s\\S])" +
-                "*?</div>").matcher(source);
+        Pattern pattern = Pattern.compile("<div [^>]*class=\"block\"[^>]*>(<div[^>]*>(<div[^>]*>((<div[^>]*>[\\s\\S]*?</div>|[\\s\\S])*?</div>)|[\\s\\S])*?</div>|[\\s\\S])*?</div>");
+        Matcher matcher = pattern.matcher(source);
         while (matcher.find()) {
             String need = matcher.group(3);
             if (TextUtils.isEmpty(need)) {
-                break;
+                return null;
             }
             Matcher img = Pattern.compile("@!\\[.*?]\\((\\d+)\\)").matcher(need);
             if (img.find()) {
@@ -439,6 +438,7 @@ public class RegexUtils {
                 }
                 source = matcher.replaceFirst(imgTag);
             }
+            matcher = pattern.matcher(source);
         }
         source = source.replaceAll("div", "p");
         source = source.replaceAll("<p>", " <p>");

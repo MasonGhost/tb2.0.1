@@ -627,7 +627,8 @@ public abstract class RichEditor extends WebView {
                         if (noMarkdownWords.length() >= 191) {
                             result = noMarkdownWords.substring(0, 191);
                         }
-                        listener.onMarkdownWordResult(title, RegexUtils.getMarkdownWords(markdown), result, allHtml, isPublish);
+                        String need = RegexUtils.getMarkdownWords(markdown);
+                        listener.onMarkdownWordResult(title, need, result, allHtml, isPublish);
                     });
         }
 
