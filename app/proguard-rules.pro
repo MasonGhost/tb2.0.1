@@ -27,6 +27,9 @@ public static final int *;
 ################app###############
 -keep interface  com.zhiyicx.thinksnsplus.** { *; }
 -keep class com.zhiyicx.thinksnsplus.data.beans.** { *; } #实体类不参与混淆
+
+-keep class com.zhiyicx.thinksnsplus.modules.tb.** { *; } #实体类不参与混淆
+
 -keep class com.zhiyicx.thinksnsplus.widget.** { *; } #自定义控件不参与混淆
 -keep class com.zhiyicx.thinksnsplus.utils.** { *; }
 -keep class com.tnt.tokenbook.wxapi.** { *; }
