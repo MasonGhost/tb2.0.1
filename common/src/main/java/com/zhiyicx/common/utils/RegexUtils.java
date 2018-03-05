@@ -407,10 +407,15 @@ public class RegexUtils {
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int
                     dstart, int dend) {
-                return source.toString().replaceAll(reg, "");
+                Matcher emojiMatcher = emoji.matcher(source);
+                if (emojiMatcher.find()) {
+                    return "";
+                }
+                return null;
             }
 
             String reg = "[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]";
+            Pattern emoji = Pattern.compile(reg, Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
         };
 
 

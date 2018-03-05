@@ -28,8 +28,6 @@ public class WalletRuleFragment extends TSFragment {
     private String mRule = "";
     private String mTitle = "";
 
-    private CenterInfoPopWindow mRulePop;// 充值提示规则选择弹框
-
     public static WalletRuleFragment newInstance(Bundle extras) {
 
         WalletRuleFragment walletRuleFragment = new WalletRuleFragment();

@@ -37,6 +37,7 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
     @Convert(converter = InvitationsConvert.class, columnType = String.class)
     private List<Invitations> invitations;// 问题邀请回答的人
     private String body;// 问题描述
+    private String text_body;// 非 markDown 问题描述
     private int anonymity;// 是否匿名 1 匿名 ，0 不匿名
     private int automaticity;// 邀请悬赏自动入账，只邀请一个人的情况下，允许悬赏金额自动入账到被邀请回答者钱包中。1 自动入账 ，0 不自动入账
     private int look;// 是否开启围观，当问题有采纳或者邀请人已回答，则对外部观众自动开启围观。设置围观必须设置悬赏金额。1 开启围观 ，0 不开启围观
@@ -114,6 +115,14 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public String getText_body() {
+        return text_body;
+    }
+
+    public void setText_body(String text_body) {
+        this.text_body = text_body;
     }
 
     public int getAnonymity() {
@@ -335,7 +344,12 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
         return qaPublishBean;
     }
 
-    public QAPublishBean() {
+    public boolean getHasAgainEdite() {
+        return this.hasAgainEdite;
+    }
+
+    public boolean getHasAdoption() {
+        return this.hasAdoption;
     }
 
 
@@ -351,6 +365,7 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
         dest.writeTypedList(this.topics);
         dest.writeTypedList(this.invitations);
         dest.writeString(this.body);
+        dest.writeString(this.text_body);
         dest.writeInt(this.anonymity);
         dest.writeInt(this.automaticity);
         dest.writeInt(this.look);
@@ -364,12 +379,7 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
         dest.writeByte(this.hasAdoption ? (byte) 1 : (byte) 0);
     }
 
-    public boolean getHasAgainEdite() {
-        return this.hasAgainEdite;
-    }
-
-    public boolean getHasAdoption() {
-        return this.hasAdoption;
+    public QAPublishBean() {
     }
 
     protected QAPublishBean(Parcel in) {
@@ -378,6 +388,7 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
         this.topics = in.createTypedArrayList(Topic.CREATOR);
         this.invitations = in.createTypedArrayList(Invitations.CREATOR);
         this.body = in.readString();
+        this.text_body = in.readString();
         this.anonymity = in.readInt();
         this.automaticity = in.readInt();
         this.look = in.readInt();
@@ -391,14 +402,16 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
         this.hasAdoption = in.readByte() != 0;
     }
 
-    @Generated(hash = 489344590)
+    @Generated(hash = 1079887802)
     public QAPublishBean(String subject, List<Topic> topics, List<Invitations> invitations, String body,
-            int anonymity, int automaticity, int look, double amount, Long id, Long mark, Long user_id,
-            String updated_at, String created_at, boolean hasAgainEdite, boolean hasAdoption) {
+            String text_body, int anonymity, int automaticity, int look, double amount, Long id,
+            Long mark, Long user_id, String updated_at, String created_at, boolean hasAgainEdite,
+            boolean hasAdoption) {
         this.subject = subject;
         this.topics = topics;
         this.invitations = invitations;
         this.body = body;
+        this.text_body = text_body;
         this.anonymity = anonymity;
         this.automaticity = automaticity;
         this.look = look;

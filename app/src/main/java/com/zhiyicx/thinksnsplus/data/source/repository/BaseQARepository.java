@@ -285,14 +285,14 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
 
     @Override
     public Observable<BaseJsonV2<AnswerInfoBean>> publishAnswer(Long question_id, String body, String text_body, int anonymity) {
-        return mQAClient.publishAnswer(question_id, body,text_body, anonymity)
+        return mQAClient.publishAnswer(question_id, body, text_body, anonymity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
     public Observable<BaseJsonV2<Object>> updateAnswer(Long answer_id, String body, String text_body, int anonymity) {
-        return mQAClient.uplaodAnswer(answer_id, body, text_body,anonymity)
+        return mQAClient.uplaodAnswer(answer_id, body, text_body, anonymity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -591,8 +591,8 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(collectAnswerLists -> {
-                    List<AnswerInfoBean> result=new ArrayList<>();
-                    for (CollectAnswerList collect:collectAnswerLists){
+                    List<AnswerInfoBean> result = new ArrayList<>();
+                    for (CollectAnswerList collect : collectAnswerLists) {
                         result.add(collect.getCollectible());
                     }
                     return Observable.just(result);
@@ -614,7 +614,6 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
     }
 
     /**
-     *
      * @param question_id
      * @param amount
      * @return

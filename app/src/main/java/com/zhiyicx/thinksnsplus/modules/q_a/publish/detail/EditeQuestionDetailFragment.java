@@ -103,6 +103,7 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
         super.onAfterInitialLoad(ready);
         if (ready) {
             mRichTextView.hideTitle();
+            mRichTextView.focusEditor();
         }
     }
 
@@ -237,4 +238,9 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
         getActivity().finish();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissPop(mAnonymityAlertPopWindow);
+    }
 }

@@ -989,6 +989,7 @@
     <string name="image_uploading">图片上传中&#8230;</string>
     <string name="image_upload_fail">图片上传失败</string>
     <string name="image_prase_fail">图片解析错误</string>
+    <string name="fun_maintain">功能维护中</string>
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>
         <item>提取记录</item>
