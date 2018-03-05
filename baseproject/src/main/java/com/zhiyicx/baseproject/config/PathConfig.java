@@ -9,7 +9,7 @@ package com.zhiyicx.baseproject.config;
 
 public class PathConfig {
     // 上传图片，通过相机拍摄后的图片保存路径
-    public static final String CAMERA_PHOTO_PATH = "/DCIM/" + "TSPlusPhotoFolder/";
+    public static final String CAMERA_PHOTO_PATH = "/DCIM/" + "TBPhotoFolder/";
     // 通过app保存的图片所在历经
-    public static final String PHOTO_SAVA_PATH = "/TSPlusPhotoView/";
+    public static final String PHOTO_SAVA_PATH = "/TBPhotoView/";
 }

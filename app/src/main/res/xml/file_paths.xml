@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
     <external-path
-        name="TSCameraPhotos"
-        path="/DCIM/TSPlusPhotoFolder/"/>
+        name="TBCameraPhotos"
+        path="/DCIM/TBPhotoFolder/"/>
+    <external-path name="tbm_file" path="Pictures/tbm" />
 </paths>

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.tb.mechainism;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -137,7 +138,13 @@ public class MechanismCenterFragment extends TSFragment {
     @Override
     protected void initView(View rootView) {
         FileDownloader.setup(mActivity);
-        mPath = FileDownloadUtils.getDefaultSaveRootPath() + File.separator + "tbm" + File.separator;
+        try {
+            mPath = Environment
+                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                    .getAbsolutePath() + File.separator + "tbm" + File.separator;
+        } catch (Exception e) {
+            mPath = "tbm" + File.separator;
+        }
 
         AppApplication.AppComponentHolder.getAppComponent().inject(this);
         mUserInfoBean = getArguments().getParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA);
@@ -158,9 +165,18 @@ public class MechanismCenterFragment extends TSFragment {
     }
 
     private void updateMerchainInfo(MerchainInfo data) {
-        mTvCnName.setText(data.getNickname());
-        mTvIntroduce.setText(data.getIntroduce());
-        mTvTime.setText(data.getCreated_at());
+        if (!TextUtils.isEmpty(data.getNickname())) {
+            mLlCnNameContainer.setVisibility(View.VISIBLE);
+            mTvCnName.setText(data.getNickname());
+        }
+        if (!TextUtils.isEmpty(data.getIntroduce())) {
+            mLlIntroduceContainer.setVisibility(View.VISIBLE);
+            mTvIntroduce.setText(data.getIntroduce());
+        }
+        if (!TextUtils.isEmpty(data.getCreated_at())) {
+            mLlCoinContainer.setVisibility(View.VISIBLE);
+            mTvTime.setText(data.getCreated_at());
+        }
         mMerchainContentWebLoadView.setDetail(data);
         mTvBook.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,11 +184,15 @@ public class MechanismCenterFragment extends TSFragment {
                 if (mMerchainInfo == null || mMerchainInfo.getPhoto() == 0) {
                     return;
                 }
-                Intent intent = FileUtils.openFile(mPath + mMerchainInfo.getWhite_paper_name() + ".pdf");
-                if (intent == null) {
-                    downloadId2 = createDownloadTask().start();
-                }else {
-                    startActivity(intent);
+                try {
+                    Intent intent = FileUtils.openFile(mPath + mMerchainInfo.getWhite_paper_name() + ".pdf", mActivity.getApplicationContext());
+                    if (intent == null) {
+                        downloadId2 = createDownloadTask().start();
+                    } else {
+                        startActivity(intent);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -244,7 +264,12 @@ public class MechanismCenterFragment extends TSFragment {
                         super.completed(task);
                         mProgressBar.setVisibility(View.GONE);
                         showSnackSuccessMessage("下载成功，文件位于 tbm 下");
-                       startActivity( FileUtils.openFile(mPath + mMerchainInfo.getWhite_paper_name() + ".pdf"));
+                        try {
+                            startActivity(FileUtils.openFile(mPath + mMerchainInfo.getWhite_paper_name() + ".pdf", mActivity.getApplicationContext
+                                    ()));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override

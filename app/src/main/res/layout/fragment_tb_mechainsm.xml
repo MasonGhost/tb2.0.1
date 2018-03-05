@@ -17,6 +17,7 @@
             android:id="@+id/ll_cn_name_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/userinfo_btn_height"
+            android:visibility="gone"
             android:background="@color/white"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -87,6 +88,7 @@
             android:id="@+id/ll_introduce_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/userinfo_btn_height"
+            android:visibility="gone"
             android:background="@color/white"
             android:gravity="center_vertical"
             android:orientation="horizontal">
