@@ -436,7 +436,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         String followedCount = String.valueOf(userInfoBean.getUser_rank());
         mTvFansCount.setText(ConvertUtils.numberConvert(Integer.parseInt(followedCount)));
         // 钱包
-        mTvFollowCount.setText(ConvertUtils.numberConvert(userInfoBean.getWallet() != null ? (int) userInfoBean.getWallet().getBalance() : 0));
+        int balance = userInfoBean.getWallet() != null ? (int) userInfoBean.getWallet().getBalance() : 0;
+        // 最长显示 6 位
+        mTvFollowCount.setText(balance >= 1000000 ? ConvertUtils.numberConvert(balance) : String.valueOf(balance));
         mTvFriendsCount.setText(String.valueOf(userInfoBean.getFriend_count()));
         this.mUserInfoBean = userInfoBean;
     }

@@ -130,7 +130,7 @@
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/size_mine_big_mum"
                                 android:textStyle="bold"
-                                tools:text="12233"/>
+                                tools:text="888888"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
