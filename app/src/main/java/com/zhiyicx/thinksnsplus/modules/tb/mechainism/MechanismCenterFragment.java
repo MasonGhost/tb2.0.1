@@ -142,7 +142,7 @@ public class MechanismCenterFragment extends TSFragment {
         FileDownloader.setup(mActivity);
         try {
             mPath = Environment
-                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                     .getAbsolutePath() + File.separator + "tbm" + File.separator;
         } catch (Exception e) {
             mPath = "tbm" + File.separator;
@@ -220,8 +220,6 @@ public class MechanismCenterFragment extends TSFragment {
                     @Override
                     protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
                         super.pending(task, soFarBytes, totalBytes);
-                        System.out.println(" ------pending--------" + soFarBytes);
-
                     }
 
                     @Override
@@ -235,21 +233,17 @@ public class MechanismCenterFragment extends TSFragment {
                             mProgressBar.setMax(totalBytes);
                             mProgressBar.setProgress(soFarBytes);
                         }
-                        System.out.println(" ------progress--------" + soFarBytes);
 
                     }
 
                     @Override
                     protected void error(BaseDownloadTask task, Throwable e) {
                         super.error(task, e);
-                        System.out.println(" ------error--------");
-
                     }
 
                     @Override
                     protected void connected(BaseDownloadTask task, String etag, boolean isContinue, int soFarBytes, int totalBytes) {
                         super.connected(task, etag, isContinue, soFarBytes, totalBytes);
-                        System.out.println(" ------connected--------");
 
 
                     }
@@ -257,7 +251,6 @@ public class MechanismCenterFragment extends TSFragment {
                     @Override
                     protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
                         super.paused(task, soFarBytes, totalBytes);
-                        System.out.println(" ------paused--------");
 
                     }
 
@@ -277,7 +270,6 @@ public class MechanismCenterFragment extends TSFragment {
                     @Override
                     protected void warn(BaseDownloadTask task) {
                         super.warn(task);
-                        System.out.println(" ------warn--------");
 
                     }
                 });

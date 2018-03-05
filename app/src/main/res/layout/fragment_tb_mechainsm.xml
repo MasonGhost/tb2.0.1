@@ -17,10 +17,10 @@
             android:id="@+id/ll_cn_name_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/userinfo_btn_height"
-            android:visibility="gone"
             android:background="@color/white"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="@dimen/mechainism_name_hint_with"
@@ -88,10 +88,10 @@
             android:id="@+id/ll_introduce_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/userinfo_btn_height"
-            android:visibility="gone"
             android:background="@color/white"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="@dimen/mechainism_name_hint_with"
@@ -409,7 +409,7 @@
                 android:layout_marginLeft="@dimen/spacing_normal"
                 android:layout_marginRight="@dimen/spacing_normal"
                 android:layout_marginTop="@dimen/spacing_large"
-                android:visibility="visible"
+                android:visibility="invisible"
                 tools:ignore="WebViewLayout"/>
 
             <!--用来占位的-->
@@ -434,6 +434,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="85dp"
             android:layout_marginRight="@dimen/spacing_large"
+            android:progressDrawable="@drawable/layer_list_progress_drawable_download"
             android:visibility="gone"/>
 
         <!--白皮书-->
@@ -461,10 +462,10 @@
                 android:layout_weight="1"
                 android:drawableLeft="@mipmap/ico_pdf"
                 android:drawablePadding="@dimen/spacing_small"
-                android:text="白皮书下载"
+                android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
-                android:ellipsize="end"
+                android:text="白皮书下载"
                 android:textColor="@color/important_for_content"
                 android:textColorHint="@color/general_for_hint"
                 android:textSize="@dimen/size_sub_title"/>

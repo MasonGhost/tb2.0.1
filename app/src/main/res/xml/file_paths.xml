@@ -3,5 +3,10 @@
     <external-path
         name="TBCameraPhotos"
         path="/DCIM/TBPhotoFolder/"/>
-    <external-path name="tbm_file" path="Pictures/tbm" />
+    <external-path
+        name="TBDownload"
+        path="/Download/"/>
+    <external-path
+        name="tbm_file"
+        path="Pictures/tbm"/>
 </paths>

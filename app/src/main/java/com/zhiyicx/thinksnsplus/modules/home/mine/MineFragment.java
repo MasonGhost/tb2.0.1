@@ -41,8 +41,6 @@ import com.zhiyicx.thinksnsplus.modules.tb.invitation.InvitationActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.invitation.editcode.EditInviteCodeActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.rank.RankListActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.wallet.WalletActivity;
-import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity;
-import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.CertificationTypePopupWindow;
 import com.zhiyicx.thinksnsplus.widget.MineTaskItemView;
