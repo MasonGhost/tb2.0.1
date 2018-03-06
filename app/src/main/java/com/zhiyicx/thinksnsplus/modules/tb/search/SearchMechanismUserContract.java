@@ -30,6 +30,9 @@ public interface SearchMechanismUserContract {
         void cleaerAllSearchHistory();
 
         void deleteSearchHistory(SearchHistoryBean searchHistoryBean);
+
+        void refreshUserFollow();
+
     }
 
 }

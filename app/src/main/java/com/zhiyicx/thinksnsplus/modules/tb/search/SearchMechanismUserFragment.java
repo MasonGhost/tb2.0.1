@@ -260,6 +260,12 @@ public class SearchMechanismUserFragment extends TSListFragment<SearchMechanismU
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.refreshUserFollow();
+    }
+
+    @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         PersonalCenterFragment.startToPersonalCenter(getContext(), mListDatas.get(position));
 

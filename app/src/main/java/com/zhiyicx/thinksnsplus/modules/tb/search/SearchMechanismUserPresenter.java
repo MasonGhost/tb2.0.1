@@ -13,10 +13,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 import javax.inject.Inject;
 
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @Describe
@@ -142,4 +147,19 @@ public class SearchMechanismUserPresenter extends AppBasePresenter<SearchMechani
         mRootView.upDateFollowFansState(index);
     }
 
+    @Override
+    public void refreshUserFollow() {
+        Subscription subscribe = rx.Observable.just("")
+                .subscribeOn(Schedulers.io())
+                .map((Func1<String, Object>) s -> {
+                    for (UserInfoBean userInfoBean : mRootView.getListDatas()) {
+                        userInfoBean.setFollower(mUserInfoBeanGreenDao.getSingleDataFromCache(userInfoBean.getUser_id()).getFollower());
+                    }
+                    return s;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(o -> mRootView.refreshData()
+                        , Throwable::printStackTrace);
+        addSubscrebe(subscribe);
+    }
 }
