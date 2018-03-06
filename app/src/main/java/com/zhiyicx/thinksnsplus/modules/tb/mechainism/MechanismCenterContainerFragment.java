@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.tb.mechainism;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +51,8 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MechanismCenterContainerFragment extends TSViewPagerFragment implements DynamicFragment.OnCommentClickListener {
+public class MechanismCenterContainerFragment extends TSViewPagerFragment implements DynamicFragment.OnCommentClickListener,
+        MechanismCenterFragment.OnMerchainismInfoChangedListener {
 
     @BindView(R.id.mechainism_appbar_layout)
     AppBarLayout mAppBarLayout;
@@ -175,7 +177,16 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
         ImageUtils.loadCircleUserHeadPic(mUserInfoBean, mIvHeadIcon);
         // 设置用户名
         mTvUserName.setText(mUserInfoBean.getName());
-        mTvDes.setText(mUserInfoBean.getIntro());
+        updateUserDes(mUserInfoBean.getIntro());
+    }
+
+    /**
+     * 更新机构用户描述
+     *
+     * @param des
+     */
+    private void updateUserDes(String des) {
+        mTvDes.setText(des);
     }
 
     private void updateUseFollow() {
@@ -245,8 +256,16 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
     public void onDestroyView() {
         super.onDestroyView();
         dismissPop(mMorePop);
-        if(mUserinfoSub != null && !mUserinfoSub.isUnsubscribed()){
+        if (mUserinfoSub != null && !mUserinfoSub.isUnsubscribed()) {
             mUserinfoSub.unsubscribe();
         }
+    }
+
+    @Override
+    public void onMerchainismInfoChanged(MerchainInfo merchainInfo) {
+        if (merchainInfo != null && !TextUtils.isEmpty(merchainInfo.getRemarks())) {
+            updateUserDes(merchainInfo.getRemarks());
+        }
+
     }
 }

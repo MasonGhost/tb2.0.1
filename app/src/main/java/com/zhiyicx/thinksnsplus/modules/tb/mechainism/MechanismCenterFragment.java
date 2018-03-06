@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.tb.mechainism;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,16 @@ import rx.Subscription;
  * @Description
  */
 public class MechanismCenterFragment extends TSFragment {
+    @BindView(R.id.line_name)
+    View mLineName;
+
+    @BindView(R.id.line_intro)
+    View mLineIntro;
+    @BindView(R.id.line_content)
+    View mLineContent;
+    @BindView(R.id.line_book)
+    View mLineBook;
+
     @BindView(R.id.tv_cn_name)
     TextView mTvCnName;
     @BindView(R.id.ll_cn_name_container)
@@ -168,26 +179,37 @@ public class MechanismCenterFragment extends TSFragment {
 
     private void updateMerchainInfo(MerchainInfo data) {
         if (!TextUtils.isEmpty(data.getNickname())) {
+            mLineName.setVisibility(View.VISIBLE);
             mLlCnNameContainer.setVisibility(View.VISIBLE);
             mTvCnName.setText(data.getNickname());
         }
         if (!TextUtils.isEmpty(data.getIntroduce())) {
+            mLineIntro.setVisibility(View.VISIBLE);
             mLlIntroduceContainer.setVisibility(View.VISIBLE);
             mTvIntroduce.setText(data.getIntroduce());
         }
-        if (!TextUtils.isEmpty(data.getCreated_at())) {
-            mLlCoinContainer.setVisibility(View.VISIBLE);
-            mTvTime.setText(data.getCreated_at());
+///        目前不需要
+//        if (!TextUtils.isEmpty(data.getCreated_at())) {
+//            mLlCoinContainer.setVisibility(View.VISIBLE);
+//            mTvTime.setText(data.getCreated_at());
+//        }
+        if (!TextUtils.isEmpty(data.getOther_info())) {
+            mLineContent.setVisibility(View.VISIBLE);
+            mMerchainContentWebLoadView.setDetail(data);
         }
-        mMerchainContentWebLoadView.setDetail(data);
-        mTvBook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+
+        if (TextUtils.isEmpty(data.getWhite_paper_name())) {
+            mLlBookContainer.setVisibility(View.GONE);
+        } else {
+            mLineBook.setVisibility(View.VISIBLE);
+            mLlBookContainer.setVisibility(View.VISIBLE);
+            mTvBook.setText(data.getWhite_paper_name());
+            mTvBook.setOnClickListener(v -> {
                 if (mMerchainInfo == null || mMerchainInfo.getWhite_paper() == 0) {
                     return;
                 }
                 try {
-                    Intent intent = FileUtils.openFile(mPath + mMerchainInfo.getWhite_paper_name() + ".pdf", mActivity.getApplicationContext());
+                    Intent intent = FileUtils.openFile(getBookFilePath(data), mActivity.getApplicationContext());
                     if (intent == null) {
                         downloadId2 = createDownloadTask().start();
                     } else {
@@ -196,14 +218,26 @@ public class MechanismCenterFragment extends TSFragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-        });
-        if (TextUtils.isEmpty(data.getWhite_paper_name())) {
-            mLlBookContainer.setVisibility(View.GONE);
-        } else {
-            mLlBookContainer.setVisibility(View.VISIBLE);
-            mTvBook.setText(data.getWhite_paper_name());
+            });
         }
+        updateMerchainRemark(data);
+    }
+
+    /**
+     * 更新机构用户的备注
+     *
+     * @param data
+     */
+    private void updateMerchainRemark(MerchainInfo data) {
+        if (getParentFragment() != null && getParentFragment() instanceof OnMerchainismInfoChangedListener) {
+            ((OnMerchainismInfoChangedListener) getParentFragment()).onMerchainismInfoChanged(data);
+        }
+
+    }
+
+    @NonNull
+    private String getBookFilePath(MerchainInfo merchainInfo) {
+        return mPath + merchainInfo.getWhite_paper_name() + ".pdf";
     }
 
     private BaseDownloadTask createDownloadTask() {
@@ -212,7 +246,7 @@ public class MechanismCenterFragment extends TSFragment {
         url = String.format(Locale.getDefault(), ApiConfig.APP_PATH_STORAGE_GET_FILE, mMerchainInfo.getWhite_paper() + "");
 
         return FileDownloader.getImpl().create(url + "?token=" + AppApplication.getmCurrentLoginAuth().getToken())
-                .setPath(mPath + mMerchainInfo.getWhite_paper_name() + ".pdf", false)
+                .setPath(getBookFilePath(mMerchainInfo), false)
                 .setCallbackProgressTimes(100)
                 .setMinIntervalUpdateSpeed(200)
                 .setListener(new FileDownloadSampleListener() {
@@ -260,7 +294,7 @@ public class MechanismCenterFragment extends TSFragment {
                         mProgressBar.setVisibility(View.GONE);
                         showSnackSuccessMessage("下载成功，文件位于 tbm 下");
                         try {
-                            startActivity(FileUtils.openFile(mPath + mMerchainInfo.getWhite_paper_name() + ".pdf", mActivity.getApplicationContext
+                            startActivity(FileUtils.openFile(getBookFilePath(mMerchainInfo), mActivity.getApplicationContext
                                     ()));
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -312,6 +346,10 @@ public class MechanismCenterFragment extends TSFragment {
         mMerchainContentWebLoadView.getContentWebView().resumeTimers();
         super.onResume();
 
+    }
+
+    public interface OnMerchainismInfoChangedListener {
+        void onMerchainismInfoChanged(MerchainInfo merchainInfo);
     }
 
 }
