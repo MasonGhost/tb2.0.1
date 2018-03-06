@@ -26,6 +26,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
@@ -170,20 +171,10 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 if (mChatMembers.get(position).getUser_id() == -1L) {
                     // 添加
-                    Intent intent = new Intent(getContext(), SelectFriendsActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable(BUNDLE_GROUP_EDIT_DATA, mChatGroupBean);
-                    bundle.putBoolean(BUNDLE_GROUP_IS_DELETE, false);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    SelectFriendsActivity.startSelectFriendActivity(mActivity, mChatGroupBean, false);
                 } else if (mChatMembers.get(position).getUser_id() == -2L) {
                     // 移除
-                    Intent intent = new Intent(getContext(), SelectFriendsActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable(BUNDLE_GROUP_EDIT_DATA, mChatGroupBean);
-                    bundle.putBoolean(BUNDLE_GROUP_IS_DELETE, true);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    SelectFriendsActivity.startSelectFriendActivity(mActivity, mChatGroupBean, true);
                 } else {
                     PersonalCenterFragment.startToPersonalCenter(getContext(), mChatMembers.get(position));
                 }
@@ -217,7 +208,14 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         switch (view.getId()) {
             case R.id.iv_add_user:
                 // 添加成员
-                mPresenter.createGroupFromSingleChat();
+                if (mChatGroupBean == null) {
+                    mChatGroupBean = new ChatGroupBean();
+                }
+                List<UserInfoBean> userInfoBeanList = new ArrayList<>();
+                userInfoBeanList.add(mPresenter.getUserInfoFromLocal(mChatId));
+                mChatGroupBean.setAffiliations(userInfoBeanList);
+                SelectFriendsActivity.startSelectFriendActivity(mActivity, mChatGroupBean, false);
+
                 break;
             case R.id.tv_to_all_members:
                 // 查看所有成员
@@ -378,10 +376,10 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(chatGroupBean12 -> {
-            if (getActivity() != null) {
-                setGroupData();
-            }
-        }, Throwable::printStackTrace);
+                    if (getActivity() != null) {
+                        setGroupData();
+                    }
+                }, Throwable::printStackTrace);
     }
 
     @Override
@@ -428,7 +426,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             showSnackErrorMessage(getString(R.string.create_fail));
         } else {
             // 点击跳转聊天
-            ChatActivity.startChatActivity(mActivity,id,EaseConstant.CHATTYPE_GROUP);
+            ChatActivity.startChatActivity(mActivity, id, EaseConstant.CHATTYPE_GROUP);
             getActivity().finish();
         }
 

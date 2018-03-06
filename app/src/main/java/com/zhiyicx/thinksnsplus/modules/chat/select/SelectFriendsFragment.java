@@ -188,11 +188,16 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     protected void setRightClick() {
         // 发起聊天
         if (mSelectedList.size() > 0) {
-            if (mChatGroupBean != null) {
+            if (mChatGroupBean != null && !TextUtils.isEmpty(mChatGroupBean.getId())) {
                 mPresenter.dealGroupMember(mSelectedList);
             } else {
                 // 创建群
-                mPresenter.createConversation(mSelectedList);
+                List<UserInfoBean> list = new ArrayList<>();
+                list.addAll(mSelectedList);
+                if (mChatGroupBean != null && TextUtils.isEmpty(mChatGroupBean.getId())) {
+                    list.addAll(mChatGroupBean.getAffiliations());
+                }
+                mPresenter.createConversation(list);
             }
         }
     }
