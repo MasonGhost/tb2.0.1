@@ -6,6 +6,7 @@ import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.PathUtil;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -134,7 +135,7 @@ public class TSEMessageUtils {
      * @param isJoin
      * @param callBack
      */
-    public static void sendGroupMemberJoinOrExitMessage(String to, String content, boolean isJoin, final EMCallBack callBack) {
+    public static void sendGroupMemberJoinOrExitMessage(final String to, String content, boolean isJoin, final EMCallBack callBack) {
 
         EMMessage message = EMMessage.createTxtSendMessage(content, to);
         message.setChatType(EMMessage.ChatType.GroupChat);
@@ -142,13 +143,13 @@ public class TSEMessageUtils {
         message.setMsgTime(currTime);
         // 设置消息的扩展
         message.setAttribute("type", TSEMConstants.TS_ATTR_JOIN);
-        message.setFrom(to);
         message.setAttribute(TSEMConstants.TS_ATTR_JOIN, isJoin);
         message.setAttribute(TSEMConstants.TS_ATTR_EIXT, !isJoin);
 
         message.setMessageStatusCallback(new EMCallBack() {
             @Override
             public void onSuccess() {
+                LogUtils.e("onSuccess:::");
                 if (callBack != null) {
                     callBack.onSuccess();
                 }
@@ -156,6 +157,7 @@ public class TSEMessageUtils {
 
             @Override
             public void onError(int i, String s) {
+                LogUtils.e("onError:::"+s);
                 if (callBack != null) {
                     callBack.onError(i, s);
                 }
@@ -163,10 +165,17 @@ public class TSEMessageUtils {
 
             @Override
             public void onProgress(int i, String s) {
+                LogUtils.e("onProgress:::"+s);
             }
         });
         // 准备工作完毕，发送消息
         EMClient.getInstance().chatManager().sendMessage(message);
+        try {
+            EMClient.getInstance().groupManager().leaveGroup(to);
+        } catch (HyphenateException e) {
+            e.printStackTrace();
+        }
+        EMClient.getInstance().chatManager().deleteConversation(to, true);
     }
 
     /**

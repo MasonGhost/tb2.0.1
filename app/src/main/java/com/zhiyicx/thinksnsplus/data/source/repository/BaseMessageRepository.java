@@ -145,6 +145,7 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                             // 群聊
                             String chatGroupId = itemBeanV2.getConversation().conversationId();
                             try {
+                                EMClient.getInstance().groupManager().getGroupFromServer(chatGroupId);
                                 Long userId = Long.parseLong(itemBeanV2.getConversation().getLastMessage().getFrom());
                                 if (mUserInfoBeanGreenDao.getSingleDataFromCache(userId) == null) {
                                     users.add(itemBeanV2.getConversation().getLastMessage().getFrom());

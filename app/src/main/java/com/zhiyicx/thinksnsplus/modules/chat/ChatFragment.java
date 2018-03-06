@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
+import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.EaseUI;
@@ -176,6 +177,10 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
         if (chatType == EaseConstant.CHATTYPE_SINGLE) {
             setCenterText(mPresenter.getUserName(toChatUsername));
         } else if (chatType == EaseConstant.CHATTYPE_GROUP) {
+            EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatUsername);
+            if (group != null && group.isMsgBlocked()) {
+                mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ico_newslist_shield, 0);
+            }
             setCenterText(mPresenter.getGroupName(toChatUsername));
         }
         if (chatType != EaseConstant.CHATTYPE_CHATROOM) {
@@ -197,6 +202,12 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             setCenterText(mPresenter.getUserName(toChatUsername));
         } else if (chatType == EaseConstant.CHATTYPE_GROUP) {
             setCenterText(mPresenter.getGroupName(toChatUsername));
+            EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatUsername);
+            if (group != null && group.isMsgBlocked()) {
+                mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ico_newslist_shield, 0);
+            } else if (group != null && !group.isMsgBlocked()) {
+                mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            }
         }
     }
 
@@ -395,7 +406,6 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             isUserExit = TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"));
             if (!isGroupChange) {
                 isGroupChange = TSEMConstants.TS_ATTR_GROUP_CHANGE.equals(message.ext().get("type"));
-                chatGroupId = message.ext().get(TSEMConstants.TS_ATTR_GROUP_ID).toString();
             }
             isCreate = message.getBooleanAttribute(TSEMConstants.TS_ATTR_GROUP_CRATE, false);
             isBlock = message.getBooleanAttribute(TSEMConstants.TS_ATTR_BLOCK, false);
@@ -438,7 +448,7 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
         // 拍照
         inputMenu.registerExtendMenuItem(R.string.attach_take_pic, R.mipmap.ico_chat_takephoto, ITEM_TAKE_PICTURE_TS, extendMenuItemClickListener);
         // 视频 -- 需求取消  2018-1-31 15:26:14
-        inputMenu.registerExtendMenuItem(R.string.attach_video, R.mipmap.ico_chat_video, ITEM_VIDEO_TS, extendMenuItemClickListener);
+//        inputMenu.registerExtendMenuItem(R.string.attach_video, R.mipmap.ico_chat_video, ITEM_VIDEO_TS, extendMenuItemClickListener);
         // 位置
         inputMenu.registerExtendMenuItem(R.string.attach_location, R.mipmap.ico_chat_location, ITEM_LOCATION_TS, extendMenuItemClickListener);
         // 目前仅有单聊才有音视频通话

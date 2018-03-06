@@ -2,14 +2,9 @@ package com.zhiyicx.thinksnsplus.modules.chat.info;
 
 import android.os.Bundle;
 
-import com.hyphenate.chat.EMChatManager;
 import com.hyphenate.chat.EMClient;
-import com.hyphenate.chat.EMConversation;
-import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
-import com.hyphenate.easeui.EaseConstant;
-import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.hyphenate.exceptions.HyphenateException;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.baseproject.em.manager.util.TSEMessageUtils;
@@ -86,8 +81,7 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
                             EMClient.getInstance().groupManager().destroyGroup(id);
                         } else {
                             // 退群
-                            EMClient.getInstance().groupManager().leaveGroup(id);
-                            TSEMessageUtils.sendGroupMemberJoinOrExitMessage(id,AppApplication.getmCurrentLoginAuth().getUser().getName()+"退出了群聊",false,null);
+                            TSEMessageUtils.sendGroupMemberJoinOrExitMessage(id, AppApplication.getmCurrentLoginAuth().getUser().getName() + "退出了群聊", false, null);
                         }
                         return Observable.just(id);
                     } catch (HyphenateException e) {
@@ -178,11 +172,24 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
     public void getGroupChatInfo(String groupId) {
         Subscription subscription = mRepository.getGroupChatInfo(groupId)
                 .doOnSubscribe(() -> mRootView.isShowEmptyView(true, true))
-                .subscribe(new BaseSubscribeForV2<List<ChatGroupBean>>() {
+                .subscribeOn(Schedulers.io())
+                .flatMap(chatGroupBeans -> {
+                    if (chatGroupBeans.isEmpty()) {
+                        return null;
+                    }
+                    try {
+                        EMClient.getInstance().groupManager().getGroupFromServer(chatGroupBeans.get(0).getId());
+                    } catch (HyphenateException e) {
+                        e.printStackTrace();
+                    }
+                    return Observable.just(chatGroupBeans.get(0));
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<ChatGroupBean>() {
                     @Override
-                    protected void onSuccess(List<ChatGroupBean> data) {
-                        mChatGroupBeanGreenDao.saveMultiData(data);
-                        mRootView.getGroupInfoSuccess(data.get(0));
+                    protected void onSuccess(ChatGroupBean data) {
+                        mChatGroupBeanGreenDao.saveSingleData(data);
+                        mRootView.getGroupInfoSuccess(data);
                         mRootView.isShowEmptyView(false, true);
                         mRootView.dismissSnackBar();
                     }

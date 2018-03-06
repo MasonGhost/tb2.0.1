@@ -31,8 +31,6 @@ public class ChatInfoRepository extends BaseFriendsRepository implements ChatInf
 
     @Override
     public Observable<List<ChatGroupBean>> getGroupChatInfo(String groupId) {
-        return mEasemobClient.getGroupInfo(groupId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+        return mEasemobClient.getGroupInfo(groupId);
     }
 }
