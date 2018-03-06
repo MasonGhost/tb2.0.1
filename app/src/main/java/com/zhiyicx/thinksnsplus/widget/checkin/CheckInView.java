@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -14,12 +15,14 @@ import android.graphics.PathMeasure;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.utils.LinearGradientUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +50,6 @@ import java.util.List;
 
 public class CheckInView extends View {
     private static final int DEF_HEIGHT = 40; //默认高度
-    private static final int DEF_PADDING =0; //默认padding值
     private static final int TEXT_MARGIN_TOP = 13; // 文字距离团的marginTop值
     private static final float SECTION_SCALE = 1.5F / 2; //截面的缩放值
     private static final float SIGN_IN_BALL_SCALE = 1F / 2; //签到 六边形的缩放值
@@ -55,20 +57,22 @@ public class CheckInView extends View {
 
 
     private int signInBgColor;  //签到背景颜色
-    private int signInPbColor;  //签到横线颜色
-    private int signInCheckColor;  //签到放大六边形的颜色
+    private int signInPbStartColor;  //签到横线颜色
+
+    private int signInPbEndColor;  //签到横线颜色
     private int signInTextColor;  //第一天  第二天.....字体颜色
     private int signInTextSize;  //字体大小
 
     private Paint signInBgPaint;  //签到背景  画笔
-    private Paint signInPbPatin;    //签到画笔
-    private Paint signInCheckPaint;  //大的六边形画笔
+    private Paint mCheckedPbPaint;    //签到画笔
+    private Paint mCheckedCirclePaint;    //签到圆画笔
     private Paint signInTextPaint;  //字体画笔
+
+    private LinearGradientUtil mLinearGradientUtil;
 
     private int viewHeight;  //控件高度
     private int viewWidth; //控件宽度
-    private int viewPadding; //padding值
-    private int signInBallRadio; //签到六边形的 半径
+    private int signInBallRadio; //签到园形的 半径
     private int signInRectHeight; //横线高度
 
     private RectF signInBgRectF; //整个屏幕宽度的一条黑色的直线
@@ -79,18 +83,17 @@ public class CheckInView extends View {
     private int currentSignInTag; //第几天的标识
 
     private List<String> viewData;  //存放 第一天 第二天......第七天
-    private List<Point> circlePoints; //画六边形的 各个中心点坐标
-    private List<Path> signInPaths;   //没用到 不知道为啥写的 - -
+    private List<Point> circlePoints; //画园形的 各个中心点坐标
     private List<Path> signInDoublePaths;
     private List<Path> sexanglePaths;  //签到(六边形)路径   --->这个List 存放的是七个六边形的路径
     private List<Path> sexangleDoublePaths; //放大二倍六边形 路径
     private List<Point> descPoints; //矩形的点坐标
     private List<RectF> signInPbRectFs;  //签到的矩形
     private List<Path> selectLinePath;  //签到的矩形 做动画效果
+    private List<Integer> checkedCircleColors; // 选中的园颜色
 
     private float mSexanglePercent;          //以下三个 是矩形  六边形  对号  的值动画(顺序不固定)    使用方法可以百度一下 - -
     private ValueAnimator mSexangleAnimator;
-    private PathMeasure mPathMeasure;
     private Path mSexangleDest;
     private Boolean isAnamitorStart = false;
 
@@ -127,6 +130,7 @@ public class CheckInView extends View {
         initToolsAndData();
         initAnimator();
         setBackgroundColor(getResources().getColor(R.color.white));
+        mLinearGradientUtil = new LinearGradientUtil(signInPbStartColor, signInPbEndColor);
     }
 
     /**
@@ -140,7 +144,6 @@ public class CheckInView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        viewPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEF_PADDING, getResources().getDisplayMetrics());
         int textMarginTop = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, TEXT_MARGIN_TOP, getResources().getDisplayMetrics());
 
         viewWidth = w;
@@ -164,30 +167,35 @@ public class CheckInView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        //签到横线
+        // 签到背景横线
         drawSignInBgRect(canvas);
-        //black circle
+        // 签到背景圆
         drawSignInNormalCircle(canvas);
-        //绘制正常的签到六边形
-//        drawSignInNormalSexangle(canvas);
+
         //选择第几天之前的矩形
         drawSignInPbRect(canvas);
-        //绘制旧的矩形
-        drawSignInPbOldRect(canvas);
-        //select circle
+        // checked 的圆
         drawSignInCheck(canvas);
-//        drawSignOldSignIn(canvas);
         //绘制文字
 //        drawTextDesc(canvas);
         //绘制礼物图标  如果不用  可以注释掉
 //        drawBitmap(canvas);
     }
 
-
+    /**
+     * 签到背景线
+     *
+     * @param canvas
+     */
     private void drawSignInBgRect(Canvas canvas) {
         canvas.drawRect(signInBgRectF, signInBgPaint);
     }
 
+    /**
+     * 签到背景圆
+     *
+     * @param canvas
+     */
     private void drawSignInNormalCircle(Canvas canvas) {
 
         if (null != circlePoints && circlePoints.size() > 0) {
@@ -202,36 +210,36 @@ public class CheckInView extends View {
         if (isNeedReturn()) {
             return;
         }
-        signInPbPatin = createPaint(signInPbColor, 0, Paint.Style.FILL_AND_STROKE, 5);
-//        canvas.drawRect(currentSignInTag == viewData.size() - 1 ? signInBgRectF : signInPbRectFs.get(currentSignInTag), signInPbPatin);
-
+        mCheckedPbPaint = createPaint(signInPbStartColor, 0, Paint.Style.FILL_AND_STROKE, 5);
         mRectPathMeasure.setPath(selectLinePath.get(currentSignInTag), false);
         mRectPathMeasure.getSegment(0, mSelectRectPercent * mRectPathMeasure.getLength(), mRectDest, true);
-        canvas.drawPath(mRectDest, signInPbPatin);
+        canvas.drawPath(mRectDest, mCheckedPbPaint);
         if (!isRectAnimatorStart) {
-            signInPbPatin = createPaint(signInPbColor, 0, Paint.Style.FILL, 0);
-            canvas.drawRect(currentSignInTag == viewData.size() - 1 ? signInBgRectF : signInPbRectFs.get(currentSignInTag), signInPbPatin);
+            mCheckedCirclePaint = createPaint(signInPbStartColor, 0, Paint.Style.FILL, 0);
+            Shader mShader = new LinearGradient(signInPbRectFs.get(0).centerX(), signInPbRectFs.get(0).centerY()
+                    , signInPbRectFs.get(currentSignInTag).centerX(), signInPbRectFs.get(currentSignInTag).centerY()
+                    , new int[]{signInPbStartColor, checkedCircleColors.get(currentSignInTag)}
+                    , null
+                    , Shader.TileMode.CLAMP);
+            mCheckedCirclePaint.setShader(mShader);
+            canvas.drawRect(currentSignInTag == viewData.size() - 1 ? signInBgRectF : signInPbRectFs.get(currentSignInTag), mCheckedCirclePaint);
         }
 
     }
 
-    private void drawSignInPbOldRect(Canvas canvas) {
-        if (isNeedReturn()) {
-            return;
-        }
-        if (currentSignInTag - 1 >= 0) {
-            signInPbPatin = createPaint(signInPbColor, 0, Paint.Style.FILL, 0);
-            canvas.drawRect(currentSignInTag == viewData.size() - 1 ? signInBgRectF : signInPbRectFs.get(currentSignInTag - 1), signInPbPatin);
-        }
-    }
-
-
+    /**
+     * 画选中了的园
+     *
+     * @param canvas
+     */
     private void drawSignInCheck(Canvas canvas) {
         if (isNeedReturn()) {
             return;
         }
+        mCheckedPbPaint = createPaint(signInPbStartColor, 0, Paint.Style.FILL, 0);
         for (int i = 0; i <= currentSignInTag; i++) {
-            canvas.drawCircle(circlePoints.get(i).x, circlePoints.get(i).y, signInBallRadio, signInPbPatin);
+            mCheckedPbPaint.setColor(checkedCircleColors.get(i));
+            canvas.drawCircle(circlePoints.get(i).x, circlePoints.get(i).y, signInBallRadio, mCheckedPbPaint);
         }
     }
 
@@ -240,7 +248,7 @@ public class CheckInView extends View {
             return;
         }
         for (int i = 0; i < currentSignInTag; i++) {
-            canvas.drawCircle(circlePoints.get(i).x, circlePoints.get(i).y, signInBallRadio, signInPbPatin);
+            canvas.drawCircle(circlePoints.get(i).x, circlePoints.get(i).y, signInBallRadio, mCheckedPbPaint);
 
         }
 
@@ -258,8 +266,9 @@ public class CheckInView extends View {
     }
 
     private void drawBitmap(Canvas canvas) {
-        if (null == bitmap || null == srcBitmap || null == desBitmap || null == signInTextPaint)
+        if (null == bitmap || null == srcBitmap || null == desBitmap || null == signInTextPaint) {
             return;
+        }
         canvas.drawBitmap(bitmap, srcBitmap, desBitmap, signInTextPaint);
     }
 
@@ -307,7 +316,6 @@ public class CheckInView extends View {
                         3 - 5));
                 signInDoublePath.lineTo((float) (circlePoint.x - signInBallRadio * 1.75 / 4), (float) (circlePoint.y + 1.65 * signInBallRadio / 4 *
                         3));
-//                signInDoublePath.lineTo(circlePoint.x + signInBallRadio , circlePoint.y - signInBallRadio + signInBallRadio);
                 signInDoublePath.close();
 
                 //小得六边形
@@ -330,14 +338,18 @@ public class CheckInView extends View {
                 sexangleDoublePath.lineTo(circlePoint.x - signInBallRadio, (float) (circlePoint.y + 1.65 * signInBallRadio));
                 sexangleDoublePath.close();
 
+                // 选中颜色
+                Integer chooseColor = mLinearGradientUtil.getColor((float) i / viewData.size());
+
+
                 circlePoints.add(circlePoint);
                 descPoints.add(descPoint);
                 signInPbRectFs.add(rectF);
-                signInPaths.add(signInPath);
                 signInDoublePaths.add(signInDoublePath);
                 sexangleDoublePaths.add(sexangleDoublePath);
                 sexanglePaths.add(sexanglePath);
                 selectLinePath.add(selectPath);
+                checkedCircleColors.add(chooseColor);
             }
 
             //设置礼物图标
@@ -374,19 +386,18 @@ public class CheckInView extends View {
         //存放路径 点 ....的一些集合
         circlePoints = new ArrayList<>();
         descPoints = new ArrayList<>();
-        signInPaths = new ArrayList<>();
         signInPbRectFs = new ArrayList<>();
         sexanglePaths = new ArrayList<>();
         signInDoublePaths = new ArrayList<>();
         sexangleDoublePaths = new ArrayList<>();
         selectLinePath = new ArrayList<>();
+        checkedCircleColors = new ArrayList<>();
         //默认设置成 -1
         currentSignInTag = -1;
 
         //初始化  画笔  抽取一个工具类
         signInBgPaint = createPaint(signInBgColor, 0, Paint.Style.FILL, 0);
-        signInPbPatin = createPaint(signInPbColor, 0, Paint.Style.FILL, 0);
-        signInCheckPaint = createPaint(signInCheckColor, 0, Paint.Style.FILL, 3);
+        mCheckedPbPaint = createPaint(signInPbStartColor, 0, Paint.Style.FILL, 0);
         signInTextPaint = createPaint(signInTextColor, signInTextSize, Paint.Style.FILL, 0);
 
         //礼物图标  使用方法 可以百度一下
@@ -417,7 +428,6 @@ public class CheckInView extends View {
     }
 
     private void initAnimator() {
-        mPathMeasure = new PathMeasure();
         mSexangleDest = new Path();
         mSexangleAnimator = ValueAnimator.ofFloat(0, 1);
         mSexangleAnimator.setInterpolator(new LinearInterpolator());
@@ -508,11 +518,11 @@ public class CheckInView extends View {
                 case R.styleable.Signin_sign_in_bg_color:
                     signInBgColor = typedArray.getColor(index, Color.BLACK);
                     break;
-                case R.styleable.Signin_sign_in_pb_color:
-                    signInPbColor = typedArray.getColor(index, Color.BLACK);
+                case R.styleable.Signin_sign_in_pb_start_color:
+                    signInPbStartColor = typedArray.getColor(index, Color.BLACK);
                     break;
-                case R.styleable.Signin_sign_in_check_color:
-                    signInCheckColor = typedArray.getColor(index, Color.BLACK);
+                case R.styleable.Signin_sign_in_pb_end_color:
+                    signInPbEndColor = typedArray.getColor(index, Color.BLACK);
                     break;
                 case R.styleable.Signin_sign_in_text_color:
                     signInTextColor = typedArray.getColor(index, Color.BLACK);
@@ -525,6 +535,9 @@ public class CheckInView extends View {
         }
         typedArray.recycle();
     }
+
+    /*******************************************  操作  *********************************************/
+
 
     public void setSignInData(List<String> data) {
         if (null != data) {

@@ -85,9 +85,11 @@
         <item name="android:maxLines">1</item>
         <item name="android:textColor">@color/important_for_content</item>
     </style>
+
     <style name="NoBackGroundDialog" parent="@android:style/Theme.Holo.Light.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
+
     <style name="followButtonStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -100,11 +102,11 @@
         <item name="android:paddingTop">@dimen/spacing_small_3dp</item>
         <item name="android:text">@string/add_follow</item>
     </style>
+
     <style name="def_checkinView">
         <item name="sign_in_bg_color">#f2f2f2</item>
-        <item name="sign_in_pb_color">#f28161</item>
-        <!--<item name="sign_in_pb_start_color">#fac25e</item>-->
-        <item name="sign_in_check_color">#000000</item>
+        <item name="sign_in_pb_start_color">#fac25e</item>
+        <item name="sign_in_pb_end_color">#f28161</item>
         <item name="sign_in_text_color">@android:color/holo_purple</item>
         <item name="sign_in_text_siz">12sp</item>
     </style>
