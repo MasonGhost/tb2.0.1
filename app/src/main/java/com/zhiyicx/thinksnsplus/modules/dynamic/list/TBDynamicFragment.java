@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
@@ -59,8 +60,14 @@ public class TBDynamicFragment extends DynamicFragment {
         mCurrentUserinfo = getArguments().getParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA);
     }
 
+    /**
+     *  view 调整为 followView
+     * @param view
+     * @param dataPosition
+     * @param viewPosition
+     */
     @Override
-    public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
+    public void onMenuItemClick(View followView, int dataPosition, int viewPosition) {
         dataPosition -= mHeaderAndFooterWrapper.getHeadersCount();
         switch (viewPosition) {
             // 0 1 2 3 代表 view item 位置
@@ -98,7 +105,7 @@ public class TBDynamicFragment extends DynamicFragment {
                 if (mListDatas.get(dataPosition)
                         .getUser_id() == AppApplication.getMyUserIdWithdefault()) {
                 } else if (mListDatas.get(dataPosition).getFeed_from() != -1) {
-                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition));
+                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition), followView);
                     mOtherDynamicPopWindow.show();
                 } else {
                     // 广告
@@ -114,7 +121,7 @@ public class TBDynamicFragment extends DynamicFragment {
      *
      * @param dynamicBean curent dynamic
      */
-    protected void initOtherDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean) {
+    protected void initOtherDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, View followView) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(dynamicBean.getUserInfoBean().getFollower() ? getString(R.string.cancel_follow) : "")
                 .item2Str(dynamicBean.getFeed_from() == -1 ? "" : getString(R.string.report))
@@ -127,7 +134,8 @@ public class TBDynamicFragment extends DynamicFragment {
                     // 取消关注
                     mPresenter.followUser(dynamicBean.getUserInfoBean());
                     dynamicBean.getUserInfoBean().setFollower(false);
-                    refreshData();
+                    followView.setVisibility(View.VISIBLE);
+//                    refreshData();
                     mOtherDynamicPopWindow.hide();
                 })
                 .item2ClickListener(() -> {                    // 举报帖子

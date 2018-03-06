@@ -119,7 +119,7 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
                 // 设置工具栏的点击事件
                 dynamicListMenuView.setItemOnClick((parent, v, menuPostion) -> {
                     if (mOnMenuItemClickLisitener != null) {
-                        mOnMenuItemClickLisitener.onMenuItemClick(v, position, menuPostion);
+                        mOnMenuItemClickLisitener.onMenuItemClick(holder.getView(R.id.tv_follow), position, menuPostion);
                     }
                 });
             }
@@ -172,7 +172,7 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
             RxView.clicks(holder.getView(R.id.tv_follow))
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
-                        mOnFollowlistener.onFollowClick(dynamicBean.getUserInfoBean());
+                        mOnFollowlistener.onFollowClick(dynamicBean.getUserInfoBean(),holder.getView(R.id.tv_follow));
                         holder.setVisible(R.id.tv_follow, View.INVISIBLE);
                         dynamicBean.getUserInfoBean().setFollower(true);
                     });
@@ -219,6 +219,6 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
      * 关注点击监听
      */
     public interface OnFollowClickLisitener {
-        void onFollowClick(UserInfoBean userInfoBean);
+        void onFollowClick(UserInfoBean userInfoBean,TextView followView);
     }
 }
