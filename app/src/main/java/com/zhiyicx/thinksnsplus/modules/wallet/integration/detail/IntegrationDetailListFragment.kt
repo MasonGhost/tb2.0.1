@@ -150,7 +150,7 @@ class IntegrationDetailListFragment : TSListFragment<IntegrationDetailContract.P
                     val desc = holder.getView<TextView>(R.id.withdrawals_desc)
                     val time = holder.getView<TextView>(R.id.withdrawals_time)
                     val account = holder.getView<TextView>(R.id.withdrawals_account)
-                    val statusSuccess = recharge.state == 1
+                    val statusSuccess = recharge.state == 1 || recharge.state == 0
                     val action = recharge.type
                     desc.isEnabled = statusSuccess
                     desc.text = if (statusSuccess)
