@@ -35,7 +35,6 @@ import com.zhiyicx.thinksnsplus.widget.IconTextView;
 import org.simple.eventbus.EventBus;
 
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -335,8 +334,8 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
             mPayAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
                     .item6Str(getString(R.string.info_publish_go_to_next))
-                    .desStr(String.format(Locale.getDefault(), getString(R.string.info_publish_hint_pay), mPresenter != null ? mPresenter
-                            .getGoldName() : ""))
+                    .desStr(getString(R.string.info_publish_hint_pay, mPresenter.getSystemConfigBean().getNewsPayContribute(),
+                            mPresenter.getGoldName()))
                     .bottomStr(getString(R.string.cancel))
                     .isOutsideTouch(true)
                     .isFocus(true)
