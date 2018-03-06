@@ -129,7 +129,7 @@ public class TBDynamicFragment extends DynamicFragment {
                     dynamicBean.getUserInfoBean().setFollower(false);
                     refreshData();
                     mOtherDynamicPopWindow.hide();
-                })  // 关注
+                })
                 .item2ClickListener(() -> {                    // 举报帖子
                     if (mPresenter.handleTouristControl()) {
                         return;

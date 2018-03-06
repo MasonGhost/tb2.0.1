@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -78,7 +79,7 @@ public class WalletFragment extends TSListFragment<WalletContract.Presenter, Rec
 
     @Override
     public String getBillType() {
-        return ""/*{""--全部, "income"--收入, "expenses"--支出}*/;
+        return null/*{""--全部, "income"--收入, "expenses"--支出}*/;
     }
 
 
@@ -102,7 +103,7 @@ public class WalletFragment extends TSListFragment<WalletContract.Presenter, Rec
                 holder.setText(R.id.tv_wallet_dec, rechargeSuccessBean.getSubject());
 
                 // 收支时间 TimeUtils.getYeayMonthDay()
-                holder.setText(R.id.tv_wallet_time, rechargeSuccessBean.getCreated_at());
+                holder.setText(R.id.tv_wallet_time, TimeUtils.utc2LocalStr(rechargeSuccessBean.getCreated_at()));
 
                 // 收支金额
                 holder.setText(R.id.tv_wallet_count, action < 0 ? "-" + rechargeSuccessBean.getAmount() : "+" + rechargeSuccessBean.getAmount());
