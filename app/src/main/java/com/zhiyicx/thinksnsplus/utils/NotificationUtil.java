@@ -63,10 +63,10 @@ public class NotificationUtil {
      * @param context
      * @param jpushMessageBean
      */
-    public static void showChatNotifyMessage(Context context, JpushMessageBean jpushMessageBean, UserInfoBean userInfoBean) {
+    public static void showChatNotifyMessage(Context context, JpushMessageBean jpushMessageBean, String chatId) {
         if (!BackgroundUtil.getAppIsForegroundStatus()) {
             NotificationUtil notiUtil = new NotificationUtil(context);
-            notiUtil.postChatNotification(jpushMessageBean, userInfoBean);
+            notiUtil.postChatNotification(jpushMessageBean, chatId);
         }
     }
 
@@ -97,25 +97,21 @@ public class NotificationUtil {
     /**
      * 普通的Notification
      */
-    public void postChatNotification(JpushMessageBean jpushMessageBean, UserInfoBean userInfoBean) {
+    public void postChatNotification(JpushMessageBean jpushMessageBean, String chatId) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        String emKey = null;
-        try {
-            emKey = String.valueOf(userInfoBean.getUser_id());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (TextUtils.isEmpty(emKey) || TextUtils.isEmpty(userInfoBean.getName())) {
+
+        if (TextUtils.isEmpty(chatId)) {
 
         } else {
             Intent intent = new Intent(context, ChatActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putString(EaseConstant.EXTRA_USER_ID, emKey);
+
             if (EMMessage.ChatType.Chat.name().equals(jpushMessageBean.getExtras())) {
                 bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_SINGLE);
             } else {
                 bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_GROUP);
             }
+            bundle.putString(EaseConstant.EXTRA_USER_ID, chatId);
             intent.putExtras(bundle);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             builder.setContentIntent(pendingIntent);

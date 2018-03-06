@@ -283,7 +283,7 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
                             }
                             jpushMessageBean.setMessage(content);
                             jpushMessageBean.setNofity(false);
-                            NotificationUtil.showChatNotifyMessage(mContext, jpushMessageBean, chatItemBean12.getUserInfo());
+                            NotificationUtil.showChatNotifyMessage(mContext, jpushMessageBean, chatItemBean12.getMessage().conversationId());
                         });
             }
         }
