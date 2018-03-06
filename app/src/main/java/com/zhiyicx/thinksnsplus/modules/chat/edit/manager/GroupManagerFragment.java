@@ -24,14 +24,16 @@ import static com.zhiyicx.thinksnsplus.modules.chat.edit.owner.EditGroupOwnerFra
  * @date 2018/1/23
  * @contact email:648129313@qq.com
  */
-
 public class GroupManagerFragment extends TSFragment<GroupManagerContract.Presenter> implements GroupManagerContract.View {
 
     @BindView(R.id.sc_block_message)
     SwitchCompat mScOpen;
 
     private ChatGroupBean mChatGroupBean;
-    /**是否需要请求网络*/
+
+    /**
+     * 是否需要请求网络
+     */
     private boolean mIsNeedChange;
 
     public static GroupManagerFragment instance(Bundle bundle) {
@@ -43,7 +45,7 @@ public class GroupManagerFragment extends TSFragment<GroupManagerContract.Presen
     @Override
     protected void initView(View rootView) {
         mChatGroupBean = getArguments().getParcelable(BUNDLE_GROUP_DATA);
-        if (mChatGroupBean != null){
+        if (mChatGroupBean != null) {
             mScOpen.setChecked(mChatGroupBean.isMembersonly());
             mIsNeedChange = true;
         }
@@ -52,12 +54,12 @@ public class GroupManagerFragment extends TSFragment<GroupManagerContract.Presen
     @Override
     protected void initData() {
         mScOpen.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (mIsNeedChange){
-                    // 有所改变才去更新群信息
-                    mChatGroupBean.setMembersonly(isChecked);
-                    mPresenter.updateGroup(mChatGroupBean);
-                    mIsNeedChange = false;
-                }
+            if (mIsNeedChange) {
+                // 有所改变才去更新群信息
+                mChatGroupBean.setMembersonly(isChecked);
+                mPresenter.updateGroup(mChatGroupBean);
+                mIsNeedChange = false;
+            }
         });
     }
 
@@ -93,7 +95,7 @@ public class GroupManagerFragment extends TSFragment<GroupManagerContract.Presen
 
     @Override
     public void updateGroup(ChatGroupBean chatGroupBean) {
-        if (chatGroupBean != null){
+        if (chatGroupBean != null) {
             // emm 由于没有完全返回所有信息 再加上字段也不同 所以手动改一下
             mChatGroupBean.setMembersonly(chatGroupBean.isMembersonly());
             mIsNeedChange = true;

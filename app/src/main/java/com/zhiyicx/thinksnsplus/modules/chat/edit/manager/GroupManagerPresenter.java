@@ -63,12 +63,14 @@ public class GroupManagerPresenter extends AppBasePresenter<GroupManagerContract
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
+                        mRootView.updateGroup(null);
                         mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         super.onError(e);
+                        mRootView.updateGroup(null);
                         mRootView.showSnackErrorMessage(e.getMessage());
                     }
                 });
