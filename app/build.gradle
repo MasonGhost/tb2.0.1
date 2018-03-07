@@ -57,7 +57,7 @@ android {
         }
         debug {
             storeFile file('../tokenbook.jks')
-            storePassword 'TokenBook201819820307'
+            storePassword ' '
             keyAlias 'tokenbook'
             keyPassword 'TokenBook201819820307'
         }

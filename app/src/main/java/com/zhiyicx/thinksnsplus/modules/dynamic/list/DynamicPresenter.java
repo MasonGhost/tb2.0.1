@@ -137,7 +137,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
                         List<DynamicDetailBeanV2> result = new ArrayList<>();
 
                         for (DynamicDetailBeanV2 detailBeanV2 : dynamicDetailBeanV2s) {
-                            if (detailBeanV2.getUser_id() == mRootView.getMcurrentUser().getUser_id()) {
+                            if (detailBeanV2.getUser_id().intValue() == mRootView.getMcurrentUser().getUser_id()) {
                                 result.add(detailBeanV2);
                             }
                         }

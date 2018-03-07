@@ -31,6 +31,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
@@ -487,14 +488,20 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                     .setHighlightAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .setOnClickListener((clickedText, linkMetadata) -> {
                         LogUtils.d(clickedText);
-                        Intent intent = new Intent();
-                        intent.setAction("android.intent.action.VIEW");
-                        if (!clickedText.contains("http") || !clickedText.contains("ftp")) {
-                            clickedText = "http://" + clickedText;
+                        try {
+                            Intent intent = new Intent();
+                            intent.setAction("android.intent.action.VIEW");
+//                        if (!clickedText.contains("http") || !clickedText.contains("ftp")) {
+//                            clickedText = "http://" + clickedText;
+//                        }
+                            Uri content_url = Uri.parse(clickedText);
+                            intent.setData(content_url);
+                            mContext.startActivity(intent);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            ToastUtils.showToast("链接错误！");
                         }
-                        Uri content_url = Uri.parse(clickedText);
-                        intent.setData(content_url);
-                        mContext.startActivity(intent);
+
                     })
                     .setOnLongClickListener((clickedText, linkMetadata) -> {
 
