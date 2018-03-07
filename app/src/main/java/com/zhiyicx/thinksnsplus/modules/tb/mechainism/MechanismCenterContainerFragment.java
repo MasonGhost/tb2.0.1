@@ -238,10 +238,9 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
                     updateUseFollow();
                 })  // 关注
                 .item2ClickListener(() -> {                    // 举报帖子
-                    String img = "";
                     ReportResourceBean reportResourceBean = new ReportResourceBean(mUserInfoBean, String.valueOf(mUserInfoBean
                             .getUser_id()),
-                            "", img, "", ReportType.USER);
+                            mUserInfoBean.getName(), mUserInfoBean.getAvatar(), mTvDes.getText().toString(), ReportType.USER);
                     ReportActivity.startReportActivity(mActivity, reportResourceBean);
                     mMorePop.hide();
                 })

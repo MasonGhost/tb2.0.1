@@ -61,8 +61,9 @@ public class TBDynamicFragment extends DynamicFragment {
     }
 
     /**
-     *  view 调整为 followView
-     * @param view
+     * view 调整为 followView
+     *
+     * @param followView
      * @param dataPosition
      * @param viewPosition
      */
@@ -150,9 +151,11 @@ public class TBDynamicFragment extends DynamicFragment {
                                         .getDimensionPixelOffset(R.dimen.report_resource_img),
                                 100);
                     }
-                    ReportResourceBean reportResourceBean = new ReportResourceBean(dynamicBean.getUserInfoBean(), String.valueOf(dynamicBean
-                            .getId()),
-                            "", img, dynamicBean.getFeed_content(), ReportType.DYNAMIC);
+                    ReportResourceBean reportResourceBean = new ReportResourceBean(dynamicBean.getUserInfoBean()
+                            , String.valueOf(dynamicBean.getId())
+                            , "", img,
+                            dynamicBean.getFeed_content()
+                            , ReportType.DYNAMIC);
                     reportResourceBean.setDesCanlook(dynamicBean.getPaid_node() == null || dynamicBean
                             .getPaid_node().isPaid());
                     ReportActivity.startReportActivity(mActivity, reportResourceBean);
