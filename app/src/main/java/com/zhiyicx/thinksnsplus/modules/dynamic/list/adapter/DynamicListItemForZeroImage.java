@@ -119,7 +119,7 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
                 // 设置工具栏的点击事件
                 dynamicListMenuView.setItemOnClick((parent, v, menuPostion) -> {
                     if (mOnMenuItemClickLisitener != null) {
-                        mOnMenuItemClickLisitener.onMenuItemClick(holder.getView(R.id.tv_follow), position, menuPostion);
+                        mOnMenuItemClickLisitener.onMenuItemClick(holder.getConvertView(), position, menuPostion);
                     }
                 });
             }

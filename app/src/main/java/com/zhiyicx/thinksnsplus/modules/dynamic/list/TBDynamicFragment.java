@@ -10,7 +10,9 @@ import android.widget.TextView;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
+import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -63,12 +65,12 @@ public class TBDynamicFragment extends DynamicFragment {
     /**
      * view 调整为 followView
      *
-     * @param followView
+     * @param contentView
      * @param dataPosition
      * @param viewPosition
      */
     @Override
-    public void onMenuItemClick(View followView, int dataPosition, int viewPosition) {
+    public void onMenuItemClick(View contentView, int dataPosition, int viewPosition) {
         dataPosition -= mHeaderAndFooterWrapper.getHeadersCount();
         switch (viewPosition) {
             // 0 1 2 3 代表 view item 位置
@@ -80,7 +82,7 @@ public class TBDynamicFragment extends DynamicFragment {
                         (dataPosition).getId() == 0) {
                     return;
                 }
-                handleLike(dataPosition);
+                handleLike(dataPosition,contentView);
                 break;
 
             case 2:
@@ -106,7 +108,7 @@ public class TBDynamicFragment extends DynamicFragment {
                 if (mListDatas.get(dataPosition)
                         .getUser_id() == AppApplication.getMyUserIdWithdefault()) {
                 } else if (mListDatas.get(dataPosition).getFeed_from() != -1) {
-                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition), followView);
+                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition), contentView.findViewById(R.id.tv_follow));
                     mOtherDynamicPopWindow.show();
                 } else {
                     // 广告
@@ -116,6 +118,28 @@ public class TBDynamicFragment extends DynamicFragment {
 
         }
     }
+
+    /**
+     * 喜欢
+     *
+     * @param dataPosition
+     */
+    protected void handleLike(int dataPosition,View contentView) {
+
+        // 先更新界面，再后台处理
+        mListDatas.get(dataPosition).setHas_digg(!mListDatas.get(dataPosition)
+                .isHas_digg());
+        mListDatas.get(dataPosition).setFeed_digg_count(mListDatas.get(dataPosition)
+                .isHas_digg() ?
+                mListDatas.get(dataPosition).getFeed_digg_count() + 1 : mListDatas.get
+                (dataPosition).getFeed_digg_count() - 1);
+        DynamicListMenuView dynamicListMenuView = (DynamicListMenuView) contentView.findViewById(R.id.dlmv_menu);
+        dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(mListDatas.get(dataPosition)
+                .getFeed_digg_count()), mListDatas.get(dataPosition).isHas_digg(), 0);
+        mPresenter.handleLike(mListDatas.get(dataPosition).isHas_digg(),
+                mListDatas.get(dataPosition).getId(), dataPosition);
+    }
+
 
     /**
      * 初始化他人动态操作选择弹框

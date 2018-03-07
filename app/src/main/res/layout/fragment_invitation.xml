@@ -18,8 +18,7 @@
         <ImageView
             android:id="@+id/iv_top_logo"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="188"
+            android:layout_height="wrap_content"
             android:background="@mipmap/bgpic_top_375"/>
 
         <LinearLayout
@@ -54,10 +53,10 @@
 
         <ImageView
             android:id="@+id/iv_2code"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_width="@dimen/share_qr_code_with"
+            android:layout_height="@dimen/share_qr_code_with"
             android:layout_gravity="center"
-            android:layout_weight="84"/>
+            />
 
         <LinearLayout
             android:layout_width="wrap_content"
