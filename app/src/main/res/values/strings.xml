@@ -987,6 +987,7 @@
     <string name="image_upload_fail">图片上传失败</string>
     <string name="image_prase_fail">图片解析错误</string>
     <string name="fun_maintain">功能维护中</string>
+    <string name="data_too_large">数据量过大，本机无法加载</string>
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>
         <item>提取记录</item>
