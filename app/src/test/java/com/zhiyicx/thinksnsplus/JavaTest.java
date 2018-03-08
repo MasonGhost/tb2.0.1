@@ -1880,4 +1880,17 @@ public class JavaTest {
         SystemConfigBean systemConfigBean=  new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         System.out.println("systemConfigBean = " + systemConfigBean.toString());
     }
+
+    @Test
+    public void testLinkAuto() {
+        String src = "地方蓝山咖啡  https://oex.com/notice/detail.html?id=240 而我是";
+        Matcher matcher = Pattern.compile(MarkdownConfig.NETSITE_FORMAT).matcher(src);
+        System.out.println("replaceAll::"+src.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE));
+        while (matcher.find()) {
+            int count = matcher.groupCount();
+            for (int i = 0; i < count; i++) {
+                System.out.println("reg::" + i + ":::" + matcher.group(i));
+            }
+        }
+    }
 }
