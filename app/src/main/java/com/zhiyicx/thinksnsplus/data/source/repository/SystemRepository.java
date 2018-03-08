@@ -234,29 +234,29 @@ public class SystemRepository implements ISystemRepository {
      * @return
      */
     public boolean saveComponentStatus(SystemConfigBean systemConfigBean, Context context) {
-        if (systemConfigBean == null || systemConfigBean.getIm_helper() == null) {
-            return false;
-        }
-        SystemConfigBean localSystemConfigBean = null;
-        try {
-            localSystemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
-                    .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
-        } catch (Exception igonre) {
-        }
+        if (systemConfigBean == null) {
+            SystemConfigBean localSystemConfigBean = null;
+            try {
+                localSystemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
+                        .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+            } catch (Exception igonre) {
+            }
 
-        if (localSystemConfigBean == null) { // 读取本地默认配置
-            localSystemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
-        }
-        if (localSystemConfigBean == null || localSystemConfigBean.getIm_helper() == null || localSystemConfigBean.getIm_helper().isEmpty()) {
-            return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS, systemConfigBean);
-        }
-        for (SystemConfigBean.ImHelperBean imHelperBean : localSystemConfigBean.getIm_helper()) {
+            if (localSystemConfigBean == null) { // 读取本地默认配置
+                localSystemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
+            }
+            if (localSystemConfigBean == null || localSystemConfigBean.getIm_helper() == null || localSystemConfigBean.getIm_helper().isEmpty()) {
+                return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS, systemConfigBean);
+            }
+            for (SystemConfigBean.ImHelperBean imHelperBean : localSystemConfigBean.getIm_helper()) {
 
-            for (SystemConfigBean.ImHelperBean tshlepr : systemConfigBean.getIm_helper()) {
-                if (imHelperBean.getUid().equals(tshlepr.getUid())) {
-                    tshlepr.setDelete(imHelperBean.isDelete());
+                for (SystemConfigBean.ImHelperBean tshlepr : systemConfigBean.getIm_helper()) {
+                    if (imHelperBean.getUid().equals(tshlepr.getUid())) {
+                        tshlepr.setDelete(imHelperBean.isDelete());
+                    }
                 }
             }
+            return false;
         }
 
         return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS, systemConfigBean);
