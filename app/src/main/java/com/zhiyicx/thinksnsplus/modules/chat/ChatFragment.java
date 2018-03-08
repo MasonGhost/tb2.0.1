@@ -371,15 +371,17 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
     public void onTSEMRefreshEventEventBus(TSEMRefreshEvent event) {
         if (TSEMRefreshEvent.TYPE_USER_EXIT == event.getType()) {
             mPresenter.getUserInfoForRefreshList(event);
+            mPresenter.updateChatGroupMemberCount(event.getMessage().conversationId(), 1, false);
+            setCenterText(mPresenter.getGroupName(event.getMessage().conversationId()));
         }
-        resumeRefreshMessageList();
     }
 
     @Override
     public void updateUserInfoForRefreshList(UserInfoBean data, TSEMRefreshEvent event) {
-        EMTextMessageBody textBody = new EMTextMessageBody(data.getName() + "退出了群聊");
+        EMTextMessageBody textBody = new EMTextMessageBody(getResources().getString(R.string.userup_exit_group, data.getName()));
         event.getMessage().addBody(textBody);
         EMClient.getInstance().chatManager().saveMessage(event.getMessage());
+        resumeRefreshMessageList();
     }
 
     @Subscriber(mode = ThreadMode.MAIN)

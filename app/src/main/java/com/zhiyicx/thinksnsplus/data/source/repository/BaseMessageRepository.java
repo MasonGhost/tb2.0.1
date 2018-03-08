@@ -159,7 +159,7 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                     if (userInfoBean == null) {
                                         users.add(id);
                                     } else {
-                                        EMTextMessageBody textBody = new EMTextMessageBody(userInfoBean.getName() + "退出了群聊");
+                                        EMTextMessageBody textBody = new EMTextMessageBody(mContext.getResources().getString(R.string.userup_exit_group,userInfoBean.getName()));
                                         message.addBody(textBody);
                                     }
                                 }
@@ -218,7 +218,7 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                                         try {
                                                             int key = Integer.parseInt(id);
                                                             UserInfoBean userInfoBean = userInfoBeanSparseArray.get(key);
-                                                            EMTextMessageBody textBody = new EMTextMessageBody(userInfoBean.getName() + "退出了群聊");
+                                                            EMTextMessageBody textBody = new EMTextMessageBody(mContext.getResources().getString(R.string.userup_exit_group,userInfoBean.getName()));
                                                             message.addBody(textBody);
                                                         } catch (Exception ignore) {
                                                         }

@@ -335,7 +335,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                         if (data == null || data.isEmpty()) {
                             return;
                         }
-                        EMTextMessageBody textBody = new EMTextMessageBody(data.get(0).getName() + "退出了群聊");
+                        EMTextMessageBody textBody = new EMTextMessageBody(mContext.getResources().getString(R.string.userup_exit_group,data.get(0).getName()));
                         event.getMessage().addBody(textBody);
                         EMClient.getInstance().chatManager().saveMessage(event.getMessage());
                         mRootView.refreshData();
