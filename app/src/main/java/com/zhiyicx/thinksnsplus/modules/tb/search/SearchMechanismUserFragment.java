@@ -113,6 +113,7 @@ public class SearchMechanismUserFragment extends TSListFragment<SearchMechanismU
         setEmptyViewVisiable(false);
         RxTextView.editorActionEvents(mFragmentInfoSearchEdittext).subscribe(textViewEditorActionEvent -> {
             if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
+                setEmptyViewVisiable(false);
                 mPresenter.searchUser(mFragmentInfoSearchEdittext.getText().toString());
                 DeviceUtils.hideSoftKeyboard(getContext(), mFragmentInfoSearchEdittext);
                 // 请求网络数据，就隐藏历史
@@ -130,6 +131,7 @@ public class SearchMechanismUserFragment extends TSListFragment<SearchMechanismU
     protected void initData() {
         super.initData();
         initHistoryView();
+        setEmptyViewVisiable(false);
     }
 
     private void initHistoryView() {
@@ -178,6 +180,7 @@ public class SearchMechanismUserFragment extends TSListFragment<SearchMechanismU
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                         .subscribe(aVoid -> {
                             // 搜索
+                            setEmptyViewVisiable(false);
                             mFragmentInfoSearchEdittext.setText(qaSearchHistoryBean.getContent());
                             mPresenter.searchUser(mFragmentInfoSearchEdittext.getText().toString());
                             DeviceUtils.hideSoftKeyboard(mActivity.getApplicationContext(), holder.getView(R.id.tv_content));

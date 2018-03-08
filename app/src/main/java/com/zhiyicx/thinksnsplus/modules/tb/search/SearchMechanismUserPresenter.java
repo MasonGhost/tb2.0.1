@@ -53,7 +53,7 @@ public class SearchMechanismUserPresenter extends AppBasePresenter<SearchMechani
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
+//        mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
     }
 
     @Override
