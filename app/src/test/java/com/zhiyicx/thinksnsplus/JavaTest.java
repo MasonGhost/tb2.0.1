@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus;
 
 import android.annotation.SuppressLint;
 
+import com.google.common.base.Splitter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.klinker.android.link_builder.Link;
@@ -99,7 +100,7 @@ public class JavaTest {
     public void testLinkAuto() {
         String src = "地方蓝山咖啡  https://oex.com/notice/detail.html?id=240 而我是";
         Matcher matcher = Pattern.compile(MarkdownConfig.NETSITE_FORMAT).matcher(src);
-        System.out.println("replaceAll::"+src.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE));
+        System.out.println("replaceAll::" + src.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE));
         while (matcher.find()) {
             int count = matcher.groupCount();
             for (int i = 0; i < count; i++) {
@@ -148,7 +149,9 @@ public class JavaTest {
         String test = "12,14";
         String[] testarry = test.split(",");
         userids.addAll(Arrays.asList(testarry));
-        LogUtils.d(TAG, "testarry = " + userids.toString());
+        String userIds = "322";
+        String[] users = userIds.split(ConstantConfig.SPLIT_SMBOL);
+        System.out.println(users[0]);
     }
 
     @Test

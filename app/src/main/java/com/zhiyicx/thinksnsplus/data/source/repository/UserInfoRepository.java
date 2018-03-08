@@ -325,6 +325,35 @@ public class UserInfoRepository implements IUserInfoRepository {
         }
     }
 
+    @Override
+    public Observable<List<UserInfoBean>> getUserInfoWithOutLocalByIds(String userIds) {
+        StringBuilder stringBuilder = new StringBuilder();
+        List<UserInfoBean> userInfoBeans = new ArrayList<>();
+        String[] users = userIds.split(ConstantConfig.SPLIT_SMBOL);
+        for (String user : users) {
+            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getUserInfoById(user);
+            if (userInfoBean != null) {
+                userInfoBeans.add(userInfoBean);
+                continue;
+            }
+            stringBuilder.append(user);
+            stringBuilder.append(ConstantConfig.SPLIT_SMBOL);
+        }
+        if (stringBuilder.length() > 1) {
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
+        userIds = stringBuilder.toString();
+        if (TextUtils.isEmpty(userIds)) {
+            return Observable.just(userInfoBeans);
+        }
+        return getBatchSpecifiedUserInfo(userIds)
+                .flatMap(data -> {
+                    userInfoBeans.addAll(data);
+                    mUserInfoBeanGreenDao.insertOrReplace(data);
+                    return Observable.just(userInfoBeans);
+                });
+    }
+
     private Observable<List<UserInfoBean>> getBatchSpecifiedUserInfo(String user_ids) {
         return mUserInfoClient.getBatchSpecifiedUserInfo(user_ids, null, null, null, DEFAULT_MAX_USER_GET_NUM_ONCE)
                 .subscribeOn(Schedulers.io())

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
 import com.hyphenate.chat.EMMessage;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMRefreshEvent;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
@@ -131,8 +132,17 @@ public class ChatPresenter extends AppBasePresenter<ChatContract.View> implement
     }
 
     @Override
-    public UserInfoBean getUserInfo(String id) {
-        return mUserInfoBeanGreenDao.getUserInfoById(id);
+    public void getUserInfoForRefreshList(TSEMRefreshEvent event) {
+        mUserInfoRepository.getUserInfoWithOutLocalByIds(event.getStringExtra())
+                .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
+                    @Override
+                    protected void onSuccess(List<UserInfoBean> data) {
+                        if (data == null || data.isEmpty()) {
+                            return;
+                        }
+                        mRootView.updateUserInfoForRefreshList(data.get(0), event);
+                    }
+                });
     }
 
     @Override

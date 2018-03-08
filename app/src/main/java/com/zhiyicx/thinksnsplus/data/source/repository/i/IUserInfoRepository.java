@@ -97,6 +97,8 @@ public interface IUserInfoRepository {
      */
     Observable<List<UserInfoBean>> getUserInfoByIds(String user_ids);
 
+    Observable<List<UserInfoBean>> getUserInfoWithOutLocalByIds(String userIds);
+
     /**
      * 搜索用户的用户信息
      *

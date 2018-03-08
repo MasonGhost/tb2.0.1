@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
 import com.hyphenate.chat.EMMessage;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMRefreshEvent;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
@@ -26,6 +27,12 @@ public interface ChatContract {
          * @param s
          */
         void setTitle(String s);
+
+        /**
+         * 通知类消息的用户信息
+         * @param
+         */
+        void updateUserInfoForRefreshList(UserInfoBean data,TSEMRefreshEvent event);
     }
 
     interface Presenter extends IBasePresenter {
@@ -46,7 +53,7 @@ public interface ChatContract {
         void getGroupChatInfo(String groupId);
         void updateGroupName(ChatGroupBean chatGroupBean);
 
-        UserInfoBean getUserInfo(String id);
+        void getUserInfoForRefreshList(TSEMRefreshEvent event);
 
         String getGroupName(String id);
         boolean updateChatGroupMemberCount(String id,int count,boolean add);

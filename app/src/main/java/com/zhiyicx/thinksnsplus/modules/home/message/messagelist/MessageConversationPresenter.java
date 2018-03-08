@@ -8,9 +8,11 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.bean.ChatVerifiedBean;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMMultipleMessagesEvent;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMRefreshEvent;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -24,6 +26,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.MessageConversationRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -56,6 +59,9 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
 
     @Inject
     MessageConversationRepository mRepository;
+
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     /**
      * 复制的所有原数据
@@ -312,6 +318,29 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
     @Override
     protected boolean useEventBus() {
         return true;
+    }
+
+    @Subscriber(mode = ThreadMode.MAIN)
+    public void onTSEMRefreshEventEventBus(TSEMRefreshEvent event) {
+        if (TSEMRefreshEvent.TYPE_USER_EXIT == event.getType()) {
+            getUserInfoForRefreshList(event);
+        }
+    }
+
+    private void getUserInfoForRefreshList(TSEMRefreshEvent event) {
+        mUserInfoRepository.getUserInfoWithOutLocalByIds(event.getStringExtra())
+                .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
+                    @Override
+                    protected void onSuccess(List<UserInfoBean> data) {
+                        if (data == null || data.isEmpty()) {
+                            return;
+                        }
+                        EMTextMessageBody textBody = new EMTextMessageBody(data.get(0).getName() + "退出了群聊");
+                        event.getMessage().addBody(textBody);
+                        EMClient.getInstance().chatManager().saveMessage(event.getMessage());
+                        mRootView.refreshData();
+                    }
+                });
     }
 
     /**

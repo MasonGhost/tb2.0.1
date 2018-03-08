@@ -370,16 +370,16 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
     @Subscriber(mode = ThreadMode.MAIN)
     public void onTSEMRefreshEventEventBus(TSEMRefreshEvent event) {
         if (TSEMRefreshEvent.TYPE_USER_EXIT == event.getType()) {
-            UserInfoBean userInfoBean = mPresenter.getUserInfo(event.getStringExtra());
-            if (userInfoBean != null) {
-                EMTextMessageBody textBody = new EMTextMessageBody(userInfoBean.getName() + "退出了群聊");
-                event.getMessage().addBody(textBody);
-                EMClient.getInstance().chatManager().saveMessage(event.getMessage());
-            }else{
-//                mPresenter.getUserName()
-            }
+            mPresenter.getUserInfoForRefreshList(event);
         }
         resumeRefreshMessageList();
+    }
+
+    @Override
+    public void updateUserInfoForRefreshList(UserInfoBean data, TSEMRefreshEvent event) {
+        EMTextMessageBody textBody = new EMTextMessageBody(data.getName() + "退出了群聊");
+        event.getMessage().addBody(textBody);
+        EMClient.getInstance().chatManager().saveMessage(event.getMessage());
     }
 
     @Subscriber(mode = ThreadMode.MAIN)
