@@ -81,7 +81,13 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
                             EMClient.getInstance().groupManager().destroyGroup(id);
                         } else {
                             // 退群
-                            TSEMessageUtils.sendGroupMemberJoinOrExitMessage(id, AppApplication.getmCurrentLoginAuth().getUser().getName() + "退出了群聊", false, null);
+                            try {
+                                EMClient.getInstance().groupManager().leaveGroup(id);
+                            } catch (HyphenateException e) {
+                                e.printStackTrace();
+                            }
+                            EMClient.getInstance().chatManager().deleteConversation(id, true);
+//                            TSEMessageUtils.sendGroupMemberJoinOrExitMessage(id, AppApplication.getmCurrentLoginAuth().getUser().getName() + "退出了群聊", false, null);
                         }
                         return Observable.just(id);
                     } catch (HyphenateException e) {

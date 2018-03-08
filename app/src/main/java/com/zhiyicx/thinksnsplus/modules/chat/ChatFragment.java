@@ -16,6 +16,7 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.EaseUI;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
@@ -24,6 +25,7 @@ import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
 import com.hyphenate.util.PathUtil;
 import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMRefreshEvent;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
@@ -37,6 +39,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.TSEaseChatFragment;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.chat.call.BaseCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.info.ChatInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
@@ -362,6 +365,21 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
     @Override
     public void onMessageReceived(List<EMMessage> messages) {
         mPresenter.dealMessages(messages);
+    }
+
+    @Subscriber(mode = ThreadMode.MAIN)
+    public void onTSEMRefreshEventEventBus(TSEMRefreshEvent event) {
+        if (TSEMRefreshEvent.TYPE_USER_EXIT == event.getType()) {
+            UserInfoBean userInfoBean = mPresenter.getUserInfo(event.getStringExtra());
+            if (userInfoBean != null) {
+                EMTextMessageBody textBody = new EMTextMessageBody(userInfoBean.getName() + "退出了群聊");
+                event.getMessage().addBody(textBody);
+                EMClient.getInstance().chatManager().saveMessage(event.getMessage());
+            }else{
+//                mPresenter.getUserName()
+            }
+        }
+        resumeRefreshMessageList();
     }
 
     @Subscriber(mode = ThreadMode.MAIN)

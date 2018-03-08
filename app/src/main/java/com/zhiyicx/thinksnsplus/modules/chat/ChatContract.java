@@ -4,6 +4,7 @@ import com.hyphenate.chat.EMMessage;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.List;
 
@@ -44,6 +45,9 @@ public interface ChatContract {
          */
         void getGroupChatInfo(String groupId);
         void updateGroupName(ChatGroupBean chatGroupBean);
+
+        UserInfoBean getUserInfo(String id);
+
         String getGroupName(String id);
         boolean updateChatGroupMemberCount(String id,int count,boolean add);
     }

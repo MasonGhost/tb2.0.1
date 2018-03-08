@@ -448,15 +448,20 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
     @Override
     public void onResume() {
         super.onResume();
-        if (isMessageListInited) {
-            messageList.refresh();
-        }
+        resumeRefreshMessageList();
         EaseUI.getInstance().pushActivity(getActivity());
         // register the event listener when enter the foreground
+        EMClient.getInstance().chatManager().removeMessageListener(this);
         EMClient.getInstance().chatManager().addMessageListener(this);
 
         if (chatType == EaseConstant.CHATTYPE_GROUP) {
             EaseAtMessageHelper.get().removeAtMeGroup(toChatUsername);
+        }
+    }
+
+    protected void resumeRefreshMessageList() {
+        if (isMessageListInited) {
+            messageList.refresh();
         }
     }
 
@@ -933,7 +938,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
     /**
      * listen the group event
      */
-    private class GroupListener extends EaseGroupListener {
+    public class GroupListener extends EaseGroupListener {
 
         @Override
         public void onUserRemoved(final String groupId, String groupName) {
@@ -952,7 +957,6 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
 
         @Override
         public void onMemberExited(String groupId, String member) {
-            super.onMemberExited(groupId, member);
         }
     }
 

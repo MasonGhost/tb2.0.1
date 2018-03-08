@@ -131,6 +131,11 @@ public class ChatPresenter extends AppBasePresenter<ChatContract.View> implement
     }
 
     @Override
+    public UserInfoBean getUserInfo(String id) {
+        return mUserInfoBeanGreenDao.getUserInfoById(id);
+    }
+
+    @Override
     public String getGroupName(String id) {
         try {
             return mChatGroupBeanGreenDao.getChatGroupName(id);

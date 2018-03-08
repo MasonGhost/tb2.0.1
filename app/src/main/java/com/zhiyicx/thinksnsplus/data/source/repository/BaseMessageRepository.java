@@ -10,6 +10,7 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.exceptions.HyphenateException;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
@@ -146,7 +147,23 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                             String chatGroupId = itemBeanV2.getConversation().conversationId();
                             try {
                                 EMClient.getInstance().groupManager().getGroupFromServer(chatGroupId);
-                                Long userId = Long.parseLong(itemBeanV2.getConversation().getLastMessage().getFrom());
+                                EMMessage message = itemBeanV2.getConversation().getLastMessage();
+                                Long userId = Long.parseLong(message.getFrom());
+
+                                boolean isUserJoin = TSEMConstants.TS_ATTR_JOIN.equals(message.ext().get("type"));
+                                boolean isUserExit = TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"));
+
+                                if (isUserExit || isUserJoin && EMMessage.Type.TXT.equals(message.getType())) {
+                                    String id = ((EMTextMessageBody) message.getBody()).getMessage();
+                                    UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getUserInfoById(id);
+                                    if (userInfoBean == null) {
+                                        users.add(id);
+                                    } else {
+                                        EMTextMessageBody textBody = new EMTextMessageBody(userInfoBean.getName() + "退出了群聊");
+                                        message.addBody(textBody);
+                                    }
+                                }
+
                                 if (mUserInfoBeanGreenDao.getSingleDataFromCache(userId) == null) {
                                     users.add(itemBeanV2.getConversation().getLastMessage().getFrom());
                                 }
@@ -189,6 +206,23 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                                     } catch (NumberFormatException e) {
                                                         e.printStackTrace();
                                                     }
+                                                } else {
+                                                    // 退出群组
+                                                    EMMessage message = list1.get(i).getConversation().getLastMessage();
+
+                                                    boolean isUserJoin = TSEMConstants.TS_ATTR_JOIN.equals(message.ext().get("type"));
+                                                    boolean isUserExit = TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"));
+
+                                                    if (isUserExit || isUserJoin && EMMessage.Type.TXT.equals(message.getType())) {
+                                                        String id = ((EMTextMessageBody) message.getBody()).getMessage();
+                                                        try {
+                                                            int key = Integer.parseInt(id);
+                                                            UserInfoBean userInfoBean = userInfoBeanSparseArray.get(key);
+                                                            EMTextMessageBody textBody = new EMTextMessageBody(userInfoBean.getName() + "退出了群聊");
+                                                            message.addBody(textBody);
+                                                        } catch (Exception ignore) {
+                                                        }
+                                                    }
                                                 }
                                             }
                                             return list1;
@@ -226,7 +260,7 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                                     messageItemBeanList.add(itemBeanV2);
                                                 }
                                             }
-                                            list1.addAll(0,messageItemBeanList);
+                                            list1.addAll(0, messageItemBeanList);
                                             return Observable.just(list1);
                                         });
                             });
@@ -256,7 +290,7 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                 .observeOn(Schedulers.io())
                 .flatMap(list1 -> {
                     List<Object> users = new ArrayList<>();
-                    for (ChatItemBean chatItemBean : list1){
+                    for (ChatItemBean chatItemBean : list1) {
                         if ("admin".equals(chatItemBean.getMessage().getFrom())) {
                             users.add(1L);
                         } else {

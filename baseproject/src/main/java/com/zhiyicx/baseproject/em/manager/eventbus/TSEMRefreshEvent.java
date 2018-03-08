@@ -1,5 +1,7 @@
 package com.zhiyicx.baseproject.em.manager.eventbus;
 
+import com.hyphenate.chat.EMMessage;
+
 /**
  * @author Jliuer
  * @Date 18/02/01 13:55
@@ -8,19 +10,37 @@ package com.zhiyicx.baseproject.em.manager.eventbus;
  */
 public class TSEMRefreshEvent {
 
-    // 刷新的数量
-    private int count;
-    // 刷新的位置
+    /**
+     * 用户退出 群 刷新消息
+     */
+    public static final int TYPE_USER_EXIT = 0x01;
+
+
+    private String stringExtra;
+
+    private EMMessage message;
+
     private int position;
-    // 刷新方式类型
+
+    /**
+     * 刷新方式类型
+     */
     private int type;
 
-    public int getCount() {
-        return count;
+    public EMMessage getMessage() {
+        return message;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setMessage(EMMessage message) {
+        this.message = message;
+    }
+
+    public String getStringExtra() {
+        return stringExtra;
+    }
+
+    public void setStringExtra(String stringExtra) {
+        this.stringExtra = stringExtra;
     }
 
     public int getPosition() {

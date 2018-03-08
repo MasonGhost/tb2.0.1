@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus;
 
 import android.annotation.SuppressLint;
-import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -21,7 +20,6 @@ import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -42,8 +40,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
-import kotlin.text.Regex;
-import kotlin.text.RegexOption;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.FuncN;
@@ -97,6 +93,19 @@ public class JavaTest {
             }
         });
         LogUtils.d(TAG, "data2 = " + data2.toString());
+    }
+
+    @Test
+    public void testLinkAuto() {
+        String src = "地方蓝山咖啡  https://oex.com/notice/detail.html?id=240 而我是";
+        Matcher matcher = Pattern.compile(MarkdownConfig.NETSITE_FORMAT).matcher(src);
+        System.out.println("replaceAll::"+src.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE));
+        while (matcher.find()) {
+            int count = matcher.groupCount();
+            for (int i = 0; i < count; i++) {
+                System.out.println("reg::" + i + ":::" + matcher.group(i));
+            }
+        }
     }
 
     @Test
@@ -200,7 +209,8 @@ public class JavaTest {
             for (int i = 0; i < count; i++) {
                 System.out.println("reg::" + i + ":::" + matcher.group(i));
             }
-        }while (matcher1.find()) {
+        }
+        while (matcher1.find()) {
             int count = matcher1.groupCount();
             for (int i = 0; i < count; i++) {
                 System.out.println("reg1::" + i + ":::" + matcher1.group(i));
@@ -727,7 +737,7 @@ public class JavaTest {
                 "\"updated_at\":\"2017-04-28 07:49:48\",\"parent\":null}}}]";
         List<LocationContainerBean> lodAta = new Gson().fromJson(data, new
                 TypeToken<List<LocationContainerBean>>() {
-        }.getType());
+                }.getType());
         List<LocationBean> result = new ArrayList<>();
 
         for (LocationContainerBean locationContainerBean : lodAta) {
@@ -1843,7 +1853,7 @@ public class JavaTest {
         System.out.println("rechargeTypes = " + rechargeTypes.size());
         if (rechargeTypes.size() == 0 && mSystemConfigBean.getWalletTransform() == null ||
                 !mSystemConfigBean.getWalletTransform()
-                .isOpen()) {
+                        .isOpen()) {
             System.out.println(" 1  = ");
         } else {
             System.out.println(" 2  = ");
@@ -1851,7 +1861,7 @@ public class JavaTest {
         }
         if (rechargeTypes.size() == 0 && (mSystemConfigBean.getWalletTransform() == null ||
                 !mSystemConfigBean.getWalletTransform()
-                .isOpen())) {
+                        .isOpen())) {
             System.out.println(" 1  = ");
         } else {
             System.out.println(" 2  = ");

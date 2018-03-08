@@ -6,8 +6,9 @@ import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMMessage;
-import com.hyphenate.exceptions.HyphenateException;
+import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.util.PathUtil;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMRefreshEvent;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
 import com.zhiyicx.common.utils.log.LogUtils;
 
@@ -137,7 +138,12 @@ public class TSEMessageUtils {
      */
     public static void sendGroupMemberJoinOrExitMessage(final String to, String content, boolean isJoin, final EMCallBack callBack) {
 
-        EMMessage message = EMMessage.createTxtSendMessage(content, to);
+        EMMessage message = EMMessage.createReceiveMessage(EMMessage.Type.TXT);
+        // 消息体
+        EMTextMessageBody textBody = new EMTextMessageBody(content);
+        message.addBody(textBody);
+        message.setTo(to);
+        message.setFrom("admin");
         message.setChatType(EMMessage.ChatType.GroupChat);
         long currTime = TSEMDateUtil.getCurrentMillisecond();
         message.setMsgTime(currTime);
@@ -146,40 +152,16 @@ public class TSEMessageUtils {
         message.setAttribute(TSEMConstants.TS_ATTR_JOIN, isJoin);
         message.setAttribute(TSEMConstants.TS_ATTR_EIXT, !isJoin);
 
-        message.setMessageStatusCallback(new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                LogUtils.e("onSuccess:::");
-                if (callBack != null) {
-                    callBack.onSuccess();
-                }
-            }
-
-            @Override
-            public void onError(int i, String s) {
-                LogUtils.e("onError:::"+s);
-                if (callBack != null) {
-                    callBack.onError(i, s);
-                }
-            }
-
-            @Override
-            public void onProgress(int i, String s) {
-                LogUtils.e("onProgress:::"+s);
-            }
-        });
-        // 准备工作完毕，发送消息
-        EMClient.getInstance().chatManager().sendMessage(message);
-        try {
-            EMClient.getInstance().groupManager().leaveGroup(to);
-        } catch (HyphenateException e) {
-            e.printStackTrace();
-        }
-        EMClient.getInstance().chatManager().deleteConversation(to, true);
+        TSEMRefreshEvent event = new TSEMRefreshEvent();
+        event.setMessage(message);
+        event.setType(TSEMRefreshEvent.TYPE_USER_EXIT);
+        event.setStringExtra(content);
+        EventBus.getDefault().post(event);
     }
 
     /**
      * 发送一条退出了群聊（解散，被移除）的透传，这里需要和接收方协商定义
+     *
      * @param groupId
      * @param groupName
      */
