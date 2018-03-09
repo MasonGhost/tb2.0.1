@@ -123,11 +123,13 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
                 ()));
         // 正文
         String content = answerInfoBean.getText_body();
+
         if (TextUtils.isEmpty(content)) {
-            content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean
-                    .getBody());
-            content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
+            content = answerInfoBean.getBody();
         }
+        content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean
+                .getBody());
+        content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
 
         TextView contentView = holder.getView(R.id.tv_content);
 
