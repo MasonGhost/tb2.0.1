@@ -193,4 +193,9 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
                 .build();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissPop(mScanCodePopupWindow);
+    }
 }
