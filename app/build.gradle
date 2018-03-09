@@ -46,7 +46,7 @@ android {
 
         multiDexEnabled true
     }
-// sha1  879aca7f39b4a43cb9432e2df1ee4e7
+// sha1  879aca7f739b4a43cb9432e2df1ee4e7
 //    5D:DF:A7:29:71:32:75:77:54:B6:D7:5A:A5:CA:F5:F0:70:0D:51:1E
     signingConfigs {
         release {
