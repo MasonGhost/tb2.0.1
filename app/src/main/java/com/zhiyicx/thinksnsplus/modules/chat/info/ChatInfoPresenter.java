@@ -230,15 +230,10 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
                     try {
                         // 获取环信群组信息
                         EMClient.getInstance().groupManager().getGroupFromServer(groupInfo.getId());
-                        EMMessage message = EMMessage.createReceiveMessage(EMMessage.Type.TXT);
-                        message.addBody(new EMTextMessageBody(mContext.getString(R.string.super_edit_group_name)));
-                        message.setAttribute(TSEMConstants.TS_ATTR_GROUP_CRATE, true);
-                        message.setFrom("admin");
-                        message.setTo(groupInfo.getId());
-                        message.setAttribute(TSEMConstants.TS_ATTR_TAG, AppApplication.getMyUserIdWithdefault());
-                        message.setChatType(EMMessage.ChatType.GroupChat);
 
-                        EMClient.getInstance().chatManager().saveMessage(message);
+                        TSEMessageUtils.sendCreateGroupMessage(mContext.getString(R.string.super_edit_group_name),
+                                groupInfo.getId(), AppApplication.getMyUserIdWithdefault());
+
                     } catch (HyphenateException e) {
                         e.printStackTrace();
                     }

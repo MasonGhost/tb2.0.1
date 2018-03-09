@@ -182,4 +182,23 @@ public class TSEMessageUtils {
         event.setStatus(cmdMessage.status());
         EventBus.getDefault().post(event);
     }
+
+    /**
+     * 创建群聊 快速编辑群名称
+     * @param content 内容
+     * @param groupId 群 id
+     * @param tagUser 谁 接收这条消息
+     */
+    public static void sendCreateGroupMessage(String content, String groupId, long tagUser) {
+        EMMessage message = EMMessage.createReceiveMessage(EMMessage.Type.TXT);
+        message.addBody(new EMTextMessageBody(content));
+        message.setFrom("admin");
+        long currTime = TSEMDateUtil.getCurrentMillisecond();
+        message.setMsgTime(currTime);
+        message.setTo(groupId);
+        message.setAttribute(TSEMConstants.TS_ATTR_GROUP_CRATE, true);
+        message.setAttribute(TSEMConstants.TS_ATTR_TAG, tagUser);
+        message.setChatType(EMMessage.ChatType.GroupChat);
+        EMClient.getInstance().chatManager().saveMessage(message);
+    }
 }

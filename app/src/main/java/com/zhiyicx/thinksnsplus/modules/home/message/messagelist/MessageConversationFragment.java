@@ -128,7 +128,10 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
 
     @Override
     public void onNetResponseSuccess(@NotNull List<MessageItemBeanV2> data, boolean isLoadMore) {
-        Collections.sort(data, new EmTimeSortClass());
+        if (data.size() > 1) {
+            // 数据大于一个才排序
+            Collections.sort(data, new EmTimeSortClass());
+        }
         super.onNetResponseSuccess(data, isLoadMore);
         hideStickyMessage();
     }
@@ -224,7 +227,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
                 break;
             case TSEMConstants.TS_CONNECTION_CONNECTED:
                 hideStickyMessage();
-                requestNetData(0L,false);
+                requestNetData(0L, false);
                 break;
             case TSEMConstants.TS_CONNECTION_DISCONNECTED:
                 showStickyMessage(getString(R.string.chat_unconnected));
