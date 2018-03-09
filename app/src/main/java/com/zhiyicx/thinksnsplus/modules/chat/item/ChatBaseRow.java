@@ -50,7 +50,6 @@ public class ChatBaseRow extends EaseChatRow {
     public ChatBaseRow(Context context, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean userInfoBean) {
         super(context, message, position, adapter);
         this.mUserInfoBean = TSEMHyphenate.getInstance().getChatUser(message.getFrom());
-//        this.mUserInfoBean = userInfoBean;
     }
 
     @Override
@@ -91,6 +90,7 @@ public class ChatBaseRow extends EaseChatRow {
 
     @Override
     protected void onSetUpView() {
+        this.mUserInfoBean = TSEMHyphenate.getInstance().getChatUser(message.getFrom());
         // 头像
         mTvMessageStatus.setText(context.getString(R.string.chat_send_message_unread));
         ImageUtils.loadUserHead(mUserInfoBean, mIvChatHeadpic, false);
