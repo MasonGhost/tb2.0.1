@@ -565,6 +565,7 @@ public interface UserInfoClient {
      * @param id   id	int	非必须, 分享资源id
      * @return
      */
+    @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_SHARE_DYNAMIC_COUNT)
     Observable<BaseJsonV2> shareCount(@Field("type") String type, @Field("id") String id);
 

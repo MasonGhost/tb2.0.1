@@ -1037,6 +1037,18 @@
     <string name="has_certifyed">已认证</string>
     <string name="has_reflected">被驳回</string>
     <string name="has_invite_code">已填写</string>
+    <string name="share_copy_tip_format">最有价值糖果领取快快看过来\n
+        这里是各种糖果领取聚集地\n
+注册TokenBook\n
+就可获得1000TBMark糖果\n
+拥有TBMark\n
+几十种有价值糖果任意领取\n
+\n
+TBMark糖果领取地址\n
+%s\n
+别忘记下载APP,注册哦\n
+\n
+每天签到，分享快讯，邀请好友，参与学习互动都能获得TBMrak</string>
 
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>

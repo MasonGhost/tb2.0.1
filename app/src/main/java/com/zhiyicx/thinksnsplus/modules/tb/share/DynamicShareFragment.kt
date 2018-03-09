@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.tb.share
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -232,18 +233,23 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
 
     }
 
-    override fun onStart(share: Share) {}
+    override fun onStart(share: Share) {
+        println("-----onStart--------")
+    }
 
     override fun onSuccess(share: Share) {
+        println("-----onSuccess--------")
         mPresenter.shareTask(mDynamicShareBean!!.id)
         showSnackSuccessMessage(context.getString(R.string.share_sccuess))
     }
 
     override fun onError(share: Share, throwable: Throwable) {
+        println("-----onError--------")
         showSnackErrorMessage(context.getString(R.string.share_fail))
     }
 
     override fun onCancel(share: Share) {
+        println("-----onCancel--------")
         showSnackSuccessMessage(context.getString(R.string.share_cancel))
     }
 
@@ -269,6 +275,5 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
             return dynamicShareFragment
         }
     }
-
 
 }

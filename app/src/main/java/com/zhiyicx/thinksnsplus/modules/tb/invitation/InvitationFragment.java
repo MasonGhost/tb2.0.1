@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.tb.invitation;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.github.tamir7.contacts.Event;
 import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -31,9 +33,12 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.popwindow.TBCenterInfoPopWindow;
+
+import org.simple.eventbus.EventBus;
 
 import java.io.File;
 import java.util.Locale;
@@ -110,7 +115,7 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
     @Override
     protected void initData() {
         mSharePolicy = new UmengSharePolicyImpl(mActivity);
-
+        mSharePolicy.setOnShareCallbackListener(this);
         mTvInvitationCode.setText(String.valueOf(AppApplication.getMyUserIdWithdefault()));
         mPresenter.getShareLink();
     }
@@ -156,7 +161,7 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
                 break;
             // 复制链接
             case R.id.tv_copy:
-                if (copyStr2Clipboard(mTBShareLinkBean.getLink())) {
+                if (copyStr2Clipboard(getString(R.string.share_copy_tip_format, mTBShareLinkBean.getLink()))) {
                     ToastUtils.showToast("复制成功，可以发给朋友们了。");
                 }
                 break;
@@ -245,12 +250,11 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
 
     @Override
     public void onStart(Share share) {
-
     }
 
     @Override
     public void onSuccess(Share share) {
-        mPresenter.shareTask();
+            mPresenter.shareTask();
         showSnackSuccessMessage(getString(R.string.share_sccuess));
     }
 

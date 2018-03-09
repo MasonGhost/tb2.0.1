@@ -46,13 +46,12 @@ public class InvitationPresenter extends AppBasePresenter<InvitationContract.Vie
 
     @Override
     public void shareTask() {
-        Subscription subscribe = mUserInfoRepository.shareCount(null, null)
+        mUserInfoRepository.shareCount(null, null)
                 .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
                     }
                 });
-        addSubscrebe(subscribe);
     }
 }
