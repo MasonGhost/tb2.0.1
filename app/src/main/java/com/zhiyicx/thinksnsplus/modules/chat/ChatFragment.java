@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.BaseAdapter;
@@ -24,10 +26,13 @@ import com.hyphenate.easeui.widget.chatrow.EaseChatRow;
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
 import com.hyphenate.util.PathUtil;
+import com.jakewharton.rxbinding.widget.RxTextView;
+import com.jakewharton.rxbinding.widget.TextViewBeforeTextChangeEvent;
 import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMRefreshEvent;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
+import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
@@ -36,6 +41,7 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.base.TSEaseChatFragment;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
@@ -61,6 +67,8 @@ import org.simple.eventbus.ThreadMode;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
+
+import rx.functions.Action1;
 
 import static com.hyphenate.easeui.EaseConstant.EXTRA_CHAT_TYPE;
 import static com.hyphenate.easeui.EaseConstant.EXTRA_TO_USER_ID;
@@ -160,6 +168,10 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
         dialog.setListener(new LinkDialog.OnDialogClickListener() {
             @Override
             public void onConfirmButtonClick(String name, String url) {
+                if (url.length() < 2) {
+                    dialog.setErrorMessage(getString(R.string.chat_edit_group_name_alert));
+                    return;
+                }
                 ChatGroupBean groupBean = mPresenter.getChatGroupInfo(toChatUsername);
                 groupBean.setName(url);
                 mPresenter.updateGroupName(groupBean);
@@ -371,8 +383,9 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
     public void onTSEMRefreshEventEventBus(TSEMRefreshEvent event) {
         if (TSEMRefreshEvent.TYPE_USER_EXIT == event.getType()) {
             mPresenter.getUserInfoForRefreshList(event);
-            mPresenter.updateChatGroupMemberCount(event.getMessage().conversationId(), 1, false);
-            setCenterText(mPresenter.getGroupName(event.getMessage().conversationId()));
+            mPresenter.getGroupChatInfo(event.getMessage().getTo());
+            mPresenter.updateChatGroupMemberCount(event.getMessage().getTo(), 1, false);
+            setCenterText(mPresenter.getGroupName(event.getMessage().getTo()));
         }
     }
 
@@ -654,6 +667,7 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
 
     private LinkDialog createLinkDialog() {
         return LinkDialog.createLinkDialog()
+                .setNeedMaxInputFomatFilter(true)
                 .setUrlHinit(getString(R.string.chat_edit_group_name_alert))
                 .setTitleStr(getString(R.string.chat_edit_group_name))
                 .setNameVisible(false);

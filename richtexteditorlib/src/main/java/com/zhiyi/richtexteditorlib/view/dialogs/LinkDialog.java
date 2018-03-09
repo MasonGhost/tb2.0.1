@@ -45,6 +45,7 @@ public class LinkDialog extends BaseDialogFragment {
     private boolean nameVisible = true;
     private boolean urlVisible = true;
     private boolean needNumFomatFilter = false;
+    private boolean needMaxInputFomatFilter = false;
 
     private TextView errorTip;
 
@@ -106,12 +107,16 @@ public class LinkDialog extends BaseDialogFragment {
 
         if (urlHinit != null) {
             urledt.setHint(urlHinit);
+            urledt.setGravity(Gravity.CENTER);
             if (needNumFomatFilter) {
-                urledt.setGravity(Gravity.CENTER);
                 InputFilter[] filters = new InputFilter[1];
                 filters[0] = new MyNumFormatInputFilter();
                 urledt.setFilters(filters);
                 urledt.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
+            } else if (needMaxInputFomatFilter) {
+                InputFilter[] filters = new InputFilter[1];
+                filters[0] = new MaxTextLengthFilter(15);
+                urledt.setFilters(filters);
             }
         }
 
@@ -187,6 +192,15 @@ public class LinkDialog extends BaseDialogFragment {
 
     public boolean isNeedNumFomatFilter() {
         return needNumFomatFilter;
+    }
+
+    public boolean isNeedMaxInputFomatFilter() {
+        return needMaxInputFomatFilter;
+    }
+
+    public LinkDialog setNeedMaxInputFomatFilter(boolean needMaxInputFomatFilter) {
+        this.needMaxInputFomatFilter = needMaxInputFomatFilter;
+        return this;
     }
 
     public LinkDialog setNeedNumFomatFilter(boolean needNumFomatFilter) {
@@ -305,6 +319,31 @@ public class LinkDialog extends BaseDialogFragment {
 
             }
             return dest.subSequence(dstart, dend) + sourceText;
+        }
+    }
+
+    class MaxTextLengthFilter implements InputFilter {
+
+        private int mMaxLength;
+
+        public MaxTextLengthFilter(int max) {
+            mMaxLength = max - 1;
+        }
+
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end,
+                                   Spanned dest, int dstart, int dend) {
+            int keep = mMaxLength - (dest.length() - (dend - dstart));
+            if (keep < (end - start)) {
+                setErrorMessage("编辑群名称，2–15个字符");
+            }
+            if (keep <= 0) {
+                return "";
+            } else if (keep >= end - start) {
+                return null;
+            } else {
+                return source.subSequence(start, start + keep);
+            }
         }
     }
 }
