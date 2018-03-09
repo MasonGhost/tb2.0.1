@@ -266,8 +266,8 @@ public class AnswerDetailsPresenter extends AppBasePresenter<
                     @Override
                     protected void onSuccess(AnswerInfoBean data) {
                         mAnswerInfoListBeanGreenDao.saveSingleData(data);
-                        mRootView.updateReWardsView(new RewardsCountBean(data.getRewarder_count(), "" + PayConfig.realCurrencyFen2Yuan(data
-                                        .getRewards_amount()), getGoldName()),
+                        mRootView.updateReWardsView(new RewardsCountBean(data.getRewarder_count(), "" + data
+                                        .getRewards_amount(), getGoldName()),
                                 data.getRewarders());
                         mRootView.updateAnswerHeader(data, isLoadMore);
                     }
