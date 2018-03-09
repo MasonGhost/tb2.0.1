@@ -134,6 +134,11 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
     }
 
     @Override
+    protected boolean showNoMoreData() {
+        return false;
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
         MessageAdapterV2 commonAdapter = new MessageAdapterV2(getActivity(), mListDatas);
         commonAdapter.setOnSwipItemClickListener(this);
