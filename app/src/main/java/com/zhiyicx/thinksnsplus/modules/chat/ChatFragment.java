@@ -426,6 +426,7 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             isUserExit = TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"));
             if (!isGroupChange) {
                 isGroupChange = TSEMConstants.TS_ATTR_GROUP_CHANGE.equals(message.ext().get("type"));
+                chatGroupId = message.getTo();
             }
             isCreate = message.getBooleanAttribute(TSEMConstants.TS_ATTR_GROUP_CRATE, false);
             isBlock = message.getBooleanAttribute(TSEMConstants.TS_ATTR_BLOCK, false);

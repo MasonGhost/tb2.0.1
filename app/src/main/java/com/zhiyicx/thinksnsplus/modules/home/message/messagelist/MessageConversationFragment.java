@@ -32,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
 import org.simple.eventbus.ThreadMode;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -127,6 +128,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
 
     @Override
     public void onNetResponseSuccess(@NotNull List<MessageItemBeanV2> data, boolean isLoadMore) {
+        Collections.sort(data, new EmTimeSortClass());
         super.onNetResponseSuccess(data, isLoadMore);
         hideStickyMessage();
     }
@@ -217,6 +219,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
                 break;
             case TSEMConstants.TS_CONNECTION_CONNECTED:
                 hideStickyMessage();
+                requestNetData(0L,false);
                 break;
             case TSEMConstants.TS_CONNECTION_DISCONNECTED:
                 showStickyMessage(getString(R.string.chat_unconnected));

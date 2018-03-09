@@ -21,8 +21,10 @@ import com.zhiyicx.thinksnsplus.data.source.local.ChatGroupBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.EasemobClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.modules.home.message.messagelist.EmTimeSortClass;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -159,7 +161,7 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                     if (userInfoBean == null) {
                                         users.add(id);
                                     } else {
-                                        EMTextMessageBody textBody = new EMTextMessageBody(mContext.getResources().getString(R.string.userup_exit_group,userInfoBean.getName()));
+                                        EMTextMessageBody textBody = new EMTextMessageBody(mContext.getResources().getString(R.string.userup_exit_group, userInfoBean.getName()));
                                         message.addBody(textBody);
                                     }
                                 }
@@ -218,7 +220,7 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                                         try {
                                                             int key = Integer.parseInt(id);
                                                             UserInfoBean userInfoBean = userInfoBeanSparseArray.get(key);
-                                                            EMTextMessageBody textBody = new EMTextMessageBody(mContext.getResources().getString(R.string.userup_exit_group,userInfoBean.getName()));
+                                                            EMTextMessageBody textBody = new EMTextMessageBody(mContext.getResources().getString(R.string.userup_exit_group, userInfoBean.getName()));
                                                             message.addBody(textBody);
                                                         } catch (Exception ignore) {
                                                         }
