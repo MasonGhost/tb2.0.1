@@ -384,6 +384,8 @@ public static java.lang.String TABLENAME;
 }
 -keep class **$Properties
 -keep class com.zhiyicx.thinksnsplus.data.beans.*{ *; }
+# tym see EaseMessageAdapter 292 line
+-keep class com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatTipTextPresenter
 
 ################ 环信 ###############
 -keep class org.xmlpull.** {*;}
