@@ -66,7 +66,7 @@ public abstract class BaseApplication extends Application {
                 .interceptors(getInterceptors())
                 .responseErroListener(getResponseErroListener())
                 .sslSocketFactory(getSSLSocketFactory())
-                .authenticator(getAuthenticator())
+//                .authenticator(getAuthenticator())
                 .build();
         this.mAppModule = new AppModule(this);// 提供 application
         // 换肤支持

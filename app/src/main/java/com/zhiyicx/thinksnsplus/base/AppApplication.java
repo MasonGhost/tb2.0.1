@@ -71,6 +71,8 @@ import retrofit2.Call;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
+import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.AUTH_FAIL;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -209,7 +211,13 @@ public class AppApplication extends TSApplication {
                     baseJson = new Gson().fromJson(httpResult, BaseJson.class);
                 } catch (JsonSyntaxException e) {
                 }
-
+                if (originalResponse.code() == AUTH_FAIL) {
+//                    if (mAuthRepository.isNeededRefreshToken()) {
+                        handleAuthFail(getString(R.string.auth_fail_login));
+//                    } else {
+//                        handleAuthFail(getString(R.string.code_1015));
+//                    }
+                }
                 String tipStr = null;
                 if (baseJson != null) {
                     switch (baseJson.getCode()) {
@@ -288,12 +296,12 @@ public class AppApplication extends TSApplication {
                             .build();
                 } else {
                     // 过期了，重新登录
-//                    if (mAuthRepository.isNeededRefreshToken()) {
+                    if (mAuthRepository.isNeededRefreshToken()) {
                         handleAuthFail(getString(R.string.auth_fail_relogin));
-//                    } else {
-//                        // 挤下线，重新登录
-//                        handleAuthFail(getString(R.string.code_1015));
-//                    }
+                    } else {
+                        // 挤下线，重新登录
+                        handleAuthFail(getString(R.string.code_1015));
+                    }
                     return null;
                 }
 

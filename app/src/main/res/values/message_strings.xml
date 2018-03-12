@@ -43,6 +43,7 @@
     <!--用户认证失败-->
     <string name="code_1099">@string/auth_fail_relogin</string>
     <string name="auth_fail_relogin">你的账号已过期,请重新登录!</string>
+    <string name="auth_fail_login">登录失效</string>
 
     <!--#########################################      后台模块       ################################-->
 
