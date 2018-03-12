@@ -7,6 +7,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.hyphenate.easeui.EaseConstant;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.BadgeView;
@@ -21,6 +23,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.mine.container.MyCircleContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.collect.CollectListActivity;
 import com.zhiyicx.thinksnsplus.modules.draftbox.DraftBoxActivity;
@@ -39,6 +42,8 @@ import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.mine.MineIntegrationActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.CertificationTypePopupWindow;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -265,7 +270,14 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 startActivity(new Intent(mActivity, MyMusicActivity.class));
                 break;
             case R.id.bt_suggestion:
-                startActivity(new Intent(mActivity, FeedBackActivity.class));
+                // 意见反馈跳转 ts+ 小助手 2018-3-12 11:47:12 by tym
+                List<SystemConfigBean.ImHelperBean> tsHlepers = mPresenter.getImHelper();
+                if (tsHlepers == null || tsHlepers.isEmpty()) {
+                    startActivity(new Intent(mActivity, FeedBackActivity.class));
+                } else {
+                    ChatActivity.startChatActivity(mActivity, String.valueOf(tsHlepers.get(0).getUid()),
+                            EaseConstant.CHATTYPE_SINGLE);
+                }
                 break;
              /*
               草稿箱
@@ -315,7 +327,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     public void setUserInfo(UserInfoBean userInfoBean) {
-        btMineIntegration.setLeftText(getString(R.string.my_integration_name,mPresenter.getGoldName()));
+        btMineIntegration.setLeftText(getString(R.string.my_integration_name, mPresenter.getGoldName()));
         if (userInfoBean == null) {
             return;
         }
