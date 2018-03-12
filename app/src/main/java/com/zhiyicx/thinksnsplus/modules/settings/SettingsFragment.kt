@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
-
+import butterknife.BindView
 import com.jakewharton.rxbinding.view.RxView
 import com.jakewharton.rxbinding.widget.RxRadioGroup
 import com.zhiyicx.appupdate.AppUpdateManager
@@ -19,25 +19,20 @@ import com.zhiyicx.appupdate.AppVersionBean
 import com.zhiyicx.appupdate.CustomVersionDialogActivity
 import com.zhiyicx.baseproject.base.TSFragment
 import com.zhiyicx.baseproject.config.ApiConfig
-import com.zhiyicx.baseproject.utils.WindowUtils
+import com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US
 import com.zhiyicx.baseproject.widget.button.CombinationButton
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow
+import com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME
 import com.zhiyicx.common.utils.DeviceUtils
 import com.zhiyicx.common.utils.SharePreferenceUtils
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA
 import com.zhiyicx.thinksnsplus.R
 import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity
 import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordActivity
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity
 import com.zhiyicx.thinksnsplus.modules.settings.account.AccountManagementActivity
-import com.zhiyicx.thinksnsplus.widget.CheckVersionPopupWindow
 import java.util.concurrent.TimeUnit
-
-import butterknife.BindView
-
-import com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US
-import com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME
-import com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA
 
 /**
  * @Describe
@@ -48,30 +43,42 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA
 class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContract.View {
 
     @BindView(R.id.bt_login_out)
-    @JvmField var mBtLoginOut: CombinationButton? = null
+    @JvmField
+    var mBtLoginOut: CombinationButton? = null
     @BindView(R.id.bt_set_vertify)
-    @JvmField var mBtSetVertify: CombinationButton? = null
+    @JvmField
+    var mBtSetVertify: CombinationButton? = null
     @BindView(R.id.bt_change_password)
-    @JvmField var mBtChangePassword: CombinationButton? = null
+    @JvmField
+    var mBtChangePassword: CombinationButton? = null
     @BindView(R.id.bt_clean_cache)
-    @JvmField var mBtCleanCache: CombinationButton? = null
+    @JvmField
+    var mBtCleanCache: CombinationButton? = null
     @BindView(R.id.bt_about_us)
-    @JvmField var mBtAboutUs: CombinationButton? = null
+    @JvmField
+    var mBtAboutUs: CombinationButton? = null
     @BindView(R.id.bt_account_manager)
-    @JvmField var mBtAccountManager: CombinationButton? = null
+    @JvmField
+    var mBtAccountManager: CombinationButton? = null
     @BindView(R.id.bt_check_version)
-    @JvmField var mBtCheckVersion: CombinationButton? = null
+    @JvmField
+    var mBtCheckVersion: CombinationButton? = null
     // 服务器切换使用
     @BindView(R.id.rb_one)
-    @JvmField var mRbOne: RadioButton? = null
+    @JvmField
+    var mRbOne: RadioButton? = null
     @BindView(R.id.rb_two)
-    @JvmField var mRbTwo: RadioButton? = null
+    @JvmField
+    var mRbTwo: RadioButton? = null
     @BindView(R.id.rb_three)
-    @JvmField var mRbThree: RadioButton? = null
+    @JvmField
+    var mRbThree: RadioButton? = null
     @BindView(R.id.rb_days_group)
-    @JvmField var mRbDaysGroup: RadioGroup? = null
+    @JvmField
+    var mRbDaysGroup: RadioGroup? = null
     @BindView(R.id.tv_choose_tip)
-    @JvmField var mTvChooseTip: TextView? = null
+    @JvmField
+    var mTvChooseTip: TextView? = null
     private var mIsDefualtCheck = true
 
     private var mLoginoutPopupWindow: ActionPopupWindow? = null// 退出登录选择弹框

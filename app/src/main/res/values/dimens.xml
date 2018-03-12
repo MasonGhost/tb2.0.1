@@ -17,6 +17,8 @@
     <dimen name="head3_right_margin">42dp</dimen>
     <dimen name="head2_right_margin">58dp</dimen>
     <dimen name="head1_right_margin">74dp</dimen>
+    <!--仅一张 动态图片最大宽度-->
+    <dimen name="dynamic_image_max_width">248dp</dimen>
     <!--个人中心动态数量view高度-->
     <dimen name="personal_center_dynamic_count_view_height">37dp</dimen>
     <dimen name="personal_center_bottom_view_height">46dp</dimen>
