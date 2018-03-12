@@ -127,10 +127,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
      */
     private TBCenterInfoPopWindow mCheckTipPop;
 
-    /**
-     * 选择认证人类型的弹窗
-     */
-    private CertificationTypePopupWindow mCertificationWindow;
     private int mStatusHeight;
 
     private List<String> signInData = new ArrayList<>();
@@ -142,7 +138,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     private UserInfoBean mUserInfoBean;
     private TBTaskContainerBean mTBTaskContainerBean;
 
-    private UserCertificationInfo mUserCertificationInfo;
     private float mCurrentAlpha = 0;
 
     TBCenterInfoPopWindow mTBCenterInfoPopWindow;
@@ -230,7 +225,15 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     private void onPresenterInjected() {
         if (mTBTaskContainerBean == null && mPresenter != null) {
-            mPresenter.getTaskInfo();
+            if (mUserInfoBean == null) {
+                if (mCheckInBean == null) {
+                    mPresenter.getCheckInfo();
+                }
+                mPresenter.getUserInfoFromDB();
+                mPresenter.getTaskInfo();
+            } else {
+                mPresenter.getTaskInfo();
+            }
         }
     }
 
@@ -266,7 +269,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             }
             mPresenter.getUserInfoFromDB();
             mPresenter.updateUserInfo();
-//            mPresenter.getCertificationInfo();
             mPresenter.getTaskInfo();
         }
     }
@@ -566,12 +568,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @Override
     public void updateCertification(UserCertificationInfo data) {
         if (data != null && data.getId() != 0) {
-            mUserCertificationInfo = data;
         } else {
         }
-        if (mCertificationWindow != null) {
-            mCertificationWindow.dismiss();
-        }
+
     }
 
     /**
@@ -649,13 +648,16 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 .innerColor(ContextCompat.getColor(getContext(), R.color.checkin_nums_color))
                 .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
                 .format());
-        mCheckInView.setCurretn(mCheckInBean.getLast_checkin_count() % 7);
+        if (mCheckInBean.getLast_checkin_count() != 0 && mCheckInBean.getLast_checkin_count() % signInData.size() == 0) {
+            mCheckInView.setCurretn(signInData.size());
+        } else {
+            mCheckInView.setCurretn(mCheckInBean.getLast_checkin_count() % 7);
+        }
     }
 
 
     @Override
     public void onTypeSelected(int position) {
-        mCertificationWindow.dismiss();
         Intent intent = new Intent(mActivity, CertificationInputActivity.class);
         Bundle bundle = new Bundle();
         if (position == 0) {
@@ -672,7 +674,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        dismissPop(mCertificationWindow);
         dismissPop(mCheckTipPop);
         if (mTimeerSub != null && mTimeerSub.isUnsubscribed()) {
             mTimeerSub.unsubscribe();
