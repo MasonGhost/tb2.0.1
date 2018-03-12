@@ -544,7 +544,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
                             mRootView.getListDatas().get(dynamicPosition).getPaid_node().setPaid(true);
                             mRootView.getListDatas().get(dynamicPosition).setFeed_content(data.getData());
                             if (data.getData() != null) {
-                                String friendlyContent = data.getData().replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link
+                                String friendlyContent = data.getData().replaceAll(MarkdownConfig.NETSITE_FORMAT,  Link
                                         .DEFAULT_NET_SITE);
                                 if (friendlyContent.length() > DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) {
                                     friendlyContent = friendlyContent.substring(0, DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) + "...";

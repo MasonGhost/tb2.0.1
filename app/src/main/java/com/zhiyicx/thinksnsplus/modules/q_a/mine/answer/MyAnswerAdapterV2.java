@@ -61,7 +61,7 @@ public class MyAnswerAdapterV2 extends MyAnswerAdapter {
         }
         content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean
                 .getBody());
-        content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
+        content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT,  Link.DEFAULT_NET_SITE);
         
         holder.setText(R.id.tv_content, content);
         // 点赞数量
