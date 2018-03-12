@@ -129,7 +129,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         }
         content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean
                 .getBody());
-        content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
+        content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT,  Link.DEFAULT_NET_SITE);
 
         TextView contentView = holder.getView(R.id.tv_content);
 
@@ -248,7 +248,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
     protected List<Link> setLiknks(final AnswerInfoBean answerInfoBean, String content) {
         List<Link> links = new ArrayList<>();
         if (content.contains(Link.DEFAULT_NET_SITE)) {
-            Link commentNameLink = new Link(MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE)
+            Link commentNameLink = new Link( Link.DEFAULT_NET_SITE)
                     .setTextColor(ContextCompat.getColor(mContext, R.color
                             .themeColor))
                     .setLinkMetadata(LinkMetadata.builder()
