@@ -9,7 +9,7 @@ allprojects {
 
 ext {
     //Android  one.tokenbook.www
-    applicationId = "com.tnt.tokenbook"
+    applicationId = "com.tnttest.tokenbook"
     minSdkVersion = 16
     targetSdkVersion = 25
     versionCode = 9

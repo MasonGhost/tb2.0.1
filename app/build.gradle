@@ -50,15 +50,15 @@ android {
 //    5D:DF:A7:29:71:32:75:77:54:B6:D7:5A:A5:CA:F5:F0:70:0D:51:1E
     signingConfigs {
         release {
-            storeFile file('../tokenbook.jks')
+            storeFile file('../tokenbooktest.jks')
             storePassword 'TokenBook201819820307'
-            keyAlias 'tokenbook'
+            keyAlias 'tokenbooktest'
             keyPassword 'TokenBook201819820307'
         }
         debug {
-            storeFile file('../tokenbook.jks')
+            storeFile file('../tokenbooktest.jks')
             storePassword 'TokenBook201819820307'
-            keyAlias 'tokenbook'
+            keyAlias 'tokenbooktest'
             keyPassword 'TokenBook201819820307'
         }
     }

@@ -389,7 +389,7 @@
 
         <!-- 新浪分享 -->
         <activity
-            android:name="com.tnt.tokenbook.WBShareActivity"
+            android:name="com.tnttest.tokenbook.WBShareActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -400,7 +400,7 @@
         </activity>
         <!-- 微信分享结果类 -->
         <activity
-            android:name="com.tnt.tokenbook.wxapi.WXEntryActivity"
+            android:name="com.tnttest.tokenbook.wxapi.WXEntryActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">

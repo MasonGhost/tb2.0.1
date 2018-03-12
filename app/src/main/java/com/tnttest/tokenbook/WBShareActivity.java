@@ -1,4 +1,4 @@
-package com.tnt.tokenbook;
+package com.tnttest.tokenbook;
 
 import com.umeng.socialize.media.WBShareCallBackActivity;
 
