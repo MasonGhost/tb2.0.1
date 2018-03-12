@@ -48,6 +48,11 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
     }
 
     @Override
+    protected int setEmptView() {
+        return R.mipmap.img_default_nobody;
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
         CommonAdapter adapter = new CommonAdapter<RankData>(mActivity, R.layout.item_tbrank, mListDatas) {
             @Override

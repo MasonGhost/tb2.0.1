@@ -34,7 +34,9 @@ import com.zhiyicx.common.thridmanager.share.ShareContent
 import com.zhiyicx.common.thridmanager.share.SharePolicy
 import com.zhiyicx.common.utils.*
 import com.zhiyicx.thinksnsplus.base.AppApplication
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean
+import org.simple.eventbus.EventBus
 import rx.Observable
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
@@ -142,6 +144,7 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
         mTvTime.text = mDynamicShareBean!!.time
         mTvContent.text = mDynamicShareBean!!.content
         mTvQRTip.text = getString(R.string.scan_get_candy, mPresenter.walletGoldName)
+//    测试使用    mPresenter.shareTask(mDynamicShareBean!!.id)
 
     }
 
@@ -199,7 +202,7 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
                 .map {
                     val imgName = name + ".jpg"
                     val imgPath = PathConfig.PHOTO_SAVA_PATH
-                    DrawableProvider.saveBitmap(bitmap, imgName, imgPath,mActivity.applicationContext)
+                    DrawableProvider.saveBitmap(bitmap, imgName, imgPath, mActivity.applicationContext)
                 }
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -241,6 +244,7 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
         println("-----onSuccess--------")
         mPresenter.shareTask(mDynamicShareBean!!.id)
         showSnackSuccessMessage(context.getString(R.string.share_sccuess))
+        EventBus.getDefault().post(mDynamicShareBean!!.id, EventBusTagConfig.EVENT_UPDATE_DYNAMIC_SHARE)
     }
 
     override fun onError(share: Share, throwable: Throwable) {

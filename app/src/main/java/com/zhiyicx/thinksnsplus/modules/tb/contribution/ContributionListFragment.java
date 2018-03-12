@@ -72,6 +72,11 @@ public class ContributionListFragment extends TSListFragment<ContributionListCon
     }
 
     @Override
+    protected int setEmptView() {
+        return R.mipmap.img_default_nobody;
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
         return false;
     }

@@ -16,6 +16,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
@@ -25,6 +26,8 @@ import com.zhiyicx.thinksnsplus.modules.tb.share.DynamicShareBean;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+
+import org.simple.eventbus.Subscriber;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 
@@ -36,6 +39,8 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
  */
 public class TBDynamicFragment extends DynamicFragment {
     public static final String BUNDLE_SHARE_DATA = "data";
+
+    private int mCurrentClickItemPosition = -1;
 
     public static TBDynamicFragment newInstance(String dynamicType, OnCommentClickListener l) {
         TBDynamicFragment fragment = new TBDynamicFragment();
@@ -62,6 +67,11 @@ public class TBDynamicFragment extends DynamicFragment {
         mCurrentUserinfo = getArguments().getParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA);
     }
 
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
     /**
      * view 调整为 followView
      *
@@ -82,7 +92,7 @@ public class TBDynamicFragment extends DynamicFragment {
                         (dataPosition).getId() == 0) {
                     return;
                 }
-                handleLike(dataPosition,contentView);
+                handleLike(dataPosition, contentView);
                 break;
 
             case 2:
@@ -100,6 +110,7 @@ public class TBDynamicFragment extends DynamicFragment {
                 bundle.putSerializable(BUNDLE_SHARE_DATA, dynamicShareBean);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                mCurrentClickItemPosition = dataPosition;
                 break;
 
             case 3:
@@ -124,7 +135,7 @@ public class TBDynamicFragment extends DynamicFragment {
      *
      * @param dataPosition
      */
-    protected void handleLike(int dataPosition,View contentView) {
+    protected void handleLike(int dataPosition, View contentView) {
 
         // 先更新界面，再后台处理
         mListDatas.get(dataPosition).setHas_digg(!mListDatas.get(dataPosition)
@@ -191,5 +202,13 @@ public class TBDynamicFragment extends DynamicFragment {
                     showBottomView(true);
                 })
                 .build();
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_DYNAMIC_SHARE)
+    private void updateDynamicShare(String id) {
+        if (mCurrentClickItemPosition > -1) {
+            mListDatas.get(mCurrentClickItemPosition).setShare_count(mListDatas.get(mCurrentClickItemPosition).getShare_count() + 1);
+            refreshData();
+        }
     }
 }

@@ -238,5 +238,9 @@ public class EventBusTagConfig {
      */
     public static final String EVENT_NEARBY_LOCATION = "nearby_location";
     public static final String EVENT_NEARBY_LOCATION_UPDATE = "nearby_location_update";
+    /**
+     * 更新快讯分享
+     */
+    public static final String EVENT_UPDATE_DYNAMIC_SHARE = "update_dynmaic_share";
 
 }
