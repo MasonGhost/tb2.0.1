@@ -1,41 +1,34 @@
 package com.zhiyicx.thinksnsplus.modules.tb.share
 
-import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import butterknife.BindView
 import com.jakewharton.rxbinding.view.RxView
-import com.zhiyicx.baseproject.base.TSFragment
-import com.zhiyicx.baseproject.widget.UserAvatarView
-import com.zhiyicx.baseproject.widget.textview.SpanTextViewWithEllipsize
-import com.zhiyicx.common.config.ConstantConfig
-import com.zhiyicx.thinksnsplus.R
-import com.zhiyicx.thinksnsplus.utils.ImageUtils
-import java.util.concurrent.TimeUnit
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.support.v4.app.Fragment
-import android.text.TextUtils
-import android.widget.ScrollView
 import com.trycatch.mysnackbar.Prompt
 import com.trycatch.mysnackbar.TSnackbar
-import com.zhiyicx.baseproject.config.ApiConfig
+import com.zhiyicx.baseproject.base.TSFragment
 import com.zhiyicx.baseproject.config.ApiConfig.URL_INVITE_FIRENDS_FORMAT
 import com.zhiyicx.baseproject.config.PathConfig
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl
-import com.zhiyicx.baseproject.utils.ExcutorUtil
+import com.zhiyicx.baseproject.widget.UserAvatarView
+import com.zhiyicx.common.config.ConstantConfig
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener
 import com.zhiyicx.common.thridmanager.share.Share
 import com.zhiyicx.common.thridmanager.share.ShareContent
 import com.zhiyicx.common.thridmanager.share.SharePolicy
-import com.zhiyicx.common.utils.*
+import com.zhiyicx.common.utils.DrawableProvider
+import com.zhiyicx.common.utils.FileUtils
+import com.zhiyicx.common.utils.TimeUtils
+import com.zhiyicx.thinksnsplus.R
 import com.zhiyicx.thinksnsplus.base.AppApplication
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean
+import com.zhiyicx.thinksnsplus.utils.ImageUtils
 import org.simple.eventbus.EventBus
 import rx.Observable
 import rx.Subscription
@@ -43,6 +36,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.io.File
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 /**

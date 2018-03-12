@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  * @author Jungle68
- * @describe
+ * @describe 链
  * @date 2018/2/28
  * @contact master.jungle68@gmail.com
  */

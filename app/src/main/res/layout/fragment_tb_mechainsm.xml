@@ -94,7 +94,7 @@
             android:orientation="horizontal"
             android:paddingBottom="@dimen/spacing_mid"
             android:paddingTop="@dimen/spacing_mid"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="@dimen/mechainism_name_hint_with"
@@ -451,6 +451,7 @@
             android:id="@+id/ll_book_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/userinfo_btn_height"
+            android:visibility="gone"
             android:background="@color/white"
             android:gravity="center_vertical"
             android:orientation="horizontal">
