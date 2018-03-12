@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.EaseConstant;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -272,7 +273,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             case R.id.bt_suggestion:
                 // 意见反馈跳转 ts+ 小助手 2018-3-12 11:47:12 by tym
                 List<SystemConfigBean.ImHelperBean> tsHlepers = mPresenter.getImHelper();
-                if (tsHlepers == null || tsHlepers.isEmpty()) {
+                if (tsHlepers == null || tsHlepers.isEmpty() && EMClient.getInstance().isConnected()) {
                     startActivity(new Intent(mActivity, FeedBackActivity.class));
                 } else {
                     ChatActivity.startChatActivity(mActivity, String.valueOf(tsHlepers.get(0).getUid()),

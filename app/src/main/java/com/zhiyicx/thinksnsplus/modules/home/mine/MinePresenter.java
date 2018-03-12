@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.mine;
 
 import android.os.Bundle;
 
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -62,6 +63,11 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
     @Override
     protected boolean useEventBus() {
         return true;
+    }
+
+    @Override
+    public List<SystemConfigBean.ImHelperBean> getImHelper() {
+        return mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
     }
 
     @Override
