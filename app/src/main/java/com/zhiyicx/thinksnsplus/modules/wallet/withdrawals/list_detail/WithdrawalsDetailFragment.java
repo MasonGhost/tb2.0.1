@@ -76,7 +76,7 @@ public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailC
                 boolean status_success = status == 1;
                 desc.setEnabled(status_success);
                 String moneyStr = String.format(Locale.getDefault(), getString(R.string.money_format),
-                        PayConfig.realCurrency2GameCurrency(withdrawal.getValue(),mPresenter.getRatio()));
+                        PayConfig.realCurrencyFen2Yuan(withdrawal.getValue()));
                 desc.setText(status_success ? "- " + moneyStr : (getString(status == 0 ? R.string.bill_doing : R.string.transaction_fail)));
                 account.setText(String.format(getString(R.string.withdraw_money_done),
                         PayType.getValue(withdrawal.getType().toLowerCase())));
