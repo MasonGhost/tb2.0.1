@@ -47,7 +47,7 @@ public class WithDrawalsPresenter extends AppBasePresenter< WithDrawalsConstract
             mRootView.minMoneyLimit();
             return;
         }
-        value = PayConfig.gameCurrency2RealCurrency(value, getRatio());
+        value = PayConfig.realCurrencyYuan2Fen(value);
         Subscription subscribe = mBillRepository.withdraw(value, type, account)
                 .compose(mSchedulersTransformer)
                 .doOnSubscribe(() -> {
