@@ -516,7 +516,17 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                     if (TextUtils.isEmpty(des)) {
                         des = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mAnswerInfoBean.getBody());
                     }
-                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mAnswerInfoBean.getUser(), String.valueOf
+                    UserInfoBean reportUser;
+                    // 匿名
+                    if (mAnswerInfoBean.getAnonymity() == 1) {
+                        reportUser = new UserInfoBean();
+                        reportUser.setUser_id(-1L);
+                        reportUser.setName(getString(R.string.qa_question_answer_anonymity_user));
+                    } else {
+                        reportUser = mAnswerInfoBean.getUser();
+                    }
+
+                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(reportUser, String.valueOf
                             (mAnswerInfoBean.getId()),
                             "", img, des, ReportType.QA_ANSWER));
                     mDealInfoMationPopWindow.hide();
