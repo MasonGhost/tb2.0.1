@@ -167,7 +167,6 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
      */
     @Override
     public void onBottomMenuVisibleChange(boolean visible) {
-
     }
 
     /**
