@@ -327,7 +327,7 @@ public class LinkDialog extends BaseDialogFragment {
         private int mMaxLength;
 
         public MaxTextLengthFilter(int max) {
-            mMaxLength = max - 1;
+            mMaxLength = max;
         }
 
         @Override
