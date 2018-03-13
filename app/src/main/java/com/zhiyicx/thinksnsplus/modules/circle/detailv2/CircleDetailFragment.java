@@ -1315,6 +1315,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 }
                 Intent intent = new Intent(mActivity, MembersListActivity.class);
                 Bundle bundle = new Bundle();
+                bundle.putInt(MemberListFragment.COUNT, mCircleInfo.getUsers_count());
                 bundle.putLong(MemberListFragment.CIRCLEID, mCircleInfo.getId());
                 bundle.putString(MemberListFragment.ROLE, isJoing ? mCircleInfo.getJoined().getRole() : "");
                 intent.putExtras(bundle);
