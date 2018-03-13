@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
@@ -22,7 +23,8 @@ import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
  * @Email Jliuer@aliyun.com
  * @Description 发布帖子
  */
-public class PublishPostFragment extends MarkdownFragment<PostDraftBean,PublishPostContract.Presenter> implements PublishPostContract.View{
+public class PublishPostFragment extends MarkdownFragment<PostDraftBean, PublishPostContract.Presenter>
+        implements PublishPostContract.View {
 
     public static final String BUNDLE_ISOUT_BOOLEAN = "isout";
     public static final String BUNDLE_DRAFT_DATA = "draft";
@@ -30,7 +32,7 @@ public class PublishPostFragment extends MarkdownFragment<PostDraftBean,PublishP
     protected CircleInfo mCircleInfo;
     protected boolean isOutCirclePublish;
     protected PostPublishBean mPostPublishBean;
-    protected boolean isBttomMenuVisible = true;
+    protected boolean isBttomMenuVisible = false;
 
     public static PublishPostFragment newInstance(Bundle bundle) {
         PublishPostFragment markdownFragment = new PublishPostFragment();
@@ -86,7 +88,6 @@ public class PublishPostFragment extends MarkdownFragment<PostDraftBean,PublishP
     protected void initListener() {
         super.initListener();
         setSynToDynamicCbVisiable(true);
-        mBottomMenu.setBottomMenuVisibleChangeListener(this::setSynToDynamicCbVisiable);
         RxTextView.textChanges(mCircleName).subscribe(charSequence -> setRightClickable(mContentLength > 0));
     }
 
@@ -125,8 +126,8 @@ public class PublishPostFragment extends MarkdownFragment<PostDraftBean,PublishP
     }
 
     @Override
-    protected void handlePublish(String title, String markdwon, String noMarkdown,String html) {
-        super.handlePublish(title, markdwon, noMarkdown,html);
+    protected void handlePublish(String title, String markdwon, String noMarkdown, String html) {
+        super.handlePublish(title, markdwon, noMarkdown, html);
         if (TextUtils.isEmpty(title)) {
             showSnackErrorMessage(getString(R.string.post_publish_select_title));
             return;
@@ -150,6 +151,9 @@ public class PublishPostFragment extends MarkdownFragment<PostDraftBean,PublishP
         super.onActivityResultForChooseCircle(circleInfo);
         mCircleInfo = circleInfo;
         mCircleName.setText(mCircleInfo.getName());
+        if (isBttomMenuVisible) {
+            setSynToDynamicCbVisiable(true);
+        }
     }
 
     @Override
