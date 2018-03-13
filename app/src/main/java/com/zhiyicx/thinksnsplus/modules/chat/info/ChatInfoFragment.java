@@ -525,8 +525,8 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             // 屏蔽按钮
             mScBlockMessage.setChecked(group.isMsgBlocked());
             // 群名称
-            String groupName = mChatGroupBean.getName()
-                    + "(" + mChatGroupBean.getAffiliations_count() + ")";
+            String groupName = mChatGroupBean.getName();
+                    // + "(" + mChatGroupBean.getAffiliations_count() + ")";
             mTvGroupName.setText(groupName);
             // 群头像
             Glide.with(getContext())

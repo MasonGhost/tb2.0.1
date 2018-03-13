@@ -110,8 +110,8 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                         .transform(new GlideCircleTransform(mContext))
                         .into(userAvatarView.getIvAvatar());
                 // 群名称
-                String groupName = chatGroupBean == null ? group.getGroupName() : chatGroupBean.getName()
-                        + "(" + chatGroupBean.getAffiliations_count() + ")";
+                String groupName = chatGroupBean == null ? group.getGroupName() : chatGroupBean.getName();
+                       // + "(" + chatGroupBean.getAffiliations_count() + ")";
                 holder.setText(R.id.tv_name, groupName);
                 swipeLayout.setSwipeEnabled(true);
                 break;
