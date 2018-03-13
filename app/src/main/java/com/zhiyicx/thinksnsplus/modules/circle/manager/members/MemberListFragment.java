@@ -46,6 +46,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
         implements MembersContract.View {
 
     public static final String CIRCLEID = "circleid";
+    public static final String COUNT = "count";
     public static final String ROLE = "permission";
 
     public static final int MEMBER_REQUEST = 1997;
@@ -69,6 +70,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
     List<CircleMembers> cache = new ArrayList<>();
 
     private long mCircleId;
+    private int mMemberCount;
     private String mRole;
 
     protected boolean mPermissionManager;
@@ -86,6 +88,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
     @Override
     protected void initData() {
         mCircleId = getArguments().getLong(CIRCLEID);
+        mMemberCount = getArguments().getInt(COUNT);
         mRole = getArguments().getString(ROLE);
         mPermissionManager = CircleMembers.ADMINISTRATOR.equals(mRole);
         mPermissionOwner = CircleMembers.FOUNDER.equals(mRole);
@@ -208,7 +211,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
     @Override
     public String getMemberType() {
-        return CircleMembers.AUDIT_MEMBER;
+        return CircleMembers.MEMBER;
     }
 
     /**
@@ -278,7 +281,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
                 case CircleMembers.MEMBER:
                     groupInfo = new StickySectionDecoration.GroupInfo(2,
                             String.format(Locale.getDefault(), mActivity.getString(R.string
-                                    .circle_member_format), mFrouLengh[2]));
+                                    .circle_member_format), mMemberCount - (mFrouLengh[0] + mFrouLengh[1])));
                     groupInfo.setPosition(position);
                     groupInfo.setGroupLength(mFrouLengh[2]);
                     break;
