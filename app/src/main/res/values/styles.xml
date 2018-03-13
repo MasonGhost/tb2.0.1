@@ -107,7 +107,7 @@
         <item name="sign_in_bg_color">#f2f2f2</item>
         <item name="sign_in_pb_start_color">#fac25e</item>
         <item name="sign_in_pb_end_color">#f28161</item>
-        <item name="sign_in_text_color">@android:color/holo_purple</item>
+        <item name="sign_in_text_color">#bfbfbf</item>
         <item name="sign_in_text_siz">12sp</item>
     </style>
 </resources>

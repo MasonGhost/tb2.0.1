@@ -184,19 +184,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                     }
                 });
 
-        initCheckViewData();
 
-    }
-
-    private void initCheckViewData() {
-        signInData.add("第一天");
-        signInData.add("第二天");
-        signInData.add("第三天");
-        signInData.add("第四天");
-        signInData.add("第五天");
-        signInData.add("第六天");
-        signInData.add("第七天");
-        mCheckInView.setSignInData(signInData);
     }
 
     @Override
@@ -345,8 +333,15 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     private void goRuleDetail() {
+
         UserRuleActivity.startUserRuleActivity(getActivity(), getString(R.string.reward_des),
                 mTBTaskRewardRuleBean.getExplain());
+//        测试使用
+//        if(mCheckInBean!=null){
+//            mCheckInBean.setLast_checkin_count(mCheckInBean.getLast_checkin_count()+1);
+//        }
+//        updateCheckInInfo();
+
     }
 
     @OnClick({R.id.ll_fans_container, R.id.ll_follow_container, R.id.ll_friends, R.id.iv_setting, R.id.tv_check_in, R.id.v_userinfo, R.id
@@ -641,6 +636,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
      */
 
     private void updateCheckInInfo() {
+
+        initCheckViewData();
         mTvCheck_in.setText(getString(mCheckInBean.isChecked_in() ? R.string.checked : R.string.check_in));
         mTvCheck_in.setEnabled(!mCheckInBean.isChecked_in());
         mTvContiniuousCheckInTip.setText(ColorPhrase.from(getString(R.string.has_continiuous_check_in_format, "<" +
@@ -653,6 +650,15 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         } else {
             mCheckInView.setCurretn(mCheckInBean.getLast_checkin_count() % 7);
         }
+    }
+
+    private void initCheckViewData() {
+        signInData.clear();
+        int startNum = mCheckInBean.getLast_checkin_count() - mCheckInBean.getLast_checkin_count() % 7 + 1;
+        for (int i = 0; i < 7; i++) {
+            signInData.add(String.valueOf(startNum + i));
+        }
+        mCheckInView.setSignInData(signInData);
     }
 
 
