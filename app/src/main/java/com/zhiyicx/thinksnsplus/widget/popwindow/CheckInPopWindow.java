@@ -142,7 +142,7 @@ public class CheckInPopWindow extends PopupWindow {
      * @param walletRatio
      */
     public void setData(CheckInBean checkInBean, double walletRatio, String goldName) {
-        mTvTotalCheckIn.setText(mParentView.getContext().getString(R.string.check_in_total_day_format, checkInBean.getLast_checkin_count()));
+        mTvTotalCheckIn.setText(mParentView.getContext().getString(R.string.check_in_total_day_format, checkInBean.getCheckin_count()));
         mTvTotoalGold.setText("+" + mContentView.getResources().getString(R.string.buy_pay_integration,(int)PayConfig.realCurrency2GameCurrency
                 (checkInBean
                         .getAttach_balance(),
