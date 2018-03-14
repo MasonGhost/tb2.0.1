@@ -196,21 +196,26 @@ public class ChatRepository implements ChatContract.Repository {
     public List<ChatItemBean> getChatListDataV2(MessageItemBeanV2 itemBeanV2, String msgId, int pageSize) {
         EMConversation conversation = itemBeanV2.getConversation();
         List<EMMessage> msgs = new ArrayList<>();
-        if ("0".equals(msgId)){
+        if ("0".equals(msgId)) {
             // 表示是第一次拿消息，先取出有的，再给msgId赋值，取历史记录
             msgs = conversation.getAllMessages();
-            if (!msgs.isEmpty()){
+            if (!msgs.isEmpty()) {
                 msgId = msgs.get(0).getMsgId();
             }
         }
         // 从传过来的msgId开始取出历史消息
         msgs.addAll(0, conversation.loadMoreMsgFromDB(msgId, pageSize));
-        if (!msgs.isEmpty()){
+        if (!msgs.isEmpty()) {
             List<ChatItemBean> list = new ArrayList<>();
-            for (EMMessage message : msgs){
+            for (EMMessage message : msgs) {
                 ChatItemBean chatItemBean = new ChatItemBean();
                 chatItemBean.setMessage(message);
-                long userId = Long.parseLong("admin".equals(message.getFrom()) ? "1" : message.getFrom());
+                long userId;
+                try {
+                    userId = Long.parseLong("admin".equals(message.getFrom()) ? "1" : message.getFrom());
+                } catch (Exception e) {
+                    userId = 1;
+                }
                 UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(userId);
                 chatItemBean.setUserInfo(userInfoBean);
                 list.add(chatItemBean);
@@ -227,7 +232,7 @@ public class ChatRepository implements ChatContract.Repository {
                 .observeOn(Schedulers.io())
                 .flatMap(list1 -> {
                     List<Object> users = new ArrayList<>();
-                    for (ChatItemBean chatItemBean : list1){
+                    for (ChatItemBean chatItemBean : list1) {
                         if ("admin".equals(chatItemBean.getMessage().getFrom())) {
                             users.add(1L);
                         } else {
@@ -247,7 +252,11 @@ public class ChatRepository implements ChatContract.Repository {
                                     if ("admin".equals(list1.get(i).getMessage().getFrom())) {
                                         key = 1;
                                     } else {
-                                        key = Integer.parseInt(list1.get(i).getMessage().getFrom());
+                                        try {
+                                            key = Integer.parseInt(list1.get(i).getMessage().getFrom());
+                                        } catch (Exception e) {
+                                            key = 1;
+                                        }
                                     }
                                     list1.get(i).setUserInfo(userInfoBeanSparseArray.get(key));
                                 }
