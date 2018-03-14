@@ -21,6 +21,8 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.utils.LinearGradientUtil;
 
@@ -49,7 +51,7 @@ import java.util.List;
  */
 
 public class CheckInView extends View {
-    private static final int DEF_HEIGHT = 40; //默认高度
+    private static final int DEF_HEIGHT = 49; //默认高度
     private static final int TEXT_MARGIN_TOP = 13; // 文字距离团的marginTop值
     private static final float SECTION_SCALE = 1.5F / 2; //截面的缩放值
     private static final float SIGN_IN_BALL_SCALE = 1F / 2; //签到 六边形的缩放值
@@ -156,7 +158,8 @@ public class CheckInView extends View {
                 signInBallRadio);
 
         circleY = (int) (signInBgRectF.top + signInRectHeight / 2);
-        descY = (int) (viewHeight * SECTION_SCALE + textMarginTop);
+//        descY = (int) (viewHeight * SECTION_SCALE + textMarginTop);
+        descY = circleY;
 
         //计算各个点 图形的位置
         calcucateCirclePoints(viewData);
@@ -167,6 +170,9 @@ public class CheckInView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (circlePoints == null || circlePoints.isEmpty()) {
+            return;
+        }
         // 签到背景横线
         drawSignInBgRect(canvas);
         // 签到背景圆
@@ -177,9 +183,9 @@ public class CheckInView extends View {
         // checked 的圆
         drawSignInCheck(canvas);
         //绘制文字
-//        drawTextDesc(canvas);
+        drawTextDesc(canvas);
         //绘制礼物图标  如果不用  可以注释掉
-//        drawBitmap(canvas);
+        drawBitmap(canvas);
     }
 
     /**
@@ -257,9 +263,14 @@ public class CheckInView extends View {
 
     private void drawTextDesc(Canvas canvas) {
         if (null != viewData && viewData.size() > 0) {
-            for (int i = 0; i < viewData.size(); i++) {
-                Point point = descPoints.get(i);
-                canvas.drawText(viewData.get(i), point.x, point.y + 21, signInTextPaint);
+            // 最有一个是图片，就不画文字了
+            for (int i = 0; i < viewData.size() - 1; i++) {
+                if (i <= currentSignInTag) {
+                    signInTextPaint = createPaint(Color.WHITE, signInTextSize, Paint.Style.FILL, 0);
+                } else {
+                    signInTextPaint = createPaint(signInTextColor, signInTextSize, Paint.Style.FILL, 0);
+                }
+                canvas.drawText(viewData.get(i), descPoints.get(i).x, descPoints.get(i).y, signInTextPaint);
 
             }
         }
@@ -277,18 +288,28 @@ public class CheckInView extends View {
     }
 
     private void calcucateCirclePoints(List<String> viewData) {
-        if (null != viewData) {
+        if (null != viewData && !viewData.isEmpty()) {
             //横向平分屏幕  计算每段距离大小
             int intervalSize = viewData.size() - 1; // 总共多少分线
             int onePiece = (viewWidth - signInBallRadio * 2 * viewData.size()) / intervalSize;
-
+            circlePoints.clear();
+            descPoints.clear();
+            signInPbRectFs.clear();
+            signInDoublePaths.clear();
+            sexangleDoublePaths.clear();
+            sexanglePaths.clear();
+            selectLinePath.clear();
+            checkedCircleColors.clear();
 
             for (int i = 0; i < viewData.size(); i++) {
                 //每个六边形的 位置
                 Point circlePoint = new Point((i) * onePiece + ((i + 1) * 2 - 1) * signInBallRadio, circleY);
+                Rect rect = new Rect();
+                signInTextPaint.getTextBounds(viewData.get(i), 0, viewData.get(i).length(), rect);
+                int height = rect.height();//文本的高度
                 //矩形的位置
-                Point descPoint = new Point((int) ((i + 1) * onePiece + ((i + 1) * 2 - 1) * signInBallRadio -
-                        signInTextPaint.measureText(viewData.get(i)) / 2), descY);
+                Point descPoint = new Point((int) ((i) * onePiece + ((i + 1) * 2 - 1) * signInBallRadio -
+                        signInTextPaint.measureText(viewData.get(i)) / 2), circleY + height / 2);
                 //签到的矩形
                 RectF rectF = new RectF(0, viewHeight * SECTION_SCALE - signInBallRadio - signInRectHeight, circlePoint.x - signInBallRadio + 3,
                         viewHeight * SECTION_SCALE - signInBallRadio);
@@ -353,12 +374,13 @@ public class CheckInView extends View {
             }
 
             //设置礼物图标
-            int new_W_H = circlePoints.get(viewData.size() - 1).y - signInBallRadio * 2;
+            int new_H = circlePoints.get(viewData.size() - 1).y - bitmap.getHeight() / 2;
+            int new_W = circlePoints.get(viewData.size() - 1).y - bitmap.getHeight() / 2;
 
-            desBitmap = new Rect(circlePoints.get(viewData.size() - 1).x - new_W_H / 2,
-                    circlePoints.get(viewData.size() - 1).y - signInBallRadio * 2 - new_W_H,
-                    circlePoints.get(viewData.size() - 1).x + new_W_H / 2,
-                    circlePoints.get(viewData.size() - 1).y - signInBallRadio * 2);
+            desBitmap = new Rect(circlePoints.get(viewData.size() - 1).x - bitmap.getWidth() / 2,
+                    circlePoints.get(viewData.size() - 1).y - bitmap.getHeight() / 2,
+                    circlePoints.get(viewData.size() - 1).x + bitmap.getWidth() / 2,
+                    circlePoints.get(viewData.size() - 1).y + bitmap.getHeight() / 2);
         }
     }
 
@@ -402,7 +424,6 @@ public class CheckInView extends View {
 
         //礼物图标  使用方法 可以百度一下
         bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.pic_gift);
-//        bitmap = zoomImg(bitmap,CALCULATE_BITMAP_W_H,CALCULATE_BITMAP_W_H);
         srcBitmap = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
     }
 
@@ -543,6 +564,8 @@ public class CheckInView extends View {
         if (null != data) {
             viewData = data;
         }
+        //计算各个点 图形的位置
+        calcucateCirclePoints(viewData);
     }
 
     public void setSignInEvent() {

@@ -138,7 +138,8 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
         mTvTime.text = mDynamicShareBean!!.time
         mTvContent.text = mDynamicShareBean!!.content
         mTvQRTip.text = getString(R.string.scan_get_candy, mPresenter.walletGoldName)
-//    测试使用    mPresenter.shareTask(mDynamicShareBean!!.id)
+//    测试使用
+//        mPresenter.shareTask(mDynamicShareBean!!.id)
 
     }
 
@@ -231,23 +232,19 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
     }
 
     override fun onStart(share: Share) {
-        println("-----onStart--------")
     }
 
     override fun onSuccess(share: Share) {
-        println("-----onSuccess--------")
         mPresenter.shareTask(mDynamicShareBean!!.id)
         showSnackSuccessMessage(context.getString(R.string.share_sccuess))
         EventBus.getDefault().post(mDynamicShareBean!!.id, EventBusTagConfig.EVENT_UPDATE_DYNAMIC_SHARE)
     }
 
     override fun onError(share: Share, throwable: Throwable) {
-        println("-----onError--------")
         showSnackErrorMessage(context.getString(R.string.share_fail))
     }
 
     override fun onCancel(share: Share) {
-        println("-----onCancel--------")
         showSnackSuccessMessage(context.getString(R.string.share_cancel))
     }
 
