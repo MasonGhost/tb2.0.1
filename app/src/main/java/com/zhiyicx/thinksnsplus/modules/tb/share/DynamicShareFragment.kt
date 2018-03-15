@@ -142,7 +142,7 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
         mTvContent.text = mDynamicShareBean!!.content
         mTvQRTip.text = getString(R.string.scan_get_candy, mPresenter.walletGoldName)
 //    测试使用
-//        mPresenter.shareTask(mDynamicShareBean!!.id)
+        mPresenter.shareTask(mDynamicShareBean!!.id)
 
     }
 
