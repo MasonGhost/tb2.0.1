@@ -45,6 +45,7 @@ import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.CertificationTypePopupWindow;
 import com.zhiyicx.thinksnsplus.widget.MineTaskItemView;
 import com.zhiyicx.thinksnsplus.widget.checkin.CheckInView;
+import com.zhiyicx.thinksnsplus.widget.checkin.CheckInViewForImage;
 import com.zhiyicx.thinksnsplus.widget.popwindow.TBCenterInfoPopWindow;
 
 import java.util.ArrayList;
@@ -120,7 +121,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @BindView(R.id.rl_userinfo_container)
     RelativeLayout mLayout;
     @BindView(R.id.checkin_view)
-    CheckInView mCheckInView;
+    CheckInViewForImage mCheckInView;
 
     /**
      * 签到提示弹框
@@ -333,14 +334,14 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     private void goRuleDetail() {
-
-        UserRuleActivity.startUserRuleActivity(getActivity(), getString(R.string.reward_des),
-                mTBTaskRewardRuleBean.getExplain());
+//
+//        UserRuleActivity.startUserRuleActivity(getActivity(), getString(R.string.reward_des),
+//                mTBTaskRewardRuleBean.getExplain());
 //        测试使用
-//        if(mCheckInBean!=null){
-//            mCheckInBean.setLast_checkin_count(mCheckInBean.getLast_checkin_count()+1);
-//        }
-//        updateCheckInInfo();
+        if(mCheckInBean!=null){
+            mCheckInBean.setLast_checkin_count(mCheckInBean.getLast_checkin_count()+1);
+        }
+        updateCheckInInfo();
 
     }
 
