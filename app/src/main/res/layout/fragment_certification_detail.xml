@@ -192,7 +192,7 @@
                 <TextView
                     android:id="@+id/tv_description"
                     style="@style/CertificationDetailText"
-                    android:layout_gravity="bottom"
+                    android:layout_gravity="bottom|left"
                     android:maxLines="30"
                     tools:text="赶紧领导时间管理风景嘎会计法爱干净杀几个路口的就是国际饭店上过课垃圾分类达康书记咖喱咖啡技术管理开发就是了客观费精力开始根据反馈麓山国际过节费快速公交番窠倒臼"/>
 
