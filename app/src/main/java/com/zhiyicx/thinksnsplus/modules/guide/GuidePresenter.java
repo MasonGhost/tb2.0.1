@@ -59,7 +59,7 @@ public class GuidePresenter extends BasePresenter<GuideContract.View>
         // 系统扩展配置信息处理
         mSystemRepository.getBootstrappersInfoFromServer();
         if (mIAuthRepository.isLogin()) {
-            mIAuthRepository.refreshToken();
+//            mIAuthRepository.refreshToken();
             // 钱包信息我也不知道在哪儿获取
             mWalletRepository.getWalletConfigWhenStart(mIAuthRepository.getAuthBean().getUser_id());
         }
