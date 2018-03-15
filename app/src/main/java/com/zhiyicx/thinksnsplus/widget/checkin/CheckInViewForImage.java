@@ -149,11 +149,12 @@ public class CheckInViewForImage extends View {
         viewWidth = w;
         viewHeight = h;
 
-        signInBallRadio = (int) (viewHeight * SIGN_IN_BALL_SCALE / 2);
+//        signInBallRadio = (int) (viewHeight * SIGN_IN_BALL_SCALE / 2);
+        signInBallRadio = (int) (bitmapCheck.getWidth() / 2);
         signInRectHeight = (int) (signInBallRadio * SIGN_BG_RECT_SCALE);
 
-        signInBgRectF = new RectF(0 + 2*signInBallRadio, viewHeight * SECTION_SCALE - signInBallRadio - signInRectHeight, viewWidth -
-                2*signInBallRadio, viewHeight * SECTION_SCALE -
+        signInBgRectF = new RectF(0 + 2 * signInBallRadio, viewHeight * SECTION_SCALE - signInBallRadio - signInRectHeight, viewWidth -
+                2 * signInBallRadio, viewHeight * SECTION_SCALE -
                 signInBallRadio);
 
         circleY = (int) (signInBgRectF.top + signInRectHeight / 2);
@@ -328,7 +329,8 @@ public class CheckInViewForImage extends View {
                 Point descPoint = new Point((int) ((i) * onePiece + ((i + 1) * 2 - 1) * signInBallRadio -
                         signInTextPaint.measureText(viewData.get(i)) / 2), circleY + height / 2);
                 //签到的矩形
-                RectF rectF = new RectF(0+signInBallRadio+3, viewHeight * SECTION_SCALE - signInBallRadio - signInRectHeight, circlePoint.x - signInBallRadio + 3,
+                RectF rectF = new RectF(0 + signInBallRadio + 3, viewHeight * SECTION_SCALE - signInBallRadio - signInRectHeight, circlePoint.x -
+                        signInBallRadio + 3,
                         viewHeight * SECTION_SCALE - signInBallRadio);
                 //签到时候矩形的路径
                 Path selectPath = new Path();//选择矩形

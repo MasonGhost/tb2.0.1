@@ -334,14 +334,14 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     private void goRuleDetail() {
-//
-//        UserRuleActivity.startUserRuleActivity(getActivity(), getString(R.string.reward_des),
-//                mTBTaskRewardRuleBean.getExplain());
+
+        UserRuleActivity.startUserRuleActivity(getActivity(), getString(R.string.reward_des),
+                mTBTaskRewardRuleBean.getExplain());
 //        测试使用
-        if(mCheckInBean!=null){
-            mCheckInBean.setLast_checkin_count(mCheckInBean.getLast_checkin_count()+1);
-        }
-        updateCheckInInfo();
+//        if(mCheckInBean!=null){
+//            mCheckInBean.setLast_checkin_count(mCheckInBean.getLast_checkin_count()+1);
+//        }
+//        updateCheckInInfo();
 
     }
 
