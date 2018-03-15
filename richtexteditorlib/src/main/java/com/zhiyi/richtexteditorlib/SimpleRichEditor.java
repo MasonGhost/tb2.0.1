@@ -24,6 +24,9 @@ import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
 
 public class SimpleRichEditor extends RichEditor {
 

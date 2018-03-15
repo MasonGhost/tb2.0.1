@@ -706,8 +706,8 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         mPostDetailHeaderView.destroyedWeb();
+        super.onDestroyView();
     }
 
     /**
