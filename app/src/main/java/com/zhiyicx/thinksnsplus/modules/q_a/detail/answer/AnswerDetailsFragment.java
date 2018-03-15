@@ -494,11 +494,10 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                 .item4ClickListener(() -> {
                     // 编辑
                     mDealInfoMationPopWindow.hide();
-//                    编辑内容出现问题
-//                    EditeAnswerDetailFragment.startQActivity(getActivity(), PublishType
-//                                    .UPDATE_ANSWER, mAnswerInfoBean.getId(), mAnswerInfoBean.getBody(),
-//                            mAnswerInfoBean.getQuestion().getSubject(), mAnswerInfoBean.getAnonymity());
-                    showSnackWarningMessage(getString(R.string.fun_maintain));
+                    EditeAnswerDetailFragment.startQActivity(getActivity(), PublishType
+                                    .UPDATE_ANSWER, mAnswerInfoBean.getId(), mAnswerInfoBean.getBody(),
+                            mAnswerInfoBean.getQuestion().getSubject(), mAnswerInfoBean.getAnonymity());
+//                    showSnackWarningMessage(getString(R.string.fun_maintain));
                 })
                 .item5ClickListener(() -> {
                     // 举报帖子
