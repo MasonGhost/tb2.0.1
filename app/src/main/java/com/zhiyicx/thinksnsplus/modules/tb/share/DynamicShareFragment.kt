@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.tb.share
 
+import android.app.Activity
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
@@ -11,6 +12,8 @@ import butterknife.BindView
 import com.jakewharton.rxbinding.view.RxView
 import com.trycatch.mysnackbar.Prompt
 import com.trycatch.mysnackbar.TSnackbar
+import com.umeng.socialize.UMShareAPI
+import com.umeng.socialize.bean.SHARE_MEDIA
 import com.zhiyicx.baseproject.base.TSFragment
 import com.zhiyicx.baseproject.config.ApiConfig.URL_INVITE_FIRENDS_FORMAT
 import com.zhiyicx.baseproject.config.PathConfig
@@ -154,11 +157,14 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
                 .throttleFirst(ConstantConfig.JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe {
-
-                    val shareContent = ShareContent()
-                    shareContent.bitmap = ImageUtils.getBitmapByView2(mScrollView);
-                    (mSharePolicy as UmengSharePolicyImpl).setShareContent(shareContent)
-                    (mSharePolicy as UmengSharePolicyImpl).shareWechat(activity, this@DynamicShareFragment)
+                    if (UMShareAPI.get(context).isInstall(mActivity as Activity, SHARE_MEDIA.WEIXIN)) {
+                        val shareContent = ShareContent()
+                        shareContent.bitmap = ImageUtils.getBitmapByView2(mScrollView);
+                        (mSharePolicy as UmengSharePolicyImpl).setShareContent(shareContent)
+                        (mSharePolicy as UmengSharePolicyImpl).shareWechat(activity, this@DynamicShareFragment)
+                    } else {
+                        showSnackWarningMessage(getString(R.string.please_install_wixin_first))
+                    }
 
                 }
         // 朋友圈
@@ -166,11 +172,14 @@ class DynamicShareFragment : TSFragment<DynamicShareContract.Presenter>(), Dynam
                 .throttleFirst(ConstantConfig.JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe {
-                    val shareContent = ShareContent()
-                    shareContent.bitmap = ImageUtils.getBitmapByView2(mScrollView);
-                    (mSharePolicy as UmengSharePolicyImpl).setShareContent(shareContent)
-                    (mSharePolicy as UmengSharePolicyImpl).shareMoment(activity, this@DynamicShareFragment)
-
+                    if (UMShareAPI.get(context).isInstall(mActivity as Activity, SHARE_MEDIA.WEIXIN_CIRCLE) || UMShareAPI.get(context).isInstall(mActivity as Activity, SHARE_MEDIA.WEIXIN)) {
+                        val shareContent = ShareContent()
+                        shareContent.bitmap = ImageUtils.getBitmapByView2(mScrollView);
+                        (mSharePolicy as UmengSharePolicyImpl).setShareContent(shareContent)
+                        (mSharePolicy as UmengSharePolicyImpl).shareMoment(activity, this@DynamicShareFragment)
+                    } else {
+                        showSnackWarningMessage(getString(R.string.please_install_wixin_or_wixincircle_first))
+                    }
                 }
         // 保存
         RxView.clicks(mIvSave)

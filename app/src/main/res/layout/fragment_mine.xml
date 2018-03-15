@@ -258,7 +258,7 @@
                         android:textSize="@dimen/size_icon_assist"
                         />
 
-                    <com.zhiyicx.thinksnsplus.widget.checkin.CheckInView
+                    <com.zhiyicx.thinksnsplus.widget.checkin.CheckInViewForImage
                         android:id="@+id/checkin_view"
                         android:layout_below="@+id/tv_continiuous_check_in_tip"
                         android:layout_width="match_parent"

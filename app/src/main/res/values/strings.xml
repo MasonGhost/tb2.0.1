@@ -1038,6 +1038,8 @@
     <string name="has_reflected">被驳回</string>
     <string name="has_invite_code">已填写</string>
     <string name="share_copy_tip_format">最有价值糖果领取快快看过来\n这里是各种糖果领取聚集地\n注册TokenBook\n就可获得1000TBMark糖果\n拥有TBMark\n几十种有价值糖果任意领取\n\nTBMark糖果领取地址\n%s\n别忘记下载APP注册哦\n\n每天签到，分享快讯，邀请好友，参与学习互动都能获得TBMark</string>
+    <string name="please_install_wixin_first">请先安装微信客户端！</string>
+    <string name="please_install_wixin_or_wixincircle_first">请先安装微信/微信朋友圈客户端！</string>
 
     <string-array name="integration_recharge_withdrawal_type">
         <item>充值记录</item>

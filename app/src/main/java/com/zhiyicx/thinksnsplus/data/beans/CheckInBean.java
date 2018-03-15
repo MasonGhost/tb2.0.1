@@ -55,6 +55,7 @@ public class CheckInBean extends CacheBean {
     private List<UserInfoBean> rank_users;
     @SerializedName(value = "checked_in", alternate = "check_in_status")
     private boolean checked_in;
+    @SerializedName(value = "check_in_reward", alternate = "reward")
     private int check_in_reward;
     private int checkin_count;
     @SerializedName(value = "last_checkin_count", alternate = "check_in_count")

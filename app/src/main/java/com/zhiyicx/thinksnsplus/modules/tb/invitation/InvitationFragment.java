@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.github.tamir7.contacts.Event;
 import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PathConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
@@ -146,18 +148,26 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
                 break;
             // 微信
             case R.id.tv_wx:
-
-                ShareContent shareContent = new ShareContent();
-                shareContent.setBitmap(takeScreenShot(mLlShareContianer));
-                mSharePolicy.setShareContent(shareContent);
-                mSharePolicy.shareWechat(mActivity, InvitationFragment.this);
+                if (UMShareAPI.get(getContext()).isInstall(mActivity, SHARE_MEDIA.WEIXIN)) {
+                    ShareContent shareContent = new ShareContent();
+                    shareContent.setBitmap(takeScreenShot(mLlShareContianer));
+                    mSharePolicy.setShareContent(shareContent);
+                    mSharePolicy.shareWechat(mActivity, InvitationFragment.this);
+                } else {
+                    showSnackWarningMessage(getString(R.string.please_install_wixin_first));
+                }
                 break;
             // 朋友圈
             case R.id.tv_friend:
-                ShareContent shareContentFriend = new ShareContent();
-                shareContentFriend.setBitmap(takeScreenShot(mLlShareContianer));
-                mSharePolicy.setShareContent(shareContentFriend);
-                mSharePolicy.shareMoment(mActivity, InvitationFragment.this);
+                if (UMShareAPI.get(getContext()).isInstall(mActivity, SHARE_MEDIA.WEIXIN_CIRCLE) || UMShareAPI.get(getContext()).isInstall
+                        (mActivity, SHARE_MEDIA.WEIXIN)) {
+                    ShareContent shareContentFriend = new ShareContent();
+                    shareContentFriend.setBitmap(takeScreenShot(mLlShareContianer));
+                    mSharePolicy.setShareContent(shareContentFriend);
+                    mSharePolicy.shareMoment(mActivity, InvitationFragment.this);
+                } else {
+                    showSnackWarningMessage(getString(R.string.please_install_wixin_or_wixincircle_first));
+                }
                 break;
             // 复制链接
             case R.id.tv_copy:
@@ -254,7 +264,7 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
 
     @Override
     public void onSuccess(Share share) {
-            mPresenter.shareTask();
+        mPresenter.shareTask();
         showSnackSuccessMessage(getString(R.string.share_sccuess));
     }
 
