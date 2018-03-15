@@ -73,20 +73,23 @@ public class EditeAnswerDetailFragment extends EditeQuestionDetailFragment {
     }
 
     @Override
-    protected void handlePublish(String title, String markdwon, String noMarkdown,String html) {
+    protected void handlePublish(String title, String markdwon, String noMarkdown, String html) {
 
         if (openDraft() && isBack) {
             noMarkdown = noMarkdown.replaceAll(MarkdownConfig.HTML_FORMAT, "");
-            initEditWarningPop(title, markdwon, noMarkdown,html);
+            if (TextUtils.isEmpty(noMarkdown)) {
+                mActivity.finish();
+            }
+            initEditWarningPop(title, markdwon, noMarkdown, html);
             return;
         }
 
         if (mType == PublishType.PUBLISH_ANSWER) {
             mPresenter.publishAnswer(getArguments().getLong(BUNDLE_SOURCE_ID), markdwon,
-                    noMarkdown , mAnonymity);
+                    noMarkdown, mAnonymity);
         } else if (mType == PublishType.UPDATE_ANSWER) {
             mPresenter.updateAnswer(getArguments().getLong(BUNDLE_SOURCE_ID), markdwon,
-                    noMarkdown ,mAnonymity);
+                    noMarkdown, mAnonymity);
         } else if (mType == PublishType.UPDATE_QUESTION) {
             mPresenter.updateQuestion(getArguments().getLong(BUNDLE_SOURCE_ID), markdwon,
                     mAnonymity);

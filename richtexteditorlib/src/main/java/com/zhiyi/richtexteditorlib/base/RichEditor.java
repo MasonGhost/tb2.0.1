@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
@@ -27,10 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 @SuppressWarnings({"unused"})
 public abstract class RichEditor extends WebView {
@@ -153,9 +151,16 @@ public abstract class RichEditor extends WebView {
         setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-//                LogUtils.d("webview", consoleMessage.message() + " -- From line " + consoleMessage.lineNumber()
-//                        + " of " + consoleMessage.sourceId());
                 return super.onConsoleMessage(consoleMessage);
+            }
+
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                isReady = view.getUrl().equalsIgnoreCase(SETUP_HTML) || view.getUrl().equalsIgnoreCase(SETUP_BASEURL);
+                if (newProgress == 100 && mLoadListener != null) {
+                    mLoadListener.onAfterInitialLoad(isReady);
+                }
             }
         });
         mContentLength = 0;
@@ -322,6 +327,15 @@ public abstract class RichEditor extends WebView {
         super.setBackgroundColor(color);
     }
 
+    public void destryWeb() {
+        clearHistory();
+        ((ViewGroup) getParent()).removeView(this);
+        loadUrl("about:blank");
+        stopLoading();
+        setWebChromeClient(null);
+        setWebViewClient(null);
+        destroy();
+    }
 
     public void setPlaceholder(String placeholder) {
         exec("javascript:RE.setPlaceholder('" + placeholder + "');");
@@ -522,11 +536,7 @@ public abstract class RichEditor extends WebView {
     private class EditorWebViewClient extends WebViewClient {
         @Override
         public void onPageFinished(WebView view, String url) {
-            isReady = url.equalsIgnoreCase(SETUP_HTML) || url.equalsIgnoreCase(SETUP_BASEURL);
             LogUtils.d("load", "after onPageFinished");
-            if (mLoadListener != null) {
-                mLoadListener.onAfterInitialLoad(isReady);
-            }
         }
 
         @SuppressWarnings("deprecation")

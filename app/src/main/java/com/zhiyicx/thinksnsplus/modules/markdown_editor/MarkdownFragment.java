@@ -44,10 +44,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
+import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
@@ -772,7 +774,24 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
     }
 
     @Override
+    public void onPause() {
+        mRichTextView.onPause();
+        mRichTextView.pauseTimers();
+        super.onPause();
+
+    }
+
+    @Override
+    public void onResume() {
+        mRichTextView.onResume();
+        mRichTextView.resumeTimers();
+        super.onResume();
+
+    }
+
+    @Override
     public void onDestroyView() {
+        mRichTextView.destryWeb();
         super.onDestroyView();
         dismissPop(mPhotoPopupWindow);
         dismissPop(mEditWarningPopupWindow);

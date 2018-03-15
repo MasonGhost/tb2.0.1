@@ -648,8 +648,8 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         mAnswerDetailHeaderView.destroyedWeb();
+        super.onDestroyView();
         dismissPop(mDealInfoMationPopWindow);
         dismissPop(mDeletCommentPopWindow);
     }
