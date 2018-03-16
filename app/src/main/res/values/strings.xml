@@ -1055,4 +1055,6 @@
         <item>主页</item>
         <item>快讯</item>
     </string-array>
+    <string name="merchain_detail">详情</string>
+
 </resources>

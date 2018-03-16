@@ -1,51 +1,24 @@
 package com.zhiyicx.thinksnsplus.modules.tb.mechainism;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.CheckBox;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.jakewharton.rxbinding.view.RxView;
-import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
-import com.zhiyicx.baseproject.widget.UserAvatarView;
-import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
-import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
-import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
-import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.dig_list.AnswerDigListActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.dig_list.AnswerDigListFragment;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
-import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.utils.MarkDownRule;
-import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
-import com.zhiyicx.thinksnsplus.widget.ReWardView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,7 +29,6 @@ import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 import static com.zhiyicx.baseproject.config.MarkdownConfig.IMAGE_FORMAT;
-import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author Catherine

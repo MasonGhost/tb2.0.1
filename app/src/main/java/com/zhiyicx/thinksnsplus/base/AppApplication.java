@@ -27,12 +27,14 @@ import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.appprocess.AndroidProcess;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
@@ -213,7 +215,7 @@ public class AppApplication extends TSApplication {
                 }
                 if (originalResponse.code() == AUTH_FAIL) {
 //                    if (mAuthRepository.isNeededRefreshToken()) {
-                        handleAuthFail(getString(R.string.auth_fail_login));
+                    handleAuthFail(getString(R.string.auth_fail_login));
 //                    } else {
 //                        handleAuthFail(getString(R.string.code_1015));
 //                    }
@@ -443,6 +445,10 @@ public class AppApplication extends TSApplication {
     }
 
     public static AuthBean getmCurrentLoginAuth() {
+        if (mCurrentLoginAuth == null) {
+            AppApplication.setmCurrentLoginAuth(SharePreferenceUtils.getObject(AppApplication.getContext(), SharePreferenceTagConfig
+                    .SHAREPREFERENCE_TAG_AUTHBEAN));
+        }
         return mCurrentLoginAuth;
     }
 
