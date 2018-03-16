@@ -43,7 +43,7 @@ public class MembersPresenter extends AppBasePresenter<
     public void requestNetData(Long maxId, boolean isLoadMore) {
         int grouLengh[] = new int[4];
         Observable<List<CircleMembers>> observable;
-        if (isLoadMore) {
+        if (isLoadMore || CircleMembers.BLACKLIST.equals(mRootView.getMemberType())) {
             observable = mBaseCircleRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(),
                     TSListFragment.DEFAULT_PAGE_SIZE, mRootView.getMemberType(), mRootView.getSearchContent());
         } else {
