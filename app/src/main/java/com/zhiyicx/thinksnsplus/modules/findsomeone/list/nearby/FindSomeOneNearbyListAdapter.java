@@ -64,7 +64,7 @@ public class FindSomeOneNearbyListAdapter extends CommonAdapter<NearbyBean> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(aVoid -> {
-                    if (mPresenter.handleTouristControl()) {
+                    if (mPresenter.handleTouristControl() || userInfoBean1.getHas_deleted()) {
                         return;
                     }
                     // 添加关注，或者取消关注
@@ -86,7 +86,7 @@ public class FindSomeOneNearbyListAdapter extends CommonAdapter<NearbyBean> {
          * 如果关注粉丝列表中出现了自己，需要隐藏关注按钮
          */
         holder.getView(R.id.iv_user_follow).setVisibility(
-                userInfoBean1.getUser_id() == AppApplication.getMyUserIdWithdefault()? View.GONE : View.VISIBLE);
+                userInfoBean1.getUser_id() == AppApplication.getMyUserIdWithdefault() ? View.GONE : View.VISIBLE);
         // 设置用户名，用户简介
         holder.setText(R.id.tv_name, userInfoBean1.getName());
 
