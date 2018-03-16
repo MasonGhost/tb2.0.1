@@ -50,7 +50,7 @@ public class MembersPresenter extends AppBasePresenter<
             observable = Observable.zip(mBaseCircleRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(),
                     TSListFragment.DEFAULT_PAGE_SIZE, CircleMembers.FOUNDER, mRootView.getSearchContent()), mBaseCircleRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(),
                     TSListFragment.DEFAULT_PAGE_SIZE, CircleMembers.MANAGER, mRootView.getSearchContent()), mBaseCircleRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(),
-                    TSListFragment.DEFAULT_PAGE_SIZE, mRootView.getMemberType(), mRootView.getSearchContent()), (founder, managers, members) -> {
+                    Integer.MAX_VALUE, mRootView.getMemberType(), mRootView.getSearchContent()), (founder, managers, members) -> {
                 managers.addAll(members);
                 managers.addAll(0, founder);
                 return managers;

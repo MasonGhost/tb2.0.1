@@ -281,7 +281,9 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
                 case CircleMembers.MEMBER:
                     groupInfo = new StickySectionDecoration.GroupInfo(2,
                             String.format(Locale.getDefault(), mActivity.getString(R.string
-                                    .circle_member_format), mMemberCount - (mFrouLengh[0] + mFrouLengh[1])));
+                                    .circle_member_format), mFrouLengh[2]
+                                   // mMemberCount - (mFrouLengh[0] + mFrouLengh[1]
+                                    ));
                     groupInfo.setPosition(position);
                     groupInfo.setGroupLength(mFrouLengh[2]);
                     break;
