@@ -125,11 +125,11 @@ public class AppApplication extends TSApplication {
     private void initAppProject() {
         initComponent();
         // 安装了 IM
-        if (!TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve())) {
+//        if (!TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve())) {
             LogUtils.d(TAG, "---------------start IM---------------------");
 //            ZBIMSDK.init(getContext());
             initIm();
-        }
+//        }
         // 开启后台任务
         BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();
         registerActivityCallBacks();
