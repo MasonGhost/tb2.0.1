@@ -41,6 +41,7 @@
             android:paddingLeft="@dimen/spacing_large"
             android:paddingRight="@dimen/spacing_large"
             android:paddingTop="@dimen/spacing_mid"
+            android:visibility="gone"
             android:paddingBottom="@dimen/spacing_mid"
             android:orientation="horizontal">
 
