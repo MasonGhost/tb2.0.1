@@ -51,9 +51,6 @@ public class AddInfoCategoryFragment extends TSFragment<AddInfoContract.Presente
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-
-        }
     }
 
     @Override

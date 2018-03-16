@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -662,7 +663,9 @@ public class BackgroundTaskHandler {
                         IMConfig imConfig = new IMConfig();
                         imConfig.setImUid(data.getUser_id());
                         imConfig.setToken(data.getIm_pwd_hash());
-
+                        if (TextUtils.isEmpty(data.getIm_pwd_hash())) {
+                            return;
+                        }
                         if (mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve().contains("ws:") || mSystemRepository
                                 .getBootstrappersInfoFromLocal().getIm_serve().contains("wss:")) {
                             imConfig.setWeb_socket_authority(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve());
