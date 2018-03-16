@@ -200,6 +200,7 @@ public class MechanismCenterFragment extends TSFragment {
 //        }
 
         if (!TextUtils.isEmpty(data.getOther_info())) {
+            mLineContent.setVisibility(View.VISIBLE);
             mLlInfoContainer.setVisibility(View.VISIBLE);
             mTvInfo.setText(data.getOther_info());
         }
