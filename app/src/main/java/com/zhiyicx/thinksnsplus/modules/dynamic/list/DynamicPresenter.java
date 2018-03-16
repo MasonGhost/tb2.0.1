@@ -664,11 +664,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
                 || mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) {
             Subscription subscribe = Observable.just(dynamicBean)
                     .observeOn(Schedulers.computation())
-                    .map(dynamicDetailBeanV2 -> {
-                        int position = -1;
-                        position = hasDynamicContanied(dynamicBean);
-                        return position;
-                    })
+                    .map(dynamicDetailBeanV2 -> hasDynamicContanied(dynamicBean))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(position -> {
                         // 如果列表有当前数据

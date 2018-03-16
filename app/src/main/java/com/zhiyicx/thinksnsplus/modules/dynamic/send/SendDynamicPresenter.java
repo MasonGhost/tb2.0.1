@@ -33,7 +33,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAM
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class SendDynamicPresenter extends AppBasePresenter< SendDynamicContract.View>
+public class SendDynamicPresenter extends AppBasePresenter<SendDynamicContract.View>
         implements SendDynamicContract.Presenter {
 
     @Inject
@@ -42,8 +42,8 @@ public class SendDynamicPresenter extends AppBasePresenter< SendDynamicContract.
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
 
     @Inject
-    public SendDynamicPresenter( SendDynamicContract.View rootView) {
-        super( rootView);
+    public SendDynamicPresenter(SendDynamicContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -103,15 +103,16 @@ public class SendDynamicPresenter extends AppBasePresenter< SendDynamicContract.
         int wordLimit = getSystemConfigBean().getFeed().getLimit();
         wordLimit = wordLimit > 0 ? wordLimit : 50;
         if (mRootView.wordsNumLimit() && contentLenght <= wordLimit) {
-            mRootView.initInstructionsPop(mContext.getString(R.string.instructions), String.format(mContext.getString(R.string.dynamic_send_toll_notes), wordLimit));
+            mRootView.initInstructionsPop(mContext.getString(R.string.instructions), String.format(mContext.getString(R.string
+                    .dynamic_send_toll_notes), wordLimit));
             return;
         }
-        if ((mRootView.wordsNumLimit() && mRootView.getTollMoney() <= 0d) || mRootView.getTollMoney() != (long) mRootView.getTollMoney()) {// 文字收费金额整数限制
+        if ((mRootView.wordsNumLimit() && mRootView.getTollMoney() <= 0d) || mRootView.getTollMoney() != (long) mRootView.getTollMoney()) {//
+            // 文字收费金额整数限制
             mRootView.initInstructionsPop(mContext.getString(R.string.instructions), String.format(Locale.getDefault(),
                     mContext.getResources().getString(R.string.limit_monye_death), getGoldName()));
             return;
         }
-
         SendDynamicDataBean sendDynamicDataBean = mRootView.getDynamicSendData();
         int dynamicBelong = sendDynamicDataBean.getDynamicBelong();
 
