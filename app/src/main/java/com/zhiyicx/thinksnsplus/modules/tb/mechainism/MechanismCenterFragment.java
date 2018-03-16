@@ -193,9 +193,15 @@ public class MechanismCenterFragment extends TSFragment {
 //            mLlCoinContainer.setVisibility(View.VISIBLE);
 //            mTvTime.setText(data.getCreated_at());
 //        }
+//
+//        if (!TextUtils.isEmpty(data.getOther_info())) {
+//            mLineContent.setVisibility(View.VISIBLE);
+//            mMerchainContentWebLoadView.setDetail(data);
+//        }
+
         if (!TextUtils.isEmpty(data.getOther_info())) {
-            mLineContent.setVisibility(View.VISIBLE);
-            mMerchainContentWebLoadView.setDetail(data);
+            mLlInfoContainer.setVisibility(View.VISIBLE);
+            mTvInfo.setText(data.getOther_info());
         }
 
         if (TextUtils.isEmpty(data.getWhite_paper_name())) {
