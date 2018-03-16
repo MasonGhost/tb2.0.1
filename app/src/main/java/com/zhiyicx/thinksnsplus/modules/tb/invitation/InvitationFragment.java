@@ -118,7 +118,9 @@ public class InvitationFragment extends TSFragment<InvitationContract.Presenter>
     protected void initData() {
         mSharePolicy = new UmengSharePolicyImpl(mActivity);
         mSharePolicy.setOnShareCallbackListener(this);
-        mTvInvitationCode.setText(String.valueOf(AppApplication.getMyUserIdWithdefault()));
+        if (AppApplication.getMyUserIdWithdefault() > 0) {
+            mTvInvitationCode.setText(String.valueOf(AppApplication.getMyUserIdWithdefault()));
+        }
         mPresenter.getShareLink();
     }
 
