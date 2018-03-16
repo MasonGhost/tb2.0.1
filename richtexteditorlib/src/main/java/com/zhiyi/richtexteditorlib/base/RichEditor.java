@@ -157,7 +157,9 @@ public abstract class RichEditor extends WebView {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
-                isReady = view.getUrl().equalsIgnoreCase(SETUP_HTML) || view.getUrl().equalsIgnoreCase(SETUP_BASEURL);
+                if (!isReady) {
+                    isReady = view.getUrl().equalsIgnoreCase(SETUP_HTML) || view.getUrl().equalsIgnoreCase(SETUP_BASEURL);
+                }
                 if (newProgress == 100 && mLoadListener != null) {
                     mLoadListener.onAfterInitialLoad(isReady);
                 }
