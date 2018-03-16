@@ -54,6 +54,7 @@ import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.EMLog;
 import com.hyphenate.util.PathUtil;
+import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.baseproject.em.manager.util.TSEMessageUtils;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.utils.ToastUtils;
@@ -942,12 +943,12 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
 
         @Override
         public void onUserRemoved(final String groupId, String groupName) {
-            TSEMessageUtils.sendEixtGroupMessage(groupId, groupName);
+            TSEMessageUtils.sendEixtGroupMessage(groupId, groupName,TSEMConstants.TS_ATTR_GROUP_LAYOFF);
         }
 
         @Override
         public void onGroupDestroyed(final String groupId, String groupName) {
-            TSEMessageUtils.sendEixtGroupMessage(groupId, groupName);
+            TSEMessageUtils.sendEixtGroupMessage(groupId, groupName, TSEMConstants.TS_ATTR_GROUP_DISBAND);
         }
 
         @Override

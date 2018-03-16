@@ -165,12 +165,11 @@ public class TSEMessageUtils {
      * @param groupId
      * @param groupName
      */
-    public static void sendEixtGroupMessage(String groupId, String groupName) {
+    public static void sendEixtGroupMessage(String groupId, String groupName,String action) {
         long currTime = TSEMDateUtil.getCurrentMillisecond();
         EMMessage cmdMessage = EMMessage.createSendMessage(EMMessage.Type.CMD);
         cmdMessage.setChatType(EMMessage.ChatType.GroupChat);
         // 创建CMD 消息的消息体 并设置 action 为 disband
-        String action = TSEMConstants.TS_ATTR_GROUP_DISBAND;
         EMCmdMessageBody body = new EMCmdMessageBody(action);
         cmdMessage.addBody(body);
         cmdMessage.setMsgTime(currTime);

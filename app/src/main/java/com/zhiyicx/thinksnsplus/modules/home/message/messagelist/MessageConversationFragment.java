@@ -251,6 +251,8 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
                 EMClient.getInstance().chatManager().deleteConversation(groupId, true);
                 mPresenter.deleteGroup(groupId);
                 break;
+            case TSEMConstants.TS_ATTR_GROUP_LAYOFF:
+
             default:
         }
     }
