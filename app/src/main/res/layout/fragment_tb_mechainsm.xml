@@ -381,6 +381,8 @@
             android:background="@color/white"
             android:minHeight="@dimen/userinfo_btn_height"
             android:orientation="horizontal"
+            android:paddingBottom="@dimen/spacing_mid"
+            android:paddingTop="@dimen/spacing_mid"
             android:visibility="gone">
 
             <TextView
