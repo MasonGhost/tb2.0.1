@@ -95,10 +95,8 @@ public class GuidePresenter extends BasePresenter<GuideContract.View>
                                                         DeviceUtils.getScreenHeight(mContext));
                                     }
                                 }
+                                mRealAdvertListBeanGreenDao.clearTable();
                                 mRealAdvertListBeanGreenDao.saveMultiData(realAdvertListBeen);
-                                if (realAdvertListBeen.isEmpty()) {
-                                    mRealAdvertListBeanGreenDao.clearTable();
-                                }
                                 return Observable.just(allAdverListBeen);
                             });
                 })
@@ -106,10 +104,8 @@ public class GuidePresenter extends BasePresenter<GuideContract.View>
                     @Override
                     protected void onSuccess(List<AllAdverListBean> data) {
                         // 出入数据库
+                        mAllAdvertLIstBeanGreendo.clearTable();
                         mAllAdvertLIstBeanGreendo.saveMultiData(data);
-                        if (data.isEmpty()) {
-                            mAllAdvertLIstBeanGreendo.clearTable();
-                        }
                     }
 
                     @Override
