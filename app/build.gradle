@@ -230,7 +230,7 @@ dependencies {
     compile(name: 'lint-library-release', ext: 'aar')
     compile dataDependences.flowlayout
     //    compile dataDependences.contacts
-    compile dataDependences.update
+//    compile dataDependences.update
     implementation dataDependences.kotlin
     implementation dataDependences.ankoCommon
 
