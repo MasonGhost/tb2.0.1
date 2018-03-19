@@ -11,6 +11,8 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import butterknife.BindView
+import com.hyphenate.chat.EMClient
+import com.hyphenate.easeui.EaseConstant
 import com.jakewharton.rxbinding.view.RxView
 import com.jakewharton.rxbinding.widget.RxRadioGroup
 import com.zhiyicx.appupdate.AppUpdateManager
@@ -27,6 +29,8 @@ import com.zhiyicx.common.utils.DeviceUtils
 import com.zhiyicx.common.utils.SharePreferenceUtils
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA
 import com.zhiyicx.thinksnsplus.R
+import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity
+import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity
 import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity
 import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordActivity
@@ -60,6 +64,9 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
     @BindView(R.id.bt_account_manager)
     @JvmField
     var mBtAccountManager: CombinationButton? = null
+    @BindView(R.id.bt_feedbak)
+    @JvmField
+    var mBtFeedBack: CombinationButton? = null
     @BindView(R.id.bt_check_version)
     @JvmField
     var mBtCheckVersion: CombinationButton? = null
@@ -180,6 +187,20 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe { aVoid -> showSnackSuccessMessage("vertify") }
+        // 意见反馈
+        RxView.clicks(mBtFeedBack!!)
+                .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe { aVoid ->
+                    // 意见反馈跳转 ts+ 小助手 2018-3-12 11:47:12 by tym
+                    val tsHlepers = mPresenter.imHelper
+                    if (tsHlepers == null || tsHlepers.isEmpty() && EMClient.getInstance().isConnected) {
+                        startActivity(Intent(mActivity, FeedBackActivity::class.java))
+                    } else {
+                        ChatActivity.startChatActivity(mActivity, tsHlepers[0].uid.toString(),
+                                EaseConstant.CHATTYPE_SINGLE)
+                    }
+                }
         // 账户管理页面
         RxView.clicks(mBtAccountManager!!)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)

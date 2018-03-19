@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.settings;
 
 import com.zhiyicx.appupdate.AppVersionBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.UpdateInfoBean;
@@ -51,6 +52,13 @@ public interface SettingsContract {
          * 检查是否有更新
          */
         void checkUpdate();
+
+        /**
+         * 小助手
+         *
+         * @return
+         */
+        List<SystemConfigBean.ImHelperBean> getImHelper();
     }
 
 }

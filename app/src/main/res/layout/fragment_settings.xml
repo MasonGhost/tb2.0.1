@@ -28,12 +28,19 @@
                 app:rightImage="@mipmap/ic_arrow_smallgrey"/>
             <!--账户管理-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
-                    android:id="@+id/bt_account_manager"
+                    android:id="@+id/bt_feedbak"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/full_button_height"
-                    app:leftText="@string/account_manager"
+                    app:leftText="@string/feed_back"
                     app:leftTextLeftPadding="@dimen/spacing_mid"
-                    app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+                    app:rightImage="@mipmap/ic_arrow_smallgrey"/>  <!--账户管理-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_account_manager"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                app:leftText="@string/account_manager"
+                app:leftTextLeftPadding="@dimen/spacing_mid"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
             <!--修改密码-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/bt_change_password"
