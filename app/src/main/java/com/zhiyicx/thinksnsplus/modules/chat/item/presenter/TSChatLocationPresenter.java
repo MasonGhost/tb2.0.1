@@ -8,7 +8,6 @@ import android.widget.BaseAdapter;
 import com.hyphenate.chat.EMLocationMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
-import com.hyphenate.easeui.ui.EaseBaiduMapActivity;
 import com.hyphenate.easeui.widget.chatrow.EaseChatRow;
 import com.hyphenate.easeui.widget.presenter.EaseChatLocationPresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatRowLocation;

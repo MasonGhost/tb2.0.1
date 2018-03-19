@@ -38,7 +38,6 @@ import com.hyphenate.easeui.R;
 import com.hyphenate.easeui.domain.EaseEmojicon;
 import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.model.EaseAtMessageHelper;
-import com.hyphenate.easeui.ui.EaseBaiduMapActivity;
 import com.hyphenate.easeui.ui.EaseChatRoomListener;
 import com.hyphenate.easeui.ui.EaseGroupListener;
 import com.hyphenate.easeui.utils.EaseCommonUtils;
@@ -600,7 +599,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
                     selectPicFromLocal();
                     break;
                 case ITEM_LOCATION:
-                    startActivityForResult(new Intent(getActivity(), EaseBaiduMapActivity.class), REQUEST_CODE_MAP);
+
                     break;
 
                 default:

@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.hyphenate.chat.EMLocationMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.R;
-import com.hyphenate.easeui.ui.EaseBaiduMapActivity;
 import com.hyphenate.util.LatLng;
 
 public class EaseChatRowLocation extends EaseChatRow{

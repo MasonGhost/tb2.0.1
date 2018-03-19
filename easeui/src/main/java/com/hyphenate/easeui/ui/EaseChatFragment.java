@@ -657,7 +657,6 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
                 selectPicFromLocal();
                 break;
             case ITEM_LOCATION:
-                startActivityForResult(new Intent(getActivity(), EaseBaiduMapActivity.class), REQUEST_CODE_MAP);
                 break;
 
             default:
