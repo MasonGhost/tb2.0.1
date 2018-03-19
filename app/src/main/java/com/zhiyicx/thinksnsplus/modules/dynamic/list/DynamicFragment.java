@@ -217,6 +217,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        // 刷新控件调白
+        mRefreshlayout.setBackgroundResource(R.color.white);
+        mRvList.setBackgroundResource(R.color.bgColor);
         initInputView();
         AndroidBug5497Workaround.assistActivity(mActivity);
         Observable.create(subscriber -> {
