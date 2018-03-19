@@ -463,6 +463,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         }
         if (feed_content != null) {
             friendlyContent = feed_content.replaceAll(MarkdownConfig.NETSITE_FORMAT, Link.DEFAULT_NET_SITE);
+            friendlyContent = friendlyContent.replaceAll(MarkdownConfig.IMAGE_FORMAT, "");
             startPosition = friendlyContent.length();
         }
         boolean canLookWords = paid_node == null || paid_node.isPaid();
@@ -594,7 +595,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             imageBean.setImageViewHeight(height);
         }
         imageBean.setPropPart(proportion);
-        imageBean.setLongImage(ImageUtils.isLongImage(netHeight,netWidth));
+        imageBean.setLongImage(ImageUtils.isLongImage(netHeight, netWidth));
     }
 
     public static class ImagesBean implements Parcelable, Serializable {
