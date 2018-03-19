@@ -6,6 +6,7 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.CircleMemberCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 
@@ -19,6 +20,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -31,6 +34,7 @@ public class MembersPresenter extends AppBasePresenter<
         MembersContract.View>
         implements MembersContract.Presenter {
 
+    int grouLengh[] = new int[4];
     @Inject
     BaseCircleRepository mBaseCircleRepository;
 
@@ -41,20 +45,22 @@ public class MembersPresenter extends AppBasePresenter<
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        int grouLengh[] = new int[4];
+
         Observable<List<CircleMembers>> observable;
         if (isLoadMore || CircleMembers.BLACKLIST.equals(mRootView.getMemberType())) {
             observable = mBaseCircleRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(),
                     TSListFragment.DEFAULT_PAGE_SIZE, mRootView.getMemberType(), mRootView.getSearchContent());
         } else {
-            observable = Observable.zip(mBaseCircleRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(),
-                    TSListFragment.DEFAULT_PAGE_SIZE, CircleMembers.FOUNDER, mRootView.getSearchContent()), mBaseCircleRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(),
-                    TSListFragment.DEFAULT_PAGE_SIZE, CircleMembers.MANAGER, mRootView.getSearchContent()), mBaseCircleRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(),
-                    Integer.MAX_VALUE, mRootView.getMemberType(), mRootView.getSearchContent()), (founder, managers, members) -> {
-                managers.addAll(members);
-                managers.addAll(0, founder);
-                return managers;
-            });
+            observable = Observable.zip(mBaseCircleRepository.getGroupMemberCount(mRootView.getCIrcleId()),
+                    mBaseCircleRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(),
+                            TSListFragment.DEFAULT_PAGE_SIZE, CircleMembers.MANAGER, mRootView.getSearchContent()),
+                    mBaseCircleRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(),
+                            TSListFragment.DEFAULT_PAGE_SIZE, mRootView.getMemberType(), mRootView.getSearchContent()), (circleMemberCountBean, managers, circleMembers) -> {
+                        grouLengh[2] = circleMemberCountBean.getMember_count();
+                        grouLengh[0] = circleMemberCountBean.getAdmin_count();
+                        managers.addAll(circleMembers);
+                        return managers;
+                    }).flatMap(Observable::just);
         }
         Subscription subscribe = observable.flatMap(Observable::just)
                 .flatMap(circleMembers -> {
@@ -68,18 +74,18 @@ public class MembersPresenter extends AppBasePresenter<
                         switch (members.getRole()) {
                             case CircleMembers.FOUNDER:
                                 if (mRootView.needFounder()) {
-                                    grouLengh[0]++;
+//                                    grouLengh[0]++;
                                     manager.add(0, members);
                                 }
                                 break;
                             case CircleMembers.ADMINISTRATOR:
                                 manager.add(members);
-                                grouLengh[1]++;
+//                                grouLengh[1]++;
                                 break;
                             case CircleMembers.MEMBER:
                                 if (mRootView.needMember()) {
                                     member.add(members);
-                                    grouLengh[2]++;
+//                                    grouLengh[2]++;
                                 }
                                 break;
                             case CircleMembers.BLACKLIST:
