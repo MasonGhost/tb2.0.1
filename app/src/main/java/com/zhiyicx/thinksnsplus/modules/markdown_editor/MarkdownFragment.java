@@ -44,12 +44,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
-import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
@@ -278,7 +276,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
     }
 
     /**
-     * 控制是否显示 设置 item（底部菜单）
+     * 控制是否显示 设置item（底部菜单）
      *
      * @return
      */
@@ -308,10 +306,12 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         if (!preHandlePublish()) {
             return;
         }
+        // 提取内容
         mRichTextView.getResultWords(rightClickkNeedMarkdown());
     }
 
     /**
+     *提取网页内容 js 回掉
      * @param title      标题
      * @param markdwon   markdown 格式内容
      * @param noMarkdown 纯文字内容
@@ -342,6 +342,10 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         }
     }
 
+    /**
+     * 图片删除 js 回掉
+     * @param tagId
+     */
     @Override
     public void onImageDelete(long tagId) {
         mInsertedImages.remove(tagId);
@@ -381,7 +385,6 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
-
         editorPreLoad();
     }
 
@@ -420,27 +423,46 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         return getString(R.string.publish_post);
     }
 
+    /**
+     * 插入链接按钮点击
+     */
     @Override
     public void onLinkButtonClick() {
         showLinkDialog(LinkDialog.createLinkDialog(), false);
     }
 
+    /**
+     * 插入图片按钮点击
+     */
     @Override
     public void onInsertImageButtonClick() {
         DeviceUtils.hideSoftKeyboard(mActivity.getApplication(), mRichTextView);
         initPhotoPopupWindow();
     }
 
+    /**
+     * 设置按钮点击
+     * @param isSelected
+     */
     @Override
     public void onSettingImageButtionClick(boolean isSelected) {
 
     }
 
+    /**
+     * 链接点击 js 回掉
+     * @param name
+     * @param url
+     */
     @Override
     public void onLinkClick(String name, String url) {
         showLinkDialog(LinkDialog.createLinkDialog(name, url), true);
     }
 
+    /**
+     * 图片点击 js 回掉
+     * @param id
+     */
     @Override
     public void onImageClick(Long id) {
         if (mInsertedImages.containsKey(id)) {
@@ -452,14 +474,18 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         }
     }
 
+    /**
+     * 底部操作栏 文字样式选项卡 监听
+     * @param isSelect
+     */
     @Override
     public void onTextStypeClick(boolean isSelect) {
         setSynToDynamicCbVisiable(!isSelect);
     }
 
     /**
-     * 编辑器加载完成
-     *
+     * 编辑器初始化加载完成
+     * 许多操作都必须在这里，比如 执行与编辑器交互的 js 方法
      * @param ready
      */
     @Override
@@ -471,6 +497,11 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         }
     }
 
+    /**
+     * 编辑器 标题 和 内容 输入监听
+     * @param titleLength 标题字数
+     * @param contentLength 内容字数
+     */
     @Override
     public void onInputListener(int titleLength, int contentLength) {
         mContentLength = titleLength * contentLength;
@@ -518,6 +549,13 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         mPresenter.uploadPic(path, id);
     }
 
+    /**
+     * 图片你传进度
+     * @param id 时间戳
+     * @param filePath
+     * @param progress
+     * @param imgeId
+     */
     @Override
     public void onUploading(long id, String filePath, int progress, int imgeId) {
         getActivity().runOnUiThread(() -> {
@@ -528,6 +566,11 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         });
     }
 
+    /**
+     * 图片上传失败
+     * @param filePath
+     * @param id 时间戳
+     */
     @Override
     public void onFailed(String filePath, long id) {
         getActivity().runOnUiThread(() -> {
@@ -575,6 +618,13 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         mPhotoPopupWindow.show();
     }
 
+    /**
+     * 草稿箱
+     * @param title 标题
+     * @param markdown markdown 内容
+     * @param noMarkdown 非 markdown 内容
+     * @param html 全部网页内容
+     */
     protected void initEditWarningPop(String title, String markdown, String noMarkdown, String
             html) {
         if (mEditWarningPopupWindow != null) {
@@ -615,6 +665,11 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
 
     }
 
+    /**
+     * 插入链接的弹窗
+     * @param dialog
+     * @param isChange
+     */
     protected void showLinkDialog(final LinkDialog dialog, final boolean isChange) {
         dialog.setListener(new LinkDialog.OnDialogClickListener() {
             @Override
@@ -639,6 +694,11 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         dialog.show(getFragmentManager(), LinkDialog.Tag);
     }
 
+    /**
+     * 点击图片弹窗
+     * @param dialog
+     * @param items
+     */
     protected void showPictureClickDialog(final PictureHandleDialog dialog, CharSequence[] items) {
 
         dialog.setListener(new PictureHandleDialog.OnDialogClickListener() {
@@ -669,14 +729,14 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
     }
 
     /**
-     * 这个还原的 顺序不能变
+     * 这个还原html的 顺序不能变
      *
      * @param body
      * @return
      */
     protected String pareseBody(String body) {
 
-        // 还原 <img ...>
+        // 第一步 还原 <img ...>
         String result;
         String imageReplace = "-星星-tym-星星-";
         Matcher imageMatcher = Pattern.compile(MarkdownConfig.IMAGE_FORMAT_HTML).matcher(body);
@@ -691,7 +751,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
             result = result.replaceFirst(imageReplace, getImageHtml(tagId, id, name, imagePath));
         }
 
-        // 还原 <a ...></a>
+        // 第二步 还原 <a ...></a>
         String linkReplace = "-星星-link-星星-";
         Matcher linkMatcher = Pattern.compile(MarkdownConfig.LINK_FORMAT).matcher(result);
         result = result.replaceAll(MarkdownConfig.LINK_FORMAT, linkReplace);
@@ -700,7 +760,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
                     linkMatcher.group(1)));
         }
 
-        // 兼容就连接  http://www.baidu.com
+        // 第三步 兼容就连接  http://www.baidu.com
         Matcher oldLinkMatcher = Pattern.compile(MarkdownConfig.NETSITE_A_FORMAT).matcher(body);
         while (oldLinkMatcher.find()) {
             String html =
@@ -708,7 +768,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
             body = body.replaceFirst(oldLinkMatcher.group(0), html);
         }
 
-        // markdown to html
+        // 第四步 markdown to html
         MutableDataSet options = new MutableDataSet();
         Parser parser = Parser.builder(options).build();
         HtmlRenderer renderer = HtmlRenderer.builder(options).build();
@@ -718,6 +778,14 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         return result;
     }
 
+    /**
+     * 将 markdown 图片格式 还原为编辑器需要的图片html
+     * @param tagId 图片时间戳，唯一标准
+     * @param id 图片
+     * @param name 图片名称
+     * @param imagePath 图片地址
+     * @return
+     */
     protected String getImageHtml(long tagId, int id, String name, String imagePath) {
         String markdown = " @![" + name + "](" + id + ")";
         return "<div><br></div>" +
@@ -741,10 +809,22 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
                 "<div><br></div>";
     }
 
+    /**
+     * 将 markdown 链接格式 还原为编辑器需要的图片html
+     * @param url 链接地址
+     * @param name 链接名
+     * @return
+     */
     protected String getLinkHtml(String url, String name) {
         return "<a href=\"" + url + "\" class=\"editor-link\">" + name + "</a>";
     }
 
+    /**
+     * 拼接 编辑器需要的 html ，为草稿箱所用
+     * @param title 内容默认文字
+     * @param content 内容
+     * @return
+     */
     protected String getHtml(String title, String content) {
         onInputListener(title.length(), content.length());
         return "<!DOCTYPE html>\n" +
