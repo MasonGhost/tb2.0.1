@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.settings;
 import android.text.TextUtils;
 
 import com.zhiyicx.appupdate.AppVersionBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -105,6 +106,9 @@ public class SettingsPresenter extends BasePresenter<SettingsContract.View> impl
         addSubscrebe(subscribe);
 
     }
-
+    @Override
+    public List<SystemConfigBean.ImHelperBean> getImHelper() {
+        return mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
+    }
 
 }

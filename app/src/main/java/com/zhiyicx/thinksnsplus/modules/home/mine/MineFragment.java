@@ -206,7 +206,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_my_info,
             R.id.bt_personal_page, R.id.bt_collect, R.id.bt_wallet, R.id.bt_mine_integration, R.id.bt_music,
-            R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification, R.id.bt_my_qa, R.id.bt_my_group,
+            R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification, R.id.bt_my_qa, R.id.bt_my_group,
             R.id.ll_friends_container})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -270,16 +270,16 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             case R.id.bt_music:
                 startActivity(new Intent(mActivity, MyMusicActivity.class));
                 break;
-            case R.id.bt_suggestion:
-                // 意见反馈跳转 ts+ 小助手 2018-3-12 11:47:12 by tym
-                List<SystemConfigBean.ImHelperBean> tsHlepers = mPresenter.getImHelper();
-                if (tsHlepers == null || tsHlepers.isEmpty() && EMClient.getInstance().isConnected()) {
-                    startActivity(new Intent(mActivity, FeedBackActivity.class));
-                } else {
-                    ChatActivity.startChatActivity(mActivity, String.valueOf(tsHlepers.get(0).getUid()),
-                            EaseConstant.CHATTYPE_SINGLE);
-                }
-                break;
+//            case R.id.bt_suggestion:
+//                // 意见反馈跳转 ts+ 小助手 2018-3-12 11:47:12 by tym
+//                List<SystemConfigBean.ImHelperBean> tsHlepers = mPresenter.getImHelper();
+//                if (tsHlepers == null || tsHlepers.isEmpty() && EMClient.getInstance().isConnected()) {
+//                    startActivity(new Intent(mActivity, FeedBackActivity.class));
+//                } else {
+//                    ChatActivity.startChatActivity(mActivity, String.valueOf(tsHlepers.get(0).getUid()),
+//                            EaseConstant.CHATTYPE_SINGLE);
+//                }
+//                break;
              /*
               草稿箱
               */

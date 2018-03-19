@@ -320,6 +320,20 @@
                 app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/ico_me_advance"
                 app:leftText="@string/suggetion"
+                android:visibility="gone"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+
+            <!--草稿箱-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_draft_box"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                android:visibility="visible"
+                android:layout_marginTop="@dimen/spacing_mid"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
+                app:leftImage="@mipmap/ico_me_draft"
+                app:leftText="@string/draft_box"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"/>
             <!--认证-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
@@ -331,17 +345,6 @@
                 app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/ico_me_identification"
                 app:leftText="@string/certification"
-                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
-            <!--Q&A-->
-            <com.zhiyicx.baseproject.widget.button.CombinationButton
-                android:id="@+id/bt_draft_box"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/full_button_height"
-                android:visibility="visible"
-                app:dividerLeftMargin="@dimen/spacing_normal"
-                app:dividerRightMargin="@dimen/spacing_normal"
-                app:leftImage="@mipmap/ico_me_draft"
-                app:leftText="@string/draft_box"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"/>
             <!--设置-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
