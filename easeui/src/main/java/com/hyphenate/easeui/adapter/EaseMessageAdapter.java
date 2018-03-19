@@ -286,6 +286,8 @@ public class EaseMessageAdapter extends BaseAdapter {
         ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
         EaseChatRowPresenter presenter = null;
 
+
+
         if (convertView == null) {
             presenter = createChatRowPresenter(message, position);
 
@@ -301,7 +303,6 @@ public class EaseMessageAdapter extends BaseAdapter {
         }
 
         presenter.setup(message, position, itemClickListener, itemStyle);
-
         return convertView;
     }
 

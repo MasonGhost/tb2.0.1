@@ -5,6 +5,7 @@ import android.content.Context;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
+import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.util.PathUtil;
@@ -165,7 +166,7 @@ public class TSEMessageUtils {
      * @param groupId
      * @param groupName
      */
-    public static void sendEixtGroupMessage(String groupId, String groupName,String action) {
+    public static void sendEixtGroupMessage(String groupId, String groupName, String action) {
         long currTime = TSEMDateUtil.getCurrentMillisecond();
         EMMessage cmdMessage = EMMessage.createSendMessage(EMMessage.Type.CMD);
         cmdMessage.setChatType(EMMessage.ChatType.GroupChat);
@@ -184,6 +185,7 @@ public class TSEMessageUtils {
 
     /**
      * 创建群聊 快速编辑群名称
+     *
      * @param content 内容
      * @param groupId 群 id
      * @param tagUser 谁 接收这条消息
@@ -195,9 +197,20 @@ public class TSEMessageUtils {
         long currTime = TSEMDateUtil.getCurrentMillisecond();
         message.setMsgTime(currTime);
         message.setTo(groupId);
+        message.setMsgId(TSEMConstants.TS_ATTR_GROUP_CRATE);
         message.setAttribute(TSEMConstants.TS_ATTR_GROUP_CRATE, true);
         message.setAttribute(TSEMConstants.TS_ATTR_TAG, tagUser);
         message.setChatType(EMMessage.ChatType.GroupChat);
         EMClient.getInstance().chatManager().saveMessage(message);
+    }
+
+    /**
+     * 删除某条消息
+     * @param conversationId
+     * @param msgId
+     */
+    public static void deleteMessage(String conversationId, String msgId) {
+        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(conversationId);
+        conversation.removeMessage(msgId);
     }
 }
