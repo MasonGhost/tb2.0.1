@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleEarningListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CircleMemberCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleReportListBean;
@@ -61,6 +62,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_EARNI
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_MEMBER_JOIN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_REPOTS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CREATE_RULE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_GROUP_MEMBER_COUNT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MINE_POSTLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MY_JOINED_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_POSTLIST;
@@ -305,6 +307,14 @@ public interface CircleClient {
     @GET(APP_PATH_GET_USER_COLLECT_POST)
     Observable<List<CirclePostListBean>> getUserCollectPostList(@Query("limit") Integer limit
             , @Query("offset") Integer offset);
+
+    /**
+     * 圈子成员角色统计
+     * @param circleId
+     * @return
+     */
+    @GET(APP_PATH_GET_GROUP_MEMBER_COUNT)
+    Observable<CircleMemberCountBean> getCircleMemberCount(@Path("group_id")Long circleId);
 
     /**
      *

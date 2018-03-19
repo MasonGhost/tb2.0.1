@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository.i;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleEarningListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CircleMemberCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
@@ -224,6 +225,15 @@ public interface IBaseCircleRepository {
     Observable<List<CircleMembers>> getCircleMemberList(long circleId, int after, int limit, String type, String name);
 
     Observable<CircleMembers> attornCircle(long circleId, long userId);
+
+    /**
+     * 圈子成员角色统计
+     * @param circleId
+     * @return
+     */
+    Observable<CircleMemberCountBean> getGroupMemberCount(long circleId);
+
+
 
     Observable<CirclePostListBean> getPostDetail(long circleId, long postId);
 
