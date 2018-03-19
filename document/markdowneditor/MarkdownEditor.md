@@ -1,4 +1,4 @@
-﻿2018-1-9 15:34:27
+﻿2018-3-19 11:19:11
 # 项目中的markdown富文本编辑器
 
 ##  1.概述
@@ -12,6 +12,7 @@
 
 
 ## 2.定义
+- 地址 com.zhiyicx.thinksnsplus.modules.markdown_editor
 - 继承`MarkdownFragment`,诸多方法详见注释，可参考 PublishPostFragment。
 - 一定要看注释！！！
 
@@ -19,12 +20,13 @@
 ## 3.使用
 - 重点方法如下，具体使用请见 MarkdownFragment 中注释
 ```java
-    initBundleDataWhenOnCreate();
+    initBundleDataWhenOnCreate(); 在这里获取 getArguments();
+    editorPreLoad(); 编辑器初始化加载
+    onAfterInitialLoad(boolean ready); ready 编辑器加载完成与否，
     preHandlePublish();
     handlePublish();
     onActivityResultForChooseCircle();
     onVisibleChange();
-    editorPreLoad();
     openDraft();
     loadDraft();
     getDraftData();
