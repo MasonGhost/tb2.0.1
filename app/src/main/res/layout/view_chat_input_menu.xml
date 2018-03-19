@@ -116,6 +116,7 @@
             android:layout_width="@dimen/button_send_with"
             android:layout_height="@dimen/button_send_height"
             android:layout_marginRight="@dimen/spacing_normal"
+            android:layout_marginLeft="@dimen/spacing_mid"
             android:background="@drawable/selector_button_corner_solid_small"
             android:gravity="center"
             android:text="@string/send"
