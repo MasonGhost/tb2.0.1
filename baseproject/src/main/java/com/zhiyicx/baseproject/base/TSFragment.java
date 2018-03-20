@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
+import com.umeng.analytics.MobclickAgent;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.baseproject.widget.dialog.LoadingDialog;
@@ -248,12 +249,14 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             mMusicWindowView.setAnimation(mRotateAnimation);
             mRotateAnimation.start();
         }
+        MobclickAgent.onPageStart(this.getClass().getSimpleName()); //统计页面，"MainScreen"为页面名称，可自定义
     }
 
     @Override
     public void onPause() {
         WindowUtils.removeWindowDismisslistener(this);
         super.onPause();
+        MobclickAgent.onPageEnd(this.getClass().getSimpleName());
     }
 
     @Override
