@@ -25,7 +25,7 @@ android {
             // 三方 key
             manifestPlaceholders = [
                     TECENT_APPID  : 1106671829, // 腾讯 QQ id
-                    UMENG_APPKEY  : "5a9503cca40fa36e35000034", // 友盟三方key配置
+                    UMENG_APPKEY  : "5ab0b9bfb27b0a1de0000133", // 友盟三方key配置
                     AMAP_APPKEY   : "47834c2a85dfa42185158b52f42dff54", // 高德三方配置
                     EASEMOB_APPKEY: "1139171207178196#thinksns-plus", // 环信三方配置
             ]
@@ -36,7 +36,7 @@ android {
             // 三方 key
             manifestPlaceholders = [
                     TECENT_APPID  : 1106671829, // 腾讯 QQ id
-                    UMENG_APPKEY  : "5a9503cca40fa36e35000034", // 友盟三方key配置
+                    UMENG_APPKEY  : "5ab0b9bfb27b0a1de0000133", // 友盟三方key配置
                     AMAP_APPKEY   : "47834c2a85dfa42185158b52f42dff54", // 高德三方配置
                     EASEMOB_APPKEY: "1139171207178196#thinksns-plus-test", // 环信三方配置 测试服
             ]
