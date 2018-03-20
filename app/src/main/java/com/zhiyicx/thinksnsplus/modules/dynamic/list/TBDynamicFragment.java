@@ -103,6 +103,9 @@ public class TBDynamicFragment extends DynamicFragment {
         switch (viewPosition) {
             // 0 1 2 3 代表 view item 位置
             case 0:
+                if (mPresenter.handleTouristControl()) {
+                    return;
+                }
                 // 分享
                 Intent intent = new Intent(mActivity, DynamicShareActivity.class);
                 Bundle bundle = new Bundle();
@@ -118,6 +121,7 @@ public class TBDynamicFragment extends DynamicFragment {
                 intent.putExtras(bundle);
                 startActivity(intent);
                 mCurrentClickItemPosition = dataPosition;
+                break;
             case 1:
                 // 评论
                 super.onMenuItemClick(contentView,dataPosition,viewPosition);
