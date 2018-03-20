@@ -575,7 +575,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     }
                     final List<Object> user_ids = new ArrayList<>();
                     // 如果是热门，需要初始化时间
-                    if (!isLoadMore && type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {
+                    if (type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {
                         for (int i = listBaseJson.size() - 1; i >= 0; i--) {
                             listBaseJson.get(i).setHot_creat_time(System.currentTimeMillis());
                         }
