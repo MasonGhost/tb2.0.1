@@ -80,7 +80,9 @@ public class TBDynamicFragment extends DynamicFragment {
             return;
         }
         if (!data.getUserInfoBean().getFollower()) {
+            // 关注
             mPresenter.followUser(data.getUserInfoBean());
+            data.getUserInfoBean().setFollower(true);
         } else {
             // 更多
             initOtherDynamicPopupWindow(data, followView);
@@ -124,7 +126,7 @@ public class TBDynamicFragment extends DynamicFragment {
                 break;
             case 1:
                 // 评论
-                super.onMenuItemClick(contentView,dataPosition,viewPosition);
+                super.onMenuItemClick(contentView, dataPosition, viewPosition);
                 break;
 
             case 2:
@@ -184,6 +186,10 @@ public class TBDynamicFragment extends DynamicFragment {
                     mPresenter.followUser(dynamicBean.getUserInfoBean());
                     dynamicBean.getUserInfoBean().setFollower(false);
                     followView.setVisibility(View.VISIBLE);
+                    ((TextView) followView).setCompoundDrawables(null, null, null,
+                            null);
+                    ((TextView) followView).setText(getString(R.string.add_follow));
+                    followView.setBackgroundResource(R.drawable.shape_bg_circle_radus_gray);
 //                    refreshData();
                     mOtherDynamicPopWindow.hide();
                 })

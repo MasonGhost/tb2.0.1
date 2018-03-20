@@ -176,13 +176,11 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
             RxView.clicks(holder.getView(R.id.tv_follow))
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
-                        mOnFollowlistener.onFollowClick(dynamicBean, holder.getView(R.id.tv_follow));
-                        if (dynamicBean.getUserInfoBean().getFollower()) {
-
-                        } else {
+                        if (!dynamicBean.getUserInfoBean().getFollower()) {
+                            // 没关注，做关注操作
                             handleFollowView(holder, false, true);
-                            dynamicBean.getUserInfoBean().setFollower(true);
                         }
+                        mOnFollowlistener.onFollowClick(dynamicBean, holder.getView(R.id.tv_follow));
 
                     });
         }
