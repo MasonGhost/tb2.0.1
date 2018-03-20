@@ -108,6 +108,7 @@ ext {
             recyclerviewAnimator         : 'jp.wasabeef:recyclerview-animators:2.2.6',
             jiguangJpush                 : 'cn.jiguang.sdk:jpush:3.0.3',
             jiguangJcore                 : 'cn.jiguang.sdk:jcore:1.1.1',
+            umengCommon                        : 'com.umeng.sdk:common:latest.integration',//
             umeng                        : 'com.umeng.analytics:analytics:latest.integration',//
             amapLocation                 : 'com.amap.api:location:latest.integration',
             a3Dmap                       : 'com.amap.api:3dmap:latest.integration', //

@@ -281,6 +281,7 @@ public static final int *;
 -keep interface de.tavendo.autobahn.** { *; }
 
 ################umeng###############
+-keep class com.umeng.commonsdk.** {*;}
  -dontusemixedcaseclassnames
  	-dontshrink
  	-dontoptimize
