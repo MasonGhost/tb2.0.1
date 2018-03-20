@@ -102,18 +102,7 @@ public class TBDynamicFragment extends DynamicFragment {
         dataPosition -= mHeaderAndFooterWrapper.getHeadersCount();
         switch (viewPosition) {
             // 0 1 2 3 代表 view item 位置
-
             case 0:
-                // 喜欢
-                if ((!TouristConfig.DYNAMIC_CAN_DIGG && mPresenter.handleTouristControl()) ||
-                        mListDatas.get(dataPosition).getId() == null || mListDatas.get
-                        (dataPosition).getId() == 0) {
-                    return;
-                }
-                handleLike(dataPosition, contentView);
-                break;
-
-            case 2:
                 // 分享
                 Intent intent = new Intent(mActivity, DynamicShareActivity.class);
                 Bundle bundle = new Bundle();
@@ -129,20 +118,22 @@ public class TBDynamicFragment extends DynamicFragment {
                 intent.putExtras(bundle);
                 startActivity(intent);
                 mCurrentClickItemPosition = dataPosition;
+            case 1:
+                // 评论
+                super.onMenuItemClick(contentView,dataPosition,viewPosition);
                 break;
 
-            case 3:
-                // 更多
-
-                if (mListDatas.get(dataPosition)
-                        .getUser_id() == AppApplication.getMyUserIdWithdefault()) {
-                } else if (mListDatas.get(dataPosition).getFeed_from() != -1) {
-                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition), contentView.findViewById(R.id.tv_follow));
-                    mOtherDynamicPopWindow.show();
-                } else {
-                    // 广告
+            case 2:
+                // 喜欢
+                if ((!TouristConfig.DYNAMIC_CAN_DIGG && mPresenter.handleTouristControl()) ||
+                        mListDatas.get(dataPosition).getId() == null || mListDatas.get
+                        (dataPosition).getId() == 0) {
+                    return;
                 }
+                handleLike(dataPosition, contentView);
                 break;
+
+
             default:
 
         }
@@ -164,7 +155,7 @@ public class TBDynamicFragment extends DynamicFragment {
                 (dataPosition).getFeed_digg_count() - 1);
         DynamicListMenuView dynamicListMenuView = (DynamicListMenuView) contentView.findViewById(R.id.dlmv_menu);
         dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(mListDatas.get(dataPosition)
-                .getFeed_digg_count()), mListDatas.get(dataPosition).isHas_digg(), 0);
+                .getFeed_digg_count()), mListDatas.get(dataPosition).isHas_digg(), 2);
         mPresenter.handleLike(mListDatas.get(dataPosition).isHas_digg(),
                 mListDatas.get(dataPosition).getId(), dataPosition);
     }
