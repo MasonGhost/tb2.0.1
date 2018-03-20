@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareConfig;
 import com.zhiyicx.baseproject.R;
@@ -57,7 +58,14 @@ public abstract class TSApplication extends BaseApplication {
                         });
             }
         });
-        // 友盟
+        /*
+         * 友盟
+         * 初始化common库
+         * 参数1:上下文，不能为空
+         * 参数2:设备类型，UMConfigure.DEVICE_TYPE_PHONE为手机、UMConfigure.DEVICE_TYPE_BOX为盒子，默认为手机
+         * 参数3:Push推送业务的secret
+         */
+        UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, "");
         UMShareConfig config = new UMShareConfig();
         config.isNeedAuthOnGetUserInfo(true);
         UMShareAPI.get(getApplicationContext()).setShareConfig(config);

@@ -1,10 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.klinker.android.link_builder.Link;
@@ -70,6 +72,22 @@ public class TBDynamicFragment extends DynamicFragment {
     @Override
     protected boolean useEventBus() {
         return true;
+    }
+
+    @Override
+    protected void followViewClick(DynamicDetailBeanV2 data, TextView followView) {
+        if (mPresenter.handleTouristControl()) {
+            return;
+        }
+        if (!data.getUserInfoBean().getFollower()) {
+            mPresenter.followUser(data.getUserInfoBean());
+        } else {
+            // 更多
+            initOtherDynamicPopupWindow(data, followView);
+            mOtherDynamicPopWindow.show();
+
+        }
+
     }
 
     /**
