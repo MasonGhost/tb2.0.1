@@ -38,17 +38,17 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
     protected
     @DrawableRes
     int[] mImageNormalResourceIds = new int[]{
-            R.mipmap.ico_zan,
-            com.zhiyicx.baseproject.R.mipmap.home_ico_comment_normal,
             R.mipmap.ico_share,
+            com.zhiyicx.baseproject.R.mipmap.home_ico_comment_normal,
+            R.mipmap.ico_zan,
             com.zhiyicx.baseproject.R.mipmap.home_ico_more,
     };// 图片 ids 正常状态
     protected
     @DrawableRes
     int[] mImageCheckedResourceIds = new int[]{
-            R.mipmap.ico_zan_on,
-            com.zhiyicx.baseproject.R.mipmap.home_ico_comment_normal,
             R.mipmap.ico_share,
+            com.zhiyicx.baseproject.R.mipmap.home_ico_comment_normal,
+            R.mipmap.ico_zan_on,
             com.zhiyicx.baseproject.R.mipmap.home_ico_more,
     };// 图片 ids 选中状态
 
@@ -109,10 +109,13 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
                 dynamicListMenuView.setImageCheckedResourceIds(mImageCheckedResourceIds);
                 // 点赞
                 dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
-                        .getFeed_digg_count()), dynamicBean.isHas_digg(), 0);
+                        .getFeed_digg_count()), dynamicBean.isHas_digg(), 2);
                 // 分享数量
                 dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean.getShare_count()),
-                        false, 2);
+                        false, 0);
+                // 评论数量
+                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean.getFeed_comment_count()),
+                        false, 1);
                 // 控制更多按钮的显示隐藏
                 dynamicListMenuView.setItemPositionVisiable(0, getVisibleOne());
                 dynamicListMenuView.setItemPositionVisiable(1, getVisibleTwo());
@@ -242,13 +245,12 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
                         null);
                 holder.setText(R.id.tv_follow, holder.getConvertView().getResources().getString(R.string.add_follow));
                 holder.getView(R.id.tv_follow).setBackgroundResource(R.drawable.shape_bg_circle_radus_gray);
-
             }
         }
     }
 
     @Override
-    protected int getVisibleTwo() {
+    protected int getVisibleFour() {
         return View.GONE;
     }
 
