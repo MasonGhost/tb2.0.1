@@ -82,15 +82,23 @@
         </LinearLayout>
     </LinearLayout>
 
-    <View
-        android:id="@+id/line_bottom"
-        style="@style/style_divider_horizontal"
-        android:layout_above="@id/ll_bottom_container"
-        />
-
-    <com.zhiyicx.common.widget.NoPullViewPager
-        android:id="@+id/vp_home"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/line_bottom"/>
+        android:layout_above="@+id/ll_bottom_container"
+        android:orientation="vertical">
+
+        <com.zhiyicx.common.widget.NoPullViewPager
+            android:id="@+id/vp_home"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <View
+            android:id="@+id/line_bottom"
+            style="@style/style_divider_horizontal"
+            />
+
+    </LinearLayout>
 </RelativeLayout>
+
