@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
@@ -11,6 +12,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.baseproject.widget.textview.SpanTextViewWithEllipsize;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -164,17 +166,21 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-
-
-        holder.setVisible(R.id.tv_follow, dynamicBean.getUserInfoBean().getUser_id() == AppApplication.getMyUserIdWithdefault() || dynamicBean
-                .getUserInfoBean().getFollower() ? View.INVISIBLE : View.VISIBLE);
+        // 是否是自己发布的
+        handleFollowView(holder, dynamicBean.getUserInfoBean().getUser_id() == AppApplication.getMyUserIdWithdefault(), dynamicBean.getUserInfoBean
+                ().getFollower());
         if (mOnFollowlistener != null) {
             RxView.clicks(holder.getView(R.id.tv_follow))
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
-                        mOnFollowlistener.onFollowClick(dynamicBean.getUserInfoBean(),holder.getView(R.id.tv_follow));
-                        holder.setVisible(R.id.tv_follow, View.INVISIBLE);
-                        dynamicBean.getUserInfoBean().setFollower(true);
+                        mOnFollowlistener.onFollowClick(dynamicBean, holder.getView(R.id.tv_follow));
+                        if (dynamicBean.getUserInfoBean().getFollower()) {
+
+                        } else {
+                            handleFollowView(holder, false, true);
+                            dynamicBean.getUserInfoBean().setFollower(true);
+                        }
+
                     });
         }
         /*
@@ -210,6 +216,37 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
 
     }
 
+    /**
+     * 处理关注显示
+     *
+     * @param holder
+     * @param isMine
+     * @param isFollowed
+     */
+    private void handleFollowView(ViewHolder holder, boolean isMine, boolean isFollowed) {
+        if (isMine) {
+            holder.setVisible(R.id.tv_follow, View.INVISIBLE);
+        } else {
+            holder.setVisible(R.id.tv_follow, View.VISIBLE);
+            if (isFollowed) {
+                // 关注了
+                Drawable moreDb = UIUtils.getCompoundDrawables(holder.getConvertView().getContext(), R.mipmap
+                        .home_ico_more);
+                ((TextView) holder.getView(R.id.tv_follow)).setCompoundDrawables(moreDb, null, null,
+                        null);
+                holder.getView(R.id.tv_follow).setBackgroundResource(0);
+                holder.setText(R.id.tv_follow, "");
+            } else {
+                //没关注
+                ((TextView) holder.getView(R.id.tv_follow)).setCompoundDrawables(null, null, null,
+                        null);
+                holder.setText(R.id.tv_follow, holder.getConvertView().getResources().getString(R.string.add_follow));
+                holder.getView(R.id.tv_follow).setBackgroundResource(R.drawable.shape_bg_circle_radus_gray);
+
+            }
+        }
+    }
+
     @Override
     protected int getVisibleTwo() {
         return View.GONE;
@@ -219,6 +256,6 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
      * 关注点击监听
      */
     public interface OnFollowClickLisitener {
-        void onFollowClick(UserInfoBean userInfoBean,TextView followView);
+        void onFollowClick(DynamicDetailBeanV2 data, TextView followView);
     }
 }

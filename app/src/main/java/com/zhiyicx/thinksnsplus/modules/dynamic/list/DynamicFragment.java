@@ -343,7 +343,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         /*
          关注
           */
-        dynamicListItemForZeroImage.setOnFollowlistener((userInfoBean, followView) -> mPresenter.followUser(userInfoBean));
+        dynamicListItemForZeroImage.setOnFollowlistener((data, followView) -> {
+            followViewClick(data, followView);
+        });
         setAdapter(adapter, dynamicListItemForZeroImage);
         setAdapter(adapter, new DynamicListItemForOneImage(getContext()));
         setAdapter(adapter, new DynamicListItemForTwoImage(getContext()));
@@ -357,6 +359,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         setAdapter(adapter, new DynamicListItemForAdvert(getContext()));
         adapter.setOnItemClickListener(this);
         return adapter;
+    }
+
+    protected void followViewClick(DynamicDetailBeanV2 data, TextView followView) {
     }
 
     protected void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem
