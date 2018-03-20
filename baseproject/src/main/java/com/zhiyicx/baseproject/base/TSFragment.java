@@ -322,7 +322,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     @Override
     public void showSnackErrorMessage(String message) {
-        showSnackMessage(message, Prompt.ERROR);
+        if (getUserVisibleHint()) {
+            showSnackMessage(message, Prompt.ERROR);
+        }
     }
 
     @Override

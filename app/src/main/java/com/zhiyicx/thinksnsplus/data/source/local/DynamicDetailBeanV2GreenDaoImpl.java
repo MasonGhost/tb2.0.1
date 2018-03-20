@@ -179,8 +179,8 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
             id = System.currentTimeMillis();
         }
         return mDynamicDetailBeanV2Dao.queryDeep(" where "
-                        + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " < ?  ORDER BY "
-                        + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 创建时间倒序
+                        + " T." + DynamicDetailBeanV2Dao.Properties.Hot_creat_time.columnName + " < ? and "+ " T."+ DynamicDetailBeanV2Dao.Properties.Hot_creat_time.columnName +" > 0  ORDER BY "
+                        + " T." + DynamicDetailBeanV2Dao.Properties.Hot_creat_time.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 创建时间倒序
                 , String.valueOf(id));
     }
 
@@ -191,7 +191,8 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
         if (feed_id == null || feed_id == 0) {
             feed_id = System.currentTimeMillis();
         }
-        return mDynamicDetailBeanV2Dao.queryDeep(" where " + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " < ?  ORDER BY "
+        return mDynamicDetailBeanV2Dao.queryDeep(" where "
+                        + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " < ?  ORDER BY "
                         + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// feedId倒序
                 , String.valueOf(feed_id));
     }
