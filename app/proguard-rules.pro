@@ -282,6 +282,20 @@ public static final int *;
 
 ################umeng###############
 -keep class com.umeng.commonsdk.** {*;}
+-keepclassmembers class * {
+   public <init> (org.json.JSONObject);
+}
+-keep public class com.tnttest.tokenbook.R$*{
+public static final int *;
+}
+-keep public class com.tnt.tokenbook.R$*{
+public static final int *;
+}
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
  -dontusemixedcaseclassnames
  	-dontshrink
  	-dontoptimize

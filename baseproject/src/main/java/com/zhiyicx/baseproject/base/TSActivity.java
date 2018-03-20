@@ -77,7 +77,7 @@ public abstract class TSActivity<P extends BasePresenter, F extends Fragment> ex
     @Override
     protected void onResume() {
         super.onResume();
-        MobclickAgent.onResume(this);
+        MobclickAgent.onResume(this);   //统计时长
     }
 
     @Override

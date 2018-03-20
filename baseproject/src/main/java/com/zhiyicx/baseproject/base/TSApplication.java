@@ -66,6 +66,9 @@ public abstract class TSApplication extends BaseApplication {
          * 参数3:Push推送业务的secret
          */
         UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, "");
+        MobclickAgent.setScenarioType(this, MobclickAgent.EScenarioType.E_UM_NORMAL);
+        // 禁止默认的页面统计方式
+        MobclickAgent.openActivityDurationTrack(false);
         UMShareConfig config = new UMShareConfig();
         config.isNeedAuthOnGetUserInfo(true);
         UMShareAPI.get(getApplicationContext()).setShareConfig(config);

@@ -408,9 +408,9 @@
 
         <FrameLayout
             android:id="@+id/fl_content_contaienr"
-            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
 
             <br.tiagohm.markdownview.MarkdownView
                 android:id="@+id/mv_content"
@@ -443,10 +443,10 @@
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/spacing_normal"
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="85dp"
-            android:layout_marginRight="@dimen/spacing_large"
+            android:layout_marginRight="@dimen/spacing_bigger_large"
             android:progressDrawable="@drawable/layer_list_progress_drawable_download"
             android:visibility="gone"/>
 
