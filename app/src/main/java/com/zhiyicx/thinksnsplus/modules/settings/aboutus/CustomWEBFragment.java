@@ -26,7 +26,7 @@ public class CustomWEBFragment extends TSWebFragment {
 
     private String mUrl = ApiConfig.APP_DOMAIN + ApiConfig.URL_ABOUT_US;
     private String mTitle = "";
-    private HashMap<String,String> mHeaders;
+    private HashMap<String, String> mHeaders;
 
     public CustomWEBFragment() {
         // Required empty public constructor
@@ -47,14 +47,14 @@ public class CustomWEBFragment extends TSWebFragment {
         if (getArguments() != null) {
             mUrl = getArguments().getString(BUNDLE_PARAMS_WEB_URL);
             mTitle = getArguments().getString(BUNDLE_PARAMS_WEB_TITLE);
-            mHeaders= (HashMap<String, String>) getArguments().getSerializable(BUNDLE_PARAMS_WEB_HEADERS);
+            mHeaders = (HashMap<String, String>) getArguments().getSerializable(BUNDLE_PARAMS_WEB_HEADERS);
         }
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadUrl(mUrl,mHeaders);
+        loadUrl(mUrl, mHeaders);
     }
 
     @Override
