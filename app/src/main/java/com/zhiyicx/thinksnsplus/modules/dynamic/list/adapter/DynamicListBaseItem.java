@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -74,7 +75,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     public static final int DEFALT_IMAGE_HEIGHT = 300;
     protected final int mHightPixels; // 屏幕高度
     protected final int mDiverwith; // 分割先的宽高
-    protected final int mImageContainerWith; // 图片容器最大宽度
+    protected int mImageContainerWith; // 图片容器最大宽度
     protected final int mImageMaxHeight; // 单张图片最大高度
     protected Context mContext;
 
@@ -211,6 +212,17 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
             String content = dynamicBean.getFriendlyContent();
             contentView.setVisibility(TextUtils.isEmpty(content) ? View.GONE : View.VISIBLE);
+            try {
+                View iamgeContainer = holder.getView(R.id.nrv_image);
+                RelativeLayout.LayoutParams iamgeParam = (RelativeLayout.LayoutParams) iamgeContainer.getLayoutParams();
+                int marginTop = TextUtils.isEmpty(content) ? mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_mid_small) : 0;
+                int margingLeft= mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_normal);
+                int margingRight= mContext.getResources().getDimensionPixelOffset(R.dimen.dynamic_list_image_marginright);
+                iamgeParam.setMargins(margingLeft, marginTop, margingRight, 0);
+            } catch (Exception ignore) {
+
+            }
+
             if (!TextUtils.isEmpty(content)) {
 
                 boolean canLookWords = dynamicBean.getPaid_node() == null || dynamicBean

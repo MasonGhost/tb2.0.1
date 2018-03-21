@@ -523,7 +523,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             // 添加一条新动态
             refreshData();
             // 回到顶部
-            mRvList.smoothScrollToPosition(0);
+            mRvList.scrollToPosition(0);
             // viewpager切换到关注列表
             Fragment parentFragmentMain = getParentFragment();
             if (parentFragmentMain != null && parentFragmentMain instanceof MainFragment) {

@@ -13,6 +13,7 @@
     <dimen name="spacing_large">20dp</dimen>
     <dimen name="spacing_mid">15dp</dimen>
     <dimen name="spacing_mid_tb">12dp</dimen>
+    <dimen name="spacing_normal_8dp">8dp</dimen>
     <dimen name="spacing_normal">10dp</dimen>
     <dimen name="spacing_mid_small">7dp</dimen>
     <dimen name="spacing_mid_small_8dp">8dp</dimen>

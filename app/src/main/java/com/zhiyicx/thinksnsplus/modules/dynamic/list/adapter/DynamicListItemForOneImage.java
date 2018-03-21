@@ -38,6 +38,8 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
 
     public DynamicListItemForOneImage(Context context) {
         super(context);
+        int maxWidth = context.getResources().getDimensionPixelOffset(R.dimen.dynamic_image_max_width);
+        mImageContainerWith = mImageContainerWith > maxWidth ? maxWidth : mImageContainerWith;
     }
 
     @Override

@@ -121,7 +121,7 @@ public class QAListBaseInfoAdapter<T extends BaseListBean> extends CommonAdapter
                         });
                 int w = getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_question_list);
                 contentTextView.setOnClickListener(v -> contentView.performClick());
-                content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, Link.DEFAULT_NET_SITE);
+                content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT,  Link.DEFAULT_NET_SITE);
                 makeSpan(contentTextView, w, w, content, infoBean.getAnswer().getId(), position, prefix.length(), canLook);
                 ConvertUtils.stringLinkConvert(contentTextView, setLinks(infoBean.getAnswer().getBody(), content), false);
             }
@@ -234,7 +234,7 @@ public class QAListBaseInfoAdapter<T extends BaseListBean> extends CommonAdapter
         links.add(followCountLink);
 
         if (replacedContentText.contains(Link.DEFAULT_NET_SITE)) {
-            Link commentNameLink = new Link(Link.DEFAULT_NET_SITE)
+            Link commentNameLink = new Link( Link.DEFAULT_NET_SITE)
                     .setTextColor(ContextCompat.getColor(mContext, R.color
                             .net_link_color))
                     .setLinkMetadata(LinkMetadata.builder()

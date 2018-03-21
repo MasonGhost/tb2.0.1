@@ -471,7 +471,16 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     public void sendDynamicComplete() {
-        getActivity().finish();
+        com.zhiyicx.common.utils.DeviceUtils.hideSoftKeyboard(getContext(), mToolbarRight);
+        // 让主页先刷新
+        getView().postDelayed(() -> {
+            if (getActivity() != null) {
+                getActivity().finish();
+                getActivity().overridePendingTransition(0, R.anim.fade_out);
+            }
+        }, 100);
+
+
     }
 
     @Override
@@ -486,7 +495,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     protected void setRightClick() {
-        com.zhiyicx.common.utils.DeviceUtils.hideSoftKeyboard(getContext(), mToolbarRight);
         // 圈子
         if (isFromGroup) {
             mPresenter.sendGroupDynamic(packageGroupDynamicData());
@@ -509,7 +517,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     SendDynamicDataBeanV2.StorageTaskBean taskBean = new SendDynamicDataBeanV2.StorageTaskBean();
                     ImageBean imageBean = selectedPhotos.get(i);
                     photos.add(imageBean);
-                    taskBean.setAmount(imageBean.getToll_monye() > 0 ? imageBean.getToll_monye(): null);
+                    taskBean.setAmount(imageBean.getToll_monye() > 0 ? imageBean.getToll_monye() : null);
                     taskBean.setType(imageBean.getToll_monye() * imageBean.getToll_type() > 0
                             ? (imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE) : null);
                     storage_task.add(taskBean);

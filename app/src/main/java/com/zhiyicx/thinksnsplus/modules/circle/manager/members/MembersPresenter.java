@@ -42,8 +42,21 @@ public class MembersPresenter extends AppBasePresenter<
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
         int grouLengh[] = new int[4];
-        Subscription subscribe = mBaseCircleRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(),
-                TSListFragment.DEFAULT_PAGE_SIZE, mRootView.getMemberType(), mRootView.getSearchContent())
+        Observable<List<CircleMembers>> observable;
+        if (isLoadMore || CircleMembers.BLACKLIST.equals(mRootView.getMemberType())) {
+            observable = mBaseCircleRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(),
+                    TSListFragment.DEFAULT_PAGE_SIZE, mRootView.getMemberType(), mRootView.getSearchContent());
+        } else {
+            observable = Observable.zip(mBaseCircleRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(),
+                    TSListFragment.DEFAULT_PAGE_SIZE, CircleMembers.FOUNDER, mRootView.getSearchContent()), mBaseCircleRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(),
+                    TSListFragment.DEFAULT_PAGE_SIZE, CircleMembers.MANAGER, mRootView.getSearchContent()), mBaseCircleRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(),
+                    Integer.MAX_VALUE, mRootView.getMemberType(), mRootView.getSearchContent()), (founder, managers, members) -> {
+                managers.addAll(members);
+                managers.addAll(0, founder);
+                return managers;
+            });
+        }
+        Subscription subscribe = observable.flatMap(Observable::just)
                 .flatMap(circleMembers -> {
                     List<CircleMembers> manager = new ArrayList<>();
                     List<CircleMembers> member = new ArrayList<>();
@@ -64,7 +77,7 @@ public class MembersPresenter extends AppBasePresenter<
                                 grouLengh[1]++;
                                 break;
                             case CircleMembers.MEMBER:
-                                if (mRootView.needMember()){
+                                if (mRootView.needMember()) {
                                     member.add(members);
                                     grouLengh[2]++;
                                 }
@@ -186,12 +199,12 @@ public class MembersPresenter extends AppBasePresenter<
                                         manager.add(members1);
                                         break;
                                     case CircleMembers.MEMBER:
-                                        if (mRootView.needMember()){
+                                        if (mRootView.needMember()) {
                                             member.add(members1);
                                         }
                                         break;
                                     case CircleMembers.BLACKLIST:
-                                        if (mRootView.needBlackList()){
+                                        if (mRootView.needBlackList()) {
                                             blacklist.add(members1);
                                         }
                                         break;

@@ -55,9 +55,14 @@ public class MyAnswerAdapterV2 extends MyAnswerAdapter {
         holder.setText(R.id.tv_watcher_count, TimeUtils.getTimeFriendlyNormal(answerInfoBean.getCreated_at()));
         // 正文
         String content = answerInfoBean.getText_body();
+
         if (TextUtils.isEmpty(content)) {
-            content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean.getBody());
+            content = answerInfoBean.getBody();
         }
+        content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean
+                .getBody());
+        content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT,  Link.DEFAULT_NET_SITE);
+        
         holder.setText(R.id.tv_content, content);
         // 点赞数量
         TextView tvLikeCount = holder.getView(R.id.tv_like_count);

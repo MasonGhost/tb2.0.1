@@ -20,15 +20,16 @@
 
     <TextView
         android:id="@+id/tv_name"
+        android:includeFontPadding="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_mid"
+        android:layout_marginBottom="@dimen/spacing_normal_8dp"
         android:layout_toRightOf="@id/iv_headpic"
         android:maxLength="@integer/username_max_length"
         android:maxLines="1"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingStart="@dimen/spacing_normal"
-        android:paddingTop="@dimen/spacing_small"
+        android:paddingTop="@dimen/spacing_small_3dp"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content_comment"
         tools:text="张三"/>

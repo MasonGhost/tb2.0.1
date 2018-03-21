@@ -292,9 +292,14 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
      * @param cls    target class
      */
     private fun jumpActivity(bundle: Bundle, cls: Class<*>) {
-        val to = Intent(activity, cls)
-        to.putExtras(bundle)
-        startActivity(to)
+        try {
+            val to = Intent(activity, cls)
+            to.putExtras(bundle)
+            startActivity(to)
+        } catch (e: Exception) {
+            showSnackErrorMessage(getString(R.string.data_too_large))
+        }
+
     }
 
     /**

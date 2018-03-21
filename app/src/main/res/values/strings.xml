@@ -159,7 +159,7 @@
     <string name="info_publish_hint">提示</string>
     <string name="info_publish_hint_certification">只有认证过的用户才可以投稿，是否去认证?</string>
     <string name="info_publish_go_to_certification">去认证</string>
-    <string name="info_publish_hint_pay">投稿一次需付费1.00%s，是否继续投稿？</string>
+    <string name="info_publish_hint_pay">投稿一次需付费%1$d%2$s，是否继续投稿？</string>
     <string name="info_publish_go_to_next">继续投稿</string>
     <string name="edit_info">编辑文章</string>
     <string name="info_title_hint">输入标题，20字以内</string>
@@ -990,6 +990,7 @@
     <string name="image_upload_fail">图片上传失败</string>
     <string name="image_prase_fail">图片解析错误</string>
     <string name="fun_maintain">功能维护中</string>
+    <string name="data_too_large">数据量过大，本机无法加载</string>
 
     <!--TB-->
     <string name="friends">好友</string>

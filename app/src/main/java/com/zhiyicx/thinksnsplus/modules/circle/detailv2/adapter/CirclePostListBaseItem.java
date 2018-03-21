@@ -199,6 +199,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
                 contentView.setVisibility(View.GONE);
             } else {
                 content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, Link.DEFAULT_NET_SITE);
+                content = content.replaceAll(MarkdownConfig.IMAGE_FORMAT, "");
                 contentView.setText(content);
                 ConvertUtils.stringLinkConvert(contentView, setLinkLinks(circlePostListBean, contentView.getText().toString()), false);
                 contentView.setVisibility(View.VISIBLE);

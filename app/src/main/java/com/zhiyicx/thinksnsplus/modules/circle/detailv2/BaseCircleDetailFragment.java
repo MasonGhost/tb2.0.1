@@ -267,7 +267,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
 
     @Override
     public void onCommentStateClick(CirclePostCommentBean dynamicCommentBean, int position) {
-        initReSendCommentPopupWindow(dynamicCommentBean, mListDatas.get(mPresenter.getCurrenPosiotnInDataList(dynamicCommentBean.getId())).getId());
+        initReSendCommentPopupWindow(dynamicCommentBean, mListDatas.get(mPresenter.getCurrenPosiotnInDataList((long)dynamicCommentBean.getPost_id())).getId());
         mReSendCommentPopWindow.show();
     }
 
