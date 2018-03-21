@@ -57,6 +57,8 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     public static final int TOP_NONE = 0;
     public static final int TOP_REVIEW = 2;
 
+    public static final int CAN_COMMENT = 1;
+
 
     /**
      * id : 13
@@ -105,6 +107,11 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     private boolean has_digg;
     private boolean has_collect;
     private int share_count;
+    /**
+     * 1：可评论  0：不可评论
+     */
+    private int can_comment = 1;
+
     private long amount;
     @Convert(converter = LikeBeanConvert.class, columnType = String.class)
     private List<DynamicLikeBean> likes;
@@ -149,6 +156,15 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
      */
     @Transient
     private boolean isOpen;
+
+
+    public int getCan_comment() {
+        return can_comment;
+    }
+
+    public void setCan_comment(int can_comment) {
+        this.can_comment = can_comment;
+    }
 
     public boolean isOpen() {
         return isOpen;
@@ -1030,55 +1046,9 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     }
 
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.id);
-        dest.writeString(this.created_at);
-        dest.writeString(this.updated_at);
-        dest.writeString(this.deleted_at);
-        dest.writeValue(this.user_id);
-        dest.writeString(this.feed_content);
-        dest.writeInt(this.feed_from);
-        dest.writeInt(this.feed_digg_count);
-        dest.writeInt(this.feed_view_count);
-        dest.writeInt(this.feed_comment_count);
-        dest.writeString(this.feed_latitude);
-        dest.writeString(this.feed_longtitude);
-        dest.writeString(this.feed_geohash);
-        dest.writeInt(this.audit_status);
-        dest.writeValue(this.feed_mark);
-        dest.writeByte(this.has_digg ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.has_collect ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.share_count);
-        dest.writeLong(this.amount);
-        dest.writeTypedList(this.likes);
-        dest.writeByte(this.paid ? (byte) 1 : (byte) 0);
-        dest.writeTypedList(this.images);
-        dest.writeList(this.diggs);
-        dest.writeParcelable(this.paid_node, flags);
-        dest.writeParcelable(this.userInfoBean, flags);
-        dest.writeTypedList(this.comments);
-        dest.writeValue(this.hot_creat_time);
-        dest.writeByte(this.isFollowed ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.state);
-        dest.writeInt(this.top);
-        dest.writeTypedList(this.digUserInfoList);
-        dest.writeParcelable(this.reward, flags);
-        dest.writeInt(this.startPosition);
-        dest.writeString(this.friendlyTime);
-        dest.writeString(this.userCenterFriendlyTimeUp);
-        dest.writeString(this.userCenterFriendlyTimeDonw);
-        dest.writeString(this.friendlyContent);
-        dest.writeByte(this.isOpen ? (byte) 1 : (byte) 0);
-    }
-
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 249603048)
     public synchronized void resetComments() {
         comments = null;
@@ -1120,7 +1090,114 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1856169448)
+    public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id, String feed_content, int feed_from,
+                               int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude, String feed_longtitude,
+                               String feed_geohash,
+                               int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, int share_count, int can_comment, long amount,
+                               List<DynamicLikeBean> likes, boolean paid, List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node, Long
+                                           hot_creat_time,
+                               boolean isFollowed, int state, int top, List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward) {
+        this.id = id;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.deleted_at = deleted_at;
+        this.user_id = user_id;
+        this.feed_content = feed_content;
+        this.feed_from = feed_from;
+        this.feed_digg_count = feed_digg_count;
+        this.feed_view_count = feed_view_count;
+        this.feed_comment_count = feed_comment_count;
+        this.feed_latitude = feed_latitude;
+        this.feed_longtitude = feed_longtitude;
+        this.feed_geohash = feed_geohash;
+        this.audit_status = audit_status;
+        this.feed_mark = feed_mark;
+        this.has_digg = has_digg;
+        this.has_collect = has_collect;
+        this.share_count = share_count;
+        this.can_comment = can_comment;
+        this.amount = amount;
+        this.likes = likes;
+        this.paid = paid;
+        this.images = images;
+        this.diggs = diggs;
+        this.paid_node = paid_node;
+        this.hot_creat_time = hot_creat_time;
+        this.isFollowed = isFollowed;
+        this.state = state;
+        this.top = top;
+        this.digUserInfoList = digUserInfoList;
+        this.reward = reward;
+    }
+
+    /**
+     * Used to resolve relations
+     */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+
+    /**
+     * Used for active entity operations.
+     */
+    @Generated(hash = 49871375)
+    private transient DynamicDetailBeanV2Dao myDao;
+
+    @Generated(hash = 1005780391)
+    private transient Long userInfoBean__resolvedKey;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeString(this.deleted_at);
+        dest.writeValue(this.user_id);
+        dest.writeString(this.feed_content);
+        dest.writeInt(this.feed_from);
+        dest.writeInt(this.feed_digg_count);
+        dest.writeInt(this.feed_view_count);
+        dest.writeInt(this.feed_comment_count);
+        dest.writeString(this.feed_latitude);
+        dest.writeString(this.feed_longtitude);
+        dest.writeString(this.feed_geohash);
+        dest.writeInt(this.audit_status);
+        dest.writeValue(this.feed_mark);
+        dest.writeByte(this.has_digg ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.has_collect ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.share_count);
+        dest.writeInt(this.can_comment);
+        dest.writeLong(this.amount);
+        dest.writeTypedList(this.likes);
+        dest.writeByte(this.paid ? (byte) 1 : (byte) 0);
+        dest.writeTypedList(this.images);
+        dest.writeList(this.diggs);
+        dest.writeParcelable(this.paid_node, flags);
+        dest.writeParcelable(this.userInfoBean, flags);
+        dest.writeTypedList(this.comments);
+        dest.writeValue(this.hot_creat_time);
+        dest.writeByte(this.isFollowed ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.state);
+        dest.writeInt(this.top);
+        dest.writeTypedList(this.digUserInfoList);
+        dest.writeParcelable(this.reward, flags);
+        dest.writeInt(this.startPosition);
+        dest.writeString(this.friendlyTime);
+        dest.writeString(this.userCenterFriendlyTimeUp);
+        dest.writeString(this.userCenterFriendlyTimeDonw);
+        dest.writeString(this.friendlyContent);
+        dest.writeByte(this.isOpen ? (byte) 1 : (byte) 0);
+    }
+
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1467065995)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
@@ -1147,6 +1224,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.has_digg = in.readByte() != 0;
         this.has_collect = in.readByte() != 0;
         this.share_count = in.readInt();
+        this.can_comment = in.readInt();
         this.amount = in.readLong();
         this.likes = in.createTypedArrayList(DynamicLikeBean.CREATOR);
         this.paid = in.readByte() != 0;
@@ -1170,44 +1248,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.isOpen = in.readByte() != 0;
     }
 
-    @Generated(hash = 1392056256)
-    public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id, String feed_content, int feed_from,
-            int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash,
-            int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, int share_count, long amount, List<DynamicLikeBean> likes,
-            boolean paid, List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node, Long hot_creat_time, boolean isFollowed, int state, int top,
-            List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward) {
-        this.id = id;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.deleted_at = deleted_at;
-        this.user_id = user_id;
-        this.feed_content = feed_content;
-        this.feed_from = feed_from;
-        this.feed_digg_count = feed_digg_count;
-        this.feed_view_count = feed_view_count;
-        this.feed_comment_count = feed_comment_count;
-        this.feed_latitude = feed_latitude;
-        this.feed_longtitude = feed_longtitude;
-        this.feed_geohash = feed_geohash;
-        this.audit_status = audit_status;
-        this.feed_mark = feed_mark;
-        this.has_digg = has_digg;
-        this.has_collect = has_collect;
-        this.share_count = share_count;
-        this.amount = amount;
-        this.likes = likes;
-        this.paid = paid;
-        this.images = images;
-        this.diggs = diggs;
-        this.paid_node = paid_node;
-        this.hot_creat_time = hot_creat_time;
-        this.isFollowed = isFollowed;
-        this.state = state;
-        this.top = top;
-        this.digUserInfoList = digUserInfoList;
-        this.reward = reward;
-    }
-
     public static final Creator<DynamicDetailBeanV2> CREATOR = new Creator<DynamicDetailBeanV2>() {
         @Override
         public DynamicDetailBeanV2 createFromParcel(Parcel source) {
@@ -1219,15 +1259,4 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             return new DynamicDetailBeanV2[size];
         }
     };
-
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-
-    /** Used for active entity operations. */
-    @Generated(hash = 49871375)
-    private transient DynamicDetailBeanV2Dao myDao;
-
-    @Generated(hash = 1005780391)
-    private transient Long userInfoBean__resolvedKey;
 }
