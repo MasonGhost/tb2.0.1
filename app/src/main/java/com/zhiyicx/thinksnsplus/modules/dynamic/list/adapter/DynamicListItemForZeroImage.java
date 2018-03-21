@@ -108,14 +108,24 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
                 dynamicListMenuView.setImageNormalResourceIds(mImageNormalResourceIds);
                 dynamicListMenuView.setImageCheckedResourceIds(mImageCheckedResourceIds);
                 // 点赞
-                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
-                        .getFeed_digg_count()), dynamicBean.isHas_digg(), 2);
+                dynamicListMenuView.setItemTextAndStatus(
+                        dynamicBean.getFeed_digg_count() == 0 ? "" : ConvertUtils.numberConvert(dynamicBean
+                                .getFeed_digg_count())
+                        , dynamicBean.isHas_digg()
+                        , 2
+                );
                 // 分享数量
-                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean.getShare_count()),
-                        false, 0);
+                dynamicListMenuView.setItemTextAndStatus(
+                        dynamicBean.getShare_count() == 0 ? "" : ConvertUtils.numberConvert(dynamicBean.getShare_count()),
+                        false
+                        , 0
+                );
                 // 评论数量
-                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean.getFeed_comment_count()),
-                        false, 1);
+                dynamicListMenuView.setItemTextAndStatus(
+                        dynamicBean.getFeed_comment_count() == 0 ? "" : ConvertUtils.numberConvert(dynamicBean.getFeed_comment_count())
+                        , false
+                        , 1
+                );
                 // 控制更多按钮的显示隐藏
                 dynamicListMenuView.setItemPositionVisiable(0, getVisibleOne());
                 dynamicListMenuView.setItemPositionVisiable(1, getVisibleTwo());
