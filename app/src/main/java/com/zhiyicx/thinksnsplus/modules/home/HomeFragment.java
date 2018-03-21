@@ -32,6 +32,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
+import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
 import com.zhiyicx.thinksnsplus.widget.popwindow.CheckInPopWindow;
 
@@ -60,15 +61,15 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     /**
      * 页数
      */
-    public static final int PAGE_NUMS = 3;
+    public static final int PAGE_NUMS = 4;
 
     /**
      * 对应在 viewpager 中的位置
      */
     public static final int PAGE_HOME = 0;
     public static final int PAGE_FIND = 1;
-//    public static final int PAGE_MESSAGE = 2;
-    public static final int PAGE_MINE = 2;
+    public static final int PAGE_MESSAGE = 2;
+    public static final int PAGE_MINE = 3;
 
     @BindView(R.id.iv_home)
     ImageView mIvHome;
@@ -78,6 +79,12 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     ImageView mIvFind;
     @BindView(R.id.tv_find)
     TextView mTvFind;
+    @BindView(R.id.iv_message)
+    ImageView mIvMessage;
+    @BindView(R.id.v_message_tip)
+    View mVMessageTip;
+    @BindView(R.id.tv_message)
+    TextView mTvMessage;
     @BindView(R.id.iv_mine)
     ImageView mIvMine;
     @BindView(R.id.v_mine_tip)
@@ -197,7 +204,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         return R.layout.fragment_home;
     }
 
-    @OnClick({R.id.ll_home,  R.id.ll_find,R.id.ll_mine})
+    @OnClick({R.id.ll_home,  R.id.ll_find,R.id.ll_mine,R.id.ll_message})
     public void onClick(final View view) {
         switch (view.getId()) {
             // 点击主页
@@ -224,13 +231,13 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 //                    startActivity(intent);
 //                }
 //                break;
-//            // 点击消息
-//            case R.id.ll_message:
-//                if (TouristConfig.MESSAGE_CAN_LOOK || !mPresenter.handleTouristControl()) {
-//                    mVpHome.setCurrentItem(PAGE_MESSAGE, false);
-//                }
-//                mCurrenPage = PAGE_MESSAGE;
-//                break;
+            // 点击消息
+            case R.id.ll_message:
+                if (TouristConfig.MESSAGE_CAN_LOOK || !mPresenter.handleTouristControl()) {
+                    mVpHome.setCurrentItem(PAGE_MESSAGE, false);
+                }
+                mCurrenPage = PAGE_MESSAGE;
+                break;
             // 点击我的
             case R.id.ll_mine:
                 if (TouristConfig.MINE_CAN_LOOK || !mPresenter.handleTouristControl()) {
@@ -245,11 +252,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
     @Override
     public void setMessageTipVisable(boolean tipVisable) {
-//        if (tipVisable) {
-//            mVMessageTip.setVisibility(View.VISIBLE);
-//        } else {
-//            mVMessageTip.setVisibility(View.INVISIBLE);
-//        }
+        if (tipVisable) {
+            mVMessageTip.setVisibility(View.VISIBLE);
+        } else {
+            mVMessageTip.setVisibility(View.INVISIBLE);
+        }
 
     }
 
@@ -318,6 +325,10 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mFragmentList.clear();
         mFragmentList.add(MainFragment.newInstance(this));
         mFragmentList.add(FindFragment.newInstance());
+        if (TouristConfig.MESSAGE_CAN_LOOK || mPresenter.isLogin()) {
+//            mFragmentList.add(MessageContainerFragment.instance());
+            mFragmentList.add(FindFragment.newInstance());
+        }
         if (TouristConfig.MINE_CAN_LOOK || mPresenter.isLogin()) {
             mFragmentList.add(MineFragment.newInstance());
         }
@@ -371,6 +382,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mTvMine.setTextColor(position == PAGE_MINE ? checkedColor : unckeckedColor);
         mIvFind.setImageResource(position == PAGE_FIND ? R.mipmap.common_ico_bottom_discover_high : R.mipmap.common_ico_bottom_discover_normal);
         mTvFind.setTextColor(position == PAGE_FIND ? checkedColor : unckeckedColor);
+        mIvMessage.setImageResource(position == PAGE_MESSAGE ? R.mipmap.common_ico_bottom_message_high : R.mipmap.common_ico_bottom_message_normal);
+        mTvMessage.setTextColor(position == PAGE_MESSAGE ? checkedColor : unckeckedColor);
     }
 
     /**
