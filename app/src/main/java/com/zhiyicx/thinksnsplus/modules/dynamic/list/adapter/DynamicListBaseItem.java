@@ -483,7 +483,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     protected List<Link> setLiknks(final DynamicDetailBeanV2 dynamicDetailBeanV2, String content) {
         List<Link> links = new ArrayList<>();
         if (content.contains(Link.DEFAULT_NET_SITE)) {
-            Link commentNameLink = new Link(MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE)
+            Link commentNameLink = new Link(Link.DEFAULT_NET_SITE)
                     .setTextColor(ContextCompat.getColor(mContext, R.color
                             .themeColor))
                     .setLinkMetadata(LinkMetadata.builder()
