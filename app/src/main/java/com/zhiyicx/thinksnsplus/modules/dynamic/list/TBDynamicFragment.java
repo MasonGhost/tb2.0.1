@@ -23,6 +23,8 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.tb.dynamic.comment.DynamicCommentListActivity;
+import com.zhiyicx.thinksnsplus.modules.tb.dynamic.comment.DynamicCommentListFragment;
 import com.zhiyicx.thinksnsplus.modules.tb.share.DynamicShareActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.share.DynamicShareBean;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
@@ -32,6 +34,7 @@ import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import org.simple.eventbus.Subscriber;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.CAN_COMMENT;
 
 /**
  * @author Jungle68
@@ -126,7 +129,22 @@ public class TBDynamicFragment extends DynamicFragment {
                 break;
             case 1:
                 // 评论
-                super.onMenuItemClick(contentView, dataPosition, viewPosition);
+                if (CAN_COMMENT == mListDatas.get(dataPosition).getCan_comment()) {
+                    // 还未发送成功的动态列表不查看详情
+                    if (mListDatas.get(dataPosition).getId() == null || mListDatas.get(dataPosition).getId() == 0) {
+                        return;
+                    }
+                    Intent commentListIntent = new Intent(getActivity(), DynamicCommentListActivity.class);
+                    Bundle commentListBundle = new Bundle();
+                    commentListBundle.putParcelable(DynamicCommentListFragment.DYNAMIC_DETAIL_DATA, mListDatas.get(dataPosition));
+                    commentListBundle.putString(DynamicCommentListFragment.DYNAMIC_DETAIL_DATA_TYPE, getDynamicType());
+                    commentListIntent.putExtras(commentListBundle);
+                    startActivity(commentListIntent);
+                    getActivity().overridePendingTransition(R.anim.slide_in_bottom,-1);
+
+                } else {
+                    showSnackWarningMessage(getString(R.string.dynamic_not_support_comment));
+                }
                 break;
 
             case 2:

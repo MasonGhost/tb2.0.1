@@ -1057,5 +1057,6 @@
         <item>快讯</item>
     </string-array>
     <string name="merchain_detail">详情</string>
+    <string name="dynamic_not_support_comment">该快讯不支持留言！</string>
 
 </resources>

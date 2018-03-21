@@ -740,6 +740,10 @@
         <activity
             android:name=".modules.tb.mechainism.MechainsmCenterContainerActivity"
             android:screenOrientation="portrait"/>
+        <!--快讯评论列表-->
+        <activity
+            android:name=".modules.tb.dynamic.comment.DynamicCommentListActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 
