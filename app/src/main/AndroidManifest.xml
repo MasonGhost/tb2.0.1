@@ -112,8 +112,8 @@
         <activity
             android:name=".modules.login.LoginActivity"
             android:hardwareAccelerated="false"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="zhiyicx.intent.action.LOGIN"/>
 
@@ -150,7 +150,34 @@
         </activity>
         <activity
             android:name=".modules.settings.aboutus.CustomWEBActivity"
-            android:screenOrientation="portrait">
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            >
+        </activity>
+        <!--T
+        bs视频播放器接入说明
+        public static boolean canUseTbsPlayer(Context context)
+
+        //判断当前Tbs播放器是否已经可以使用。
+
+        public static void openVideo(Context context, String videoUrl)
+
+        //直接调用播放接口，传入视频流的url
+
+        public static void openVideo(Context context, String videoUrl, Bundle extraData)
+
+        //extraData对象是根据定制需要传入约定的信息，没有需要可以传如null
+        -->
+        <activity
+            android:name="com.tencent.smtt.sdk.VideoActivity"
+            android:alwaysRetainTaskState="true"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="com.tencent.smtt.tbs.video.PLAY"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
         </activity>
         <activity
             android:name=".modules.edit_userinfo.UserInfoActivity"
@@ -415,7 +442,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <!-- Ping++ 支付SDK -->
         <activity
             android:name="com.pingplusplus.android.PaymentActivity"
@@ -702,14 +729,17 @@
             android:name=".modules.tb.search.SearchMechanismUserActivity"
             android:screenOrientation="portrait"/>
         <!--隐私管理-->
-        <activity android:name=".modules.tb.privacy.PrivacyActivity"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.tb.privacy.PrivacyActivity"
+            android:screenOrientation="portrait"/>
         <!--钱包-->
-        <activity android:name=".modules.tb.wallet.WalletActivity"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.tb.wallet.WalletActivity"
+            android:screenOrientation="portrait"/>
         <!--机构中心-->
-        <activity android:name=".modules.tb.mechainism.MechainsmCenterContainerActivity"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.tb.mechainism.MechainsmCenterContainerActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 

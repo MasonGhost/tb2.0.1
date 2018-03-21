@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.tencent.smtt.sdk.QbSdk;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.UMShareAPI;
@@ -19,6 +20,8 @@ import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Observable;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
@@ -74,6 +77,24 @@ public abstract class TSApplication extends BaseApplication {
         UMShareAPI.get(getApplicationContext()).setShareConfig(config);
         UMShareAPI.get(this);
         MobclickAgent.setDebugMode(BuildConfig.USE_LOG);
+        // 腾讯 x5 内核
+        initWebX5();
+    }
+
+    private void initWebX5() {
+        QbSdk.setDownloadWithoutWifi(true);
+        QbSdk.initX5Environment(this, new QbSdk.PreInitCallback() {
+            @Override
+            public void onCoreInitFinished() {
+                LogUtils.i("web x5 : onCoreInitFinished");
+            }
+
+            @Override
+            public void onViewInitFinished(boolean b) {
+                LogUtils.i("web x5 : onViewInitFinished " + b);
+
+            }
+        });
     }
 
     /**

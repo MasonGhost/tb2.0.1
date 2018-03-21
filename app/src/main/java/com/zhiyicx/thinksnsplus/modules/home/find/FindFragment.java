@@ -142,11 +142,14 @@ public class FindFragment extends TSFragment {
                  音乐
                  */
             case R.id.find_music:
-                if (TouristConfig.MUSIC_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
-                    startActivity(new Intent(getActivity(), MusicListActivity.class));
-                } else {
-                    showLoginPop();
-                }
+//                if (TouristConfig.MUSIC_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
+//                    startActivity(new Intent(getActivity(), MusicListActivity.class));
+//                } else {
+//                    showLoginPop();
+//                }
+                String mUrl = "http://soft.imtt.qq.com/browser/tes/feedback.html";
+                CustomWEBActivity.startToWEBActivity(getContext(), mUrl);
+
                 break;
                 /*
                  极铺

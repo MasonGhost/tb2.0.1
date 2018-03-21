@@ -2,9 +2,13 @@ package com.zhiyicx.thinksnsplus.modules.settings.aboutus;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.view.KeyEvent;
+import android.view.WindowManager;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
@@ -64,6 +68,14 @@ public class CustomWEBActivity extends TSActivity<RegisterPresenter, CustomWEBFr
             intent.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
         }
         context.startActivity(intent);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        //  x5 内核使用 网页中的视频，上屏幕的时候，可能出现闪烁的情况，需要如下设置：Activity在onCreate时需要设置:（这个对宿主没什么影响，建议声明
+        getWindow().setFormat(PixelFormat.TRANSLUCENT);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        super.onCreate(savedInstanceState, persistentState);
     }
 
     @Override
