@@ -286,8 +286,14 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     }
 
     @Override
-    public void reSendComment(CirclePostCommentBean commentBean, long feed_id) {
-
+    public void reSendComment(CirclePostCommentBean creatComment, long feed_id) {
+        creatComment.setState(CirclePostCommentBean.SEND_ING);
+        creatComment.setId(-1L);
+        mRootView.refreshData();
+        mCirclePostCommentBeanGreenDao.insertOrReplace(creatComment);
+        mBaseCircleRepository.sendPostComment(creatComment.getContent(),feed_id,
+                creatComment.getReply_to_user_id(),
+                creatComment.getComment_mark());
     }
 
     @Override

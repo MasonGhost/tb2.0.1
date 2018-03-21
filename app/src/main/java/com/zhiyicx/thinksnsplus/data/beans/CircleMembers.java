@@ -15,6 +15,7 @@ public class CircleMembers extends BaseListBean {
     public static final String FOUNDER = "founder";
     public static final String ALL = "all";
     public static final String ADMINISTRATOR = "administrator";
+    public static final String MANAGER = "manager";
     public static final String MEMBER = "member";
     public static final String AUDIT_MEMBER = "audit_user";
     public static final String BLACKLIST = "blacklist";

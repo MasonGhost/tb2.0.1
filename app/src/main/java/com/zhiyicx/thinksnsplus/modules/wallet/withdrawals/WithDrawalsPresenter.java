@@ -43,11 +43,11 @@ public class WithDrawalsPresenter extends AppBasePresenter< WithDrawalsConstract
             return;
         }
 
-        if (value < PayConfig.realCurrency2GameCurrency(mRootView.getWalletConfigBean().getCase_min_amount(), getRatio())) {
+        if (value < PayConfig.realCurrencyFen2Yuan(mRootView.getWalletConfigBean().getCase_min_amount())) {
             mRootView.minMoneyLimit();
             return;
         }
-        value = PayConfig.gameCurrency2RealCurrency(value, getRatio());
+        value = PayConfig.realCurrencyYuan2Fen(value);
         Subscription subscribe = mBillRepository.withdraw(value, type, account)
                 .compose(mSchedulersTransformer)
                 .doOnSubscribe(() -> {

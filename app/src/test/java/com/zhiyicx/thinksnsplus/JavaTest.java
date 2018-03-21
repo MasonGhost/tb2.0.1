@@ -145,57 +145,47 @@ public class JavaTest {
 
     @Test
     public void testCatchGroup() {
-//        String source = "<div id='footer'>\n" +
-//                "\t\t<div class=\"img-block\">\n" +
-//                "\t\t\t<img class=\"images\" data-id=\"7899\" style=\"width: 340px; height: " +
-//                "113.01851851851852px;\" " +
-//                "src=\"/storage/emulated/0/DCIM/Screenshots/Screenshot_2018-02-20-19-15-51" +
-//                "-142_com.zhihu.android.png\">\n" +
-//                "\n" +
-//                "\t\t\t<div class=\"delete\">\n" +
-//                "\t\t\t\t<img class=\"error\" src=\"./reload.png\">\n" +
-//                "\t\t\t\t<div class=\"tips\">图片上传失败，请点击重试</div>\n" +
-//                "\t\t\t\t<div class=\"markdown\">@![image](6324)</div>\n" +
-//                "\t\t\t</div>\n" +
-//                "\t\t</div>\n" +
-//                "\t\t<input class=\"dec\" type=\"text\" placeholder=\"请输入图片名字\">\n" +
-//                "\t</div>";
-        String source = "很轻松<hr>\n" +
-                "<div>\n" +
-                "\t<div><br></div>\n" +
-                "\t<div class=\"block\" contenteditable=\"false\">\n" +
-                "\t\t<div class=\"img-block\">\n" +
-                "\t\t\t<img class=\"images\" data-id=\"7899\" style=\"width: 340px; height: " +
-                "113.01851851851852px;\" " +
-                "src=\"/storage/emulated/0/DCIM/Screenshots/Screenshot_2018-02-20-19-15-51" +
-                "-142_com.zhihu.android.png\">\n" +
-                "\n" +
-                "\t\t\t<div class=\"delete\">\n" +
-                "\t\t\t\t<img class=\"error\" src=\"./reload.png\">\n" +
-                "\t\t\t\t<div class=\"tips\">图片上传失败，请点击重试</div>\n" +
-                "\t\t\t\t<div class=\"markdown\">@![image](6324)</div>\n" +
-                "\t\t\t</div>\n" +
-                "\t\t</div>\n" +
-                "\t\t<input class=\"dec\" type=\"text\" placeholder=\"请输入图片名字\">\n" +
-                "\t</div>\n" +
-                "\t<div>时间就是金钱</div>\n" +
-                "</div>";
-        Matcher matcher = Pattern.compile("<div [^>]*class=\"block\"[^>]*>(<div[^>]*>(<div[^>]*>" +
-                "((<div[^>]*>[\\s\\S]*?</div>|[\\s\\S])*?</div>)|[\\s\\S])*?</div>|[\\s\\S])" +
-                "*?</div>").matcher(source);
+        String source = "收拾收拾<hr><div><div><br></div><div class=\"block\" contenteditable=\"false\">\n" +
+                "\t\t\t\t<div class=\"img-block\">\n" +
+                "\t\t\t\t<img class=\"images\" data-id=\"5389\" style=\"width: 100px; height: 100px;\" src=\"/storage/emulated/0/HappyGame/ImagePic/1791011779.jpg\">\n" +
+                "\t\t\t\t\n" +
+                "\t\t\t\t<div class=\"delete\">\n" +
+                "\t\t\t\t\t<img class=\"error\" src=\"./reload.png\">\n" +
+                "\t\t\t\t\t<div class=\"tips\">图片上传失败，请点击重试</div>\n" +
+                "\t\t\t\t\t<div class=\"markdown\">@![image](6383)</div>\n" +
+                "\t\t\t\t</div></div>\n" +
+                "\t\t\t\t<input class=\"dec\" type=\"text\" placeholder=\"请输入图片名字\">\n" +
+                "\t\t\t</div><div>听说是</div><hr><div><div><br></div><div class=\"block\" contenteditable=\"false\">\n" +
+                "\t\t\t\t<div class=\"img-block\">\n" +
+                "\t\t\t\t<img class=\"images\" data-id=\"6322\" style=\"width: 100px; height: 100px;\" src=\"/storage/emulated/0/HappyGame/ImagePic/1398267336.jpg\">\n" +
+                "\t\t\t\t\n" +
+                "\t\t\t\t<div class=\"delete\">\n" +
+                "\t\t\t\t\t<img class=\"error\" src=\"./reload.png\">\n" +
+                "\t\t\t\t\t<div class=\"tips\">图片上传失败，请点击重试</div>\n" +
+                "\t\t\t\t\t<div class=\"markdown\">@![image](6384)</div>\n" +
+                "\t\t\t\t</div></div>\n" +
+                "\t\t\t\t<input class=\"dec\" type=\"text\" placeholder=\"请输入图片名字\">\n" +
+                "\t\t\t</div><div><br></div></div></div>";
+
+        Pattern pattern = Pattern.compile("<div [^>]*class=\"block\"[^>]*>(<div[^>]*>(<div[^>]*>((<div[^>]*>[\\s\\S]*?</div>|[\\s\\S])*?</div>)|[\\s\\S])*?</div>|[\\s\\S])*?</div>");
+
+        Matcher matcher = pattern.matcher(source);
         while (matcher.find()) {
             int count = matcher.groupCount();
-            String need = matcher.group(3);
+            System.out.println("count::" + count);
+            String need = matcher.group(0);
+            for (int i = 0; i < count; i++) {
+                System.out.println("reg::" + i + ":::" + matcher.group(i));
+            }
+            System.out.println("need::" + need);
             Matcher img = Pattern.compile(MarkdownConfig.IMAGE_FORMAT).matcher(need);
             if (img.find()) {
                 System.out.println("img::" + img.group(0));
                 source = matcher.replaceFirst(img.group(0));
                 System.out.println("result::" + source);
             }
+            matcher = pattern.matcher(source);
 
-            for (int i = 0; i < count; i++) {
-                System.out.println("reg::" + i + ":::" + matcher.group(i));
-            }
         }
 
     }

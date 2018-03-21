@@ -123,11 +123,13 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
                 ()));
         // 正文
         String content = answerInfoBean.getText_body();
+
         if (TextUtils.isEmpty(content)) {
-            content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean
-                    .getBody());
-            content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, Link.DEFAULT_NET_SITE);
+            content = answerInfoBean.getBody();
         }
+        content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean
+                .getBody());
+        content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT,  Link.DEFAULT_NET_SITE);
 
         TextView contentView = holder.getView(R.id.tv_content);
 
@@ -246,9 +248,9 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
     protected List<Link> setLiknks(final AnswerInfoBean answerInfoBean, String content) {
         List<Link> links = new ArrayList<>();
         if (content.contains(Link.DEFAULT_NET_SITE)) {
-            Link commentNameLink = new Link(Link.DEFAULT_NET_SITE)
+            Link commentNameLink = new Link( Link.DEFAULT_NET_SITE)
                     .setTextColor(ContextCompat.getColor(mContext, R.color
-                            .net_link_color))
+                            .themeColor))
                     .setLinkMetadata(LinkMetadata.builder()
                             .putString(LinkMetadata.METADATA_KEY_COTENT, answerInfoBean.getBody())
                             .putSerializableObj(LinkMetadata.METADATA_KEY_TYPE, LinkMetadata.SpanType.NET_SITE)

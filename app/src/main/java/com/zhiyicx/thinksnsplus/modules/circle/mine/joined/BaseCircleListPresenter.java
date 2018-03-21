@@ -6,11 +6,13 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
+import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleSearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
@@ -188,7 +190,12 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
                                     || CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
                                 return;
                             }
-                            circleInfo.setJoined(new CircleJoinedBean());
+                            CircleJoinedBean circleJoinedBean = new CircleJoinedBean(CircleMembers.MEMBER);
+                            circleJoinedBean.setUser_id((int) AppApplication.getMyUserIdWithdefault());
+                            circleJoinedBean.setUser(AppApplication.getmCurrentLoginAuth().getUser());
+                            circleJoinedBean.setGroup_id(circleInfo.getId().intValue());
+                            circleJoinedBean.setAudit(1);
+                            circleInfo.setJoined(circleJoinedBean);
                             circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
                         }
                         mCircleInfoGreenDao.updateSingleData(circleInfo);

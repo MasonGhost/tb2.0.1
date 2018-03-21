@@ -618,8 +618,8 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         mInfoDetailHeader.destroyedWeb();
+        super.onDestroyView();
         dismissPop(mDeletCommentPopWindow);
         dismissPop(mDealInfoMationPopWindow);
     }

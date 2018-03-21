@@ -247,8 +247,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(R.string.publish_pay_info) + getString(R
-                        .string.buy_pay_member), EditeInfoDetailFragment.mInfoPublishBean
-                        .getAmout(), mPresenter.getIntegrationGoldName()))
+                        .string.buy_pay_member),mPresenter.getSystemConfigBean().getNewsPayContribute(), mPresenter.getIntegrationGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.send_info_pay))
                 .buildItem1Str(getString(R.string.publish_info_pay_in))

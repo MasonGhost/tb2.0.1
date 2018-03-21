@@ -23,7 +23,7 @@ public class RewardsCountBean extends CacheBean implements Parcelable,Serializab
      */
 
     private int count;
-    private String amount;
+    private String amount; // 分为单位
     private String moneyName;
 
     public String getMoneyName() {
