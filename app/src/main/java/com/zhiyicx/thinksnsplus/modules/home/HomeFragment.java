@@ -30,6 +30,7 @@ import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
+import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
 import com.zhiyicx.thinksnsplus.widget.popwindow.CheckInPopWindow;
@@ -59,20 +60,24 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     /**
      * 页数
      */
-    public static final int PAGE_NUMS = 2;
+    public static final int PAGE_NUMS = 3;
 
     /**
      * 对应在 viewpager 中的位置
      */
     public static final int PAGE_HOME = 0;
-//    public static final int PAGE_FIND = 1;
+    public static final int PAGE_FIND = 1;
 //    public static final int PAGE_MESSAGE = 2;
-    public static final int PAGE_MINE = 1;
+    public static final int PAGE_MINE = 2;
 
     @BindView(R.id.iv_home)
     ImageView mIvHome;
     @BindView(R.id.tv_home)
     TextView mTvHome;
+    @BindView(R.id.iv_find)
+    ImageView mIvFind;
+    @BindView(R.id.tv_find)
+    TextView mTvFind;
     @BindView(R.id.iv_mine)
     ImageView mIvMine;
     @BindView(R.id.v_mine_tip)
@@ -192,7 +197,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         return R.layout.fragment_home;
     }
 
-    @OnClick({R.id.ll_home, R.id.ll_mine})
+    @OnClick({R.id.ll_home,  R.id.ll_find,R.id.ll_mine})
     public void onClick(final View view) {
         switch (view.getId()) {
             // 点击主页
@@ -205,13 +210,13 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                     mCurrenPage = PAGE_HOME;
                 }
                 break;
-//            // 点击发现
-//            case R.id.ll_find:
-//                if (TouristConfig.FIND_CAN_LOOK || !mPresenter.handleTouristControl()) {
-//                    mVpHome.setCurrentItem(PAGE_FIND, false);
-//                }
-//                mCurrenPage = PAGE_FIND;
-//                break;
+            // 点击发现
+            case R.id.ll_find:
+                if (TouristConfig.FIND_CAN_LOOK || !mPresenter.handleTouristControl()) {
+                    mVpHome.setCurrentItem(PAGE_FIND, false);
+                }
+                mCurrenPage = PAGE_FIND;
+                break;
 //            // 添加动态
 //            case R.id.fl_add:
 //                if (TouristConfig.DYNAMIC_CAN_PUBLISH || !mPresenter.handleTouristControl()) {
@@ -312,6 +317,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
         mFragmentList.clear();
         mFragmentList.add(MainFragment.newInstance(this));
+        mFragmentList.add(FindFragment.newInstance());
         if (TouristConfig.MINE_CAN_LOOK || mPresenter.isLogin()) {
             mFragmentList.add(MineFragment.newInstance());
         }
@@ -363,6 +369,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mTvHome.setTextColor(position == PAGE_HOME ? checkedColor : unckeckedColor);
         mIvMine.setImageResource(position == PAGE_MINE ? R.mipmap.common_ico_bottom_me_high : R.mipmap.common_ico_bottom_me_normal);
         mTvMine.setTextColor(position == PAGE_MINE ? checkedColor : unckeckedColor);
+        mIvFind.setImageResource(position == PAGE_FIND ? R.mipmap.common_ico_bottom_discover_high : R.mipmap.common_ico_bottom_discover_normal);
+        mTvFind.setTextColor(position == PAGE_FIND ? checkedColor : unckeckedColor);
     }
 
     /**
