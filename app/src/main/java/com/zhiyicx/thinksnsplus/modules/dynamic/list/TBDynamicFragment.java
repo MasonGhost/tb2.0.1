@@ -129,7 +129,7 @@ public class TBDynamicFragment extends DynamicFragment {
                 break;
             case 1:
                 // 评论
-                if (CAN_COMMENT == mListDatas.get(dataPosition).getCan_comment()) {
+//                if (CAN_COMMENT == mListDatas.get(dataPosition).getCan_comment()) {
                     // 还未发送成功的动态列表不查看详情
                     if (mListDatas.get(dataPosition).getId() == null || mListDatas.get(dataPosition).getId() == 0) {
                         return;
@@ -140,11 +140,11 @@ public class TBDynamicFragment extends DynamicFragment {
                     commentListBundle.putString(DynamicCommentListFragment.DYNAMIC_DETAIL_DATA_TYPE, getDynamicType());
                     commentListIntent.putExtras(commentListBundle);
                     startActivity(commentListIntent);
-                    getActivity().overridePendingTransition(R.anim.slide_in_bottom,-1);
+                    getActivity().overridePendingTransition(R.anim.slide_in_bottom,R.anim.keep_on);
 
-                } else {
-                    showSnackWarningMessage(getString(R.string.dynamic_not_support_comment));
-                }
+//                } else {
+//                    showSnackWarningMessage(getString(R.string.dynamic_not_support_comment));
+//                }
                 break;
 
             case 2:
@@ -207,7 +207,7 @@ public class TBDynamicFragment extends DynamicFragment {
                     ((TextView) followView).setCompoundDrawables(null, null, null,
                             null);
                     ((TextView) followView).setText(getString(R.string.add_follow));
-                    followView.setBackgroundResource(R.drawable.shape_bg_circle_radus_gray);
+                    followView.setBackgroundResource(R.drawable.shape_radus_box_themecolor);
 //                    refreshData();
                     mOtherDynamicPopWindow.hide();
                 })

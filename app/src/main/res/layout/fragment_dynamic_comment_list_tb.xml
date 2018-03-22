@@ -4,121 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/behavior_demo_coordinatorLayout"
     android:layout_width="match_parent"
+    android:background="@color/bgColor"
     android:layout_height="match_parent">
-
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height"
-        app:elevation="0dp">
-
-        <android.support.v7.widget.Toolbar
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/toolbar_height"
-            android:background="@color/white"
-            android:titleMargin="0dp"
-            app:layout_scrollFlags="scroll|enterAlways|snap">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/toolbar_height">
-
-
-                <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_gravity="center_horizontal"
-                        android:gravity="center"
-                        android:layout_marginLeft="@dimen/toolbar_center_margin"
-                        android:layout_marginRight="@dimen/toolbar_center_margin"
-                        android:layout_centerInParent="true"
-                        android:paddingBottom="@dimen/divider_line"
-                        android:paddingLeft="@dimen/toolbar_padding_left"
-                        android:paddingRight="@dimen/toolbar_padding_right">
-                    <com.zhiyicx.baseproject.widget.UserAvatarView
-                            android:id="@+id/iv_user_portrait"
-                            android:layout_width="@dimen/headpic_for_assist"
-                            android:layout_height="@dimen/headpic_for_assist"/>
-                    <TextView
-                            android:id="@+id/tv_toolbar_center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:gravity="center"
-                            android:maxLines="1"
-                            android:textColor="@color/important_for_content"
-                            android:textSize="@dimen/size_sub_title"
-                            android:visibility="invisible"
-                            android:layout_marginLeft="@dimen/spacing_small"
-                            tools:text="xxx"/>
-                </LinearLayout>
-
-                <!--<com.zhiyicx.baseproject.widget.textview.DrawableSizeTextView-->
-                    <!--android:id="@+id/tv_toolbar_center"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:layout_centerInParent="true"-->
-                    <!--android:layout_gravity="center_horizontal"-->
-                    <!--android:layout_marginLeft="@dimen/toolbar_center_margin"-->
-                    <!--android:layout_marginRight="@dimen/toolbar_center_margin"-->
-                    <!--android:drawableLeft="@mipmap/pic_default_portrait1"-->
-                    <!--android:drawablePadding="@dimen/spacing_small"-->
-                    <!--android:ellipsize="end"-->
-                    <!--android:gravity="center"-->
-                    <!--android:maxLines="1"-->
-                    <!--android:paddingBottom="@dimen/divider_line"-->
-                    <!--android:paddingLeft="@dimen/toolbar_padding_left"-->
-                    <!--android:paddingRight="@dimen/toolbar_padding_right"-->
-                    <!--android:textColor="@color/important_for_content"-->
-                    <!--android:textSize="@dimen/size_sub_title"-->
-                    <!--android:visibility="invisible"-->
-                    <!--app:compoundDrawableHeight="@dimen/headpic_for_assist"-->
-                    <!--app:compoundDrawableWidth="@dimen/headpic_for_assist"-->
-                    <!--tools:text="中间"-->
-                    <!--/>-->
-
-                <TextView
-                    android:id="@+id/tv_toolbar_left"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:drawableLeft="@mipmap/topbar_back"
-                    android:drawablePadding="@dimen/spacing_small"
-                    android:gravity="center"
-                    android:paddingBottom="@dimen/divider_line"
-                    android:paddingLeft="@dimen/toolbar_padding_left"
-                    android:paddingRight="@dimen/toolbar_padding_right"
-                    android:textColor="@color/toolbar_text_corlor_normal"
-                    android:textSize="@dimen/toolbar_left_text_size"
-                    tools:text="左边"
-                    />
-
-                <TextView
-                    android:id="@+id/tv_toolbar_right"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:layout_gravity="right"
-                    android:drawablePadding="@dimen/spacing_small"
-                    android:gravity="center"
-                    android:paddingBottom="@dimen/divider_line"
-                    android:paddingLeft="@dimen/toolbar_padding_left"
-                    android:paddingRight="@dimen/toolbar_padding_right"
-                    android:textColor="@color/selector_theme_color_toolbar_text_color"
-                    android:textSize="@dimen/toolbar_right_text_size"
-                    android:visibility="invisible"
-                    tools:text="右边"
-                    />
-
-                <View
-                    android:id="@+id/v_horizontal_line"
-                    style="@style/style_divider_horizontal"
-                    android:layout_alignParentBottom="true"
-                    />
-            </RelativeLayout>
-        </android.support.v7.widget.Toolbar>
-    </android.support.design.widget.AppBarLayout>
 
     <include
         layout="@layout/fragment_tslist"
@@ -132,13 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/white"/>
-
-    <View
-        android:id="@+id/v_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/masked_color"
-        android:visibility="gone"/>
 
     <com.zhiyicx.baseproject.widget.InputLimitView
         android:id="@+id/ilv_comment"
