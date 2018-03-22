@@ -20,6 +20,7 @@ import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -248,6 +249,13 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        if (getActivity() != null) {
+            if (isVisibleToUser) {
+                StatusBarUtils.transparencyBar(getActivity());
+            } else {
+                StatusBarUtils.setStatusBarColor(getActivity(), R.color.themeColor);
+            }
+        }
         reLoadUserInfo(isVisibleToUser);
     }
 
@@ -309,13 +317,18 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     @Override
+    protected int setSystemStatusBarCorlorResource() {
+        return R.color.themeColor;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_mine;
     }
 
     @Override
     protected int setToolBarBackgroud() {
-        return R.color.white;
+        return R.color.themeColor;
     }
 
     @Override

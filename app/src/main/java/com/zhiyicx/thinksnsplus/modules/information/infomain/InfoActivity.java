@@ -23,12 +23,7 @@ public class InfoActivity extends TSActivity<InfoContainerPresenter, InfoContain
 
     @Override
     protected void componentInject() {
-        DaggerInfoContainerComponent.builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .infoContainerPresenterModule(
-                        new InfoContainerPresenterModule(mContanierFragment))
-                .build()
-                .inject(this);
+
     }
 
     @Override

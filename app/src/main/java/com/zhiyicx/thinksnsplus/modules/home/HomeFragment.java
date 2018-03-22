@@ -143,7 +143,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
     @Override
     protected int setToolBarBackgroud() {
-        return R.color.white;
+        return R.color.themeColor;
     }
 
     @Override
@@ -155,6 +155,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     protected boolean setUseStatusView() {
         return false;
     }
+
 
     @Override
     protected boolean showToolBarDivider() {

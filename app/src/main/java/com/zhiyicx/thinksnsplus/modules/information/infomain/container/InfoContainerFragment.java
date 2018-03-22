@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.information.infomain.container;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
@@ -32,6 +34,8 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.Li
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -66,6 +70,9 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
 
     private InfoTypeBean mInfoTypeBean;
 
+    @Inject
+    InfoContainerPresenter mInfoContainerPresenter;
+
     @Override
     protected boolean showToolBarDivider() {
         return true;
@@ -97,7 +104,18 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
 
     @Override
     protected void setLeftClick() {
-       onBackPressed();
+        onBackPressed();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        DaggerInfoContainerComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .infoContainerPresenterModule(
+                        new InfoContainerPresenterModule(this))
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -276,7 +294,8 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
             mPayAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
                     .item6Str(getString(R.string.info_publish_go_to_next))
-                    .desStr(getString(R.string.info_publish_hint_pay,mPresenter.getSystemConfigBean().getNewsPayContribute(), mPresenter.getIntegrationGoldName()))
+                    .desStr(getString(R.string.info_publish_hint_pay, mPresenter.getSystemConfigBean().getNewsPayContribute(), mPresenter
+                            .getIntegrationGoldName()))
                     .bottomStr(getString(R.string.cancel))
                     .isOutsideTouch(true)
                     .isFocus(true)

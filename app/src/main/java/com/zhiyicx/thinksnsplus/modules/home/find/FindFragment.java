@@ -83,10 +83,6 @@ public class FindFragment extends TSFragment {
         return R.layout.fragment_find;
     }
 
-    @Override
-    protected int setToolBarBackgroud() {
-        return R.color.white;
-    }
 
     @Override
     protected boolean showToolBarDivider() {

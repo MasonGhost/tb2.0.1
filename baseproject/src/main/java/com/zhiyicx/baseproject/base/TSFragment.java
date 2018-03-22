@@ -153,6 +153,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             StatusBarUtils.setStatusBarColor(getActivity(), setToolBarBackgroud());
             linearLayout.setFitsSystemWindows(true);
         }
+        if (setSystemStatusBarCorlorResource() != 0) {
+            StatusBarUtils.setStatusBarColor(getActivity(), setSystemStatusBarCorlorResource());
+        }
         // 是否设置状态栏文字图标灰色，对 小米、魅族、Android 6.0 及以上系统有效
         if (setStatusbarGrey()) {
             StatusBarUtils.statusBarLightMode(getActivity());
@@ -201,6 +204,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         return linearLayout;
     }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -573,6 +577,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         return Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
+    protected int setSystemStatusBarCorlorResource() {
+        return 0;
+    }
 
     /**
      * 是否显示toolbar,默认显示
