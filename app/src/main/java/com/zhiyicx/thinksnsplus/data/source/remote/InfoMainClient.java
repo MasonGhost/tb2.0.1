@@ -36,6 +36,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAIL_RELA
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DIG_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_FOLLOW_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_GET_COMMENT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_LIST_TB;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_LIST_V2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REPORT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS;
@@ -233,4 +234,22 @@ public interface InfoMainClient {
     @FormUrlEncoded
     @POST(APP_PATH_INFO_REPORT)
     Observable<ReportResultBean> reportInfo(@Path("news_id") String newsId, @Field("reason") String reason);
+
+
+    /*******************************************  TB  *********************************************/
+
+
+    /**
+     * 获取资讯列表
+     *
+     * @param key  搜索用的关键字
+     * @param type top-头条资讯 follow-关注机构资讯 默认top
+     */
+    @GET(APP_PATH_INFO_LIST_TB)
+    Observable<List<InfoListDataBean>> getInfoListTB(@Query("cate_id") String cate_id,
+                                                     @Query("after") Long max_id,
+                                                     @Query("limit") Long limit,
+                                                     @Query("page") Long page,
+                                                     @Query("key") String key,
+                                                     @Query("type") String type);
 }

@@ -70,7 +70,18 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     private List<InfoCommentListBean> commentList;
     @Convert(converter = InfoRelateListConvert.class, columnType = String.class)
     private List<InfoListDataBean> relateInfoList;
+    /*
+        是否开启评论:1-开启0-关闭
+     */
+    private int comment_status;
 
+    public int getComment_status() {
+        return comment_status;
+    }
+
+    public void setComment_status(int comment_status) {
+        this.comment_status = comment_status;
+    }
 
     public String getText_content() {
         return text_content;
@@ -446,45 +457,6 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     }
 
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.id);
-        dest.writeLong(this.user_id);
-        dest.writeValue(this.info_type);
-        dest.writeInt(this.is_collection_news);
-        dest.writeInt(this.is_digg_news);
-        dest.writeString(this.title);
-        dest.writeString(this.content);
-        dest.writeString(this.text_content);
-        dest.writeString(this.from);
-        dest.writeString(this.created_at);
-        dest.writeString(this.updated_at);
-        dest.writeParcelable(this.image, flags);
-        dest.writeInt(this.audit_status);
-        dest.writeByte(this.is_pinned ? (byte) 1 : (byte) 0);
-        dest.writeString(this.subject);
-        dest.writeByte(this.has_collect ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.has_like ? (byte) 1 : (byte) 0);
-        dest.writeParcelable(this.category, flags);
-        dest.writeByte(this.isTop ? (byte) 1 : (byte) 0);
-        dest.writeString(this.author);
-        dest.writeInt(this.hits);
-        dest.writeTypedList(this.tags);
-        dest.writeInt(this.digg_count);
-        dest.writeInt(this.comment_count);
-        dest.writeInt(this.is_recommend);
-        dest.writeInt(this.audit_count);
-        dest.writeTypedList(this.digList);
-        dest.writeTypedList(this.commentList);
-        dest.writeTypedList(this.relateInfoList);
-    }
-
     /**
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
@@ -507,7 +479,9 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         return commentList;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 1195658147)
     public synchronized void resetCommentList() {
         commentList = null;
@@ -549,6 +523,95 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         myDao.update(this);
     }
 
+    @Generated(hash = 395583725)
+    public InfoListDataBean(Long id, long user_id, Long info_type, int is_collection_news, int is_digg_news,
+            String title, String content, String text_content, String from, String created_at, String updated_at,
+            StorageBean image, int audit_status, boolean is_pinned, String subject, boolean has_collect,
+            boolean has_like, InfoCategory category, boolean isTop, String author, int hits,
+            List<UserTagBean> tags, int digg_count, int comment_count, int is_recommend, int audit_count,
+            List<InfoDigListBean> digList, List<InfoListDataBean> relateInfoList, int comment_status) {
+        this.id = id;
+        this.user_id = user_id;
+        this.info_type = info_type;
+        this.is_collection_news = is_collection_news;
+        this.is_digg_news = is_digg_news;
+        this.title = title;
+        this.content = content;
+        this.text_content = text_content;
+        this.from = from;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.image = image;
+        this.audit_status = audit_status;
+        this.is_pinned = is_pinned;
+        this.subject = subject;
+        this.has_collect = has_collect;
+        this.has_like = has_like;
+        this.category = category;
+        this.isTop = isTop;
+        this.author = author;
+        this.hits = hits;
+        this.tags = tags;
+        this.digg_count = digg_count;
+        this.comment_count = comment_count;
+        this.is_recommend = is_recommend;
+        this.audit_count = audit_count;
+        this.digList = digList;
+        this.relateInfoList = relateInfoList;
+        this.comment_status = comment_status;
+    }
+
+    /**
+     * Used to resolve relations
+     */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /**
+     * Used for active entity operations.
+     */
+    @Generated(hash = 438734104)
+    private transient InfoListDataBeanDao myDao;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeLong(this.user_id);
+        dest.writeValue(this.info_type);
+        dest.writeInt(this.is_collection_news);
+        dest.writeInt(this.is_digg_news);
+        dest.writeString(this.title);
+        dest.writeString(this.content);
+        dest.writeString(this.text_content);
+        dest.writeString(this.from);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeParcelable(this.image, flags);
+        dest.writeInt(this.audit_status);
+        dest.writeByte(this.is_pinned ? (byte) 1 : (byte) 0);
+        dest.writeString(this.subject);
+        dest.writeByte(this.has_collect ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.has_like ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(this.category, flags);
+        dest.writeByte(this.isTop ? (byte) 1 : (byte) 0);
+        dest.writeString(this.author);
+        dest.writeInt(this.hits);
+        dest.writeTypedList(this.tags);
+        dest.writeInt(this.digg_count);
+        dest.writeInt(this.comment_count);
+        dest.writeInt(this.is_recommend);
+        dest.writeInt(this.audit_count);
+        dest.writeTypedList(this.digList);
+        dest.writeTypedList(this.commentList);
+        dest.writeTypedList(this.relateInfoList);
+        dest.writeInt(this.comment_status);
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 338806337)
     public void __setDaoSession(DaoSession daoSession) {
@@ -587,44 +650,7 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.digList = in.createTypedArrayList(InfoDigListBean.CREATOR);
         this.commentList = in.createTypedArrayList(InfoCommentListBean.CREATOR);
         this.relateInfoList = in.createTypedArrayList(InfoListDataBean.CREATOR);
-    }
-
-    @Generated(hash = 169543863)
-    public InfoListDataBean(Long id, long user_id, Long info_type, int is_collection_news,
-            int is_digg_news, String title, String content, String text_content, String from,
-            String created_at, String updated_at, StorageBean image, int audit_status,
-            boolean is_pinned, String subject, boolean has_collect, boolean has_like,
-            InfoCategory category, boolean isTop, String author, int hits, List<UserTagBean> tags,
-            int digg_count, int comment_count, int is_recommend, int audit_count,
-            List<InfoDigListBean> digList, List<InfoListDataBean> relateInfoList) {
-        this.id = id;
-        this.user_id = user_id;
-        this.info_type = info_type;
-        this.is_collection_news = is_collection_news;
-        this.is_digg_news = is_digg_news;
-        this.title = title;
-        this.content = content;
-        this.text_content = text_content;
-        this.from = from;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.image = image;
-        this.audit_status = audit_status;
-        this.is_pinned = is_pinned;
-        this.subject = subject;
-        this.has_collect = has_collect;
-        this.has_like = has_like;
-        this.category = category;
-        this.isTop = isTop;
-        this.author = author;
-        this.hits = hits;
-        this.tags = tags;
-        this.digg_count = digg_count;
-        this.comment_count = comment_count;
-        this.is_recommend = is_recommend;
-        this.audit_count = audit_count;
-        this.digList = digList;
-        this.relateInfoList = relateInfoList;
+        this.comment_status = in.readInt();
     }
 
     public static final Creator<InfoListDataBean> CREATOR = new Creator<InfoListDataBean>() {
@@ -638,11 +664,5 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
             return new InfoListDataBean[size];
         }
     };
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 438734104)
-    private transient InfoListDataBeanDao myDao;
 }
 

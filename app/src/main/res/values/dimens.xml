@@ -141,4 +141,5 @@
     <dimen name="mechainism_name_hint_with">70dp</dimen>
     <dimen name="tb_mechainism_divier_marginleft">100dp</dimen>
     <dimen name="share_qr_code_with">140dp</dimen>
+    <dimen name="headpic_for_info_list">16dp</dimen>
 </resources>

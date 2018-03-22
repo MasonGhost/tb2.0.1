@@ -74,15 +74,12 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
             content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, realData.getContent());
             content = content.replaceAll(MarkdownConfig.NORMAL_FORMAT, "");
         }
+        ImageUtils.loadImageDefault(holder.getView(R.id.iv_merhcain_headpic),ImageUtils.getUserAvatar(realData.getUser_id()));
         holder.setText(R.id.tv_info_content, content);
-        // 投稿来源，浏览数，时间
-        String from = title.getContext().getString(R.string
-                .info_publish_original).equals(realData.getFrom()) ?
-                realData.getAuthor() : realData.getFrom();
-        String infoData = String.format(title.getContext().getString(R.string.info_list_count)
-                , from, ConvertUtils.numberConvert(realData.getHits()), TimeUtils.getTimeFriendlyNormal(realData
-                        .getCreated_at()));
-        holder.setText(R.id.item_info_timeform, infoData);
+        holder.setText(R.id.item_info_look_num, ConvertUtils.numberConvert(realData.getHits()));
+        holder.setText(R.id.item_info_comment_num, ConvertUtils.numberConvert(realData.getComment_count()));
+        holder.setText(R.id.item_info_timeform, TimeUtils.getTimeFriendlyNormal(realData
+                .getCreated_at()));
 
         if (realData.getImage() == null) {
             imageView.setVisibility(View.GONE);
@@ -114,12 +111,12 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
                     .into(imageView);
         }
         // 来自单独分开
-        String category = realData.getCategory() == null || (realData.getCategory() != null && realData.getInfo_type() != null && realData
-                .getInfo_type() != -1) ? "" : realData.getCategory().getName();
-        holder.setVisible(R.id.tv_from_channel, category.isEmpty() ? View.GONE : View.VISIBLE);
-        holder.setText(R.id.tv_from_channel, category);
+//        String category = realData.getCategory() == null || (realData.getCategory() != null && realData.getInfo_type() != null && realData
+//                .getInfo_type() != -1) ? "" : realData.getCategory().getName();
+//        holder.setVisible(R.id.tv_from_channel, category.isEmpty() ? View.GONE : View.VISIBLE);
+//        holder.setText(R.id.tv_from_channel, category);
         // 是否置顶
-        holder.setVisible(R.id.tv_top_flag, realData.isTop() ? View.VISIBLE : View.GONE);
+//        holder.setVisible(R.id.tv_top_flag, realData.isTop() ? View.VISIBLE : View.GONE);
 
     }
 

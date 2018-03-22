@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.home.main;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,7 +13,6 @@ import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
-import com.zhiyicx.baseproject.widget.photoview.Compat;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -24,12 +22,12 @@ import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.TBDynamicFragment;
-import com.zhiyicx.thinksnsplus.modules.information.infomain.container.InfoContainerFragment;
-import com.zhiyicx.thinksnsplus.modules.tb.info.TBInfoContainerFragment;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListPresenter;
+import com.zhiyicx.thinksnsplus.modules.tb.info.TBHomeInfoListFragment;
 import com.zhiyicx.thinksnsplus.modules.tb.search.SearchMechanismUserActivity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -213,7 +211,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
         if (mFragmentList == null) {
             mFragmentList = new ArrayList();
             mFragmentList.add(TBDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));
-            mFragmentList.add(new TBInfoContainerFragment());
+            mFragmentList.add(TBHomeInfoListFragment.newInstance(InfoListPresenter.TB_INFO_TYPE_TOP));
 
         }
         return mFragmentList;
