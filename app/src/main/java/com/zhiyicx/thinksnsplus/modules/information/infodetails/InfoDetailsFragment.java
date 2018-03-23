@@ -223,7 +223,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         setDigg(mPresenter.isDiged());
 
         // 投稿中的资讯隐藏底部操作以及打赏
-        mDdDynamicTool.setVisibility(mInfoMation.getAudit_status() == 0 ? View.VISIBLE : View.GONE);
+//        mDdDynamicTool.setVisibility(mInfoMation.getAudit_status() == 0 ? View.VISIBLE : View.GONE);
 //        mInfoDetailHeader.setInfoReviewIng(mInfoMation.getAudit_status() == 0 ? View.VISIBLE : View.GONE);
     }
 
