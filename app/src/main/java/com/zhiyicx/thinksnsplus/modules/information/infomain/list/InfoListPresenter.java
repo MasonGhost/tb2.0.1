@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoRecommendBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListDataBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseInfoRepository;
@@ -17,7 +18,9 @@ import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -85,11 +88,14 @@ public class InfoListPresenter extends AppBasePresenter<InfoMainContract.InfoLis
                         @Override
                         protected void onSuccess(List<InfoListDataBean> data) {
                             List<BaseListBean> list = new ArrayList<>();
+                            Set<UserInfoBean> users = new HashSet<>();
+                            mInfoListDataBeanGreenDao.saveMultiData(data);
                             for (InfoListDataBean listDataBean : data) {
                                 listDataBean.setInfo_type(0L);
+                                users.add(listDataBean.getUser());
                             }
                             list.addAll(data);
-                            mInfoListDataBeanGreenDao.saveMultiData(data);
+                            mUserInfoBeanGreenDao.insertOrReplace(new ArrayList<>(users));
                             mRootView.onNetResponseSuccess(list, isLoadMore);
                         }
 

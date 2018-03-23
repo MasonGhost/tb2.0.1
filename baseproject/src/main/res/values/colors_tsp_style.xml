@@ -44,6 +44,7 @@
     时间、提示文字、色块类按钮不可点击状态 等次要信息
     -->
     <color name="general_for_hint">#cccccc</color>
+    <color name="general_for_hint_tb">#848484</color>
     <color name="general_for_hint_alpha">#80cccccc</color>
     <!--
     稍明显的分割线，少量使用

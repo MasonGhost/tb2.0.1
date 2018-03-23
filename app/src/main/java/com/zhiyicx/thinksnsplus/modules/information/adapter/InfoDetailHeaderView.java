@@ -89,6 +89,8 @@ public class InfoDetailHeaderView extends BaseWebLoad {
     private TextView mTitle;
     private TextView mChannel;
     private TextView mFrom;
+    private TextView mItemInfoAuthor;
+    private TextView mItemInfoMerchainName;
     private DynamicHorizontalStackIconView mDigListView;
     private ReWardView mReWardView;
     private FrameLayout mCommentHintView;
@@ -123,6 +125,7 @@ public class InfoDetailHeaderView extends BaseWebLoad {
         mContent = (MarkdownView) mInfoDetailHeader.findViewById(R.id.info_detail_content);
         mContentSubject = (MarkdownView) mInfoDetailHeader.findViewById(R.id.info_content_subject);
         mDigListView = (DynamicHorizontalStackIconView) mInfoDetailHeader.findViewById(R.id.detail_dig_view);
+        mDigListView.setVisibility(View.GONE);
         mReWardView = (ReWardView) mInfoDetailHeader.findViewById(R.id.v_reward);
         mCommentHintView = (FrameLayout) mInfoDetailHeader.findViewById(R.id.info_detail_comment);
         mCommentCountView = (TextView) mInfoDetailHeader.findViewById(R.id.tv_comment_count);
@@ -130,28 +133,31 @@ public class InfoDetailHeaderView extends BaseWebLoad {
         mFtlRelate = (TagFlowLayout) mInfoDetailHeader.findViewById(R.id.fl_tags);
         mRvRelateInfo = (RecyclerView) mInfoDetailHeader.findViewById(R.id.rv_relate_info);
         mIvDetail = (ImageView) mInfoDetailHeader.findViewById(R.id.iv_detail);
+        mItemInfoAuthor=(TextView) mInfoDetailHeader.findViewById(R.id.item_info_author);
+        mItemInfoMerchainName=(TextView) mInfoDetailHeader.findViewById(R.id.item_info_merchain_name);
         initAdvert(context, adverts);
     }
 
     public void setDetail(InfoListDataBean infoMain) {
         if (infoMain != null) {
             mTitle.setText(infoMain.getTitle());
-            mChannel.setVisibility(infoMain.getCategory() == null ? GONE : VISIBLE);
-            mChannel.setText(infoMain.getCategory() == null ? "" : infoMain.getCategory().getName());
-            String from = mContext.getString(R.string.info_publish_original).equals(infoMain.getFrom()) ?
-                    infoMain.getAuthor() : infoMain.getFrom();
+//            mChannel.setVisibility(infoMain.getCategory() == null ? GONE : VISIBLE);
+//            mChannel.setText(infoMain.getCategory() == null ? "" : infoMain.getCategory().getName());
+            String from = TimeUtils.getYeayMonthDay(TimeUtils.utc2LocalLong(infoMain.getCreated_at()));
             if (!TextUtils.isEmpty(from)) {
                 mFrom.setText(from);
             }
+            mItemInfoAuthor.setText(infoMain.getAuthor());
+            mItemInfoMerchainName.setText(infoMain.getUser().getName());
             // 引用
-            if (!TextUtils.isEmpty(infoMain.getSubject())) {
-                infoMain.setSubject(InfoPublishBean.DEFALUT_SUBJECT + infoMain.getSubject() + "\n\n");
-                mContentSubject.setVisibility(VISIBLE);
-                mContentSubject.addStyleSheet(MarkDownRule.generateStandardQuoteStyle());
-                mContentSubject.loadMarkdown(infoMain.getSubject());
-            } else {
-                mContentSubject.setVisibility(GONE);
-            }
+//            if (!TextUtils.isEmpty(infoMain.getSubject())) {
+//                infoMain.setSubject(InfoPublishBean.DEFALUT_SUBJECT + infoMain.getSubject() + "\n\n");
+//                mContentSubject.setVisibility(VISIBLE);
+//                mContentSubject.addStyleSheet(MarkDownRule.generateStandardQuoteStyle());
+//                mContentSubject.loadMarkdown(infoMain.getSubject());
+//            } else {
+//                mContentSubject.setVisibility(GONE);
+//            }
             // 资讯contente
             if (!TextUtils.isEmpty(infoMain.getContent())) {
                 mContent.addStyleSheet(MarkDownRule.generateStandardStyle());
@@ -274,28 +280,28 @@ public class InfoDetailHeaderView extends BaseWebLoad {
     }
 
     public void updateDigList(InfoListDataBean infoMain) {
-        if (infoMain == null) {
-            return;
-        }
-
-        mDigListView.setDigCount(infoMain.getDigg_count());
-        mDigListView.setPublishTime(infoMain.getCreated_at());
-        mDigListView.setViewerCount(infoMain.getHits());
-        // 设置点赞头像
-        mDigListView.setDigUserHeadIconInfo(infoMain.getDigList());
-
-        // 点赞信息
-        if (infoMain.getDigList() != null
-                && infoMain.getDigList().size() > 0) {
-            // 设置跳转到点赞列表
-            mDigListView.setDigContainerClickListener(digContainer -> {
-                Intent intent = new Intent(mContext, InfoDigListActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(InfoDigListActivity.BUNDLE_INFO_DIG, infoMain);
-                intent.putExtra(InfoDigListActivity.BUNDLE_INFO_DIG, bundle);
-                mContext.startActivity(intent);
-            });
-        }
+//        if (infoMain == null) {
+//            return;
+//        }
+//
+//        mDigListView.setDigCount(infoMain.getDigg_count());
+//        mDigListView.setPublishTime(infoMain.getCreated_at());
+//        mDigListView.setViewerCount(infoMain.getHits());
+//        // 设置点赞头像
+//        mDigListView.setDigUserHeadIconInfo(infoMain.getDigList());
+//
+//        // 点赞信息
+//        if (infoMain.getDigList() != null
+//                && infoMain.getDigList().size() > 0) {
+//            // 设置跳转到点赞列表
+//            mDigListView.setDigContainerClickListener(digContainer -> {
+//                Intent intent = new Intent(mContext, InfoDigListActivity.class);
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable(InfoDigListActivity.BUNDLE_INFO_DIG, infoMain);
+//                intent.putExtra(InfoDigListActivity.BUNDLE_INFO_DIG, bundle);
+//                mContext.startActivity(intent);
+//            });
+//        }
     }
 
     /**
@@ -329,7 +335,7 @@ public class InfoDetailHeaderView extends BaseWebLoad {
         List<InfoListDataBean> infoListDataBeen = infoMain.getRelateInfoList();
         if (infoListDataBeen != null && infoListDataBeen.size() > 0) {
             if (!isReviewIng) {
-                mInfoRelateList.setVisibility(VISIBLE);
+//                mInfoRelateList.setVisibility(VISIBLE);
                 mFtlRelate.setVisibility(VISIBLE);
                 mRvRelateInfo.setVisibility(VISIBLE);
             }
@@ -405,7 +411,7 @@ public class InfoDetailHeaderView extends BaseWebLoad {
             };
             mRvRelateInfo.setAdapter(adapter);
         } else {
-            mInfoRelateList.setVisibility(GONE);
+//            mInfoRelateList.setVisibility(GONE);
             mFtlRelate.setVisibility(GONE);
             mRvRelateInfo.setVisibility(GONE);
         }
@@ -431,9 +437,9 @@ public class InfoDetailHeaderView extends BaseWebLoad {
         isReviewIng = true;
         setReWardViewVisible(visible);
         setAdvertViewVisible(visible);
-        mInfoRelateList.setVisibility(visible);
+//        mInfoRelateList.setVisibility(visible);
         mFtlRelate.setVisibility(visible);
-        mDigListView.setVisibility(visible);
+//        mDigListView.setVisibility(visible);
         mRvRelateInfo.setVisibility(visible);
     }
 

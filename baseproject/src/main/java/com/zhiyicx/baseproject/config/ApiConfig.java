@@ -28,7 +28,8 @@ public class ApiConfig {
 
     public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 自定义证书时使用false
     public static final String APP_DOMAIN_DEV = "http://dev.zhibocloud.cn/";// 模拟在线正式服务器
-    public static final String APP_DOMAIN_FORMAL = "http://www.tokenbook.cloud/";// 在线测试服务器
+//    public static final String APP_DOMAIN_FORMAL = "http://www.tokenbook.cloud/";// 在线测试服务器
+    public static final String APP_DOMAIN_FORMAL = "http://192.168.0.199:8085/";// 在线测试服务器
     public static final String APP_DOMAIN_TEST = "https://www.tokenbook.one/";// 正式服务器
     public static final String APP_DOMAIN_FOR_TEARCHER_QIAO = "http://192.168.2.200/";// 乔老师本地服务器
 

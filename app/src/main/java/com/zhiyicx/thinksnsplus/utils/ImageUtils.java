@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 
+import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
@@ -435,14 +436,29 @@ public class ImageUtils {
      * @param url       image resuorce path
      */
     public static void loadImageDefault(ImageView imageView, String url) {
+        loadImageDefault(imageView, url, false);
+
+    }
+
+    /**
+     * 默认加载图片
+     *
+     * @param imageView target view to display image
+     * @param url       image resuorce path
+     */
+    public static void loadImageDefault(ImageView imageView, String url, boolean useCircle) {
         if (checkImageContext(imageView)) {
             return;
         }
-        Glide.with(imageView.getContext())
+        DrawableRequestBuilder builder;
+        builder = Glide.with(imageView.getContext())
                 .load(url)
                 .placeholder(R.drawable.shape_default_image)
-                .placeholder(R.drawable.shape_default_error_image)
-                .into(imageView);
+                .placeholder(R.drawable.shape_default_error_image);
+        if (useCircle) {
+            builder.transform(new GlideCircleTransform(imageView.getContext().getApplicationContext()));
+        }
+        builder.into(imageView);
 
     }
 

@@ -129,7 +129,7 @@ public class TBDynamicFragment extends DynamicFragment {
                 break;
             case 1:
                 // 评论
-//                if (CAN_COMMENT == mListDatas.get(dataPosition).getCan_comment()) {
+                if (CAN_COMMENT == mListDatas.get(dataPosition).getCan_comment()) {
                     // 还未发送成功的动态列表不查看详情
                     if (mListDatas.get(dataPosition).getId() == null || mListDatas.get(dataPosition).getId() == 0) {
                         return;
@@ -142,9 +142,9 @@ public class TBDynamicFragment extends DynamicFragment {
                     startActivity(commentListIntent);
                     getActivity().overridePendingTransition(R.anim.slide_in_bottom,R.anim.keep_on);
 
-//                } else {
-//                    showSnackWarningMessage(getString(R.string.dynamic_not_support_comment));
-//                }
+                } else {
+                    showSnackWarningMessage(getString(R.string.dynamic_not_support_comment));
+                }
                 break;
 
             case 2:
