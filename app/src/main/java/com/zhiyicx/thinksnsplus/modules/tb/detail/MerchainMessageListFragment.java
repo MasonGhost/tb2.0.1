@@ -10,11 +10,14 @@ import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbmerchianmessage.MerchianMassageBean;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionListPresenterModule;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.DaggerContributionListComponent;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,12 +32,13 @@ import javax.inject.Inject;
  * @Date 2018/3/23
  * @Contact master.jungle68@gmail.com
  */
-public class MerchainMessageListFragment extends TSListFragment<MerchainMessageListContract.Presenter, ContributionData>
+public class MerchainMessageListFragment extends TSListFragment<MerchainMessageListContract.Presenter, MerchianMassageBean.DataBean>
         implements MerchainMessageListContract.View {
     private static final String BUNDLE_DATA_USER = "merchain_user";
     @Inject
     MerchainMessageListPresenter mContributionListPresenter;
 
+    private UserInfoBean mUserInfoBean;
 
     public static MerchainMessageListFragment newInstance(String type) {
         MerchainMessageListFragment contributionListFragment = new MerchainMessageListFragment();
@@ -47,10 +51,12 @@ public class MerchainMessageListFragment extends TSListFragment<MerchainMessageL
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DaggerContributionListComponent.builder()
+        DaggerMerchainMessageListComponent
+                .builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .contributionListPresenterModule(new ContributionListPresenterModule(this))
+                .merchianMessageListPresenterModule(new MerchianMessageListPresenterModule(this))
                 .build().inject(this);
+        mUserInfoBean = (UserInfoBean) getArguments().getSerializable(BUNDLE_DATA_USER);
     }
 
     @Override
@@ -70,36 +76,14 @@ public class MerchainMessageListFragment extends TSListFragment<MerchainMessageL
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
+        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
+        MerchainMessageListItemDynamic merchainMessageListItemDynamic = new MerchainMessageListItemDynamic(mUserInfoBean);
+        MerchainMessageListItemNews merchainMessageListItemNews = new MerchainMessageListItemNews(mUserInfoBean);
+        adapter.addItemViewDelegate(merchainMessageListItemNews);
+        adapter.addItemViewDelegate(merchainMessageListItemDynamic);
 
-        CommonAdapter adapter = new CommonAdapter<ContributionData>(mActivity, R.layout.item_contribution, mListDatas) {
-            @Override
-            protected void convert(ViewHolder holder, ContributionData contributionData, int position) {
-                // 设置头像
-                UserAvatarView userAvatarView = holder.getView(R.id.iv_headpic);
-                if (contributionData.getInviter() != null) {
-                    ImageUtils.loadCircleUserHeadPic(contributionData.getInviter(), userAvatarView);
-                }
-                TextView tvRank = holder.getView(R.id.tv_rank);
-                // 排名
-                holder.setText(R.id.tv_rank, String.valueOf(position + 1));
-
-                // 用户名
-                if (contributionData.getInviter() != null) {
-                    holder.setText(R.id.tv_name, contributionData.getInviter().getName());
-                }
-
-                // TBMark
-                holder.setText(R.id.tv_total, ConvertUtils.numberConvert(contributionData.getObtain()));
-
-            }
-        };
         return adapter;
 
     }
 
-
-    @Override
-    protected Long getMaxId(@NotNull List<ContributionData> data) {
-        return (long) mListDatas.size();
-    }
 }

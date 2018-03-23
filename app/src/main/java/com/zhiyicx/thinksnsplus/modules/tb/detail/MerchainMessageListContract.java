@@ -2,7 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.tb.detail;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
-import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
+import com.zhiyicx.thinksnsplus.data.beans.tbmerchianmessage.MerchianMassageBean;
 
 /**
  * @Describe
@@ -11,7 +11,7 @@ import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
  * @Contact master.jungle68@gmail.com
  */
 public interface MerchainMessageListContract {
-    interface View extends ITSListView<ContributionData,Presenter>{
+    interface View extends ITSListView< MerchianMassageBean.DataBean,Presenter>{
     }
-    interface Presenter extends ITSListPresenter<ContributionData>{}
+    interface Presenter extends ITSListPresenter< MerchianMassageBean.DataBean>{}
 }

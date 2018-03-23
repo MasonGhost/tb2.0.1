@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.tb.detail;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.tbmerchianmessage.MerchianMassageBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
 
@@ -61,7 +62,7 @@ public class MerchainMessageListPresenter extends AppBasePresenter<MerchainMessa
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<ContributionData> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(@NotNull List< MerchianMassageBean.DataBean> data, boolean isLoadMore) {
         return false;
     }
 }
