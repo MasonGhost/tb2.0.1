@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -20,8 +21,11 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,6 +46,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class RewardFragment extends TSFragment<RewardContract.Presenter> implements RewardContract.View {
     public static final String BUNDLE_REWARD_TYPE = "reward_type";
     public static final String BUNDLE_SOURCE_ID = "sourceId";
+    public static final String BUNDLE_SOURCE_USER = "user";
 
     @BindView(R.id.ll_recharge_choose_money_item)
     LinearLayout mLlRechargeChooseMoneyItem;
@@ -59,15 +64,26 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     EditText mEtInput;
     @BindView(R.id.bt_top)
     TextView mBtTop;
+    @BindView(R.id.iv_cancle)
+    ImageView mIvCancle;
 
     @BindView(R.id.tv_custom_money)
     TextView mCustomMoney;
 
+    @BindView(R.id.ll_content)
+    View mLlContent;
+    @BindView(R.id.ll_success)
+    View mLlSuccess;
+    @BindView(R.id.iv_avatar)
+    ImageView mImageView;
+    @BindView(R.id.tv_name)
+    TextView mTvName;
     /**
      * reward type
      */
     private RewardType mRewardType;
     private long mSourceId;
+    private UserInfoBean mUserInfoBean;
 
 
     private double mRewardMoney; // money choosed for reward
@@ -94,7 +110,17 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
 
     @Override
     protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
         return true;
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
     }
 
     @Override
@@ -105,6 +131,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
         }
         mSystemConfigBean = mPresenter.getSystemConfigBean();
         mRewardType = (RewardType) getArguments().getSerializable(BUNDLE_REWARD_TYPE);
+        mUserInfoBean = (UserInfoBean) getArguments().getSerializable(BUNDLE_SOURCE_USER);
         mSourceId = getArguments().getLong(BUNDLE_SOURCE_ID);
     }
 
@@ -131,6 +158,12 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     protected void initData() {
         initRechargeLables();
         mCustomMoney.setText(getString(R.string.yuan));
+        if (mUserInfoBean != null) {
+            mImageView.setVisibility(View.VISIBLE);
+            ImageUtils.loadImageDefault(mImageView, mUserInfoBean.getAvatar(), true);
+            mTvName.setVisibility(View.VISIBLE);
+            mTvName.setText(mUserInfoBean.getName());
+        }
     }
 
     @Override
@@ -146,8 +179,10 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
 
     @Override
     public void rewardSuccess() {
-        getActivity().setResult(RESULT_OK);
-        getActivity().finish();
+        mLlContent.setVisibility(View.GONE);
+        mLlSuccess.setVisibility(View.VISIBLE);
+        mBtTop.setEnabled(true);
+        mBtTop.setText(getString(R.string.haode));
     }
 
     private void initRechargeLables() {
@@ -198,7 +233,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
 
     @Override
     public void showSnackErrorMessage(String message) {
-        super.showSnackErrorMessage(message);
+        ToastUtils.showToast(message);
         configSureButton();
     }
 
@@ -209,14 +244,27 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    if (!mEtInput.getText().toString().isEmpty() && mRewardMoney != (int) mRewardMoney) {
-                        DeviceUtils.hideSoftKeyboard(getContext(), mBtTop);
-                        initStickTopInstructionsPop();
+                    if (mBtTop.getText().equals(getString(R.string.haode))) {
+                        setresultSuccess();
                     } else {
-                        setSureBtEnable(false);
-                        mPresenter.reward(PayConfig.realCurrencyYuan2Fen(mRewardMoney), mRewardType, mSourceId);
+
+                        if (!mEtInput.getText().toString().isEmpty() && mRewardMoney != (int) mRewardMoney) {
+                            DeviceUtils.hideSoftKeyboard(getContext(), mBtTop);
+                            initStickTopInstructionsPop();
+                        } else {
+                            setSureBtEnable(false);
+                            mPresenter.reward(PayConfig.realCurrencyYuan2Fen(mRewardMoney), mRewardType, mSourceId);
+                        }
                     }
                 });// 传入的是真实货币分单位
+
+        // 取消
+        RxView.clicks(mIvCancle)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> {
+                    getActivity().finish();
+                });
 
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
             String mRechargeMoneyStr = charSequence.toString();
@@ -265,6 +313,11 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
 
     }
 
+    private void setresultSuccess() {
+        getActivity().setResult(RESULT_OK);
+        getActivity().finish();
+    }
+
     /**
      * 设置自定义金额数量
      */
@@ -274,7 +327,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
 
     private void configSureButton() {
         setSureBtEnable(mRewardMoney > 0);
-        mToolbarRight.setEnabled(mRewardMoney > 0);
+//        mToolbarRight.setEnabled(mRewardMoney > 0);
     }
 
     @Override
@@ -286,12 +339,15 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
      * @param context    not application context clink
      * @param rewardType reward type {@link RewardType}
      */
-    public static void startRewardActivity(Context context, RewardType rewardType, long sourceId) {
+    public static void startRewardActivity(Context context, RewardType rewardType, long sourceId, UserInfoBean userInfoBean) {
 
         Intent intent = new Intent(context, RewardActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable(BUNDLE_REWARD_TYPE, rewardType);
         bundle.putSerializable(BUNDLE_SOURCE_ID, sourceId);
+        if (userInfoBean != null) {
+            bundle.putSerializable(BUNDLE_SOURCE_USER, userInfoBean);
+        }
         intent.putExtras(bundle);
         if (context instanceof Activity) {
             ((Activity) context).startActivityForResult(intent, rewardType.id);
@@ -300,6 +356,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
         }
 
     }
+
 
     public void initStickTopInstructionsPop() {
         if (mStickTopInstructionsPopupWindow != null) {

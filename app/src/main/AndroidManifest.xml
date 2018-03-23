@@ -526,8 +526,9 @@
         <activity
             android:name=".modules.wallet.reward.RewardActivity"
             android:hardwareAccelerated="false"
-            android:theme="@style/popup_dialog_anim"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+
+            android:theme="@style/NoTitleTranslucentTheme"/>
         <activity
             android:name=".modules.wallet.reward.list.RewardListActivity"
             android:screenOrientation="portrait"/>

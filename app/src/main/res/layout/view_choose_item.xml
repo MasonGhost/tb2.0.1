@@ -9,17 +9,18 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_large"
         android:paddingLeft="@dimen/spacing_mid"
+        android:layout_gravity="center_horizontal"
         android:paddingRight="@dimen/spacing_mid"
         android:text="@string/select_topday"
-        android:textColor="@color/normal_for_assist_text"
-        android:textSize="@dimen/size_content_comment"/>
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/size_content"/>
 
     <RadioGroup
         android:id="@+id/rb_days_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/select_days_margin_bottom"
-        android:layout_marginTop="@dimen/select_days_margin_top"
+        android:layout_marginTop="@dimen/spacing_normal_large"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/spacing_mid"
         android:paddingRight="@dimen/spacing_mid">
