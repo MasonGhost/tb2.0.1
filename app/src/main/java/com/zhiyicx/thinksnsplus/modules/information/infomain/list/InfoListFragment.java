@@ -261,7 +261,22 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
 
     @Override
     protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
         return false;
+    }
+
+    @Override
+    protected int setSystemStatusBarCorlorResource() {
+        return R.color.themeColor;
+    }
+
+    @Override
+    protected int setToolBarBackgroud() {
+        return R.color.themeColor;
     }
 
     @Override

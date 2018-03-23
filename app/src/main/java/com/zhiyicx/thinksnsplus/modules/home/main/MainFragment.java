@@ -3,9 +3,11 @@ package com.zhiyicx.thinksnsplus.modules.home.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
@@ -20,10 +22,12 @@ import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.TBDynamicFragment;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListPresenter;
+import com.zhiyicx.thinksnsplus.modules.tb.info.TBHomeInfoListFragment;
 import com.zhiyicx.thinksnsplus.modules.tb.search.SearchMechanismUserActivity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -43,13 +47,17 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     View mStatusBarPlaceholder;
     @BindView(R.id.v_shadow)
     View mVShadow;
-//    @BindView(R.id.iv_search)
-//    ImageView mIvSearch;
 
     @Inject
     AuthRepository mIAuthRepository;
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+
+    /**
+     * 顶部分类
+     */
+    private TextView mChooseBtLeft;
+    private TextView mChooseBtRight;
 
     public void setOnImageClickListener(DynamicFragment.OnCommentClickListener onCommentClickListener) {
         mOnCommentClickListener = onCommentClickListener;
@@ -81,6 +89,16 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     }
 
     @Override
+    protected int setToolBarBackgroud() {
+        return R.color.themeColor;
+    }
+
+    @Override
+    protected int setSystemStatusBarCorlorResource() {
+        return R.color.themeColor;
+    }
+
+    @Override
     protected int getOffsetPage() {
         return 2;
     }
@@ -91,7 +109,6 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
         AppApplication.AppComponentHolder.getAppComponent().inject(this);
         super.initView(rootView);
         initToolBar();
-//        mIvSearch.setVisibility(View.VISIBLE);
     }
 
     private void initToolBar() {
@@ -103,12 +120,18 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
         if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0) {
             mStatusBarPlaceholder.setBackgroundResource(R.color.themeColor);
         }
+//        setStatusPlaceholderViewBackgroundColor(ContextCompat.getColor(getContext(),R.color.themeColor));
         //不需要返回键
         mTsvToolbar.setLeftImg(0);
         mTsvToolbar.setRightImg(R.mipmap.ico_search_normal);
+        mTsvToolbar.setBackgroundResource(R.color.themeColor);
         mTsvToolbar.setRightClickListener(this, () -> {
             startActivity(new Intent(mActivity, SearchMechanismUserActivity.class));
         });
+        mChooseBtLeft = (TextView) mTsvToolbar.findViewById(R.id.tv_choose_bt_left);
+        mChooseBtRight = (TextView) mTsvToolbar.findViewById(R.id.tv_choose_bt_right);
+        mChooseBtLeft.setOnClickListener(v -> mVpFragment.setCurrentItem(0));
+        mChooseBtRight.setOnClickListener(v -> mVpFragment.setCurrentItem(1));
     }
 
     @Override
@@ -128,28 +151,59 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
                     // 转回热门
                     mVpFragment.setCurrentItem(1);
                 }
+                onPageChanged(position);
+
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
                 if (state == ViewPager.SCROLL_STATE_DRAGGING) {
-                    ((DynamicContract.View) mFragmentList.get(mVpFragment.getCurrentItem())).closeInputView();
+                    if (mFragmentList.get(mVpFragment.getCurrentItem()) instanceof DynamicContract.View) {
+                        ((DynamicContract.View) mFragmentList.get(mVpFragment.getCurrentItem())).closeInputView();
+
+                    }
                 }
             }
         });
 
-        // 启动 app，如果本地没有最新数据，应跳到“热门”页面 关联 github  #113  #366
-//        if (mDynamicBeanGreenDao.getNewestDynamicList(System.currentTimeMillis()).size() == 0) {
-//            mVpFragment.setCurrentItem(1);
-//        }
+    }
+
+    /**
+     * 首页快讯和资讯选中切换
+     *
+     * @param position
+     */
+    private void onPageChanged(int position) {
+
+        switch (position) {
+            /*
+            快讯
+             */
+            case 0:
+                mChooseBtLeft.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+                mChooseBtLeft.setBackgroundResource(R.drawable.shape_main_choosed_bt_left);
+                mChooseBtRight.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                mChooseBtRight.setBackgroundResource(R.drawable.shape_main_unchoose_bt_right);
+                break;
+            /*
+            资讯
+             */
+            case 1:
+                mChooseBtRight.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+                mChooseBtRight.setBackgroundResource(R.drawable.shape_main_choosed_bt_right);
+                mChooseBtLeft.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                mChooseBtLeft.setBackgroundResource(R.drawable.shape_main_unchoose_bt_left);
+                break;
+
+            default:
+
+        }
 
     }
 
     @Override
     protected List<String> initTitles() {
-        return Arrays.asList(getString(R.string.the_last)
-                , getString(R.string.hot)
-                , getString(R.string.follow));
+        return null;
     }
 
     @Override
@@ -157,14 +211,8 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
         if (mFragmentList == null) {
             mFragmentList = new ArrayList();
             mFragmentList.add(TBDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));
-            mFragmentList.add(TBDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
-            // 游客处理
-            if (TouristConfig.FOLLOW_CAN_LOOK || mIAuthRepository.isLogin()) {
-                mFragmentList.add(TBDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
-            } else {
-                // 用于viewpager 占位
-                mFragmentList.add(TBDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_EMPTY, this));
-            }
+            mFragmentList.add(TBHomeInfoListFragment.newInstance(InfoListPresenter.TB_INFO_TYPE_TOP));
+
         }
         return mFragmentList;
     }
@@ -181,6 +229,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     /**
      * viewpager页面切换公开方法
      */
+
     public void setPagerSelection(int position) {
         mVpFragment.setCurrentItem(position, true);
     }

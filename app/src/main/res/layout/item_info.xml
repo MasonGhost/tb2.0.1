@@ -1,101 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/info_channel_list_height"
-        android:background="@android:color/white"
-        android:paddingBottom="@dimen/spacing_mid"
-        android:paddingLeft="@dimen/spacing_normal"
-        android:paddingRight="@dimen/spacing_normal"
-        android:paddingTop="@dimen/spacing_mid">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/info_channel_list_height"
+    android:background="@android:color/white"
+    android:paddingBottom="@dimen/spacing_mid"
+    android:paddingLeft="@dimen/spacing_normal"
+    android:paddingRight="@dimen/spacing_normal"
+    android:paddingTop="@dimen/spacing_mid">
 
     <ImageView
-            android:id="@+id/item_info_imag"
-            android:layout_width="@dimen/info_channel_list_image_width"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:layout_alignParentRight="true"
-            android:layout_marginLeft="@dimen/spacing_mid"
-            android:layout_centerVertical="true"
-            android:src="@drawable/shape_default_image"/>
-
+        android:id="@+id/item_info_imag"
+        android:layout_width="@dimen/info_channel_list_image_width"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:scaleType="centerCrop"
+        android:src="@drawable/shape_default_image"/>
 
 
     <LinearLayout
-            android:layout_toLeftOf="@+id/item_info_imag"
-            android:layout_centerVertical="true"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/item_info_imag"
+        android:orientation="vertical">
 
         <com.zhiyicx.thinksnsplus.widget.NoDefaultPadingTextView
-                android:layout_marginBottom="@dimen/spacing_normal"
-                android:id="@+id/item_info_title"
-                android:gravity="bottom"
-                android:maxLines="2"
-                android:ellipsize="end"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/size_sub_title"
-                tools:text="流动性捉襟见肘，新三板如履薄冰"
-                android:textColor="@color/important_for_content"/>
+            android:id="@+id/item_info_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_normal"
+            android:ellipsize="end"
+            android:gravity="bottom"
+            android:maxLines="2"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_content"
+            tools:text="流动性捉襟见肘，新三板如履薄冰"/>
 
         <!--资讯信息-->
         <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
             <!--仅在被驳回和投稿中显示-->
             <TextView
-                    android:id="@+id/tv_info_content"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:textSize="@dimen/size_content_assist"
-                    android:textColor="@color/normal_for_assist_text"
-                    tools:text="xxxx"
-                    android:visibility="gone"/>
+                android:id="@+id/tv_info_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_content_assist"
+                android:visibility="gone"
+                tools:text="xxxx"/>
             <!--通用信息-->
-            <LinearLayout
-                    android:id="@+id/ll_info"
+            <RelativeLayout
+                android:id="@+id/ll_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.zhiyicx.baseproject.widget.imageview.SquareImageView
+                    android:id="@+id/iv_merhcain_headpic"
+                    android:layout_width="@dimen/headpic_for_info_list"
+                    android:layout_height="@dimen/headpic_for_info_list"
+                    android:src="@mipmap/pic_default_woman"/>
+
+                <TextView
+                    android:id="@+id/tv_top_flag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginRight="@dimen/spacing_small_3dp"
+                    android:background="@drawable/shape_info_top_bg"
+                    android:padding="@dimen/spacing_tiny"
+                    android:text="@string/info_top"
+                    android:textColor="@color/info_top"
+                    android:textSize="@dimen/size_note_assist"
+                    android:visibility="gone"/>
 
                 <TextView
-                        android:id="@+id/tv_top_flag"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/shape_info_top_bg"
-                        android:text="@string/info_top"
-                        android:textColor="@color/info_top"
-                        android:layout_marginRight="@dimen/spacing_small_3dp"
-                        android:textSize="@dimen/size_note_assist"
-                        android:padding="@dimen/spacing_tiny"/>
+                    android:id="@+id/tv_from_channel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_info_list_channel"
+                    android:padding="@dimen/spacing_tiny"
+                    android:textColor="@color/themeColor"
+                    android:textSize="@dimen/size_note_assist"
+                    android:visibility="gone"
+                    tools:text="时政"/>
 
                 <TextView
-                        android:id="@+id/tv_from_channel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/themeColor"
-                        tools:text="时政"
-                        android:background="@drawable/shape_info_list_channel"
-                        android:textSize="@dimen/size_note_assist"
-                        android:padding="@dimen/spacing_tiny"/>
+                    android:id="@+id/item_info_timeform"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/iv_merhcain_headpic"
+                    android:layout_marginLeft="@dimen/spacing_normal"
+                    android:layout_marginStart="@dimen/spacing_normal"
+                    android:layout_toRightOf="@id/iv_merhcain_headpic"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textColor="@color/general_for_hint"
+                    android:textSize="@dimen/size_advert_launche"
+                    tools:text="三小时前"/>
+
 
                 <TextView
-                        android:textColor="@color/general_for_hint"
-                        android:id="@+id/item_info_timeform"
-                        android:layout_width="wrap_content"
-                        android:singleLine="true"
-                        android:ellipsize="end"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/size_advert_launche"
-                        android:layout_marginLeft="@dimen/spacing_small_3dp"
-                        android:layout_marginStart="@dimen/spacing_small_3dp"
-                        tools:text="三小时前   来自火星"/>
-            </LinearLayout>
+                    android:id="@+id/item_info_comment_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/iv_merhcain_headpic"
+                    android:layout_alignParentRight="true"
+                    android:drawableLeft="@mipmap/home_ico_comment_normal"
+                    android:drawablePadding="@dimen/spacing_small_3dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textColor="@color/general_for_hint"
+                    android:textSize="@dimen/size_note_assist"
+                    tools:text="12"/>
+
+                <TextView
+                    android:id="@+id/item_info_look_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/iv_merhcain_headpic"
+                    android:layout_toLeftOf="@id/item_info_comment_num"
+                    android:drawableLeft="@mipmap/home_ico_eye_normal"
+                    android:layout_marginRight="@dimen/spacing_mid_tb"
+                    android:drawablePadding="@dimen/spacing_small_3dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textColor="@color/general_for_hint"
+                    android:textSize="@dimen/size_note_assist"
+                    tools:text="12"/>
+            </RelativeLayout>
         </FrameLayout>
 
 

@@ -146,13 +146,6 @@ public class DynamicCommentListPresenter extends AppBasePresenter<
         return true;
     }
 
-
-    @Override
-    public void allDataReady() {
-        mIsAllDataReady = true;
-    }
-
-
     /**
      * 处理动态被删除了
      *
@@ -164,7 +157,7 @@ public class DynamicCommentListPresenter extends AppBasePresenter<
             mDynamicDetailBeanV2GreenDao.deleteDynamicByFeedId(feed_id);
             mRootView.dynamicHasBeDeleted();
         } else {
-            mRootView.loadAllError();
+            mRootView.onResponseError(null,false);
         }
     }
 

@@ -192,4 +192,6 @@
     <string name="please_install_app">请先安装应用</string>
     <string name="app_crash_tip">很抱歉,程序出现异常,请重新打开使用!</string>
     <string name="string_ellipsis_dot"> &#8230;</string>
+    <string name="quik_news">快讯</string>
+    <string name="news">资讯</string>
 </resources>

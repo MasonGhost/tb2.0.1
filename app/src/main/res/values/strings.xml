@@ -4,7 +4,7 @@
     <string name="copyright">Powered by ThinkSNS ©2017 ZhishiSoft All Rights Reserced.</string>
     <!-- 主页  -->
     <string name="home">首页</string>
-    <string name="find">发现</string>
+    <string name="find">探索</string>
     <string name="message">消息</string>
     <string name="mine">我</string>
     <string name="app_rule">点击下一步即代表同意《%s用户使用协议》</string>
@@ -1058,5 +1058,6 @@
     </string-array>
     <string name="merchain_detail">详情</string>
     <string name="dynamic_not_support_comment">该快讯不支持留言！</string>
+    <string name="news_not_support_comment">该资讯不支持留言！</string>
 
 </resources>

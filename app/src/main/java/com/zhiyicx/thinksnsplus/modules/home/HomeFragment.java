@@ -67,8 +67,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
      * 对应在 viewpager 中的位置
      */
     public static final int PAGE_HOME = 0;
-    public static final int PAGE_FIND = 1;
-    public static final int PAGE_MESSAGE = 2;
+    public static final int PAGE_MESSAGE = 1;
+    public static final int PAGE_FIND = 2;
     public static final int PAGE_MINE = 3;
 
     @BindView(R.id.iv_home)
@@ -143,7 +143,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
     @Override
     protected int setToolBarBackgroud() {
-        return R.color.white;
+        return R.color.themeColor;
     }
 
     @Override
@@ -155,6 +155,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     protected boolean setUseStatusView() {
         return false;
     }
+
 
     @Override
     protected boolean showToolBarDivider() {
@@ -204,7 +205,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         return R.layout.fragment_home;
     }
 
-    @OnClick({R.id.ll_home,  R.id.ll_find,R.id.ll_mine,R.id.ll_message})
+    @OnClick({R.id.ll_home, R.id.ll_find, R.id.ll_mine, R.id.ll_message})
     public void onClick(final View view) {
         switch (view.getId()) {
             // 点击主页
@@ -429,7 +430,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
     }
-
 
 
     @Override

@@ -333,4 +333,25 @@ public class BaseInfoRepository implements IBaseInfoRepository {
         return mInfoMainClient.deleteInfo(category, news_id);
     }
 
+
+/*******************************************  TB  *********************************************/
+
+    /**
+     * 获取资讯列表
+     *
+     * @param key  搜索用的关键字
+     * @param type top-头条资讯 follow-关注机构资讯 默认top
+     */
+    @Override
+    public Observable<List<InfoListDataBean>> getInfoListTB(String cate_id,
+                                                            Long max_id,
+                                                            Long limit,
+                                                            Long page,
+                                                            String key,
+                                                            String type) {
+
+        return mInfoMainClient.getInfoListTB(cate_id, max_id, limit, page, key, type)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 }

@@ -13,6 +13,7 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.ToMany;
+import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
@@ -21,6 +22,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.NotNull;
 
 @Entity
 public class InfoListDataBean extends BaseListBean implements Serializable {
@@ -57,6 +59,8 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     private InfoCategory category;
     private boolean isTop; // 是否是置顶的资讯
     private String author; // 如果from是原创 则展示author
+    @Transient
+    private UserInfoBean user;
     private int hits;
     @Convert(converter = TagConvert.class, columnType = String.class)
     private List<UserTagBean> tags;
@@ -64,6 +68,8 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     private int comment_count;
     private int is_recommend;
     private int audit_count;
+    private int share_count;
+
     @Convert(converter = InfoDigListConvert.class, columnType = String.class)
     private List<InfoDigListBean> digList;
     @ToMany(joinProperties = {@JoinProperty(name = "id", referencedName = "info_id")})
@@ -71,6 +77,18 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     @Convert(converter = InfoRelateListConvert.class, columnType = String.class)
     private List<InfoListDataBean> relateInfoList;
 
+    /*
+            是否开启评论:1-开启0-关闭
+         */
+    private int comment_status;
+
+    public int getComment_status() {
+        return comment_status;
+    }
+
+    public void setComment_status(int comment_status) {
+        this.comment_status = comment_status;
+    }
 
     public String getText_content() {
         return text_content;
@@ -217,6 +235,14 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     }
 
     public InfoListDataBean() {
+    }
+
+    public int getShare_count() {
+        return share_count;
+    }
+
+    public void setShare_count(int share_count) {
+        this.share_count = share_count;
     }
 
     public String getCreated_at() {
@@ -474,15 +500,26 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         dest.writeParcelable(this.category, flags);
         dest.writeByte(this.isTop ? (byte) 1 : (byte) 0);
         dest.writeString(this.author);
+        dest.writeParcelable(this.user, flags);
         dest.writeInt(this.hits);
         dest.writeTypedList(this.tags);
         dest.writeInt(this.digg_count);
         dest.writeInt(this.comment_count);
         dest.writeInt(this.is_recommend);
         dest.writeInt(this.audit_count);
+        dest.writeInt(this.share_count);
         dest.writeTypedList(this.digList);
         dest.writeTypedList(this.commentList);
         dest.writeTypedList(this.relateInfoList);
+        dest.writeInt(this.comment_status);
+    }
+
+    public UserInfoBean getUser() {
+        return user;
+    }
+
+    public void setUser(UserInfoBean user) {
+        this.user = user;
     }
 
     /**
@@ -578,25 +615,28 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.category = in.readParcelable(InfoCategory.class.getClassLoader());
         this.isTop = in.readByte() != 0;
         this.author = in.readString();
+        this.user = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.hits = in.readInt();
         this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
         this.digg_count = in.readInt();
         this.comment_count = in.readInt();
         this.is_recommend = in.readInt();
         this.audit_count = in.readInt();
+        this.share_count = in.readInt();
         this.digList = in.createTypedArrayList(InfoDigListBean.CREATOR);
         this.commentList = in.createTypedArrayList(InfoCommentListBean.CREATOR);
         this.relateInfoList = in.createTypedArrayList(InfoListDataBean.CREATOR);
+        this.comment_status = in.readInt();
     }
 
-    @Generated(hash = 169543863)
+    @Generated(hash = 1696793962)
     public InfoListDataBean(Long id, long user_id, Long info_type, int is_collection_news,
             int is_digg_news, String title, String content, String text_content, String from,
             String created_at, String updated_at, StorageBean image, int audit_status,
             boolean is_pinned, String subject, boolean has_collect, boolean has_like,
             InfoCategory category, boolean isTop, String author, int hits, List<UserTagBean> tags,
-            int digg_count, int comment_count, int is_recommend, int audit_count,
-            List<InfoDigListBean> digList, List<InfoListDataBean> relateInfoList) {
+            int digg_count, int comment_count, int is_recommend, int audit_count, int share_count,
+            List<InfoDigListBean> digList, List<InfoListDataBean> relateInfoList, int comment_status) {
         this.id = id;
         this.user_id = user_id;
         this.info_type = info_type;
@@ -623,8 +663,10 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.comment_count = comment_count;
         this.is_recommend = is_recommend;
         this.audit_count = audit_count;
+        this.share_count = share_count;
         this.digList = digList;
         this.relateInfoList = relateInfoList;
+        this.comment_status = comment_status;
     }
 
     public static final Creator<InfoListDataBean> CREATOR = new Creator<InfoListDataBean>() {

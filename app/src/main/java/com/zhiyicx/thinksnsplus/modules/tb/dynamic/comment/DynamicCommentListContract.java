@@ -37,17 +37,6 @@ public interface DynamicCommentListContract {
          */
         Bundle getArgumentsBundle();
 
-
-        /**
-         * 所有数据都有了，直接显示
-         */
-        void allDataReady();
-
-        /**
-         * 加载失败
-         */
-        void loadAllError();
-
         /**
          * 动态已经被删除了
          */
@@ -89,8 +78,6 @@ public interface DynamicCommentListContract {
          * @return
          */
         boolean checkCurrentDynamicIsDeleted(Long user_id, Long feed_mark);
-
-        void allDataReady();
 
         void setNeedDynamicListRefresh(boolean needDynamicListRefresh);
 

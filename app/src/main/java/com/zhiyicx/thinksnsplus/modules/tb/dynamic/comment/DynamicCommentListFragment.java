@@ -53,25 +53,9 @@ public class DynamicCommentListFragment extends TSListFragment<DynamicCommentLis
         OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener, DynamicDetailHeader.OnImageClickLisenter,
         TextViewUtils.OnSpanTextClickListener, DynamicDetailCommentItem.OnCommentResendListener {
     public static final String DYNAMIC_DETAIL_DATA = "dynamic_detail_data";
-    public static final String DYNAMIC_UPDATE_TOLL = "dynamic_update_toll";
     public static final String DYNAMIC_DETAIL_DATA_TYPE = "dynamic_detail_data_type";
-    public static final String DYNAMIC_DETAIL_DATA_POSITION = "dynamic_detail_data_position";
-    public static final String LOOK_COMMENT_MORE = "look_comment_more";
-    // 动态详情列表，各个item的位置
-    @BindView(R.id.tv_toolbar_center)
-    TextView mTvToolbarCenter;
-    @BindView(R.id.iv_user_portrait)
-    UserAvatarView mIvUserPortrait;
-    @BindView(R.id.tv_toolbar_left)
-    TextView mTvToolbarLeft;
-    @BindView(R.id.tv_toolbar_right)
-    TextView mTvToolbarRight;
-    @BindView(R.id.v_shadow)
-    View mVShadow;
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
-    @BindView(R.id.ll_bottom_menu_container)
-    ViewGroup mLLBottomMenuContainer;
 
     private DynamicDetailBeanV2 mDynamicBean;// 上一个页面传进来的数据
 
@@ -83,17 +67,12 @@ public class DynamicCommentListFragment extends TSListFragment<DynamicCommentLis
 
     @Override
     protected boolean showToolbar() {
-        return false;
-    }
-
-    @Override
-    protected View getRightViewOfMusicWindow() {
-        return mTvToolbarRight;
+        return true;
     }
 
     @Override
     protected boolean showToolBarDivider() {
-        return false;
+        return true;
     }
 
     @Override
@@ -103,7 +82,7 @@ public class DynamicCommentListFragment extends TSListFragment<DynamicCommentLis
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_dynamic_detail;
+        return R.layout.fragment_dynamic_comment_list_tb;
     }
 
     @Override
@@ -122,29 +101,9 @@ public class DynamicCommentListFragment extends TSListFragment<DynamicCommentLis
      * 初始化监听
      */
     private void initListener() {
-        RxView.clicks(mTvToolbarLeft)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> getActivity().finish());
-        RxView.clicks(mVShadow)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> {
-                    mIlvComment.setVisibility(View.GONE);
-                    mIlvComment.clearFocus();
-                    DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
-                    mLLBottomMenuContainer.setVisibility(View.VISIBLE);
-                    mVShadow.setVisibility(View.GONE);
 
-                });
-        RxView.clicks(mTvToolbarCenter)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> onUserInfoClick(mDynamicBean.getUserInfoBean()));
-        RxView.clicks(mIvUserPortrait)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> onUserInfoClick(mDynamicBean.getUserInfoBean()));
         mIlvComment.setOnSendClickListener(this);
-
     }
-
 
     @Override
     protected void initData() {
@@ -152,7 +111,12 @@ public class DynamicCommentListFragment extends TSListFragment<DynamicCommentLis
         Bundle bundle = getArguments();
         if (bundle != null) {
             mDynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
+            if (mDynamicBean != null) {
+                //        设置动态详情列表数据
+                onNetResponseSuccess(mDynamicBean.getComments(), false);
+            }
         }
+        mIlvComment.setSendButtonVisiable(true);
     }
 
 
@@ -187,16 +151,6 @@ public class DynamicCommentListFragment extends TSListFragment<DynamicCommentLis
         return dynamicDetailFragment;
     }
 
-    /**
-     * 设置toolBar上面的用户头像,关注状态
-     */
-    private void setToolBarUser(DynamicDetailBeanV2 dynamicBean) {
-        // 设置用户头像，名称
-        mTvToolbarCenter.setVisibility(View.VISIBLE);
-        UserInfoBean userInfoBean = dynamicBean.getUserInfoBean();// 动态所属用户的信息
-        mTvToolbarCenter.setText(userInfoBean.getName());
-        ImageUtils.loadCircleUserHeadPic(userInfoBean, mIvUserPortrait);
-    }
     @Override
     public void setSpanText(int position, int note, long amount, TextView view, boolean canNotRead) {
         initImageCenterPopWindow(position, amount,
@@ -213,55 +167,17 @@ public class DynamicCommentListFragment extends TSListFragment<DynamicCommentLis
         return getArguments();
     }
 
-
-    @Override
-    public void allDataReady() {
-        closeLoadingView();
-        setAllData();
-        mPresenter.allDataReady();
-    }
-
-    @Override
-    public void loadAllError() {
-        setLoadViewHolderImag(R.mipmap.img_default_internet);
-        mTvToolbarRight.setVisibility(View.GONE);
-        mTvToolbarCenter.setVisibility(View.GONE);
-        showLoadViewLoadError();
-    }
-
     @Override
     public void dynamicHasBeDeleted() {
         setLoadViewHolderImag(R.mipmap.img_default_delete);
-        mTvToolbarRight.setVisibility(View.GONE);
-        mTvToolbarCenter.setVisibility(View.GONE);
         showLoadViewLoadErrorDisableClick();
     }
 
-    private void setAllData() {
-        setToolBarUser(mDynamicBean);// 设置标题用户
-//        设置动态详情列表数据
-        onNetResponseSuccess(mDynamicBean.getComments(), false);
-
-        // 如果当前动态所属用户，就是当前用户，隐藏关注按钮
-        long user_id = mDynamicBean.getUser_id();
-        if (AppApplication.getmCurrentLoginAuth() != null && user_id == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-            mTvToolbarRight.setVisibility(View.GONE);
-        } else {
-            // 获取用户关注状态
-            mTvToolbarRight.setVisibility(View.VISIBLE);
-            setToolBarRightFollowState(mDynamicBean.getUserInfoBean());
-        }
-
-    }
-
-
     public void showCommentView() {
-        mLLBottomMenuContainer.setVisibility(View.INVISIBLE);
         // 评论
         mIlvComment.setVisibility(View.VISIBLE);
         mIlvComment.setSendButtonVisiable(true);
         mIlvComment.getFocus();
-        mVShadow.setVisibility(View.VISIBLE);
         DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
     }
 
@@ -269,24 +185,13 @@ public class DynamicCommentListFragment extends TSListFragment<DynamicCommentLis
      * 设置toolBar上面的关注状态
      */
     private void setToolBarRightFollowState(UserInfoBean userInfoBean1) {
-        mTvToolbarRight.setVisibility(View.VISIBLE);
-        if (userInfoBean1.isFollowing() && userInfoBean1.isFollower()) {
-            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother),
-                    null);
-        } else if (userInfoBean1.isFollower()) {
-            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed), null);
-        } else {
-            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_follow), null);
-        }
+
     }
 
     @Override
     public void onSendClick(View v, String text) {
         DeviceUtils.hideSoftKeyboard(getContext(), v);
-        mIlvComment.setVisibility(View.GONE);
-        mVShadow.setVisibility(View.GONE);
         mPresenter.sendCommentV2(mReplyUserId, text);
-        mLLBottomMenuContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -451,7 +356,18 @@ public class DynamicCommentListFragment extends TSListFragment<DynamicCommentLis
         goReportComment(position);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        getActivity().finish();
+        getActivity().overridePendingTransition(-1, R.anim.slide_out_bottom);
 
+    }
+
+    @Override
+    protected void setLeftClick() {
+        onBackPressed();
+    }
 
     @Override
     public void onDestroyView() {

@@ -15,8 +15,8 @@
         android:id="@+id/tv_info_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_normal"
-        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginRight="@dimen/spacing_mid"
         android:layout_marginTop="@dimen/spacing_large"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/info_title_size"
@@ -26,8 +26,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_normal"
-        android:layout_marginTop="@dimen/spacing_large"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginTop="@dimen/spacing_mid"
         android:orientation="horizontal">
 
         <TextView
@@ -38,6 +38,7 @@
             android:padding="@dimen/spacing_tiny"
             android:textColor="@color/themeColor"
             android:textSize="@dimen/size_advert_launche"
+            android:visibility="gone"
             tools:text="时政"/>
 
         <TextView
@@ -46,17 +47,38 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_small_3dp"
             android:layout_marginStart="@dimen/spacing_small_3dp"
-            android:textColor="@color/general_for_hint"
-            android:textSize="@dimen/size_icon_assist"
-            tools:text="三小时前   来自火星"/>
+            android:textColor="@color/general_for_hint_tb"
+            android:textSize="@dimen/size_content_comment"
+            tools:text="年月日"/>
+
+        <TextView
+            android:id="@+id/item_info_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_marginStart="@dimen/spacing_normal"
+            android:paddingLeft="@dimen/spacing_tiny"
+            android:textColor="@color/general_for_hint_tb"
+            android:textSize="@dimen/size_content_comment"
+            tools:text="小编"/>
+
+        <TextView
+            android:id="@+id/item_info_merchain_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginStart="@dimen/spacing_mid"
+            android:textColor="@color/themeColor"
+            android:textSize="@dimen/size_content_comment"
+            tools:text="机构用户"/>
     </LinearLayout>
 
     <br.tiagohm.markdownview.MarkdownView
         android:id="@+id/info_content_subject"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_normal"
-        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginRight="@dimen/spacing_mid"
         android:layout_marginTop="@dimen/spacing_large"/>
 
 
@@ -65,15 +87,15 @@
         android:layout_height="wrap_content">
 
         <br.tiagohm.markdownview.MarkdownView
-            app:escapeHtml="false"
             android:id="@+id/info_detail_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_mid"
-            android:layout_marginLeft="@dimen/spacing_normal"
-            android:layout_marginRight="@dimen/spacing_mid_small"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_mid"
             android:layout_marginTop="@dimen/spacing_large"
             android:visibility="visible"
+            app:escapeHtml="false"
             tools:ignore="WebViewLayout"/>
 
         <!--用来占位的-->
@@ -88,6 +110,14 @@
 
     <include
         layout="@layout/item_dynamic_detail_dig"/>
+
+    <View
+        style="@style/style_divider_horizontal_light"
+        android:layout_marginBottom="@dimen/spacing_normal_large"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginRight="@dimen/spacing_mid"
+        android:layout_marginStart="@dimen/spacing_mid"
+        />
 
     <include
         layout="@layout/include_reward"/>
@@ -108,7 +138,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_small"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -179,11 +210,11 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/spacing_mid"
                 android:paddingBottom="@dimen/spacing_mid"
-                android:paddingLeft="@dimen/spacing_normal"
-                android:paddingRight="@dimen/spacing_normal"
+                android:paddingLeft="@dimen/spacing_mid"
+                android:paddingRight="@dimen/spacing_mid"
                 android:paddingTop="@dimen/spacing_mid"
-                android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_content_assist"/>
+                android:textColor="@color/color_9b"
+                android:textSize="@dimen/size_note_assist"/>
 
             <View
                 android:layout_width="match_parent"

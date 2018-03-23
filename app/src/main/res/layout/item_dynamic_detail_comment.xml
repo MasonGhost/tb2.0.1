@@ -5,18 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingLeft="@dimen/spacing_normal"
-    android:paddingRight="@dimen/spacing_normal"
+    android:paddingLeft="@dimen/spacing_mid"
+    android:paddingRight="@dimen/spacing_mid"
     android:paddingTop="@dimen/spacing_mid"
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
     <com.zhiyicx.baseproject.widget.UserAvatarView
         android:id="@+id/iv_headpic"
-        android:layout_width="@dimen/headpic_for_assist"
-        android:layout_height="@dimen/headpic_for_assist"
-        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_width="@dimen/headpic_for_assist_tb"
+        android:layout_height="@dimen/headpic_for_assist_tb"
+        android:layout_marginRight="@dimen/spacing_large"
         android:src="@mipmap/pic_default_secret"
-        app:ts_avatare_size="@dimen/headpic_for_assist"
+        app:ts_avatare_size="@dimen/headpic_for_assist_tb"
         app:pressShape="circle"/>
 
     <TextView
@@ -26,10 +26,12 @@
         android:layout_toRightOf="@id/iv_headpic"
         android:maxLength="@integer/username_max_length"
         android:maxLines="1"
-        android:paddingBottom="@dimen/spacing_mid_small"
+        android:paddingTop="@dimen/spacing_small"
+        android:paddingBottom="@dimen/spacing_mid"
         android:includeFontPadding="false"
+        android:textStyle="bold"
         android:textColor="@color/important_for_content"
-        android:textSize="@dimen/size_icon_assist"
+        android:textSize="@dimen/size_content_assist"
         tools:text="张三"/>
 
     <TextView

@@ -64,6 +64,7 @@ public abstract class BaseFragment<P extends IBasePresenter> extends RxFragment 
             EventBus.getDefault().register(this);// 注册到事件主线
         }
         initData();
+        System.out.println("--- test ----" +this.getClass().getSimpleName());
     }
 
     /**

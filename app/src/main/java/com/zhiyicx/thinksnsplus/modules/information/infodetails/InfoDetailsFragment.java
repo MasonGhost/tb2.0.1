@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -19,9 +20,11 @@ import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
+import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.RegexUtils;
@@ -79,15 +82,13 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @BindView(R.id.behavior_demo_coordinatorLayout)
     CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.dd_dynamic_tool)
-    DynamicDetailMenuView mDdDynamicTool;
+    DynamicListMenuView mDdDynamicTool;
     @BindView(R.id.tv_toolbar_center)
     TextView mTvToolbarCenter;
     @BindView(R.id.tv_toolbar_left)
     TextView mTvToolbarLeft;
     @BindView(R.id.tv_toolbar_right)
     TextView mTvToolbarRight;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
     @BindView(R.id.v_shadow)
     View mVShadow;
     @BindView(R.id.ilv_comment)
@@ -156,11 +157,13 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             rewardsCountBean1.setAmount("" + PayConfig.realCurrency2GameCurrency(Double.parseDouble(rewardsCountBean1.getAmount()), mPresenter
                     .getRatio()));
         }
-        mInfoDetailHeader.updateReward(mInfoMation.getId(), mRewardsListBeen, rewardsCountBean1, RewardType.INFO, mPresenter.getIntegrationGoldName());
+        mInfoDetailHeader.updateReward(mInfoMation.getId(), mRewardsListBeen, rewardsCountBean1, RewardType.INFO, mPresenter.getIntegrationGoldName
+                ());
     }
 
     @Override
     public void updateInfoHeader(InfoListDataBean infoDetailBean) {
+        infoDetailBean.setUser(mInfoMation.getUser());
         mCoordinatorLayout.setEnabled(true);
         this.mInfoMation = infoDetailBean;
         mInfoDetailHeader.setDetail(infoDetailBean);
@@ -210,7 +213,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         }
 
         mTvToolbarCenter.setVisibility(View.VISIBLE);
-        mTvToolbarCenter.setText(getString(R.string.info_details));
+        mTvToolbarCenter.setText(mInfoMation.getUser().getName());
         initHeaderView();
         initBottomToolStyle();
         initBottomToolListener();
@@ -221,7 +224,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
         // 投稿中的资讯隐藏底部操作以及打赏
         mDdDynamicTool.setVisibility(mInfoMation.getAudit_status() == 0 ? View.VISIBLE : View.GONE);
-        mInfoDetailHeader.setInfoReviewIng(mInfoMation.getAudit_status() == 0 ? View.VISIBLE : View.GONE);
+//        mInfoDetailHeader.setInfoReviewIng(mInfoMation.getAudit_status() == 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -322,33 +325,61 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     private void initBottomToolStyle() {
-        mDdDynamicTool.setButtonText(new int[]{R.string.dynamic_like, R.string.comment,
-                R.string.share, R.string.more});
+//        mDdDynamicTool.setButtonText(new int[]{R.string.dynamic_like, R.string.comment,
+//                R.string.share, R.string.more});
+
         mDdDynamicTool.setImageNormalResourceIds(new int[]{
-                R.mipmap.home_ico_good_normal, R.mipmap.home_ico_comment_normal,
-                R.mipmap.detail_ico_share_normal, R.mipmap.home_ico_more});
+                R.mipmap.ico_share,
+                R.mipmap.home_ico_comment_normal,
+                R.mipmap.ico_zan,
+                R.mipmap.home_ico_more,
+        });
 
         mDdDynamicTool.setImageCheckedResourceIds(new int[]{
-                R.mipmap.home_ico_good_high, R.mipmap.home_ico_comment_normal,
-                R.mipmap.detail_ico_share_normal, R.mipmap.home_ico_more, R.mipmap.home_ico_more});
-        mDdDynamicTool.setData();
+                R.mipmap.ico_share,
+                R.mipmap.home_ico_comment_normal,
+                R.mipmap.ico_zan_on,
+                R.mipmap.home_ico_more,
+        });
+        // 点赞
+        mDdDynamicTool.setItemTextAndStatus(
+                mInfoMation.getDigg_count() == 0 ? "" : ConvertUtils.numberConvert(mInfoMation.getDigg_count())
+                , mInfoMation.isHas_like()
+                , 2
+        );
+        // 分享数量
+        mDdDynamicTool.setItemTextAndStatus(
+                mInfoMation.getShare_count() == 0 ? "" : ConvertUtils.numberConvert(mInfoMation.getShare_count()),
+                false
+                , 0
+        );
+        // 评论数量
+        mDdDynamicTool.setItemTextAndStatus(
+                mInfoMation.getComment_count() == 0 ? "" : ConvertUtils.numberConvert(mInfoMation.getComment_count())
+                , false
+                , 1
+        );
     }
 
     private void initBottomToolListener() {
         mDdDynamicTool.setItemOnClick((parent, v, position) -> {
             mDdDynamicTool.getTag(R.id.view_data);
             switch (position) {
-                case DynamicDetailMenuView.ITEM_POSITION_0:// 点赞
+                case DynamicDetailMenuView.ITEM_POSITION_2:// 点赞
                     mPresenter.handleLike(!mInfoMation.getHas_like(),
                             mInfoMation.getId() + "");
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_1:// 评论
-                    showCommentView();
-                    String contentHint = getString(R.string.default_input_hint);
-                    mIlvComment.setEtContentHint(contentHint);
-                    mReplyUserId = 0;
+                    if (mInfoMation.getComment_status() == 1) {
+                        showCommentView();
+                        String contentHint = getString(R.string.default_input_hint);
+                        mIlvComment.setEtContentHint(contentHint);
+                        mReplyUserId = 0;
+                    } else {
+                        showSnackWarningMessage(getString(R.string.news_not_support_comment));
+                    }
                     break;
-                case DynamicDetailMenuView.ITEM_POSITION_2:// 分享
+                case DynamicDetailMenuView.ITEM_POSITION_0:// 分享
                     Bitmap bitmap = FileUtils.readImgFromFile(getActivity(), "info_share");
 
                     mPresenter.shareInfo(bitmap);
@@ -541,6 +572,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     /**
      * 评论
+     *
      * @param position
      */
     private void comment(int position) {
@@ -570,6 +602,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     /**
      * 举报
+     *
      * @param position
      */
     private void goReportComment(int position) {
@@ -585,6 +618,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
         }
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

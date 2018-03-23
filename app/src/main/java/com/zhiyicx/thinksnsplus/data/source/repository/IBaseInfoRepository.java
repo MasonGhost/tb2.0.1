@@ -9,7 +9,11 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 
 import java.util.List;
 
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 import rx.Observable;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_LIST_TB;
 
 /**
  * @author Catherine
@@ -26,9 +30,10 @@ public interface IBaseInfoRepository {
 
     Observable<List<InfoListDataBean>> getCollectionListV2(long max_id);
 
-    Observable<List<InfoListDataBean>> getMyInfoList(String type,long max_id);
+    Observable<List<InfoListDataBean>> getMyInfoList(String type, long max_id);
 
     Observable<InfoTypeBean> getInfoType();
+
     Observable<BaseJsonV2<Object>> publishInfo(InfoPublishBean infoPublishBean);
 
     Observable<BaseJsonV2<Object>> updateInfo(InfoPublishBean infoPublishBean);
@@ -55,5 +60,22 @@ public interface IBaseInfoRepository {
     void deleteComment(int news_id, int comment_id);
 
     Observable<BaseJsonV2<Object>> deleteInfo(String category, String news_id);
+
+    /*******************************************  TB  *********************************************/
+
+
+    /**
+     * 获取资讯列表
+     *
+     * @param key  搜索用的关键字
+     * @param type top-头条资讯 follow-关注机构资讯 默认top
+     */
+    Observable<List<InfoListDataBean>> getInfoListTB(String cate_id,
+                                                     Long max_id,
+                                                     Long limit,
+                                                     Long page,
+                                                     String key,
+                                                     String type);
+
 
 }
