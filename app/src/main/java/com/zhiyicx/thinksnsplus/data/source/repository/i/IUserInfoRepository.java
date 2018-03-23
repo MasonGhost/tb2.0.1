@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
+import com.zhiyicx.thinksnsplus.modules.tb.contract.ContractData;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
 import com.zhiyicx.thinksnsplus.modules.tb.mechainism.MerchainInfo;
 import com.zhiyicx.thinksnsplus.modules.tb.rank.RankData;
@@ -399,6 +400,11 @@ public interface IUserInfoRepository {
      * @return
      */
     Observable<List<ContributionData>> getContributionRank(Long limit, int size, String type);
+
+    /**
+     * @return 用户关注的机构
+     */
+    Observable<List<ContractData>> getContract();
 
     /**
      * @return 快讯分享统计

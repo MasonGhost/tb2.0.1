@@ -49,6 +49,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IUserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
+import com.zhiyicx.thinksnsplus.modules.tb.contract.ContractData;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
 import com.zhiyicx.thinksnsplus.modules.tb.mechainism.MerchainInfo;
 import com.zhiyicx.thinksnsplus.modules.tb.rank.RankData;
@@ -981,6 +982,16 @@ public class UserInfoRepository implements IUserInfoRepository {
     @Override
     public Observable<List<ContributionData>> getContributionRank(Long limit, int size, String type) {
         return mUserInfoClient.getContributionRank(limit, size, type)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 获取用户关注的机构(无请求体)
+     */
+    @Override
+    public Observable<List<ContractData>> getContract() {
+        return mUserInfoClient.getContract()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

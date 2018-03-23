@@ -23,6 +23,7 @@ import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequest
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
+import com.zhiyicx.thinksnsplus.modules.tb.contract.ContractData;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
 import com.zhiyicx.thinksnsplus.modules.tb.mechainism.MerchainInfo;
 import com.zhiyicx.thinksnsplus.modules.tb.rank.RankData;
@@ -546,6 +547,13 @@ public interface UserInfoClient {
     @GET(ApiConfig.APP_PATH_RANK_TB_CONTRUBITHION)
     Observable<List<ContributionData>> getContributionRank(@Query("limit") Long limit,
                                                            @Query("offset") int size, @Query("type") String type);
+
+    /**
+     * 获取用户关注的机构
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_USER_FOLLOWING)
+    Observable<List<ContractData>> getContract();
 
     /**
      * @param name  user	user  	string    	yes    	用户名模糊匹配

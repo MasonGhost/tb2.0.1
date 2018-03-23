@@ -1020,7 +1020,8 @@ public class ApiConfig {
 
     /*******************************************  TB  *********************************************/
 
-
+    // 获取用户关注的机构
+    public static final String APP_PATH_GET_USER_FOLLOWING = "api/" + API_VERSION_2 + "/tbm/user/following";
     // TB 财富排行榜
     public static final String APP_PATH_RANK_TB = "api/" + API_VERSION_2 + "/tbm/user/ranks";
     // 好友贡献榜
