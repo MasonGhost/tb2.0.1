@@ -31,19 +31,19 @@ public class MerchainMessageListItemNews implements ItemViewDelegate<MerchianMas
 
     @Override
     public boolean isForViewType(MerchianMassageBean.DataBean item, int position) {
-        return false;
+        return "news".equals(item.getType());
     }
 
     @Override
     public void convert(ViewHolder holder, MerchianMassageBean.DataBean dataBean, MerchianMassageBean.DataBean lastT, int position, int itemCounts) {
-        holder.setText(R.id.tv_des, TimeUtils.getTimeFriendlyForDetail(dataBean.getCreated_at()));
+        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyForDetail(dataBean.getCreated_at()));
         holder.setText(R.id.tv_title, dataBean.getSubject());
         if (TextUtils.isEmpty(dataBean.getText_content())) {
             holder.setText(R.id.tv_des, dataBean.getContent());
         } else {
             holder.setText(R.id.tv_des, dataBean.getText_content());
         }
-        ImageUtils.loadImageDefault(holder.getView(R.id.iv_avatar), ImageUtils.imagePathConvertV2(dataBean.getImage() == null ? 0 : dataBean
+        ImageUtils.loadImageDefault(holder.getView(R.id.iv_head), ImageUtils.imagePathConvertV2(dataBean.getImage() == null ? 0 : dataBean
                 .getImage().getId(), 0, 0, 0));
 
     }

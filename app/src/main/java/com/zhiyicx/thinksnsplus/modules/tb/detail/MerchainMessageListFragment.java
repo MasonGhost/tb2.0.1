@@ -40,10 +40,10 @@ public class MerchainMessageListFragment extends TSListFragment<MerchainMessageL
 
     private UserInfoBean mUserInfoBean;
 
-    public static MerchainMessageListFragment newInstance(String type) {
+    public static MerchainMessageListFragment newInstance(UserInfoBean userInfoBean) {
         MerchainMessageListFragment contributionListFragment = new MerchainMessageListFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(BUNDLE_DATA_USER, type);
+        bundle.putSerializable(BUNDLE_DATA_USER, userInfoBean);
         contributionListFragment.setArguments(bundle);
         return contributionListFragment;
     }
@@ -60,13 +60,24 @@ public class MerchainMessageListFragment extends TSListFragment<MerchainMessageL
     }
 
     @Override
+    protected void initData() {
+        super.initData();
+        setCenterText(mUserInfoBean.getName());
+    }
+
+    @Override
+    protected boolean isLoadingMoreEnable() {
+        return false;
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
         return false;
     }
 
     @Override
     protected boolean showToolbar() {
-        return false;
+        return true;
     }
 
     @Override
@@ -83,7 +94,10 @@ public class MerchainMessageListFragment extends TSListFragment<MerchainMessageL
         adapter.addItemViewDelegate(merchainMessageListItemDynamic);
 
         return adapter;
-
     }
 
+    @Override
+    public Integer getOriginId() {
+        return mUserInfoBean.getUser_id().intValue();
+    }
 }

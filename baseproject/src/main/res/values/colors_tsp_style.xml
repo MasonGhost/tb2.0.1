@@ -57,7 +57,8 @@
     稍低调的分割线，广泛使用,占位图
     页面内的浅色分割线
     -->
-    <color name="general_for_line_light">#ededed</color>
+    <color name="general_for_line_light">#eaeaed</color>
+    <color name="general_for_default_image">#b8b8b8</color>
     <!--
     页面的浅灰色背景，标签、热门城市背景色
     -->

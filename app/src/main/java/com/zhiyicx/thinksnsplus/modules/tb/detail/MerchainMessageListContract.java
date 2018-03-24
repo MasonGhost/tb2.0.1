@@ -12,6 +12,7 @@ import com.zhiyicx.thinksnsplus.data.beans.tbmerchianmessage.MerchianMassageBean
  */
 public interface MerchainMessageListContract {
     interface View extends ITSListView< MerchianMassageBean.DataBean,Presenter>{
+        Integer getOriginId();
     }
     interface Presenter extends ITSListPresenter< MerchianMassageBean.DataBean>{}
 }

@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbmerchianmessage.MerchianMassageBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
@@ -430,18 +431,18 @@ public interface IUserInfoRepository {
     Observable<TBTaskRewardRuleBean> getTaskRewardRule();
 
     /**
-     *填写邀请码
+     * 填写邀请码
      */
     Observable<BaseJsonV2> submitInviteCode(String user_id);
 
     /**
-     *修改是否参与排名
+     * 修改是否参与排名
      */
     Observable<String> changeRankStatus();
 
 
     /**
-     *获取是否参与排名
+     * 获取是否参与排名
      */
     Observable<String> getRankStatus();
 
@@ -464,7 +465,7 @@ public interface IUserInfoRepository {
      * @param user_id
      * @return
      */
-    Observable<MerchainInfo> getMerchainUserInfo( int user_id);
+    Observable<MerchainInfo> getMerchainUserInfo(int user_id);
 
     /**
      * 分享连接
@@ -472,4 +473,19 @@ public interface IUserInfoRepository {
      * @return
      */
     Observable<TBShareLinkBean> getShareLink();
+
+    /**
+     * 获取历史记录
+     *
+     * @param limit
+     * @param orgId     机构用户ID
+     * @param feedAfter 快讯最小ID
+     * @param newsAfter 咨询最小ID
+     * @return
+     */
+    Observable<MerchianMassageBean> getMerchianMessages(
+            Long limit
+            , Integer orgId
+            , Integer feedAfter
+            , Integer newsAfter);
 }

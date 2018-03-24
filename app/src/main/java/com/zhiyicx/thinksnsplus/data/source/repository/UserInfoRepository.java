@@ -35,6 +35,7 @@ import com.zhiyicx.thinksnsplus.data.beans.request.BindAccountRequstBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.DeleteUserPhoneOrEmailRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.ThirdAccountBindRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequestBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbmerchianmessage.MerchianMassageBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
@@ -1077,7 +1078,7 @@ public class UserInfoRepository implements IUserInfoRepository {
 
     @Override
     public Observable<String> getRankStatus() {
-        return  mUserInfoClient.getRankStatus()
+        return mUserInfoClient.getRankStatus()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -1114,5 +1115,11 @@ public class UserInfoRepository implements IUserInfoRepository {
         return mUserInfoClient.getShareLink()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<MerchianMassageBean> getMerchianMessages(Long limit, Integer orgId, Integer feedAfter, Integer newsAfter) {
+        return mUserInfoClient.getMerchianMessages(limit, orgId, feedAfter, newsAfter)
+                .subscribeOn(Schedulers.io());
     }
 }

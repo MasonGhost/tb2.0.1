@@ -4,5 +4,5 @@
             android:radius="@dimen/button_corner_small"
             />
     <solid
-            android:color="@color/bgColor"/>
+            android:color="#cecece"/>
 </shape>

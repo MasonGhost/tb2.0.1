@@ -27,6 +27,7 @@ import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
@@ -34,6 +35,7 @@ import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
+import com.zhiyicx.thinksnsplus.modules.tb.detail.MerchainMessageListFragment;
 import com.zhiyicx.thinksnsplus.widget.popwindow.CheckInPopWindow;
 
 import java.util.ArrayList;
@@ -327,8 +329,10 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mFragmentList.add(MainFragment.newInstance(this));
         mFragmentList.add(FindFragment.newInstance());
         if (TouristConfig.MESSAGE_CAN_LOOK || mPresenter.isLogin()) {
-//            mFragmentList.add(MessageContainerFragment.instance());
-            mFragmentList.add(FindFragment.newInstance());
+            UserInfoBean userInfoBean = new UserInfoBean();
+            userInfoBean.setUser_id(8L);
+            userInfoBean.setName("头条哈哈");
+            mFragmentList.add(MerchainMessageListFragment.newInstance(userInfoBean));
         }
         if (TouristConfig.MINE_CAN_LOOK || mPresenter.isLogin()) {
             mFragmentList.add(MineFragment.newInstance());

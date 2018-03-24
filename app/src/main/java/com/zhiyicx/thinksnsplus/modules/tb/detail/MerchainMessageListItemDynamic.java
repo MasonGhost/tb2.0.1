@@ -23,17 +23,18 @@ public class MerchainMessageListItemDynamic implements ItemViewDelegate<Merchian
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.item_merchian_message_news;
+        return R.layout.item_merchian_message_dynamic;
     }
 
     @Override
     public boolean isForViewType(MerchianMassageBean.DataBean item, int position) {
-        return false;
+        return "feed".equals(item.getType());
     }
 
     @Override
     public void convert(ViewHolder holder, MerchianMassageBean.DataBean dataBean, MerchianMassageBean.DataBean lastT, int position, int itemCounts) {
-        holder.setText(R.id.tv_des, TimeUtils.getTimeFriendlyForDetail(dataBean.getCreated_at()));
+        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyForDetail(dataBean.getCreated_at()));
+        holder.setText(R.id.tv_title, mUserInfoBean.getName());
         holder.setText(R.id.tv_des, dataBean.getFeed_content());
         ImageUtils.loadImageDefault(holder.getView(R.id.iv_avatar), mUserInfoBean.getAvatar());
     }

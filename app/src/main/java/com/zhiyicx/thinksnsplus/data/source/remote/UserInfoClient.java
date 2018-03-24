@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.data.beans.request.BindAccountRequstBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.DeleteUserPhoneOrEmailRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.ThirdAccountBindRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequestBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbmerchianmessage.MerchianMassageBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
@@ -632,5 +633,21 @@ public interface UserInfoClient {
      */
     @GET(ApiConfig.APP_PATH_SHARE_LINK_URL)
     Observable<TBShareLinkBean> getShareLink();
+
+    /**
+     * 获取历史记录
+     *
+     * @param limit
+     * @param orgId 机构用户ID
+     * @param feedAfter 快讯最小ID
+     * @param newsAfter 咨询最小ID
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_MERCHAIN_MESSAGE)
+    Observable<MerchianMassageBean> getMerchianMessages(
+            @Query("limit") Long limit,
+            @Query("orgId") Integer orgId
+            , @Query("feedAfter") Integer feedAfter
+            , @Query("newsAfter") Integer newsAfter);
 
 }
