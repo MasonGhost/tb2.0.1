@@ -46,7 +46,6 @@ public class ContractListFragment extends TSListFragment<ContractListContract.Pr
     protected void initData() {
         super.initData();
         mHintSideBar.setOnChooseLetterChangedListener(this);
-
     }
 
     @Override
@@ -68,11 +67,6 @@ public class ContractListFragment extends TSListFragment<ContractListContract.Pr
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_user_followings;
-    }
-
-    @Override
-    protected int setEmptView() {
-        return R.mipmap.img_default_nobody;
     }
 
     @Override

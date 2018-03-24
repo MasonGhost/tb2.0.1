@@ -12,7 +12,7 @@ public class ContractListPresenterModule {
     }
 
     @Provides
-    ContractListContract.View provideContributionListContractView() {
+    ContractListContract.View provideContractListContractView() {
         return mView;
     }
 }

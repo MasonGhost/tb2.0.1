@@ -14,15 +14,16 @@
         android:paddingTop="@dimen/headpic_for_info_list">
 
         <com.zhiyicx.baseproject.widget.imageview.SquareImageView
-            android:id="@+id/iv_contact_headpic"
+            android:id="@+id/iv_message_headpic"
             android:layout_width="@dimen/iamge_close_height"
             android:layout_height="@dimen/iamge_close_height"
             android:layout_marginRight="@dimen/__picker_spacing_small"
             android:src="@drawable/shape_default_image" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="0.9"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -31,7 +32,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:text="账号名称"
                 android:textColor="@color/important_for_content"
                 android:textSize="@dimen/qa_search_empty_size" />
 
@@ -40,17 +40,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:text="123456456465465456465456465456456465456456"
                 android:textColor="@color/normal_for_assist_text"
                 android:textSize="@dimen/message_content" />
         </LinearLayout>
 
         <TextView
+            android:id="@+id/tv_tbtime"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.1"
+            android:gravity="right"
             android:singleLine="true"
-            android:text="14:07"
             android:textColor="@color/normal_for_assist_text"
             android:textSize="@dimen/message_time" />
 
