@@ -123,6 +123,7 @@ public class AppApplication extends TSApplication {
         // 极光推送
         JPushInterface.setDebugMode(BuildConfig.USE_LOG);
         JPushInterface.init(this);
+
     }
 
     /**

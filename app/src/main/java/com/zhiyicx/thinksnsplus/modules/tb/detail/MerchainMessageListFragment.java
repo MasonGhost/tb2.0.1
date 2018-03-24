@@ -63,6 +63,7 @@ public class MerchainMessageListFragment extends TSListFragment<MerchainMessageL
     protected void initData() {
         super.initData();
         setCenterText(mUserInfoBean.getName());
+        mRvList.setPadding(0, 0, 0, 50);
     }
 
     @Override
@@ -83,6 +84,13 @@ public class MerchainMessageListFragment extends TSListFragment<MerchainMessageL
     @Override
     protected boolean setUseSatusbar() {
         return false;
+    }
+
+    @Override
+    public void scroollToBottom() {
+        if (mListDatas.size() > 0) {
+            mRvList.scrollToPosition(mListDatas.size() - 1);
+        }
     }
 
     @Override

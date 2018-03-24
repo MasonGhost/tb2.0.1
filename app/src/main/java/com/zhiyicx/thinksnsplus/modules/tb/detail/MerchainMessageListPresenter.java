@@ -63,7 +63,9 @@ public class MerchainMessageListPresenter extends AppBasePresenter<MerchainMessa
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
                         mRootView.onResponseError(null, isLoadMore);
-
+                        if(mRootView.getListDatas().isEmpty()){
+                            mRootView.scroollToBottom();
+                        }
                     }
 
                     @Override
