@@ -91,7 +91,7 @@
 
         <View style="@style/style_divider_horizontal_light"/>
 
-        <com.zhiyicx.baseproject.widget.DynamicListMenuView
+        <com.zhiyicx.baseproject.widget.DynamicDetailMenuView
             android:id="@+id/dd_dynamic_tool"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

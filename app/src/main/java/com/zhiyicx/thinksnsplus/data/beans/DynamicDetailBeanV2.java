@@ -1196,9 +1196,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         dest.writeByte(this.isOpen ? (byte) 1 : (byte) 0);
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1467065995)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;

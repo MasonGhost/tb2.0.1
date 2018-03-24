@@ -60,6 +60,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 
 import static android.app.Activity.RESULT_OK;
+import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -83,7 +84,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @BindView(R.id.behavior_demo_coordinatorLayout)
     CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.dd_dynamic_tool)
-    DynamicListMenuView mDdDynamicTool;
+    DynamicDetailMenuView mDdDynamicTool;
     @BindView(R.id.tv_toolbar_center)
     TextView mTvToolbarCenter;
     @BindView(R.id.tv_toolbar_left)
@@ -326,8 +327,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     private void initBottomToolStyle() {
-//        mDdDynamicTool.setButtonText(new int[]{R.string.dynamic_like, R.string.comment,
-//                R.string.share, R.string.more});
+
+        mDdDynamicTool.setItemIsChecked(mInfoMation.isHas_like(), 0);
+        mDdDynamicTool.setButtonText(mInfoMation.getDigg_count() == 0 ? "" : ConvertUtils.numberConvert(mInfoMation.getDigg_count()), 0);
+        mDdDynamicTool.setButtonText(mInfoMation.getShare_count() == 0 ? "" : ConvertUtils.numberConvert(mInfoMation.getShare_count()), 2);
+        mDdDynamicTool.setButtonText(mInfoMation.getComment_count() == 0 ? "" : ConvertUtils.numberConvert(mInfoMation.getComment_count()), 1);
 
         mDdDynamicTool.setImageNormalResourceIds(new int[]{
                 R.mipmap.ico_share,
@@ -337,36 +341,19 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         });
 
         mDdDynamicTool.setImageCheckedResourceIds(new int[]{
-                R.mipmap.ico_share,
-                R.mipmap.home_ico_comment_normal,
+                R.mipmap.ico_share_on,
+                R.mipmap.home_ico_comment_on,
                 R.mipmap.ico_zan_on,
                 R.mipmap.home_ico_more,
         });
-        // 点赞
-        mDdDynamicTool.setItemTextAndStatus(
-                mInfoMation.getDigg_count() == 0 ? "" : ConvertUtils.numberConvert(mInfoMation.getDigg_count())
-                , mInfoMation.isHas_like()
-                , 2
-        );
-        // 分享数量
-        mDdDynamicTool.setItemTextAndStatus(
-                mInfoMation.getShare_count() == 0 ? "" : ConvertUtils.numberConvert(mInfoMation.getShare_count()),
-                false
-                , 0
-        );
-        // 评论数量
-        mDdDynamicTool.setItemTextAndStatus(
-                mInfoMation.getComment_count() == 0 ? "" : ConvertUtils.numberConvert(mInfoMation.getComment_count())
-                , false
-                , 1
-        );
+
     }
 
     private void initBottomToolListener() {
         mDdDynamicTool.setItemOnClick((parent, v, position) -> {
             mDdDynamicTool.getTag(R.id.view_data);
             switch (position) {
-                case DynamicDetailMenuView.ITEM_POSITION_2:// 点赞
+                case DynamicDetailMenuView.ITEM_POSITION_0:// 点赞
                     mPresenter.handleLike(!mInfoMation.getHas_like(),
                             mInfoMation.getId() + "");
                     break;
@@ -380,7 +367,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                         showSnackWarningMessage(getString(R.string.news_not_support_comment));
                     }
                     break;
-                case DynamicDetailMenuView.ITEM_POSITION_0:// 分享
+                case DynamicDetailMenuView.ITEM_POSITION_2:// 分享
                     Bitmap bitmap = FileUtils.readImgFromFile(getActivity(), "info_share");
 
                     mPresenter.shareInfo(bitmap);
