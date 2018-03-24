@@ -168,7 +168,7 @@ greendao {
      * generateTests 设置是否自动生成单元测试。
      * targetGenDirTest 生成的单元测试的根目录。
      */
-    schemaVersion 99
+    schemaVersion 100
     daoPackage 'com.zhiyicx.thinksnsplus.data.beans'
     generateTests true
     //targetGenDir 'src/main/java'

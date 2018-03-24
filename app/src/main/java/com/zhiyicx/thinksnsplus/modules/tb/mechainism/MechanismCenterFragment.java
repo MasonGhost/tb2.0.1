@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,7 +24,9 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.TbMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.MessageListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
@@ -112,6 +116,8 @@ public class MechanismCenterFragment extends TSFragment {
     ProgressBar mProgressBar;
     @BindView(R.id.bt_top)
     TextView mBtFollow;
+    @BindView(R.id.ck_pinned)
+    CheckBox mCkPinned;
 
 
     private UserInfoBean mUserInfoBean;
@@ -121,9 +127,14 @@ public class MechanismCenterFragment extends TSFragment {
 
     @Inject
     UserInfoRepository mUserInfoRepository;
+
+    @Inject
+    MessageListBeanGreenDaoImpl mMessageListBeanGreenDao;
     private Subscription subscribe;
     private MerchainContentWebLoadView mMerchainContentWebLoadView;
     private String mPath;
+
+    private TbMessageBean mTbMessageBean;
 
     public static MechanismCenterFragment newInstance(Bundle bundle) {
         MechanismCenterFragment mechanismCenterFragment = new MechanismCenterFragment();
@@ -174,6 +185,7 @@ public class MechanismCenterFragment extends TSFragment {
 
     @Override
     protected void initData() {
+
         subscribe = mUserInfoRepository.getMerchainUserInfo(mUserInfoBean.getUser_id().intValue())
                 .subscribe(new BaseSubscribeForV2<MerchainInfo>() {
                     @Override
@@ -281,6 +293,27 @@ public class MechanismCenterFragment extends TSFragment {
                     bundle.putSerializable(MerchainMessagelistActivity.BUNDLE_USER, mUserInfoBean);
                     intent.putExtras(bundle);
                     startActivity(intent);
+                }
+            }
+        });
+        mTbMessageBean = mMessageListBeanGreenDao.getSingleDataFromCache(mUserInfoBean.getUser_id());
+        mCkPinned.setChecked(mTbMessageBean != null && mTbMessageBean.getMIsPinned());
+        mCkPinned.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (mTbMessageBean == null) {
+                    mTbMessageBean = new TbMessageBean();
+                    mTbMessageBean.setUser_id(mUserInfoBean.getUser_id());
+                }
+                if (isChecked) {
+                    mTbMessageBean.setPinnedTime(System.currentTimeMillis());
+                    mTbMessageBean.setMIsPinned(true);
+                    mMessageListBeanGreenDao.insertOrReplace(mTbMessageBean);
+
+                } else {
+                    mTbMessageBean.setPinnedTime(0);
+                    mTbMessageBean.setMIsPinned(false);
+                    mMessageListBeanGreenDao.insertOrReplace(mTbMessageBean);
                 }
             }
         });

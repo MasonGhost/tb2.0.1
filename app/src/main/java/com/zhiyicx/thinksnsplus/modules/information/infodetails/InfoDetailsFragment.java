@@ -78,6 +78,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         .OnSendClickListener, BaseWebLoad.OnWebLoadListener, MultiItemTypeAdapter.OnItemClickListener, OnUserInfoClickListener {
 
     public static final String BUNDLE_INFO_TYPE = "info_type";
+    public static final String BUNDLE_INFO_ID = "info_Id";
     public static final String BUNDLE_INFO = "info";
     public static final String BUNDLE_USERID = "userId";
 
@@ -107,6 +108,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      * 传入的资讯信息
      */
     private InfoListDataBean mInfoMation;
+    private long mInfoId;
 
     private int mReplyUserId;// 被评论者的 id ,评论动态 id = 0
 
@@ -165,6 +167,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public void updateInfoHeader(InfoListDataBean infoDetailBean) {
+        initcenterView();
         infoDetailBean.setUser(mInfoMation.getUser());
         mCoordinatorLayout.setEnabled(true);
         this.mInfoMation = infoDetailBean;
@@ -172,6 +175,14 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mInfoDetailHeader.updateDigList(infoDetailBean);
         mInfoDetailHeader.setRelateInfo(infoDetailBean);
         onNetResponseSuccess(infoDetailBean.getCommentList(), false);
+    }
+
+    private void initcenterView() {
+        setDigg(mPresenter.isDiged());
+        if (mInfoMation != null && mInfoMation.getUser() != null) {
+            mTvToolbarCenter.setText(mInfoMation.getUser().getName());
+        }
+        initBottomToolStyle();
     }
 
     @Override
@@ -207,27 +218,30 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         super.initView(rootView);
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
         mInfoMation = (InfoListDataBean) getArguments().getSerializable(BUNDLE_INFO);
-
+        mInfoId = getArguments().getLong(BUNDLE_INFO_ID);
         if (mInfoMation == null) {
             mInfoMation = new InfoListDataBean();
             Long ids = getArguments().getLong(BUNDLE_SOURCE_ID);
             mInfoMation.setId(ids);
         }
-
-        mTvToolbarCenter.setVisibility(View.VISIBLE);
-        mTvToolbarCenter.setText(mInfoMation.getUser().getName());
+        if (mInfoId != 0) {
+            mPresenter.getInfoDetail(String.valueOf(mInfoId));
+        } else {
+            initcenterView();
+        }
         initHeaderView();
-        initBottomToolStyle();
         initBottomToolListener();
         initListener();
+        mTvToolbarCenter.setVisibility(View.VISIBLE);
         mInfoMation.setIs_collection_news(mPresenter.isCollected() ? 1 : 0);
         mInfoMation.setIs_digg_news(mPresenter.isDiged() ? 1 : 0);
-        setDigg(mPresenter.isDiged());
+
 
         // 投稿中的资讯隐藏底部操作以及打赏
 //        mDdDynamicTool.setVisibility(mInfoMation.getAudit_status() == 0 ? View.VISIBLE : View.GONE);
 //        mInfoDetailHeader.setInfoReviewIng(mInfoMation.getAudit_status() == 0 ? View.VISIBLE : View.GONE);
     }
+
 
     @Override
     public void loadAllError() {

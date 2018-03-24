@@ -162,6 +162,10 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
                     default:
                         break;
                 }
+//                if(tbMessageBean.getMIsRead()){
+//                    holder.getView(R.id.iv_message_headpic).add
+//                }
+
             }
         };
         return adapter;
