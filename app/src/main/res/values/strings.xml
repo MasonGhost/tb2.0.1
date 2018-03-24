@@ -1021,12 +1021,12 @@
     <string name="tb_mechainism_cn_name">名称</string>
     <string name="tb_mechainism_en_name">英文名称</string>
     <string name="tb_coin_publish_time">发行时间</string>
-    <string name="tb_coin_publish_count">发行总量</string>
+    <string name="tb_coin_publish_count">应用下载</string>
     <string name="tb_coin_publish_price">发行价格</string>
     <string name="tb_coin_publish_currency">流通总量</string>
     <string name="tb_coin_online_com">上线交所</string>
     <string name="tb_coin_media">社交媒体</string>
-    <string name="tb_coin_website">官方网站</string>
+    <string name="tb_coin_website">官网</string>
     <string name="tb_coin_look_info">区块浏览</string>
     <string name="tb_coin_book">白皮书</string>
     <string name="search_mechainsim">搜索机构</string>

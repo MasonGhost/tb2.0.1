@@ -71,8 +71,8 @@
                 android:id="@+id/tv_en_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginRight="@dimen/spacing_mid"
+                android:layout_weight="1"
                 android:textColor="@color/important_for_content"
                 android:textColorHint="@color/general_for_hint"
                 android:textSize="@dimen/size_sub_title"
@@ -152,8 +152,8 @@
                 android:id="@+id/tv_time"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginRight="@dimen/spacing_mid"
+                android:layout_weight="1"
                 android:textColor="@color/important_for_content"
                 android:textColorHint="@color/general_for_hint"
                 android:textSize="@dimen/size_sub_title"
@@ -165,38 +165,6 @@
         <!--style="@style/style_divider_horizontal_light"-->
         <!--android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"/>-->
 
-        <!--发行总量-->
-        <LinearLayout
-            android:id="@+id/ll_count_container"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/userinfo_btn_height"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="@dimen/mechainism_name_hint_with"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_mid"
-                android:layout_marginRight="@dimen/spacing_mid"
-                android:text="@string/tb_coin_publish_count"
-                android:textColor="@color/normal_for_assist_text"
-                android:textSize="@dimen/size_sub_title"/>
-
-            <TextView
-                android:id="@+id/tv_count"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginRight="@dimen/spacing_mid"
-
-                android:textColor="@color/important_for_content"
-                android:textColorHint="@color/general_for_hint"
-                android:textSize="@dimen/size_sub_title"
-                tools:text="tym"/>
-
-        </LinearLayout>
 
         <!--<View-->
         <!--style="@style/style_divider_horizontal_light"-->
@@ -225,8 +193,8 @@
                 android:id="@+id/tv_currency"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginRight="@dimen/spacing_mid"
+                android:layout_weight="1"
                 android:textColor="@color/important_for_content"
                 android:textColorHint="@color/general_for_hint"
                 android:textSize="@dimen/size_sub_title"
@@ -262,8 +230,8 @@
                 android:id="@+id/tv_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginRight="@dimen/spacing_mid"
+                android:layout_weight="1"
                 android:textColor="@color/important_for_content"
                 android:textColorHint="@color/general_for_hint"
                 android:textSize="@dimen/size_sub_title"
@@ -348,42 +316,6 @@
         <!--style="@style/style_divider_horizontal_light"-->
         <!--android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"/>-->
 
-        <!--官方网站-->
-        <LinearLayout
-            android:id="@+id/ll_website_container"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/userinfo_btn_height"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="@dimen/mechainism_name_hint_with"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_mid"
-                android:layout_marginRight="@dimen/spacing_mid"
-                android:text="@string/tb_coin_website"
-                android:textColor="@color/normal_for_assist_text"
-                android:textSize="@dimen/size_sub_title"/>
-
-            <TextView
-                android:id="@+id/tv_website"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textColor="@color/important_for_content"
-                android:textColorHint="@color/general_for_hint"
-                android:layout_marginRight="@dimen/spacing_mid"
-                android:textSize="@dimen/size_sub_title"
-                tools:text="tym"/>
-
-        </LinearLayout>
-
-        <!--<View-->
-        <!--style="@style/style_divider_horizontal_light"-->
-        <!--android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"/>-->
-
         <!--区块浏览-->
         <LinearLayout
             android:id="@+id/ll_info_container"
@@ -409,8 +341,8 @@
                 android:id="@+id/tv_info"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginRight="@dimen/spacing_mid"
+                android:layout_weight="1"
                 android:textColor="@color/important_for_content"
                 android:textColorHint="@color/general_for_hint"
                 android:textSize="@dimen/size_sub_title"
@@ -443,6 +375,83 @@
                 android:visibility="gone"/>
         </FrameLayout>
 
+        <View
+            android:id="@+id/line_web"
+            style="@style/style_divider_horizontal_light"
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
+            android:visibility="gone"/>
+
+
+        <!--官方网站-->
+        <LinearLayout
+            android:id="@+id/ll_website_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/userinfo_btn_height"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="@dimen/mechainism_name_hint_with"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:text="@string/tb_coin_website"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_sub_title"/>
+
+            <TextView
+                android:id="@+id/tv_website"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:layout_weight="1"
+                android:textColor="@color/themeColor"
+                android:textColorHint="@color/general_for_hint"
+                android:textSize="@dimen/size_sub_title"
+                tools:text="tym"/>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/line_downlad"
+            style="@style/style_divider_horizontal_light"
+            android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
+            android:visibility="gone"/>
+
+        <!--下载-->
+        <LinearLayout
+            android:id="@+id/ll_count_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/userinfo_btn_height"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="@dimen/mechainism_name_hint_with"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:text="@string/tb_coin_publish_count"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_sub_title"/>
+
+            <TextView
+                android:id="@+id/tv_count"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:layout_weight="1"
+                android:drawableRight="@mipmap/ic_arrow_smallgrey"
+                android:textColor="@color/important_for_content"
+                android:textColorHint="@color/general_for_hint"
+                android:textSize="@dimen/size_sub_title"
+                />
+
+        </LinearLayout>
 
         <View
             android:id="@+id/line_content"
@@ -485,11 +494,11 @@
                 android:id="@+id/tv_book"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/spacing_mid"
                 android:layout_weight="1"
                 android:drawableLeft="@mipmap/ico_pdf"
                 android:drawablePadding="@dimen/spacing_small"
                 android:ellipsize="end"
-                android:layout_marginRight="@dimen/spacing_mid"
                 android:gravity="center_vertical"
                 android:maxLines="1"
                 android:text="白皮书下载"
@@ -505,5 +514,105 @@
             android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
             android:visibility="gone"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bgColor"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/ll_pinned"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/userinfo_btn_height"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spacing_small"
+                    android:background="@color/bgColor"
+                    />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_mid"
+                    android:layout_marginRight="@dimen/spacing_mid"
+                    android:layout_weight="1"
+                    android:text="置顶公众号"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:textSize="@dimen/size_sub_title"/>
+
+                <CheckBox
+                    android:id="@+id/ck_pinned"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:button="@drawable/selector_open_close_stated_1"
+                    android:checked="true"
+                    android:paddingRight="@dimen/spacing_mid"
+                    />
+
+
+            </LinearLayout>
+
+            <View
+                style="@style/style_divider_horizontal_light"
+                android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/ll_no_push"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/userinfo_btn_height"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_mid"
+                    android:layout_marginRight="@dimen/spacing_mid"
+                    android:layout_weight="1"
+                    android:text="消息免打扰"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:textSize="@dimen/size_sub_title"/>
+
+                <CheckBox
+                    android:id="@+id/ck_no_push"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:button="@drawable/selector_open_close_stated_1"
+                    android:checked="false"
+                    android:paddingRight="@dimen/spacing_mid"
+                    />
+
+
+            </LinearLayout>
+
+            <View
+                style="@style/style_divider_horizontal_light"
+                android:layout_marginLeft="@dimen/tb_mechainism_divier_marginleft"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/bt_top"
+            style="@style/style_login_button"
+            android:layout_height="50dp"
+            android:layout_marginBottom="@dimen/spacing_large"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_mid"
+            android:layout_marginTop="@dimen/head2_right_margin"
+            android:background="@drawable/selector_button_corner_solid_small"
+            android:text="@string/follow"
+            android:textSize="19sp"
+            />
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

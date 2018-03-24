@@ -62,7 +62,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     /**
      * 默认的toolbar背景色
      */
-    private static final int DEFAULT_TOOLBAR_BACKGROUD_COLOR = R.color.white;
+    private static final int DEFAULT_TOOLBAR_BACKGROUD_COLOR = R.color.themeColor;
     /**
      * 默认的toolbar下方分割线颜色
      */

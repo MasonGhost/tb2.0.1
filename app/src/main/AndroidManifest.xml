@@ -746,6 +746,10 @@
         <activity
             android:name=".modules.tb.dynamic.comment.DynamicCommentListActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.tb.detail.MerchainMessagelistActivity"
+            android:screenOrientation="portrait"/>
+
 
     </application>
 

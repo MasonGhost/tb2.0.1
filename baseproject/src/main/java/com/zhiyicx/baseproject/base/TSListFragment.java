@@ -123,7 +123,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     protected int setToolBarBackgroud() {
-        return R.color.white;
+        return R.color.themeColor;
     }
 
     @Override

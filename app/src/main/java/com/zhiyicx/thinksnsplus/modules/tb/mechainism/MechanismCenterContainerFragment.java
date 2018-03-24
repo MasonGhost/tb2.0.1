@@ -23,6 +23,7 @@ import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
+import com.zhiyicx.thinksnsplus.modules.tb.detail.MerchainMessageListContract;
 import com.zhiyicx.thinksnsplus.modules.tb.dynamic.TBDynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
@@ -195,7 +196,12 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
     }
 
     private void updateUseFollow() {
-        mLlFollowContainer.setVisibility(mUserInfoBean.getFollower() ? View.GONE : View.VISIBLE);
+//        mLlFollowContainer.setVisibility(mUserInfoBean.getFollower() ? View.GONE : View.VISIBLE);
+        try {
+            ((MechanismCenterFragment) mFragmentList.get(0)).updateFollowStat(mUserInfoBean.getFollower());
+
+        } catch (Exception e) {
+        }
     }
 
     public static MechanismCenterContainerFragment newInstance(Bundle bundle) {
@@ -271,5 +277,10 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
             updateUserDes(merchainInfo.getRemarks());
         }
 
+    }
+
+    @Override
+    public void handleFollow() {
+        handleUser();
     }
 }

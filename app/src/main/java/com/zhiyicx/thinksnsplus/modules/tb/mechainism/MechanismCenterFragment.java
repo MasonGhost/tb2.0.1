@@ -25,6 +25,8 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.tb.detail.MerchainMessagelistActivity;
 
 import java.io.File;
 import java.util.Locale;
@@ -49,6 +51,10 @@ public class MechanismCenterFragment extends TSFragment {
     View mLineIntro;
     @BindView(R.id.line_content)
     View mLineContent;
+    @BindView(R.id.line_web)
+    View mLineWeb;
+    @BindView(R.id.line_downlad)
+    View mLineDownlad;
     @BindView(R.id.line_book)
     View mLineBook;
 
@@ -104,6 +110,8 @@ public class MechanismCenterFragment extends TSFragment {
     MarkdownView mContent;
     @BindView(R.id.progressBar)
     ProgressBar mProgressBar;
+    @BindView(R.id.bt_top)
+    TextView mBtFollow;
 
 
     private UserInfoBean mUserInfoBean;
@@ -177,6 +185,15 @@ public class MechanismCenterFragment extends TSFragment {
 
     }
 
+    /**
+     * 更新关注
+     *
+     * @param follower
+     */
+    public void updateFollowStat(boolean follower) {
+        mBtFollow.setText(follower ? "进入公众号" : getString(R.string.follow));
+    }
+
     private void updateMerchainInfo(MerchainInfo data) {
         if (!TextUtils.isEmpty(data.getNickname())) {
             mLineName.setVisibility(View.VISIBLE);
@@ -199,10 +216,30 @@ public class MechanismCenterFragment extends TSFragment {
 //            mMerchainContentWebLoadView.setDetail(data);
 //        }
 
+        if (!TextUtils.isEmpty(data.getUrl())) {
+            mLineWeb.setVisibility(View.VISIBLE);
+            mLlWebsiteContainer.setVisibility(View.VISIBLE);
+            mTvWebsite.setText(data.getUrl());
+            mTvWebsite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CustomWEBActivity.startToWEBActivity(getContext(), data.getUrl());
+                }
+            });
+        }
+        // 官网
         if (!TextUtils.isEmpty(data.getOther_info())) {
             mLineContent.setVisibility(View.VISIBLE);
             mLlInfoContainer.setVisibility(View.VISIBLE);
             mTvInfo.setText(data.getOther_info());
+        }
+        // 下载
+        if (!TextUtils.isEmpty(data.getAndroid_download_url())) {
+            mLineDownlad.setVisibility(View.VISIBLE);
+            mLlCountContainer.setVisibility(View.VISIBLE);
+            mLlCountContainer.setOnClickListener(v -> {
+                CustomWEBActivity.startToWEBActivity(getContext(), data.getAndroid_download_url());
+            });
         }
 
         if (TextUtils.isEmpty(data.getWhite_paper_name())) {
@@ -212,22 +249,41 @@ public class MechanismCenterFragment extends TSFragment {
             mLlBookContainer.setVisibility(View.VISIBLE);
             mTvBook.setText(data.getWhite_paper_name());
             mTvBook.setOnClickListener(v -> {
-                if (mMerchainInfo == null || mMerchainInfo.getWhite_paper() == 0) {
-                    return;
-                }
-                try {
-                    Intent intent = FileUtils.openFile(getBookFilePath(data), mActivity.getApplicationContext());
-                    if (intent == null) {
-                        downloadId2 = createDownloadTask().start();
-                    } else {
-                        startActivity(intent);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                CustomWEBActivity.startToWEBActivity(getContext(), String.format(Locale.getDefault(), ApiConfig.APP_PATH_STORAGE_GET_FILE,
+                        mMerchainInfo.getWhite_paper() + ""));
+//                if (mMerchainInfo == null || mMerchainInfo.getWhite_paper() == 0) {
+//                    return;
+//                }
+//                try {
+//                    Intent intent = FileUtils.openFile(getBookFilePath(data), mActivity.getApplicationContext());
+//                    if (intent == null) {
+//                        downloadId2 = createDownloadTask().start();
+//                    } else {
+//                        startActivity(intent);
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
             });
         }
         updateMerchainRemark(data);
+
+        mBtFollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getString(R.string.follow).equals(mBtFollow.getText())) {
+                    // 关注
+                    handleFollow();
+                } else {
+                    // 进入公众号
+                    Intent intent = new Intent(getActivity(), MerchainMessagelistActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(MerchainMessagelistActivity.BUNDLE_USER, mUserInfoBean);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
     /**
@@ -238,6 +294,16 @@ public class MechanismCenterFragment extends TSFragment {
     private void updateMerchainRemark(MerchainInfo data) {
         if (getParentFragment() != null && getParentFragment() instanceof OnMerchainismInfoChangedListener) {
             ((OnMerchainismInfoChangedListener) getParentFragment()).onMerchainismInfoChanged(data);
+        }
+
+    }
+
+    /**
+     * 更新机构用户的备注
+     */
+    private void handleFollow() {
+        if (getParentFragment() != null && getParentFragment() instanceof OnMerchainismInfoChangedListener) {
+            ((OnMerchainismInfoChangedListener) getParentFragment()).handleFollow();
         }
 
     }
@@ -357,6 +423,8 @@ public class MechanismCenterFragment extends TSFragment {
 
     public interface OnMerchainismInfoChangedListener {
         void onMerchainismInfoChanged(MerchainInfo merchainInfo);
+
+        void handleFollow();
     }
 
 }

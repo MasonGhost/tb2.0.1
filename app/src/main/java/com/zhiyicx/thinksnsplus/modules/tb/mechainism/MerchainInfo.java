@@ -29,6 +29,8 @@ public class MerchainInfo {
     private String white_paper_name;
     private String created_at;
     private String updated_at;
+    private String url; // 官网
+    private String android_download_url;
 
     public String getWhite_paper_name() {
         return white_paper_name;
@@ -100,5 +102,21 @@ public class MerchainInfo {
 
     public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getAndroid_download_url() {
+        return android_download_url;
+    }
+
+    public void setAndroid_download_url(String android_download_url) {
+        this.android_download_url = android_download_url;
     }
 }
