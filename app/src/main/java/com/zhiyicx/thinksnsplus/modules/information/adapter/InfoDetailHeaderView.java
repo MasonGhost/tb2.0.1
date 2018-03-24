@@ -344,7 +344,7 @@ public class InfoDetailHeaderView extends BaseWebLoad {
         if (infoListDataBeen != null && infoListDataBeen.size() > 0) {
             if (!isReviewIng) {
 //                mInfoRelateList.setVisibility(VISIBLE);
-                mFtlRelate.setVisibility(VISIBLE);
+//                mFtlRelate.setVisibility(VISIBLE);
 //                mRvRelateInfo.setVisibility(VISIBLE);
             }
 
@@ -446,7 +446,7 @@ public class InfoDetailHeaderView extends BaseWebLoad {
         setReWardViewVisible(visible);
         setAdvertViewVisible(visible);
 //        mInfoRelateList.setVisibility(visible);
-        mFtlRelate.setVisibility(visible);
+//        mFtlRelate.setVisibility(visible);
 //        mDigListView.setVisibility(visible);
         mRvRelateInfo.setVisibility(visible);
     }

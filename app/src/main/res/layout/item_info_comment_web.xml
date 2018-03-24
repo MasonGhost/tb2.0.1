@@ -176,6 +176,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_margin="@dimen/spacing_normal"
+        android:visibility="gone"
         android:background="@color/white"
         app:max_select="0"
         />
