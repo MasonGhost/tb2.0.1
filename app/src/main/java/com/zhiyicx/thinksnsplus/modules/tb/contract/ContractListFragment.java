@@ -9,11 +9,13 @@ import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.imageview.SquareImageView;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.HintSideBarUserBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.hintsidebar.HintSideBar;
 import com.zhiyicx.thinksnsplus.widget.hintsidebar.SideBar;
@@ -27,6 +29,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+
+import static com.zhiyicx.thinksnsplus.modules.home.HomeFragment.PAGE_CONTACT;
+import static com.zhiyicx.thinksnsplus.modules.home.HomeFragment.PAGE_MESSAGE;
 
 public class ContractListFragment extends TSListFragment<ContractListContract.Presenter, HintSideBarUserBean>
         implements ContractListContract.View, SideBar.OnChooseLetterChangedListener{
@@ -62,6 +67,16 @@ public class ContractListFragment extends TSListFragment<ContractListContract.Pr
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .contractListPresenterModule(new ContractListPresenterModule(this))
                 .build().inject(this);
+    }
+
+    @Override
+    protected int setLeftImg() {
+        return R.mipmap.ic_return_a_click;
+    }
+
+    @Override
+    protected void setLeftClick() {
+        ((HomeFragment)getParentFragment()).setCurrenPage(PAGE_MESSAGE);
     }
 
     @Override

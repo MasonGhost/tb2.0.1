@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.tb.message;
 
+import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -8,7 +10,9 @@ import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.imageview.SquareImageView;
+import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -17,7 +21,10 @@ import com.zhiyicx.thinksnsplus.data.beans.HintSideBarUserBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.TbMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
+import com.zhiyicx.thinksnsplus.modules.tb.contract.ContractListFragment;
 import com.zhiyicx.thinksnsplus.modules.tb.contract.DaggerContractListComponent;
+import com.zhiyicx.thinksnsplus.modules.tb.search.SearchMechanismUserActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -25,6 +32,7 @@ import javax.inject.Inject;
 
 import static com.zhiyicx.thinksnsplus.data.beans.TbMessageBean.FEED;
 import static com.zhiyicx.thinksnsplus.data.beans.TbMessageBean.NEWS;
+import static com.zhiyicx.thinksnsplus.modules.home.HomeFragment.PAGE_CONTACT;
 
 /**
  * Created by lx on 2018/3/24.
@@ -55,6 +63,26 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .messageListPresenterModule(new MessageListPresenterModule(this))
                 .build().inject(this);
+    }
+
+    @Override
+    protected int setLeftImg() {
+        return R.mipmap.ic_mail_list_click;
+    }
+
+    @Override
+    protected void setLeftClick() {
+        ((HomeFragment)getParentFragment()).setCurrenPage(PAGE_CONTACT);
+    }
+
+    @Override
+    protected int setRightImg() {
+        return R.mipmap.ic_search_a_click;
+    }
+
+    @Override
+    protected void setRightClick() {
+        startActivity(new Intent(mActivity, SearchMechanismUserActivity.class));
     }
 
     @Override

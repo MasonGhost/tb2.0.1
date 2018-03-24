@@ -37,6 +37,7 @@ import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerF
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
 import com.zhiyicx.thinksnsplus.modules.tb.contract.ContractListFragment;
 import com.zhiyicx.thinksnsplus.modules.tb.detail.MerchainMessageListFragment;
+import com.zhiyicx.thinksnsplus.modules.tb.message.MessageListFragment;
 import com.zhiyicx.thinksnsplus.widget.popwindow.CheckInPopWindow;
 
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     /**
      * 页数
      */
-    public static final int PAGE_NUMS = 4;
+    public static final int PAGE_NUMS = 5;
 
     /**
      * 对应在 viewpager 中的位置
@@ -73,6 +74,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     public static final int PAGE_MESSAGE = 1;
     public static final int PAGE_FIND = 2;
     public static final int PAGE_MINE = 3;
+    public static final int PAGE_CONTACT = 4;
 
     @BindView(R.id.iv_home)
     ImageView mIvHome;
@@ -254,6 +256,13 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
     }
 
+    public void setCurrenPage(int page){
+        if (TouristConfig.MESSAGE_CAN_LOOK || !mPresenter.handleTouristControl()) {
+            mVpHome.setCurrentItem(page, false);
+        }
+        mCurrenPage = page;
+    }
+
     @Override
     public void setMessageTipVisable(boolean tipVisable) {
         if (tipVisable) {
@@ -328,7 +337,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
         mFragmentList.clear();
         mFragmentList.add(MainFragment.newInstance(this));
-        mFragmentList.add(ContractListFragment.newInstance());
+        mFragmentList.add(MessageListFragment.newInstance());
         if (TouristConfig.MESSAGE_CAN_LOOK || mPresenter.isLogin()) {
             UserInfoBean userInfoBean = new UserInfoBean();
             userInfoBean.setUser_id(8L);
@@ -338,6 +347,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         if (TouristConfig.MINE_CAN_LOOK || mPresenter.isLogin()) {
             mFragmentList.add(MineFragment.newInstance());
         }
+        mFragmentList.add(ContractListFragment.newInstance());
         //将 List 设置给 adapter
         homePager.bindData(mFragmentList);
         mVpHome.setAdapter(homePager);
