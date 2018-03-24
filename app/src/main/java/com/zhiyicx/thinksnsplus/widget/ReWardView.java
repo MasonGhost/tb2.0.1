@@ -22,6 +22,7 @@ import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.list.RewardListFragment;
@@ -54,6 +55,7 @@ public class ReWardView extends FrameLayout {
     private List<RewardsListBean> mListData = new ArrayList<>();
     private long mSourceId;
     private RewardType mRewardType = RewardType.INFO;
+    private UserInfoBean mUserInfoBean;
 
 
     public ReWardView(@NonNull Context context) {
@@ -109,7 +111,7 @@ public class ReWardView extends FrameLayout {
                     if (mOnRewardsClickListener != null) {
                         mOnRewardsClickListener.onRewardClick();
                     }
-                    RewardFragment.startRewardActivity(getContext(), mRewardType, mSourceId);
+                    RewardFragment.startRewardActivity(getContext(), mRewardType, mSourceId, mUserInfoBean);
 
                 });
         // 打赏用户列表
@@ -118,6 +120,10 @@ public class ReWardView extends FrameLayout {
                 .subscribe(aVoid -> {
                     RewardListFragment.startRewardActivity(getContext(), mRewardType, mSourceId, mListData);
                 });
+    }
+
+    public void setUserInfoBean(UserInfoBean userInfoBean) {
+        mUserInfoBean = userInfoBean;
     }
 
     /**
@@ -145,7 +151,7 @@ public class ReWardView extends FrameLayout {
         String result = getResources().getString(R.string.reward_show, "<" + ConvertUtils.numberConvert(rewardsCountBean.getCount()) + ">", "<" +
                 getResources().getString(R.string.money_format, PayConfig.realCurrencyFen2Yuan(amout)) + ">", moneyName);
         CharSequence charSequence = ColorPhrase.from(result).withSeparator("<>")
-                .innerColor(ContextCompat.getColor(getContext(), R.color.money))
+                .innerColor(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
                 .format();
         mTvRewardsTip.setText(charSequence);

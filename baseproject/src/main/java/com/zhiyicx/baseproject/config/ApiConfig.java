@@ -1058,5 +1058,8 @@ public class ApiConfig {
     public static final String APP_PATH_SHARE_LINK_URL = "api/" + API_VERSION_2 + "/tbm/invite-link-builder";
     // 资讯列表
     public static final String APP_PATH_INFO_LIST_TB = "api/" + API_VERSION_2 + "/tbm/news";
+    // 机构用户的消息
+    public static final String APP_PATH_GET_MERCHAIN_MESSAGE = "api/" + API_VERSION_2 + "/tbm/push/news";
+
 
 }

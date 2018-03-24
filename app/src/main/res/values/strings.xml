@@ -1060,5 +1060,6 @@
     <string name="dynamic_not_support_comment">该快讯不支持留言！</string>
     <string name="news_not_support_comment">该资讯不支持留言！</string>
     <string name="tb_user_followings">公众号</string>
+    <string name="haode">好的</string>
 
 </resources>

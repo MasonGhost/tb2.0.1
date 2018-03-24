@@ -1,77 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.wcy.overscroll.OverScrollLayout
+
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/overscroll"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
+        android:background="#cc000000"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/ll_recharge_choose_money_item"
+            android:id="@+id/ll_contenter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="@dimen/spacing_big_large"
+            android:layout_marginRight="@dimen/spacing_big_large"
+            android:background="@drawable/shape_raduse_bg_white"
+            android:orientation="vertical">
 
-            <include
-                layout="@layout/view_choose_item"/>
+            <LinearLayout
+                android:id="@+id/ll_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
 
-            <View
-                android:id="@+id/v_line"
-                style="@style/style_divider_horizontal_light"
-                android:layout_marginLeft="@dimen/spacing_mid"
+                <ImageView
+                    android:id="@+id/iv_avatar"
+                    android:layout_width="58dp"
+                    android:layout_height="58dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="28dp"
+                    android:src="@drawable/shape_default_image"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/spacing_mid"
+                    android:textSize="@dimen/size_content_comment"
+                    android:visibility="gone"
+                    tools:text="习惯"/>
+
+                <LinearLayout
+                    android:id="@+id/ll_recharge_choose_money_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <include
+                        layout="@layout/view_choose_item"/>
+
+                    <View
+                        android:id="@+id/v_line"
+                        style="@style/style_divider_horizontal"
+                        android:layout_marginLeft="@dimen/spacing_mid"
+                        />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/full_button_height"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingLeft="@dimen/spacing_mid"
+                    android:paddingRight="@dimen/spacing_mid">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/custom_recharge_money"
+                        android:textColor="@color/important_for_content"
+                        android:textSize="@dimen/size_content"
+                        />
+
+                    <EditText
+                        android:id="@+id/et_input"
+                        style="@style/style_dynamic_editext"
+                        android:hint="@string/et_top_input"
+                        tools:hint="输入金额"/>
+
+                    <TextView
+                        android:id="@+id/tv_custom_money"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/yuan"
+                        android:textColor="@color/important_for_content"
+                        android:textSize="@dimen/size_content"
+                        tools:text="元"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_success"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="92dp"
+                    android:layout_height="92dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="70dp"
+                    android:src="@mipmap/bth_prompt_disablde"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_big_large"
+                    android:text="成功打赏"
+                    android:textColor="#808080"
+                    android:textSize="18sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_mid"
+                    android:text="成功打赏"
+                    android:textColor="#ff9600"
+                    android:textSize="26sp"/>
+
+                <View
+                    style="@style/style_divider_horizontal"
+                    android:layout_marginLeft="33dp"
+                    android:layout_marginRight="33dp"
+                    android:layout_marginTop="25dp"
+                    />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/bt_top"
+                style="@style/style_login_button"
+                android:layout_height="37dp"
+                android:layout_marginBottom="@dimen/spacing_bigger_large"
+                android:layout_marginLeft="60dp"
+                android:layout_marginRight="60dp"
+                android:layout_marginTop="@dimen/button_login_margin_top"
+                android:background="@drawable/selector_button_corner_solid_small"
+                android:enabled="false"
+                android:text="@string/reward"
                 />
         </LinearLayout>
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/full_button_height"
-            android:background="@color/white"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/spacing_mid"
-            android:paddingRight="@dimen/spacing_mid">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/custom_recharge_money"
-                android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_content"
-                />
-
-            <EditText
-                android:id="@+id/et_input"
-                style="@style/style_dynamic_editext"
-                android:hint="@string/et_top_input"
-                tools:hint="输入金额"/>
-
-            <TextView
-                android:id="@+id/tv_custom_money"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/yuan"
-                android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_content"
-                tools:text="元"/>
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/bt_top"
-            android:enabled="false"
-            style="@style/style_login_button"
-            android:layout_marginTop="@dimen/button_login_margin_top"
-            android:text="@string/determine"
-            />
-    </LinearLayout>
-</com.wcy.overscroll.OverScrollLayout>
-
+        <ImageView
+            android:id="@+id/iv_cancle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_contenter"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:padding="@dimen/spacing_mid"
+            android:src="@mipmap/ic_click_close"/>
+    </RelativeLayout>
+</FrameLayout>

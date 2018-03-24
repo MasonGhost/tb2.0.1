@@ -287,7 +287,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         RxView.clicks(mLLRewardContainer)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    RewardFragment.startRewardActivity(getContext(), RewardType.USER, mUserInfoBean.getUser_id());
+                    RewardFragment.startRewardActivity(getContext(), RewardType.USER, mUserInfoBean.getUser_id(),null);
                 }); // 添加关注点击事件
         RxView.clicks(mLlFollowContainer)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

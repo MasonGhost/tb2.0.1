@@ -46,6 +46,13 @@ android {
 
         multiDexEnabled true
     }
+
+//    productFlavors {
+//        deve {
+//            resConfigs "en", "xxhdpi"
+//        }
+//
+//    }
 // sha1  879aca7f739b4a43cb9432e2df1ee4e7
 //    5D:DF:A7:29:71:32:75:77:54:B6:D7:5A:A5:CA:F5:F0:70:0D:51:1E
     signingConfigs {
@@ -66,6 +73,8 @@ android {
     buildTypes {
 
         debug {
+            ext.enableCrashlytics = false
+            ext.alwaysUpdateBuildId = false
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -134,11 +143,17 @@ android {
     dexOptions {
         dexInProcess true
         preDexLibraries true
-        javaMaxHeapSize "6g"//越大越好
+        javaMaxHeapSize "4096m"//越大越好
+        maxProcessCount 8
     }
     compileOptions {
         targetCompatibility JavaVersion.VERSION_1_8
         sourceCompatibility JavaVersion.VERSION_1_8
+    }
+
+    aaptOptions {
+        // 正式版本发布时修改为 true
+        cruncherEnabled false
     }
 }
 // for kotlin extension
@@ -221,7 +236,7 @@ dependencies {
     compile project(':richtexteditorlib')
     // database
     compile dataDependences.greendao
-    //    compile dataDependences.guava
+//    compile dataDependences.guava
     // jpush
     compile dataDependences.jiguangJpush
     compile dataDependences.jiguangJcore

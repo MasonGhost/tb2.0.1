@@ -144,4 +144,5 @@
     <dimen name="headpic_for_info_list">16dp</dimen>
     <dimen name="message_content">13sp</dimen>
     <dimen name="message_time">11sp</dimen>
+    <dimen name="merchain_message_item_image_height">196dp</dimen>
 </resources>

@@ -60,15 +60,15 @@ public class RewardPresenter extends AppBasePresenter< RewardContract.View> impl
 
     private void hanldeRewardResult(Observable<Object> result, WalletBean walletBean, double rewardMoney) {
         Subscription subscription = handleWalletBlance((long) rewardMoney)
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
-                        .string.transaction_doing)))
+//                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
+//                        .string.transaction_doing)))
                 .flatMap(o -> result).doAfterTerminate(() -> mRootView.setSureBtEnable(true))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
                         walletBean.setBalance(walletBean.getBalance() - rewardMoney);
                         mWalletBeanGreenDao.insertOrReplace(walletBean);
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.reward_success));
+                        mRootView.rewardSuccess();
                     }
 
                     @Override

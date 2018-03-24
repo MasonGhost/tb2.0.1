@@ -189,6 +189,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
                 });
     }
 
+
     @Override
     protected void initData() {
         if (mPresenter != null) {

@@ -67,7 +67,7 @@
         <item name="android:windowAnimationStyle">@style/dialog_animations</item>
     </style>
 
-    <style name="popup_dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <style name="popup_dialog" parent="Theme.AppCompat.Light.Dialog">
 
         <item name="android:windowFrame">@null</item> 	 	<!--Dialog的windowFrame框为无  -->
         <item name="android:windowIsFloating">true</item>	<!-- 是否浮现在activity之上 -->
@@ -84,5 +84,12 @@
         <item name="android:windowExitAnimation">@anim/slide_out_bottom</item> <!-- 从上面下滑到底部时的动画 -->
     </style>
     <!--  -->
-
+    <!--是否显示标题
+        窗口背景 透明
+        窗口是否透明-->
+    <style name="NoTitleTranslucentTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
 </resources>

@@ -40,6 +40,7 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
@@ -133,8 +134,8 @@ public class InfoDetailHeaderView extends BaseWebLoad {
         mFtlRelate = (TagFlowLayout) mInfoDetailHeader.findViewById(R.id.fl_tags);
         mRvRelateInfo = (RecyclerView) mInfoDetailHeader.findViewById(R.id.rv_relate_info);
         mIvDetail = (ImageView) mInfoDetailHeader.findViewById(R.id.iv_detail);
-        mItemInfoAuthor=(TextView) mInfoDetailHeader.findViewById(R.id.item_info_author);
-        mItemInfoMerchainName=(TextView) mInfoDetailHeader.findViewById(R.id.item_info_merchain_name);
+        mItemInfoAuthor = (TextView) mInfoDetailHeader.findViewById(R.id.item_info_author);
+        mItemInfoMerchainName = (TextView) mInfoDetailHeader.findViewById(R.id.item_info_merchain_name);
         initAdvert(context, adverts);
     }
 
@@ -149,6 +150,13 @@ public class InfoDetailHeaderView extends BaseWebLoad {
             }
             mItemInfoAuthor.setText(infoMain.getAuthor());
             mItemInfoMerchainName.setText(infoMain.getUser().getName());
+            try {
+                UserInfoBean userInfoBean=new UserInfoBean();
+                userInfoBean.setName(infoMain.getAuthor());
+                userInfoBean.setUser_id(infoMain.getUser().getUser_id());
+                userInfoBean.setAvatar(infoMain.getUser().getAvatar());
+                mReWardView.setUserInfoBean(infoMain.getUser());
+            }catch (Exception e){}
             // 引用
 //            if (!TextUtils.isEmpty(infoMain.getSubject())) {
 //                infoMain.setSubject(InfoPublishBean.DEFALUT_SUBJECT + infoMain.getSubject() + "\n\n");
@@ -337,7 +345,7 @@ public class InfoDetailHeaderView extends BaseWebLoad {
             if (!isReviewIng) {
 //                mInfoRelateList.setVisibility(VISIBLE);
                 mFtlRelate.setVisibility(VISIBLE);
-                mRvRelateInfo.setVisibility(VISIBLE);
+//                mRvRelateInfo.setVisibility(VISIBLE);
             }
 
             // 标签

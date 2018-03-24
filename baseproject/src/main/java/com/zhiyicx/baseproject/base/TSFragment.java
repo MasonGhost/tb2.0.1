@@ -70,7 +70,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     /**
      * 默认的toolbar左边的图片，一般是返回键
      */
-    private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.topbar_back;
+    private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.ic_return_a_click;
 
     protected TextView mToolbarLeft;
     protected View mDriver;
