@@ -1,0 +1,59 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/headpic_for_info_list"
+    android:paddingRight="@dimen/headpic_for_info_list">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/headpic_for_info_list">
+
+        <com.zhiyicx.baseproject.widget.imageview.SquareImageView
+            android:id="@+id/iv_contact_headpic"
+            android:layout_width="@dimen/iamge_close_height"
+            android:layout_height="@dimen/iamge_close_height"
+            android:layout_marginRight="@dimen/__picker_spacing_small"
+            android:src="@drawable/shape_default_image" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="账号名称"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/qa_search_empty_size" />
+
+            <TextView
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="123456456465465456465456465456456465456456"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/message_content" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:text="14:07"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/message_time" />
+
+    </LinearLayout>
+
+</LinearLayout>

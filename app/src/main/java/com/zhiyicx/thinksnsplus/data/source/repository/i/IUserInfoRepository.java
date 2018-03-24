@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
@@ -16,7 +15,6 @@ import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
-import com.zhiyicx.thinksnsplus.modules.tb.contract.ContractData;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
 import com.zhiyicx.thinksnsplus.modules.tb.mechainism.MerchainInfo;
 import com.zhiyicx.thinksnsplus.modules.tb.rank.RankData;
@@ -25,8 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import retrofit2.http.GET;
-import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -111,7 +107,7 @@ public interface IUserInfoRepository {
      *
      * @param user_ids Get multiple designated users, multiple IDs using , split.
      * @param name     Used to retrieve users whose username contains name.
-     * @param since    The integer ID of the last User that you've seen.
+     * @param since    The integer ID of the last HintSideBarUserBean that you've seen.
      * @param order    Sorting. Enum: asc, desc
      * @param limit    List user limit, minimum 1 max 50.
      * @return
@@ -404,7 +400,7 @@ public interface IUserInfoRepository {
     /**
      * @return 用户关注的机构
      */
-    Observable<List<ContractData>> getContract();
+    Observable<List<UserInfoBean>> getContract();
 
     /**
      * @return 快讯分享统计

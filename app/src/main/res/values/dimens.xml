@@ -142,4 +142,6 @@
     <dimen name="tb_mechainism_divier_marginleft">100dp</dimen>
     <dimen name="share_qr_code_with">140dp</dimen>
     <dimen name="headpic_for_info_list">16dp</dimen>
+    <dimen name="message_content">13sp</dimen>
+    <dimen name="message_time">11sp</dimen>
 </resources>

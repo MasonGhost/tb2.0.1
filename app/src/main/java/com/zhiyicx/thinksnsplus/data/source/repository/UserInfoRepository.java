@@ -39,7 +39,6 @@ import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskRewardRuleBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.FollowFansClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
@@ -47,9 +46,6 @@ import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IUserInfoRepository;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
-import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
-import com.zhiyicx.thinksnsplus.modules.tb.contract.ContractData;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
 import com.zhiyicx.thinksnsplus.modules.tb.mechainism.MerchainInfo;
 import com.zhiyicx.thinksnsplus.modules.tb.rank.RankData;
@@ -342,7 +338,7 @@ public class UserInfoRepository implements IUserInfoRepository {
     /**
      * @param user_ids Get multiple designated users, multiple IDs using , split.
      * @param name     Used to retrieve users whose username contains name.
-     * @param since    The integer ID of the last User that you've seen.
+     * @param since    The integer ID of the last HintSideBarUserBean that you've seen.
      * @param order    Sorting. Enum: asc, desc
      * @param limit    List user limit, minimum 1 max 50.
      * @return
@@ -990,7 +986,7 @@ public class UserInfoRepository implements IUserInfoRepository {
      * 获取用户关注的机构(无请求体)
      */
     @Override
-    public Observable<List<ContractData>> getContract() {
+    public Observable<List<UserInfoBean>> getContract() {
         return mUserInfoClient.getContract()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

@@ -21,9 +21,9 @@ public interface RegisterClient {
     public static final String REGITER_TYPE_SMS = "sms";
 
     /**
-     * @param phone           Required without email, User China phone bumber.
-     * @param email           Required withput phone, User E-Mail.
-     * @param name            Required, User registerByPhone name.
+     * @param phone           Required without email, HintSideBarUserBean China phone bumber.
+     * @param email           Required withput phone, HintSideBarUserBean E-Mail.
+     * @param name            Required, HintSideBarUserBean registerByPhone name.
      * @param password        用户密码，长度最小可无，最大不能超过 64 位4
      * @param verifiable_type Required, Notification serve verification type.
      * @param verifiable_code Required, Verification code.

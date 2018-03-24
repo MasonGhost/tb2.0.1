@@ -1,19 +1,20 @@
 package com.zhiyicx.thinksnsplus.modules.tb.contract;
 
-import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.HintSideBarUserBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
-import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
-import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionListContract;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Subscription;
+import rx.functions.Func1;
 
 /**
  * Created by lx on 2018/3/23.
@@ -32,9 +33,20 @@ public class ContractListPresenter extends AppBasePresenter<ContractListContract
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
         Subscription subscribe = mUserInfoRepository.getContract()
-                .subscribe(new BaseSubscribeForV2<List<ContractData>>() {
+                .map(new Func1<List<UserInfoBean>, List<HintSideBarUserBean>>() {
                     @Override
-                    protected void onSuccess(List<ContractData> data) {
+                    public List<HintSideBarUserBean> call(List<UserInfoBean> userInfoBeans) {
+                        List<HintSideBarUserBean> datas = new ArrayList<>();
+                        for (UserInfoBean userInfoBean : userInfoBeans) {
+                            HintSideBarUserBean user = new HintSideBarUserBean(userInfoBean.getUser_id() + "", userInfoBean.getAvatar(), userInfoBean.getName());
+                            datas.add(user);
+                        }
+                        return datas;
+                    }
+                })
+                .subscribe(new BaseSubscribeForV2<List<HintSideBarUserBean>>() {
+                    @Override
+                    protected void onSuccess(List<HintSideBarUserBean> data) {
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
@@ -60,7 +72,7 @@ public class ContractListPresenter extends AppBasePresenter<ContractListContract
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<ContractData> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(@NotNull List<HintSideBarUserBean> data, boolean isLoadMore) {
         return false;
     }
 }

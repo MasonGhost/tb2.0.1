@@ -34,6 +34,7 @@ import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
+import com.zhiyicx.thinksnsplus.modules.tb.contract.ContractListFragment;
 import com.zhiyicx.thinksnsplus.widget.popwindow.CheckInPopWindow;
 
 import java.util.ArrayList;
@@ -325,7 +326,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
         mFragmentList.clear();
         mFragmentList.add(MainFragment.newInstance(this));
-        mFragmentList.add(FindFragment.newInstance());
+        mFragmentList.add(ContractListFragment.newInstance());
         if (TouristConfig.MESSAGE_CAN_LOOK || mPresenter.isLogin()) {
 //            mFragmentList.add(MessageContainerFragment.instance());
             mFragmentList.add(FindFragment.newInstance());

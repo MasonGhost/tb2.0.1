@@ -20,7 +20,7 @@ public interface LoginClient {
 
     /**
      *
-     * @param login  Required,User auth field. Can use name / email / phone
+     * @param login  Required,HintSideBarUserBean auth field. Can use name / email / phone
      * @param password  用户登陆密码
      * @return
      */
