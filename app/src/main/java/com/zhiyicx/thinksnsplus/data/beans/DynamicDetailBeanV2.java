@@ -110,7 +110,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     /**
      * 1：可评论  0：不可评论
      */
-    private int can_comment ;
+    private int can_comment;
 
     private long amount;
     @Convert(converter = LikeBeanConvert.class, columnType = String.class)
@@ -123,6 +123,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     @Convert(converter = PaidNoteConverter.class, columnType = String.class)
     private PaidNote paid_node;
 
+    @SerializedName("user")
     @ToOne(joinProperty = "user_id")// DynamicBean 的 user_id作为外键
     private UserInfoBean userInfoBean;
     // DynamicBean 的 feed_mark 与 DynamicCommentBean 的 feed_mark 关联
@@ -1096,7 +1097,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
                                String feed_geohash,
                                int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, int share_count, int can_comment, long amount,
                                List<DynamicLikeBean> likes, boolean paid, List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node, Long
-                                           hot_creat_time,
+                                       hot_creat_time,
                                boolean isFollowed, int state, int top, List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward) {
         this.id = id;
         this.created_at = created_at;
@@ -1195,7 +1196,9 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         dest.writeByte(this.isOpen ? (byte) 1 : (byte) 0);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1467065995)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;

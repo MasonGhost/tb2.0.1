@@ -25,7 +25,7 @@
             android:layout_width="@dimen/dynamic_menu_text_with"
             android:layout_height="@dimen/icon_for_assist_small"
             android:gravity="center_vertical"
-            android:paddingLeft="@dimen/spacing_tiny"
+            android:paddingLeft="0dp"
             android:textColor="@color/normal_for_disable_button_text"
             android:textSize="@dimen/size_icon_assist"
             tool:text="1284万"
@@ -52,7 +52,8 @@
             android:layout_width="@dimen/dynamic_menu_text_with"
             android:layout_height="@dimen/icon_for_assist_small"
             android:gravity="center_vertical"
-            android:paddingLeft="@dimen/spacing_tiny"
+            android:paddingLeft="0dp"
+
             android:textColor="@color/normal_for_disable_button_text"
             android:textSize="@dimen/size_icon_assist"
             tool:text="1284万"
@@ -79,7 +80,8 @@
             android:layout_width="@dimen/dynamic_menu_text_with"
             android:layout_height="@dimen/icon_for_assist_small"
             android:gravity="center_vertical"
-            android:paddingLeft="@dimen/spacing_tiny"
+            android:paddingLeft="0dp"
+
             android:textColor="@color/normal_for_disable_button_text"
             android:textSize="@dimen/size_icon_assist"
             tool:text="1284万"

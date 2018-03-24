@@ -251,5 +251,7 @@ public interface InfoMainClient {
                                                      @Query("limit") Long limit,
                                                      @Query("page") Long page,
                                                      @Query("key") String key,
-                                                     @Query("type") String type);
+                                                     @Query("type") String type,
+                                                      @Query("user_id") Long user_id
+    );
 }

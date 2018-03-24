@@ -348,9 +348,9 @@ public class BaseInfoRepository implements IBaseInfoRepository {
                                                             Long limit,
                                                             Long page,
                                                             String key,
-                                                            String type) {
+                                                            String type,Long user_id) {
 
-        return mInfoMainClient.getInfoListTB(cate_id, max_id, limit, page, key, type)
+        return mInfoMainClient.getInfoListTB(cate_id, max_id, limit, page, key, type,user_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

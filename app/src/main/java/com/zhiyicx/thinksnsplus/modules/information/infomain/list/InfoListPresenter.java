@@ -80,10 +80,11 @@ public class InfoListPresenter extends AppBasePresenter<InfoMainContract.InfoLis
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
         String typeString = mRootView.getInfoType();
-        if (TB_INFO_TYPE_TOP.equals(typeString) || TB_INFO_TYPE_FOLLOW.equals(typeString)) {
+        long userId = mRootView.getUesrId();
+        if (userId != 0 || TB_INFO_TYPE_TOP.equals(typeString) || TB_INFO_TYPE_FOLLOW.equals(typeString)) {
             // TB 使用
             Subscription subscribe = mBaseInfoRepository.getInfoListTB(null, maxId, (long) TSListFragment.DEFAULT_PAGE_SIZE, (long) mRootView
-                    .getPage(), "", typeString)
+                    .getPage(), "", typeString, userId)
                     .subscribe(new BaseSubscribeForV2<List<InfoListDataBean>>() {
                         @Override
                         protected void onSuccess(List<InfoListDataBean> data) {

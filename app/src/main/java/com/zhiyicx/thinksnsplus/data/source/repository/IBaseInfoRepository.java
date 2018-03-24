@@ -75,7 +75,9 @@ public interface IBaseInfoRepository {
                                                      Long limit,
                                                      Long page,
                                                      String key,
-                                                     String type);
+                                                     String type,
+                                                     Long user_id
+    );
 
 
 }

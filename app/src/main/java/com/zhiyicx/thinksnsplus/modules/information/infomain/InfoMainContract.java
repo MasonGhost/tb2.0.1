@@ -43,6 +43,7 @@ public interface InfoMainContract {
      */
     interface InfoListView extends ITSListView<BaseListBean,InfoListPresenter> {
         String getInfoType();
+        long getUesrId();
         int isRecommend();
     }
 

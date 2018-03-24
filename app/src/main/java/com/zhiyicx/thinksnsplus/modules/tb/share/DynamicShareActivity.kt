@@ -4,7 +4,7 @@ import android.content.Intent
 import com.zhiyicx.baseproject.base.TSActivity
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl
 import com.zhiyicx.thinksnsplus.base.AppApplication
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.TBDynamicFragment
+import com.zhiyicx.thinksnsplus.modules.tb.dynamic.TBDynamicFragment
 
 /**
  * @Describe 快讯分享

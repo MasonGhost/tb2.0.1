@@ -1,12 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.tb.mechainism;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
@@ -19,15 +18,17 @@ import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.TBDynamicFragment;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
+import com.zhiyicx.thinksnsplus.modules.tb.dynamic.TBDynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
+import com.zhiyicx.thinksnsplus.modules.tb.dynamic.TBMainDynamicFragment;
+import com.zhiyicx.thinksnsplus.modules.tb.info.TBMerchianMainInfoListFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.ArrayList;
@@ -37,10 +38,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
-import rx.Observable;
 import rx.Subscription;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
@@ -116,8 +114,9 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
         if (mFragmentList == null) {
             mFragmentList = new ArrayList();
             mFragmentList.add(MechanismCenterFragment.newInstance(getArguments()));
-            mFragmentList.add(TBDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this, getArguments().getParcelable(PersonalCenterFragment
-                    .PERSONAL_CENTER_DATA)));
+            mFragmentList.add(TBMainDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this, getArguments().getParcelable
+                    (PersonalCenterFragment.PERSONAL_CENTER_DATA)));
+            mFragmentList.add(TBMerchianMainInfoListFragment.newInstance(mUserInfoBean.getUser_id()));
         }
         return mFragmentList;
     }
@@ -171,13 +170,19 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
     }
 
     @Override
-    protected void initData() {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         mUserInfoBean = getArguments().getParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA);
-        getUserinfo();
+    }
+
+    @Override
+    protected void initData() {
         ImageUtils.loadCircleUserHeadPic(mUserInfoBean, mIvHeadIcon);
         // 设置用户名
         mTvUserName.setText(mUserInfoBean.getName());
         updateUserDes(mUserInfoBean.getIntro());
+        getUserinfo();
+
     }
 
     /**

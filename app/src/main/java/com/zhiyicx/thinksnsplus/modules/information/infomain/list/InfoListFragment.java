@@ -40,6 +40,7 @@ import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO;
 import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_USERID;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.container.InfoContainerFragment.RECOMMEND_INFO;
 
 /**
@@ -54,7 +55,9 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     /**
      * 推荐分类
      */
-    private String mInfoType = RECOMMEND_INFO;
+    protected String mInfoType = RECOMMEND_INFO;
+
+    protected long mUserId;
 
     private List<RealAdvertListBean> mListAdvert;
 
@@ -159,7 +162,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     protected void initView(View rootView) {
         super.initView(rootView);
         mInfoType = getArguments().getString(BUNDLE_INFO_TYPE, RECOMMEND_INFO);
-
+        mUserId = getArguments().getLong(BUNDLE_USERID, 0);
         Observable.create(subscriber -> {
             DaggerInfoListComponent.builder()
                     .appComponent(AppApplication.AppComponentHolder.getAppComponent())
@@ -197,7 +200,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         }
     }
 
-    private void initAdvert() {
+    protected void initAdvert() {
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
             return;
         }
@@ -248,6 +251,12 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     @Override
     public String getInfoType() {
         return mInfoType;
+    }
+
+    @Override
+    public long getUesrId() {
+
+        return mUserId;
     }
 
     @Override
