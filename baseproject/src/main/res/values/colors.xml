@@ -19,7 +19,7 @@
     <color name="white">#ffffff</color>
 
     <!--toolbar-->
-    <color name="toolbar_text_corlor_normal">@color/important_for_content</color>
+    <color name="toolbar_text_corlor_normal">@color/white</color>
 
     <!-- 聊天-->
     <color name="chat_message_bubble_my_bgColor">#b3e1f2</color>
