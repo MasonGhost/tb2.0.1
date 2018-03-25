@@ -168,7 +168,9 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     public void updateInfoHeader(InfoListDataBean infoDetailBean) {
         initcenterView();
-        infoDetailBean.setUser(mInfoMation.getUser());
+        if (mInfoMation != null && mInfoMation.getUser() != null && infoDetailBean.getUser() != null) {
+            infoDetailBean.setUser(mInfoMation.getUser());
+        }
         mCoordinatorLayout.setEnabled(true);
         this.mInfoMation = infoDetailBean;
         mInfoDetailHeader.setDetail(infoDetailBean);
