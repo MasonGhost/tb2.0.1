@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.tb.message;
 
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,20 +9,15 @@ import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.imageview.SquareImageView;
-import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.HintSideBarUserBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.TbMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
-import com.zhiyicx.thinksnsplus.modules.tb.contract.ContractListFragment;
-import com.zhiyicx.thinksnsplus.modules.tb.contract.DaggerContractListComponent;
 import com.zhiyicx.thinksnsplus.modules.tb.search.SearchMechanismUserActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -39,7 +33,7 @@ import static com.zhiyicx.thinksnsplus.modules.home.HomeFragment.PAGE_CONTACT;
  */
 
 public class MessageListFragment extends TSListFragment<MessageListContract.Presenter, TbMessageBean>
-        implements MessageListContract.View{
+        implements MessageListContract.View {
 
     @Inject
     MessageListPresenter mMessageListPresenter;
@@ -72,7 +66,17 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
 
     @Override
     protected void setLeftClick() {
-        ((HomeFragment)getParentFragment()).setCurrenPage(PAGE_CONTACT);
+        ((HomeFragment) getParentFragment()).setCurrenPageToContact(PAGE_CONTACT);
+    }
+
+    @Override
+    protected boolean isRefreshEnable() {
+        return false;
+    }
+
+    @Override
+    protected boolean isLoadingMoreEnable() {
+        return false;
     }
 
     @Override
@@ -106,13 +110,19 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
     }
 
     @Override
-    protected boolean isNeedRefreshDataWhenComeIn() {
+    protected boolean setUseSatusbar() {
         return true;
     }
 
     @Override
-    protected boolean setUseSatusbar() {
-        return false;
+    protected boolean setUseStatusView() {
+        return true;
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
+        refreshData();
     }
 
     @Override
@@ -120,7 +130,7 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
         CommonAdapter adapter = new CommonAdapter<TbMessageBean>(mActivity, R.layout.item_tbmessage, mListDatas) {
             @Override
             protected void convert(ViewHolder holder, TbMessageBean tbMessageBean, int position) {
-                switch (tbMessageBean.getChannel()){
+                switch (tbMessageBean.getChannel()) {
                     case FEED: {
                         DynamicDetailBeanV2 feed = tbMessageBean.getFeed();
                         UserInfoBean userInfoBean = feed.getUserInfoBean();
@@ -136,7 +146,7 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
                         holder.setText(R.id.name, userInfoBean.getName());
                         holder.setText(R.id.content, feed.getFeed_content());
                         holder.setText(R.id.tv_tbtime, TimeUtils.getTimeFriendlyNormal(feed.getCreated_at()));
-                      break;
+                        break;
                     }
                     case NEWS: {
                         InfoListDataBean news = tbMessageBean.getNews();
@@ -151,7 +161,7 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
                                     .into(squareImageView);
                         }
                         holder.setText(R.id.name, userInfoBean.getName());
-                        if(TextUtils.isEmpty(news.getText_content())){
+                        if (TextUtils.isEmpty(news.getText_content())) {
                             holder.setText(R.id.content, news.getContent());
                         } else {
                             holder.setText(R.id.content, news.getText_content());

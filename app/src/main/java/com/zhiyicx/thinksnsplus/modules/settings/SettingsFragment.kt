@@ -102,10 +102,6 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
         return getString(R.string.setting)
     }
 
-    override fun setToolBarBackgroud(): Int {
-        return R.color.white
-    }
-
     override fun showToolBarDivider(): Boolean {
         return true
     }

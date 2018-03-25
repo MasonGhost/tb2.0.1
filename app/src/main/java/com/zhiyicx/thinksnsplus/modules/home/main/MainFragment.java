@@ -122,11 +122,11 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 //        setStatusPlaceholderViewBackgroundColor(ContextCompat.getColor(getContext(),R.color.themeColor));
         //不需要返回键
         mTsvToolbar.setLeftImg(0);
-        mTsvToolbar.setRightImg(R.mipmap.ico_search_normal);
+//        mTsvToolbar.setRightImg(R.mipmap.ico_search_normal);
         mTsvToolbar.setBackgroundResource(R.color.themeColor);
-        mTsvToolbar.setRightClickListener(this, () -> {
-            startActivity(new Intent(mActivity, SearchMechanismUserActivity.class));
-        });
+//        mTsvToolbar.setRightClickListener(this, () -> {
+//            startActivity(new Intent(mActivity, SearchMechanismUserActivity.class));
+//        });
         mChooseBtLeft = (TextView) mTsvToolbar.findViewById(R.id.tv_choose_bt_left);
         mChooseBtRight = (TextView) mTsvToolbar.findViewById(R.id.tv_choose_bt_right);
         mChooseBtLeft.setOnClickListener(v -> mVpFragment.setCurrentItem(0));

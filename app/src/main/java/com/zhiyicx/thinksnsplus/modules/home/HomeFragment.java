@@ -215,7 +215,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         switch (view.getId()) {
             // 点击主页
             case R.id.ll_home:
-                if (mCurrenPage == PAGE_HOME) {
+                if (mCurrenPage == PAGE_HOME || mCurrenPage == PAGE_CONTACT) {
 ///                    暂时不需要点击 home 刷新
 //                    ((MainFragment) mFragmentList.get(mCurrenPage)).refreshCurrentPage();
                 } else {
@@ -256,12 +256,19 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
     }
 
-    public void setCurrenPage(int page){
+    /**
+     * 通讯录
+     *
+     * @param page
+     */
+    public void setCurrenPageToContact(int page) {
         if (TouristConfig.MESSAGE_CAN_LOOK || !mPresenter.handleTouristControl()) {
             mVpHome.setCurrentItem(page, false);
         }
         mCurrenPage = page;
+
     }
+
 
     @Override
     public void setMessageTipVisable(boolean tipVisable) {
@@ -339,10 +346,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mFragmentList.add(MainFragment.newInstance(this));
         mFragmentList.add(MessageListFragment.newInstance());
         if (TouristConfig.MESSAGE_CAN_LOOK || mPresenter.isLogin()) {
-            UserInfoBean userInfoBean = new UserInfoBean();
-            userInfoBean.setUser_id(8L);
-            userInfoBean.setName("头条哈哈");
-            mFragmentList.add(MerchainMessageListFragment.newInstance(userInfoBean));
+//            UserInfoBean userInfoBean = new UserInfoBean();
+//            userInfoBean.setUser_id(8L);
+//            userInfoBean.setName("头条哈哈");
+//            mFragmentList.add(MerchainMessageListFragment.newInstance(userInfoBean));
+            mFragmentList.add(FindFragment.newInstance());
         }
         if (TouristConfig.MINE_CAN_LOOK || mPresenter.isLogin()) {
             mFragmentList.add(MineFragment.newInstance());
@@ -398,8 +406,9 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mTvMine.setTextColor(position == PAGE_MINE ? checkedColor : unckeckedColor);
         mIvFind.setImageResource(position == PAGE_FIND ? R.mipmap.common_ico_bottom_discover_high : R.mipmap.common_ico_bottom_discover_normal);
         mTvFind.setTextColor(position == PAGE_FIND ? checkedColor : unckeckedColor);
-        mIvMessage.setImageResource(position == PAGE_MESSAGE ? R.mipmap.common_ico_bottom_message_high : R.mipmap.common_ico_bottom_message_normal);
-        mTvMessage.setTextColor(position == PAGE_MESSAGE ? checkedColor : unckeckedColor);
+        mIvMessage.setImageResource(position == PAGE_MESSAGE || position == PAGE_CONTACT ? R.mipmap.common_ico_bottom_message_high : R.mipmap
+                .common_ico_bottom_message_normal);
+        mTvMessage.setTextColor(position == PAGE_MESSAGE || position == PAGE_CONTACT ? checkedColor : unckeckedColor);
     }
 
     /**

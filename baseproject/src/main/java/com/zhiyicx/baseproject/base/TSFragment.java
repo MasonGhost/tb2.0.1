@@ -125,8 +125,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0 && ContextCompat.getColor(getContext(), setToolBarBackgroud()) == Color
                     .WHITE) {
                 mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.themeColor));
-            } else {
-                mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarBackgroud()));
+//            } else {
+//                mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarBackgroud()));
             }
             linearLayout.addView(mStatusPlaceholderView);
         }
@@ -150,7 +150,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             linearLayout.setFitsSystemWindows(false);
         } else {
             // 状态栏不顶上去
-            StatusBarUtils.setStatusBarColor(getActivity(), setToolBarBackgroud());
+//            StatusBarUtils.setStatusBarColor(getActivity(), setToolBarBackgroud());
             linearLayout.setFitsSystemWindows(true);
         }
         if (setSystemStatusBarCorlorResource() != 0) {

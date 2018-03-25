@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -47,7 +48,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class TabSelectView extends FrameLayout {
     // 定义默认样式值
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = R.color.normal_for_assist_text;// 缺省的tab未选择文字
-    private static final int DEFAULT_TAB_SELECTED_TEXTCOLOR = R.color.important_for_content;// 缺省的tab被选择文字
+    private static final int DEFAULT_TAB_SELECTED_TEXTCOLOR = R.color.white;// 缺省的tab被选择文字
     private static final int DEFAULT_TAB_TEXTSIZE = R.integer.tab_text_size;// 缺省的tab文字大小
     private static final int DEFAULT_TAB_LINE_COLOR = R.color.themeColor;// 缺省的tab的线的颜色
     private int mTabMargin = R.integer.tab_margin;// 缺省的tab左padding
@@ -65,6 +66,7 @@ public class TabSelectView extends FrameLayout {
     private boolean mIsAdjustMode;
     private int mLinePagerIndicator = LinePagerIndicator.MODE_WRAP_CONTENT;
     private int mTabSpacing;
+    private Toolbar mToolbar;
 
     public TabSelectView(Context context) {
         super(context);
@@ -87,10 +89,15 @@ public class TabSelectView extends FrameLayout {
         divider = findViewById(R.id.divider);
         tvToolbarLeft = (TextView) findViewById(R.id.tv_toolbar_left);
         tvToolbarRight = (TextView) findViewById(R.id.tv_toolbar_right);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mContext = context;
         mTabSpacing = getResources().getDimensionPixelOffset(R.dimen.spacing_large);
         showDivider(true);// 默认展示分割线
         setLeftImg(R.mipmap.topbar_back);// 默认左边为箭头
+
+    }
+    public void setToolbarBackgroundResource(int res){
+        mToolbar.setBackgroundResource(res);
     }
 
     protected int getLayout() {
@@ -312,6 +319,9 @@ public class TabSelectView extends FrameLayout {
         mTabMargin1 = defaultTabRightMargin;
     }
 
+    public MagicIndicator getMagicIndicator() {
+        return mMagicIndicator;
+    }
 
     public interface TabLeftRightClickListener {
         void buttonClick();

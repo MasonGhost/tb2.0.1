@@ -35,6 +35,8 @@ public class ContributionContainerFragment extends TSViewPagerFragment {
 
     @Override
     protected void initData() {
-
+        mTsvToolbar.setBackgroundResource(R.color.themeColor);
+        mTsvToolbar.setToolbarBackgroundResource(R.color.themeColor);
+        mTsvToolbar.setLeftImg(R.mipmap.topbar_back_white);
     }
 }
