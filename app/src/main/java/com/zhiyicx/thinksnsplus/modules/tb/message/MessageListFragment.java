@@ -18,8 +18,10 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.TbMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
+import com.zhiyicx.thinksnsplus.modules.tb.detail.MerchainMessagelistActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.search.SearchMechanismUserActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import javax.inject.Inject;
@@ -33,7 +35,7 @@ import static com.zhiyicx.thinksnsplus.modules.home.HomeFragment.PAGE_CONTACT;
  */
 
 public class MessageListFragment extends TSListFragment<MessageListContract.Presenter, TbMessageBean>
-        implements MessageListContract.View {
+        implements MessageListContract.View, MultiItemTypeAdapter.OnItemClickListener {
 
     @Inject
     MessageListPresenter mMessageListPresenter;
@@ -178,6 +180,36 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
 
             }
         };
+        adapter.setOnItemClickListener(this);
         return adapter;
+    }
+
+    @Override
+    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        // 进入公众号
+        Intent intent = new Intent(getActivity(), MerchainMessagelistActivity.class);
+        Bundle bundle = new Bundle();
+        UserInfoBean userInfoBean;
+        switch (mListDatas.get(position).getChannel()) {
+            case FEED:
+                userInfoBean = mListDatas.get(position).getFeed().getUserInfoBean();
+                break;
+            case NEWS:
+                userInfoBean = mListDatas.get(position).getNews().getUser();
+                break;
+            default:
+                userInfoBean = mListDatas.get(position).getFeed().getUserInfoBean();
+        }
+        bundle.putSerializable(MerchainMessagelistActivity.BUNDLE_USER, userInfoBean);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        mListDatas.get(position).setMIsRead(true);
+        mPresenter.updateMessageReadStaus(mListDatas.get(position));
+        refreshData();
+    }
+
+    @Override
+    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        return false;
     }
 }

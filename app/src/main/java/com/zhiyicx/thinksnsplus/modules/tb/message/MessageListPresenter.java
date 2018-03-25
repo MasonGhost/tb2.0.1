@@ -39,7 +39,6 @@ public class MessageListPresenter extends AppBasePresenter<MessageListContract.V
     MessageListBeanGreenDaoImpl mMessageListBeanGreenDao;
 
     @Inject
-
     public MessageListPresenter(MessageListContract.View rootView) {
         super(rootView);
     }
@@ -59,6 +58,10 @@ public class MessageListPresenter extends AppBasePresenter<MessageListContract.V
         return false;
     }
 
+    @Override
+    public void updateMessageReadStaus(TbMessageBean tbMessageBean) {
+        mMessageListBeanGreenDao.insertOrReplace(tbMessageBean);
+    }
 
     /**
      * 推送相关

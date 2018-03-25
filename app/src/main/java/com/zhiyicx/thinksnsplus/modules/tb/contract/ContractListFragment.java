@@ -13,10 +13,13 @@ import com.zhiyicx.baseproject.widget.imageview.SquareImageView;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.HintSideBarUserBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.hintsidebar.HintSideBar;
 import com.zhiyicx.thinksnsplus.widget.hintsidebar.SideBar;
 import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.Collections;
@@ -28,7 +31,7 @@ import butterknife.BindView;
 import static com.zhiyicx.thinksnsplus.modules.home.HomeFragment.PAGE_MESSAGE;
 
 public class ContractListFragment extends TSListFragment<ContractListContract.Presenter, HintSideBarUserBean>
-        implements ContractListContract.View, SideBar.OnChooseLetterChangedListener{
+        implements ContractListContract.View, SideBar.OnChooseLetterChangedListener, MultiItemTypeAdapter.OnItemClickListener {
 
     @Inject
     ContractListPresenter mContractListPresenter;
@@ -70,7 +73,7 @@ public class ContractListFragment extends TSListFragment<ContractListContract.Pr
 
     @Override
     protected void setLeftClick() {
-        ((HomeFragment)getParentFragment()).setCurrenPageToContact(PAGE_MESSAGE);
+        ((HomeFragment) getParentFragment()).setCurrenPageToContact(PAGE_MESSAGE);
     }
 
     @Override
@@ -138,6 +141,7 @@ public class ContractListFragment extends TSListFragment<ContractListContract.Pr
                 holder.setText(R.id.name, user.getUserName());
             }
         };
+        adapter.setOnItemClickListener(this);
         return adapter;
 
     }
@@ -148,7 +152,7 @@ public class ContractListFragment extends TSListFragment<ContractListContract.Pr
         if (i == -1) {
             return;
         }
-        ((LinearLayoutManager)layoutManager).scrollToPositionWithOffset(i, 0);
+        ((LinearLayoutManager) layoutManager).scrollToPositionWithOffset(i, 0);
     }
 
     public int getFirstPositionByChar(char sign) {
@@ -166,5 +170,19 @@ public class ContractListFragment extends TSListFragment<ContractListContract.Pr
     @Override
     public void onNoChooseLetter() {
 
+    }
+
+    @Override
+    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        UserInfoBean userInfoBean = mPresenter.getLocalUsrinfo(mListDatas.get(position).getId());
+        if (userInfoBean != null) {
+            PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+        }
+
+    }
+
+    @Override
+    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        return false;
     }
 }

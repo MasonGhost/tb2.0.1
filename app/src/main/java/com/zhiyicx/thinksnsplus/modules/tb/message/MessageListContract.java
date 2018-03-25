@@ -11,5 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.TbMessageBean;
 public interface MessageListContract {
     interface View extends ITSListView<TbMessageBean,MessageListContract.Presenter> {
     }
-    interface Presenter extends ITSListPresenter<TbMessageBean> {}
+    interface Presenter extends ITSListPresenter<TbMessageBean> {
+        void updateMessageReadStaus(TbMessageBean tbMessageBean);
+    }
 }

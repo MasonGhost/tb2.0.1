@@ -989,8 +989,7 @@ public class UserInfoRepository implements IUserInfoRepository {
     @Override
     public Observable<List<UserInfoBean>> getContract() {
         return mUserInfoClient.getContract()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     /**

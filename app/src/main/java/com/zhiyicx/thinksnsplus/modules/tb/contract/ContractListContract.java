@@ -9,5 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 public interface ContractListContract {
     interface View extends ITSListView<HintSideBarUserBean,Presenter> {
     }
-    interface Presenter extends ITSListPresenter<HintSideBarUserBean> {}
+    interface Presenter extends ITSListPresenter<HintSideBarUserBean> {
+        UserInfoBean getLocalUsrinfo(String id);
+    }
 }
