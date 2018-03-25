@@ -344,7 +344,9 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
         mFragmentList.clear();
         mFragmentList.add(MainFragment.newInstance(this));
-        mFragmentList.add(MessageListFragment.newInstance());
+        if (mPresenter.isLogin()) {
+            mFragmentList.add(MessageListFragment.newInstance());
+        }
         if (TouristConfig.MESSAGE_CAN_LOOK || mPresenter.isLogin()) {
 //            UserInfoBean userInfoBean = new UserInfoBean();
 //            userInfoBean.setUser_id(8L);
@@ -355,7 +357,9 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         if (TouristConfig.MINE_CAN_LOOK || mPresenter.isLogin()) {
             mFragmentList.add(MineFragment.newInstance());
         }
-        mFragmentList.add(ContractListFragment.newInstance());
+        if (mPresenter.isLogin()) {
+            mFragmentList.add(ContractListFragment.newInstance());
+        }
         //将 List 设置给 adapter
         homePager.bindData(mFragmentList);
         mVpHome.setAdapter(homePager);

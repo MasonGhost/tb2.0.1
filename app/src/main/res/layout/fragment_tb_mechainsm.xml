@@ -551,7 +551,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:button="@drawable/selector_open_close_stated_1"
-                    android:checked="true"
                     android:paddingRight="@dimen/spacing_mid"
                     />
 

@@ -296,7 +296,7 @@ public class MechanismCenterFragment extends TSFragment {
                 }
             }
         });
-        mTbMessageBean = mMessageListBeanGreenDao.getSingleDataFromCache(mUserInfoBean.getUser_id());
+        mTbMessageBean = mMessageListBeanGreenDao.getSingleDataFromCacheByUserId(mUserInfoBean.getUser_id());
         mCkPinned.setChecked(mTbMessageBean != null && mTbMessageBean.getMIsPinned());
         mCkPinned.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

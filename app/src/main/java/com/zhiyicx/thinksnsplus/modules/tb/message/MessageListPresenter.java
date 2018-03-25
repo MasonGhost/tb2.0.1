@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.tb.message;
 
 import com.google.gson.Gson;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -33,8 +34,6 @@ import static com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository
 
 public class MessageListPresenter extends AppBasePresenter<MessageListContract.View> implements MessageListContract.Presenter {
 
-    @Inject
-    UserInfoRepository mUserInfoRepository;
     @Inject
     MessageListBeanGreenDaoImpl mMessageListBeanGreenDao;
 
@@ -73,39 +72,37 @@ public class MessageListPresenter extends AppBasePresenter<MessageListContract.V
         }
         Observable.just(jpushMessageBean)
                 .subscribeOn(Schedulers.io())
-                .map(new Func1<JpushMessageBean, TbMessageBean>() {
-                    @Override
-                    public TbMessageBean call(JpushMessageBean jpushMessageBean) {
-                        Gson gson = new Gson();
-                        TbMessageBean tbMessageBean = null;
-                        try {
-                            tbMessageBean = gson.fromJson(gson.toJson(jpushMessageBean.getExtras()), TbMessageBean.class);
-                            tbMessageBean.setMIsRead(false);
-                            tbMessageBean.setUser_id(FEED.equals(tbMessageBean.getChannel()) ? tbMessageBean.getFeed().getUser_id() : tbMessageBean
-                                    .getNews().getUser_id());
-                        } catch (Exception ignored) {
+                .map(jpushMessageBean1 -> {
+                    Gson gson = new Gson();
+                    TbMessageBean tbMessageBean = null;
+                    try {
+                        tbMessageBean = gson.fromJson(gson.toJson(jpushMessageBean1.getExtras()), TbMessageBean.class);
+                        tbMessageBean.setMIsRead(false);
+                        tbMessageBean.setUser_id(FEED.equals(tbMessageBean.getChannel()) ? tbMessageBean.getFeed().getUser_id() : tbMessageBean
+                                .getNews().getUser_id());
+                        tbMessageBean.setMLoginUserId(AppApplication.getMyUserIdWithdefault());
+                    } catch (Exception ignored) {
 
-                        }
-                        if (tbMessageBean != null) {
-                            mMessageListBeanGreenDao.insertOrReplace(tbMessageBean);
-                            for (int i = 0; i < mRootView.getListDatas().size(); i++) {
-                                if (tbMessageBean.getUser_id().equals(mRootView.getListDatas().get(i).getUser_id())) {
-                                    mRootView.getListDatas().set(i, tbMessageBean);
-                                    break;
-                                } else {
-                                    for (int i1 = 0; i1 < mRootView.getListDatas().size(); i1++) {
-                                        if (mRootView.getListDatas().get(i).getMIsPinned()) {
-                                            continue;
-                                        } else {
-                                            mRootView.getListDatas().add(i1, tbMessageBean);
-                                        }
+                    }
+                    if (tbMessageBean != null) {
+                        mMessageListBeanGreenDao.insertOrReplace(tbMessageBean);
+                        for (int i = 0; i < mRootView.getListDatas().size(); i++) {
+                            if (tbMessageBean.getUser_id().equals(mRootView.getListDatas().get(i).getUser_id())) {
+                                mRootView.getListDatas().set(i, tbMessageBean);
+                                break;
+                            } else {
+                                for (int i1 = 0; i1 < mRootView.getListDatas().size(); i1++) {
+                                    if (mRootView.getListDatas().get(i).getMIsPinned()) {
+                                        continue;
+                                    } else {
+                                        mRootView.getListDatas().add(i1, tbMessageBean);
                                     }
                                 }
                             }
                         }
-
-                        return tbMessageBean;
                     }
+
+                    return tbMessageBean;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<TbMessageBean>() {

@@ -13,11 +13,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Observable;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -67,7 +70,14 @@ public class MerchainMessageListPresenter extends AppBasePresenter<MerchainMessa
                         mRootView.onResponseError(null, isLoadMore);
                         if (mIsNeedScroll) {
                             mIsNeedScroll = false;
-                            mRootView.scroollToBottom();
+                            rx.Observable.timer(100, TimeUnit.MILLISECONDS)
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Action1<Long>() {
+                                        @Override
+                                        public void call(Long aLong) {
+                                            mRootView.scroollToBottom();
+                                        }
+                                    });
                         }
                     }
 
