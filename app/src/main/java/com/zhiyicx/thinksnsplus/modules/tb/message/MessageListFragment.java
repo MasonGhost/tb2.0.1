@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.imageview.SquareImageView;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -60,6 +61,7 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
                 .messageListPresenterModule(new MessageListPresenterModule(this))
                 .build().inject(this);
     }
+
 
     @Override
     protected int setLeftImg() {
@@ -128,6 +130,26 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        updateList();
+    }
+
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        updateList();
+    }
+
+    private void updateList() {
+        if (getActivity() != null && mPresenter != null) {
+            mPresenter.requestCacheData(DEFAULT_PAGE_MAX_ID, false);
+        }
+
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
         CommonAdapter adapter = new CommonAdapter<TbMessageBean>(mActivity, R.layout.item_tbmessage, mListDatas) {
             @Override
@@ -174,9 +196,7 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
                     default:
                         break;
                 }
-//                if(tbMessageBean.getMIsRead()){
-//                    holder.getView(R.id.iv_message_headpic).add
-//                }
+                ((BadgeView) holder.getView(R.id.tv_read_tip)).setVisibility(tbMessageBean.getMIsRead() ? View.GONE : View.VISIBLE);
 
             }
         };
@@ -205,7 +225,6 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
         startActivity(intent);
         mListDatas.get(position).setMIsRead(true);
         mPresenter.updateMessageReadStaus(mListDatas.get(position));
-        refreshData();
     }
 
     @Override

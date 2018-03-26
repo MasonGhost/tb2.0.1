@@ -14,6 +14,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.tb.contract.ContractListContract;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -37,6 +39,11 @@ public class MessageListPresenter extends AppBasePresenter<MessageListContract.V
     @Inject
     MessageListBeanGreenDaoImpl mMessageListBeanGreenDao;
 
+    /**
+     * 是否有未读消息
+     */
+    private boolean mHasUnreadMessage;
+
     @Inject
     public MessageListPresenter(MessageListContract.View rootView) {
         super(rootView);
@@ -49,7 +56,29 @@ public class MessageListPresenter extends AppBasePresenter<MessageListContract.V
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(mMessageListBeanGreenDao.getMultiDataFromCache(), false);
+        Subscription subscribe = Observable.just(mMessageListBeanGreenDao.getMultiDataFromCache())
+                .observeOn(Schedulers.io())
+                .map(tbMessageBeans -> {
+                            for (TbMessageBean tbMessageBean : tbMessageBeans) {
+                                if (tbMessageBean.getMIsRead()) {
+                                    mHasUnreadMessage = true;
+                                    break;
+                                } else {
+                                    mHasUnreadMessage = false;
+                                }
+                            }
+                            return tbMessageBeans;
+                        }
+                )
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<List<TbMessageBean>>() {
+                    @Override
+                    protected void onSuccess(List<TbMessageBean> data) {
+                        mRootView.onCacheResponseSuccess(data, false);
+                        handleHomeBottomMessageTip();
+                    }
+                });
+        addSubscrebe(subscribe);
     }
 
     @Override
@@ -60,6 +89,11 @@ public class MessageListPresenter extends AppBasePresenter<MessageListContract.V
     @Override
     public void updateMessageReadStaus(TbMessageBean tbMessageBean) {
         mMessageListBeanGreenDao.insertOrReplace(tbMessageBean);
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 
     /**
@@ -86,20 +120,29 @@ public class MessageListPresenter extends AppBasePresenter<MessageListContract.V
                     }
                     if (tbMessageBean != null) {
                         mMessageListBeanGreenDao.insertOrReplace(tbMessageBean);
+                        int positon = -1;
+
                         for (int i = 0; i < mRootView.getListDatas().size(); i++) {
                             if (tbMessageBean.getUser_id().equals(mRootView.getListDatas().get(i).getUser_id())) {
-                                mRootView.getListDatas().set(i, tbMessageBean);
+                                positon = i;
                                 break;
-                            } else {
-                                for (int i1 = 0; i1 < mRootView.getListDatas().size(); i1++) {
-                                    if (mRootView.getListDatas().get(i).getMIsPinned()) {
-                                        continue;
-                                    } else {
-                                        mRootView.getListDatas().add(i1, tbMessageBean);
-                                    }
+                            }
+                        }
+
+                        if (positon != -1) {
+                            // 列表已经有数据了
+                            mRootView.getListDatas().set(positon, tbMessageBean);
+                        } else {
+                            //列表没有数据
+                            for (int i1 = 0; i1 < mRootView.getListDatas().size(); i1++) {
+                                if (mRootView.getListDatas().get(i1).getMIsPinned()) {
+                                    continue;
+                                } else {
+                                    mRootView.getListDatas().add(i1, tbMessageBean);
                                 }
                             }
                         }
+
                     }
 
                     return tbMessageBean;
@@ -112,9 +155,14 @@ public class MessageListPresenter extends AppBasePresenter<MessageListContract.V
                             return;
                         }
                         mRootView.refreshData();
+                        handleHomeBottomMessageTip();
                     }
                 });
 
 
+    }
+
+    private void handleHomeBottomMessageTip() {
+        EventBus.getDefault().post(mHasUnreadMessage, EventBusTagConfig.EVENT_IM_SET_MESSAGE_TIP_VISABLE);
     }
 }
