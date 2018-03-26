@@ -1,32 +1,42 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/white"
-              android:gravity="center_vertical"
-              android:orientation="vertical"
-              android:paddingLeft="@dimen/headpic_for_info_list"
-              android:paddingRight="@dimen/headpic_for_info_list">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/catalog"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/tb_color_contact_catalog"
+        android:paddingBottom="@dimen/button_corner_big"
+        android:paddingLeft="@dimen/toolbar_padding_left"
+        android:paddingTop="@dimen/button_corner_big"
+        android:text="A"
         android:textColor="@color/tb_color_contact"
-        android:textSize="@dimen/size_content_assist"/>
+        android:textSize="@dimen/size_content_assist" />
+
+    <View
+        style="@style/style_divider_horizontal"
+        android:layout_marginLeft="@dimen/toolbar_padding_left"
+        android:background="@color/tb_color_contact_catalog" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingTop="@dimen/headpic_for_info_list">
+        android:paddingBottom="@dimen/button_corner_large"
+        android:paddingLeft="@dimen/toolbar_padding_left"
+        android:paddingTop="@dimen/button_corner_large">
 
         <com.zhiyicx.baseproject.widget.imageview.SquareImageView
             android:id="@+id/iv_contact_headpic"
             android:layout_width="@dimen/headpic_for_list"
             android:layout_height="@dimen/headpic_for_list"
             android:layout_marginRight="@dimen/__picker_spacing_small"
-            android:src="@drawable/shape_default_image"/>
+            android:src="@drawable/shape_default_image" />
 
         <TextView
             android:id="@+id/name"
@@ -34,7 +44,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:textColor="@color/important_for_content"
-            android:textSize="@dimen/headpic_for_info_list"/>
+            android:textSize="@dimen/headpic_for_info_list" />
     </LinearLayout>
 
 </LinearLayout>
