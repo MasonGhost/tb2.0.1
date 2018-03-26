@@ -122,12 +122,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             mStatusPlaceholderView = new View(getContext());
             mStatusPlaceholderView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight
                     (getContext())));
-            if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0 && ContextCompat.getColor(getContext(), setToolBarBackgroud()) == Color
-                    .WHITE) {
-                mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.themeColor));
-//            } else {
-//                mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarBackgroud()));
-            }
+            mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+//
             linearLayout.addView(mStatusPlaceholderView);
         }
         // 在需要显示toolbar时，进行添加
@@ -150,7 +146,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             linearLayout.setFitsSystemWindows(false);
         } else {
             // 状态栏不顶上去
-//            StatusBarUtils.setStatusBarColor(getActivity(), setToolBarBackgroud());
+            StatusBarUtils.setStatusBarColor(getActivity(), setToolBarBackgroud());
             linearLayout.setFitsSystemWindows(true);
         }
         if (setSystemStatusBarCorlorResource() != 0) {
@@ -202,6 +198,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         if (needCenterLoadingDialog()) {
             mCenterLoadingDialog = new LoadingDialog(getActivity());
         }
+        System.out.println("--- test ----" + this.getClass().getSimpleName() + " statusBar :" + setUseSatusbar());
+
         return linearLayout;
     }
 

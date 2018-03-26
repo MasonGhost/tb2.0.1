@@ -25,7 +25,7 @@ import butterknife.Unbinder;
  * @Date 2016/12/15
  * @Contact 335891510@qq.com
  */
-public abstract class BaseFragment<P extends IBasePresenter> extends RxFragment implements IBaseView<P>{
+public abstract class BaseFragment<P extends IBasePresenter> extends RxFragment implements IBaseView<P> {
     protected final String TAG = this.getClass().getSimpleName();
 
     protected View mRootView;
@@ -38,7 +38,7 @@ public abstract class BaseFragment<P extends IBasePresenter> extends RxFragment 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mActivity=activity;
+        mActivity = activity;
     }
 
     @Nullable
@@ -64,7 +64,6 @@ public abstract class BaseFragment<P extends IBasePresenter> extends RxFragment 
             EventBus.getDefault().register(this);// 注册到事件主线
         }
         initData();
-        System.out.println("--- test ----" +this.getClass().getSimpleName());
     }
 
     /**
@@ -99,8 +98,7 @@ public abstract class BaseFragment<P extends IBasePresenter> extends RxFragment 
             mPresenter.onDestroy();
         }
         // 如果要使用 eventbus 请将此方法返回 true
-        if (useEventBus())
-        {
+        if (useEventBus()) {
             EventBus.getDefault().unregister(this);
         }
     }
@@ -145,6 +143,7 @@ public abstract class BaseFragment<P extends IBasePresenter> extends RxFragment 
     public void setData() {
 
     }
+
     /**
      * 添加返回按键的监听方法，在它所依附的activity中调用
      *

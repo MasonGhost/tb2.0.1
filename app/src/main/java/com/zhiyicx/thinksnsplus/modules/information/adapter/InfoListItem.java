@@ -74,7 +74,8 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
             content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, realData.getContent());
             content = content.replaceAll(MarkdownConfig.NORMAL_FORMAT, "");
         }
-        ImageUtils.loadImageDefault(holder.getView(R.id.iv_merhcain_headpic),ImageUtils.getUserAvatar(realData.getUser_id()),true);
+
+        ImageUtils.loadUserHead(realData.getUser(), (ImageView) holder.getView(R.id.iv_merhcain_headpic),false);
         holder.setText(R.id.tv_info_content, content);
         holder.setText(R.id.item_info_look_num, ConvertUtils.numberConvert(realData.getHits()));
         holder.setText(R.id.item_info_comment_num, ConvertUtils.numberConvert(realData.getComment_count()));

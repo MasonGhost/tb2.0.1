@@ -1062,5 +1062,6 @@
     <string name="news_not_support_comment">该资讯不支持留言！</string>
     <string name="tb_user_followings">公众号</string>
     <string name="haode">好的</string>
+    <string name="balance_not_enouph">余额不足!</string>
 
 </resources>
