@@ -215,7 +215,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         switch (view.getId()) {
             // 点击主页
             case R.id.ll_home:
-                if (mCurrenPage == PAGE_HOME || mCurrenPage == PAGE_CONTACT) {
+                if (mCurrenPage == PAGE_HOME) {
 ///                    暂时不需要点击 home 刷新
 //                    ((MainFragment) mFragmentList.get(mCurrenPage)).refreshCurrentPage();
                 } else {
@@ -239,6 +239,9 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 //                break;
             // 点击消息
             case R.id.ll_message:
+                if(mCurrenPage == PAGE_CONTACT){
+                    return;
+                }
                 if (TouristConfig.MESSAGE_CAN_LOOK || !mPresenter.handleTouristControl()) {
                     mVpHome.setCurrentItem(PAGE_MESSAGE, false);
                 }

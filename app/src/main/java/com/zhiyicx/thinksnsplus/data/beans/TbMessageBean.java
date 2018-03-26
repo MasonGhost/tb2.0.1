@@ -33,8 +33,8 @@ public class TbMessageBean extends BaseListBean {
      * publish:feed  publish:news
      */
     private String channel;
-    public final static String FEED = "feed";
-    public final static String NEWS = "news";
+    public final static String FEED = "publish:feed";
+    public final static String NEWS = "publish:news";
     @Generated(hash = 1937955951)
     public TbMessageBean(Long _id, Long user_id, boolean mIsPinned, boolean mIsRead,
             InfoListDataBean news, DynamicDetailBeanV2 feed, long pinnedTime,

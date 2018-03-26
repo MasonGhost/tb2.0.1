@@ -64,11 +64,12 @@ public class MessageListBeanGreenDaoImpl extends CommonCacheImpl<TbMessageBean> 
     @Override
     public List<TbMessageBean> getMultiDataFromCache() {
         TbMessageBeanDao tbMessageBeanDao = getRDaoSession().getTbMessageBeanDao();
-        return tbMessageBeanDao.queryBuilder()
-                .where(TbMessageBeanDao.Properties.Channel.isNotNull(), TbMessageBeanDao.Properties.MLoginUserId.eq(AppApplication
-                        .getmCurrentLoginAuth()))
-                .orderAsc(TbMessageBeanDao.Properties.PinnedTime)
-                .list();
+//        return tbMessageBeanDao.queryBuilder()
+//                .where(TbMessageBeanDao.Properties.Channel.isNotNull(), TbMessageBeanDao.Properties.MLoginUserId.eq(AppApplication
+//                        .getmCurrentLoginAuth()))
+//                .orderAsc(TbMessageBeanDao.Properties.PinnedTime)
+//                .list();
+        return tbMessageBeanDao.loadAll();
     }
 
 

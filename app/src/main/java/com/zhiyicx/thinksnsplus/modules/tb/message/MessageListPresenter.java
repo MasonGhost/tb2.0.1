@@ -1,6 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.tb.message;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -110,13 +113,13 @@ public class MessageListPresenter extends AppBasePresenter<MessageListContract.V
                     Gson gson = new Gson();
                     TbMessageBean tbMessageBean = null;
                     try {
-                        tbMessageBean = gson.fromJson(gson.toJson(jpushMessageBean1.getExtras()), TbMessageBean.class);
+                        tbMessageBean = gson.fromJson(jpushMessageBean1.getExtras(), TbMessageBean.class);
                         tbMessageBean.setMIsRead(false);
-                        tbMessageBean.setUser_id(FEED.equals(tbMessageBean.getChannel()) ? tbMessageBean.getFeed().getUser_id() : tbMessageBean
+                        tbMessageBean.setUser_id(TbMessageBean.FEED.equals(tbMessageBean.getChannel()) ? tbMessageBean.getFeed().getUser_id() : tbMessageBean
                                 .getNews().getUser_id());
                         tbMessageBean.setMLoginUserId(AppApplication.getMyUserIdWithdefault());
                     } catch (Exception ignored) {
-
+                        ignored.printStackTrace();
                     }
                     if (tbMessageBean != null) {
                         mMessageListBeanGreenDao.insertOrReplace(tbMessageBean);
