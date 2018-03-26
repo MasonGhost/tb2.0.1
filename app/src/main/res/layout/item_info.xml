@@ -13,7 +13,7 @@
     <ImageView
         android:id="@+id/item_info_imag"
         android:layout_width="@dimen/info_channel_list_image_width"
-        android:layout_height="match_parent"
+        android:layout_height="69dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_mid"
@@ -34,8 +34,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_normal"
             android:ellipsize="end"
-            android:gravity="bottom"
+            android:gravity="top"
             android:maxLines="2"
+            android:minLines="2"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_content"
             tools:text="流动性捉襟见肘，新三板如履薄冰"/>
@@ -62,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <com.zhiyicx.baseproject.widget.imageview.SquareImageView
+                <ImageView
                     android:id="@+id/iv_merhcain_headpic"
                     android:layout_width="@dimen/headpic_for_info_list"
                     android:layout_height="@dimen/headpic_for_info_list"
@@ -112,7 +113,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/iv_merhcain_headpic"
                     android:layout_alignParentRight="true"
-                    android:drawableLeft="@mipmap/home_ico_comment_normal"
+                    android:drawableLeft="@mipmap/btn_comment_disabled"
                     android:drawablePadding="@dimen/spacing_small_3dp"
                     android:ellipsize="end"
                     android:singleLine="true"
@@ -126,7 +127,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/iv_merhcain_headpic"
                     android:layout_toLeftOf="@id/item_info_comment_num"
-                    android:drawableLeft="@mipmap/home_ico_eye_normal"
+                    android:drawableLeft="@mipmap/btn_browse_disabled"
                     android:layout_marginRight="@dimen/spacing_mid_tb"
                     android:drawablePadding="@dimen/spacing_small_3dp"
                     android:ellipsize="end"

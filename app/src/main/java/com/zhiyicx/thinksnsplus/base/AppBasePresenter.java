@@ -80,11 +80,11 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
                     if (userInfoBean.getWallet() != null) {
                         mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
                         if (userInfoBean.getWallet().getBalance() < amount) {
-                            mRootView.goRecharge(WalletActivity.class);
+//                            mRootView.goRecharge(WalletActivity.class);
                             return Observable.error(new RuntimeException(DEFAULT_WALLET_EXCEPTION_MESSAGE));
                         }
                     } else {
-                        mRootView.goRecharge(WalletActivity.class);
+//                        mRootView.goRecharge(WalletActivity.class);
                         return Observable.error(new RuntimeException(DEFAULT_WALLET_EXCEPTION_MESSAGE));
                     }
                     return Observable.just(userInfoBean);
@@ -105,7 +105,7 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
                         if (userInfoBean.getCurrency().getSum() < amount) {
                             if (getSystemConfigBean() != null && getSystemConfigBean().getCurrencyRecharge() != null && getSystemConfigBean()
                                     .getCurrencyRecharge().isOpen()) {
-                                mRootView.goRecharge(IntegrationRechargeActivity.class);
+//                                mRootView.goRecharge(IntegrationRechargeActivity.class);
                             } else {
                                 return Observable.error(new RuntimeException(mContext.getString(R.string.handle_fail)));
                             }
@@ -114,7 +114,7 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
                     } else {
                         if (getSystemConfigBean() != null && getSystemConfigBean().getCurrencyRecharge() != null && getSystemConfigBean()
                                 .getCurrencyRecharge().isOpen()) {
-                            mRootView.goRecharge(IntegrationRechargeActivity.class);
+//                            mRootView.goRecharge(IntegrationRechargeActivity.class);
                         } else {
                             return Observable.error(new RuntimeException(mContext.getString(R.string.handle_fail)));
                         }
@@ -132,7 +132,8 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
      */
     protected boolean isBalanceCheck(Throwable throwable) {
         if (throwable != null && !TextUtils.isEmpty(throwable.getMessage()) && DEFAULT_WALLET_EXCEPTION_MESSAGE.equals(throwable.getMessage())) {
-            mRootView.dismissSnackBar();
+//            mRootView.dismissSnackBar();
+            mRootView.showSnackErrorMessage(mContext.getString(R.string.balance_not_enouph));
             return true;
         } else {
             return false;
@@ -147,7 +148,8 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
      */
     protected boolean isIntegrationBalanceCheck(Throwable throwable) {
         if (throwable != null && !TextUtils.isEmpty(throwable.getMessage()) && DEFAULT_INTEGRATION_EXCEPTION_MESSAGE.equals(throwable.getMessage())) {
-            mRootView.dismissSnackBar();
+//            mRootView.dismissSnackBar();
+            mRootView.showSnackErrorMessage(mContext.getString(R.string.balance_not_enouph));
             return true;
         } else {
             return false;
