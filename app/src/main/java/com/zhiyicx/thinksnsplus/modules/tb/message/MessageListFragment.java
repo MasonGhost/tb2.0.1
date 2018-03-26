@@ -154,6 +154,7 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
         CommonAdapter adapter = new CommonAdapter<TbMessageBean>(mActivity, R.layout.item_tbmessage, mListDatas) {
             @Override
             protected void convert(ViewHolder holder, TbMessageBean tbMessageBean, int position) {
+               holder.setBackgroundRes(R.id.ll_container, tbMessageBean.getMIsPinned() ? R.drawable.selector_bg_item_message_pinned : R.drawable.selector_bg_item_message);
                 switch (tbMessageBean.getChannel()) {
                     case FEED: {
                         DynamicDetailBeanV2 feed = tbMessageBean.getFeed();
