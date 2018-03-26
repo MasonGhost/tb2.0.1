@@ -2,8 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.wallet.reward;
 
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.i.IRewardRepository;
 
 /**
  * @Describe
@@ -17,7 +15,7 @@ public interface RewardContract {
     interface View extends IBaseView<Presenter> {
 
 
-        void rewardSuccess();
+        void rewardSuccess(double rewardMoney);
 
         void setSureBtEnable(boolean b);
     }

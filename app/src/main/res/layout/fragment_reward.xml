@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -9,9 +8,9 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:background="#cc000000"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#cc000000">
 
         <LinearLayout
             android:id="@+id/ll_contenter"
@@ -30,13 +29,15 @@
                 android:orientation="vertical"
                 android:visibility="visible">
 
-                <ImageView
-                    android:id="@+id/iv_avatar"
+                <com.zhiyicx.baseproject.widget.UserAvatarView
+                    android:id="@+id/iv_reward_avatar"
                     android:layout_width="58dp"
                     android:layout_height="58dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="28dp"
-                    android:src="@drawable/shape_default_image"
+                    app:ts_avatare_size="58dp"
+                    android:src="@mipmap/pic_default_secret"
+                    app:pressShape="circle"
                     android:visibility="gone"/>
 
                 <TextView
@@ -78,27 +79,42 @@
                     android:paddingRight="@dimen/spacing_mid">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="@string/custom_recharge_money"
                         android:textColor="@color/important_for_content"
                         android:textSize="@dimen/size_content"
                         />
 
-                    <EditText
-                        android:id="@+id/et_input"
-                        style="@style/style_dynamic_editext"
-                        android:hint="@string/et_top_input"
-                        tools:hint="输入金额"/>
-
-                    <TextView
-                        android:id="@+id/tv_custom_money"
+                    <LinearLayout
+                        android:id="@+id/ll_input_contanier"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/yuan"
-                        android:textColor="@color/important_for_content"
-                        android:textSize="@dimen/size_content"
-                        tools:text="元"/>
+                        android:background="@drawable/shape_dynamic_topday_bg_radus_grey"
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/spacing_normal"
+                        android:paddingLeft="@dimen/spacing_mid"
+                        android:paddingRight="@dimen/spacing_mid"
+                        android:paddingTop="@dimen/spacing_normal">
+
+                        <EditText
+                            android:id="@+id/et_input"
+                            style="@style/style_dynamic_editext"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/et_top_input"
+                            tools:hint="输入金额"/>
+
+                        <TextView
+                            android:id="@+id/tv_custom_money"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/yuan"
+                            android:textColor="#9d9d9d"
+                            android:textSize="@dimen/size_note_assist"
+                            tools:text="元"/>
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
@@ -126,12 +142,13 @@
                     android:textSize="18sp"/>
 
                 <TextView
+                    android:id="@+id/tv_reward_success_money"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_mid"
-                    android:text="成功打赏"
                     android:textColor="#ff9600"
-                    android:textSize="26sp"/>
+                    android:textSize="26sp"
+                    tools:text="成功打赏"/>
 
                 <View
                     style="@style/style_divider_horizontal"
@@ -161,7 +178,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/ll_contenter"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="45dp"
             android:padding="@dimen/spacing_mid"
             android:src="@mipmap/ic_click_close"/>
     </RelativeLayout>

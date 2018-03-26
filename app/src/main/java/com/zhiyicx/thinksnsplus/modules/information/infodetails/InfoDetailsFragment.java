@@ -161,8 +161,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             rewardsCountBean1.setAmount("" + PayConfig.realCurrency2GameCurrency(Double.parseDouble(rewardsCountBean1.getAmount()), mPresenter
                     .getRatio()));
         }
-        mInfoDetailHeader.updateReward(mInfoMation.getId(), mRewardsListBeen, rewardsCountBean1, RewardType.INFO, mPresenter.getIntegrationGoldName
-                ());
+        mInfoDetailHeader.updateReward(mInfoMation.getId(), mRewardsListBeen, rewardsCountBean1, RewardType.INFO, mPresenter.getWalletGoldName());
     }
 
     @Override

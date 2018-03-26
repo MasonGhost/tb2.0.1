@@ -5,7 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.AbsoluteSizeSpan;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,9 +20,11 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.klinker.android.link_builder.Link;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
@@ -28,7 +34,6 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -64,18 +69,22 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     EditText mEtInput;
     @BindView(R.id.bt_top)
     TextView mBtTop;
+    @BindView(R.id.tv_reward_success_money)
+    TextView mTvRewardSuccessMoney;
     @BindView(R.id.iv_cancle)
     ImageView mIvCancle;
 
     @BindView(R.id.tv_custom_money)
     TextView mCustomMoney;
+    @BindView(R.id.ll_input_contanier)
+    View mLlInputContanier;
 
     @BindView(R.id.ll_content)
     View mLlContent;
     @BindView(R.id.ll_success)
     View mLlSuccess;
-    @BindView(R.id.iv_avatar)
-    ImageView mImageView;
+    @BindView(R.id.iv_reward_avatar)
+    UserAvatarView mImageView;
     @BindView(R.id.tv_name)
     TextView mTvName;
     /**
@@ -157,10 +166,10 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     @Override
     protected void initData() {
         initRechargeLables();
-        mCustomMoney.setText(getString(R.string.yuan));
+        mCustomMoney.setText(R.string.app_name_simple);
         if (mUserInfoBean != null) {
             mImageView.setVisibility(View.VISIBLE);
-            ImageUtils.loadImageDefault(mImageView, mUserInfoBean.getAvatar(), true);
+            ImageUtils.loadUserHead( mUserInfoBean,mImageView ,false);
             mTvName.setVisibility(View.VISIBLE);
             mTvName.setText(mUserInfoBean.getName());
         }
@@ -170,7 +179,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
         if (prompt == Prompt.SUCCESS) {
             try {
-                rewardSuccess();
+                rewardSuccess(mRewardMoney);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -178,11 +187,12 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     }
 
     @Override
-    public void rewardSuccess() {
+    public void rewardSuccess(double rewardMoney) {
         mLlContent.setVisibility(View.GONE);
-        mLlSuccess.setVisibility(View.VISIBLE);
         mBtTop.setEnabled(true);
         mBtTop.setText(getString(R.string.haode));
+        mTvRewardSuccessMoney.setText(((int) rewardMoney + mPresenter.getWalletGoldName()));
+        mLlSuccess.setVisibility(View.VISIBLE);
     }
 
     private void initRechargeLables() {
@@ -212,15 +222,12 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
             case 5:
             case 4:
             case 3:
-                mRbThree.setVisibility(View.VISIBLE);
-                mRbThree.setText(String.format(getString(R.string.money_format), mRechargeLables.get(2)));
+                setCheckboxText(mRbThree, mRechargeLables.get(2));
             case 2:
-                mRbTwo.setVisibility(View.VISIBLE);
-                mRbTwo.setText(String.format(getString(R.string.money_format), mRechargeLables.get(1)));
+                setCheckboxText(mRbTwo, mRechargeLables.get(1));
+
             case 1:
-                mRbOne.setVisibility(View.VISIBLE);
-                mRbOne.setText(String.format(getString(R.string.money_format), mRechargeLables.get(0)));
-                mLlRechargeChooseMoneyItem.setVisibility(View.VISIBLE);
+                setCheckboxText(mRbOne, mRechargeLables.get(0));
                 break;
             case 0:
                 mLlRechargeChooseMoneyItem.setVisibility(View.GONE);
@@ -229,6 +236,14 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                 break;
 
         }
+    }
+
+    private void setCheckboxText(RadioButton checkboxText, double text) {
+        mLlRechargeChooseMoneyItem.setVisibility(View.VISIBLE);
+        checkboxText.setText(String.format(getString(R.string.money_format_tb), text));
+        Spannable spannable = new SpannableString(checkboxText.getText());
+        spannable.setSpan(new AbsoluteSizeSpan(10, true), checkboxText.getText().length() - 2, checkboxText.getText().length(), 0);
+        checkboxText.setText(spannable);
     }
 
     @Override
@@ -276,8 +291,10 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                 if (mRbDaysGroup.getCheckedRadioButtonId() != -1) {
                     mRbDaysGroup.clearCheck();
                 }
+                mLlInputContanier.setBackgroundResource(R.drawable.shape_dynamic_topday_bg_radus_theme);
             } else {
                 mRewardMoney = 0;
+                mLlInputContanier.setBackgroundResource(R.drawable.shape_dynamic_topday_bg_radus_grey);
             }
             configSureButton();
         }, throwable -> {

@@ -146,7 +146,7 @@ public class ReWardView extends FrameLayout {
             e.printStackTrace();
         }
         // 目前打赏使用钱包，故显示元
-        moneyName = getResources().getString(R.string.yuan);
+//        moneyName = getResources().getString(R.string.yuan);
 
         String result = getResources().getString(R.string.reward_show, "<" + ConvertUtils.numberConvert(rewardsCountBean.getCount()) + ">", "<" +
                 getResources().getString(R.string.money_format, PayConfig.realCurrencyFen2Yuan(amout)) + ">", moneyName);

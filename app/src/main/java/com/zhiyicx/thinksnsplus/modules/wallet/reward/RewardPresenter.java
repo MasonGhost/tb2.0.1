@@ -68,7 +68,7 @@ public class RewardPresenter extends AppBasePresenter< RewardContract.View> impl
                     protected void onSuccess(Object data) {
                         walletBean.setBalance(walletBean.getBalance() - rewardMoney);
                         mWalletBeanGreenDao.insertOrReplace(walletBean);
-                        mRootView.rewardSuccess();
+                        mRootView.rewardSuccess(rewardMoney);
                     }
 
                     @Override

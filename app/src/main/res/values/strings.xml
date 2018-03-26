@@ -1063,5 +1063,6 @@
     <string name="tb_user_followings">公众号</string>
     <string name="haode">好的</string>
     <string name="balance_not_enouph">余额不足!</string>
+    <string name="app_name_simple">TB</string>
 
 </resources>
