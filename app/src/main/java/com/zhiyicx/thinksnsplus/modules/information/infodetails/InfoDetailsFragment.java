@@ -28,6 +28,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
@@ -37,6 +38,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
@@ -44,6 +46,8 @@ import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailHeaderView
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
+import com.zhiyicx.thinksnsplus.modules.tb.share.DynamicShareActivity;
+import com.zhiyicx.thinksnsplus.modules.tb.share.DynamicShareBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
@@ -66,6 +70,7 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_LIST_DELETE;
 import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter.BUNDLE_SOURCE_ID;
+import static com.zhiyicx.thinksnsplus.modules.tb.dynamic.TBDynamicFragment.BUNDLE_SHARE_DATA;
 
 /**
  * @Author Jliuer
@@ -383,9 +388,24 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     }
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_2:// 分享
-                    Bitmap bitmap = FileUtils.readImgFromFile(getActivity(), "info_share");
+//                    Bitmap bitmap = FileUtils.readImgFromFile(getActivity(), "info_share");
+//                    mPresenter.shareInfo(bitmap);
 
-                    mPresenter.shareInfo(bitmap);
+                    Intent intent = new Intent(mActivity, DynamicShareActivity.class);
+                    Bundle bundle = new Bundle();
+                    String content = TextUtils.isEmpty(mInfoMation.getText_content()) ? mInfoMation.getContent() : mInfoMation.getText_content();
+                    if (!TextUtils.isEmpty(content)) {
+                        content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, "");
+                    }
+                    DynamicShareBean dynamicShareBean = new DynamicShareBean(mInfoMation.getUser(),
+                            TimeUtils.utc2LocalStr(mInfoMation.getCreated_at())
+                            , content
+                            , String.valueOf(mInfoMation.getId())
+                            , UserInfoRepository.SHARETYPEENUM.NEWS.value
+                    );
+                    bundle.putSerializable(BUNDLE_SHARE_DATA, dynamicShareBean);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_3:// 更多
                     initDealInfoMationPopupWindow(mInfoMation, mInfoMation.getHas_collect());

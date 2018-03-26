@@ -18,6 +18,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.tb.dynamic.comment.DynamicCommentListActivity;
@@ -123,7 +124,7 @@ public class TBDynamicFragment extends DynamicFragment {
                 DynamicShareBean dynamicShareBean = new DynamicShareBean(mListDatas.get(dataPosition).getUserInfoBean(),
                         TimeUtils.utc2LocalStr(mListDatas.get(dataPosition).getCreated_at()),
                         content,
-                        String.valueOf(mListDatas.get(dataPosition).getId()));
+                        String.valueOf(mListDatas.get(dataPosition).getId()), UserInfoRepository.SHARETYPEENUM.FEED.value);
                 bundle.putSerializable(BUNDLE_SHARE_DATA, dynamicShareBean);
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -142,7 +143,7 @@ public class TBDynamicFragment extends DynamicFragment {
                     commentListBundle.putString(DynamicCommentListFragment.DYNAMIC_DETAIL_DATA_TYPE, getDynamicType());
                     commentListIntent.putExtras(commentListBundle);
                     startActivity(commentListIntent);
-                    getActivity().overridePendingTransition(R.anim.slide_in_bottom,R.anim.keep_on);
+                    getActivity().overridePendingTransition(R.anim.slide_in_bottom, R.anim.keep_on);
 
                 } else {
                     showSnackWarningMessage(getString(R.string.dynamic_not_support_comment));
@@ -244,7 +245,7 @@ public class TBDynamicFragment extends DynamicFragment {
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_DYNAMIC_SHARE)
-    private void updateDynamicShare(String id) {
+    private void updateDynamicShare(DynamicShareBean data) {
         if (mCurrentClickItemPosition > -1) {
             mListDatas.get(mCurrentClickItemPosition).setShare_count(mListDatas.get(mCurrentClickItemPosition).getShare_count() + 1);
             refreshData();

@@ -29,8 +29,8 @@ constructor(rootView: DynamicShareContract.View) : AppBasePresenter<DynamicShare
     @Inject
     lateinit var mUserInfoRepository: UserInfoRepository
 
-    override fun shareTask(id: String) {
-        mUserInfoRepository.shareCount(UserInfoRepository.SHARETYPEENUM.FEED.value, id)
+    override fun shareTask(data: DynamicShareBean) {
+        mUserInfoRepository.shareCount(data.type, data.id)
                 .subscribe(object : BaseSubscribeForV2<BaseJsonV2<*>?>() {
                     override fun onSuccess(data: BaseJsonV2<*>?) {
                     }

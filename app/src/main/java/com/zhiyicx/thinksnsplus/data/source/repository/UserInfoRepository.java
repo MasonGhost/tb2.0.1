@@ -996,7 +996,8 @@ public class UserInfoRepository implements IUserInfoRepository {
      * 非必须, 快讯分享需传:feed
      */
     public enum SHARETYPEENUM {
-        FEED("feed");
+        FEED("feed"),
+        NEWS("news");
 
         public String value;
 

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.tb.share;
 
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import java.io.Serializable;
 
@@ -16,12 +17,14 @@ public class DynamicShareBean implements Serializable {
     private UserInfoBean mUserInfoBean;
     private String time;
     private String content;
+    private String type;
 
-    public DynamicShareBean(UserInfoBean userInfoBean, String time, String content, String id) {
+    public DynamicShareBean(UserInfoBean userInfoBean, String time, String content, String id,String type) {
         mUserInfoBean = userInfoBean;
         this.time = time;
         this.content = content;
         this.id=id;
+        this.type=type;
     }
 
     public UserInfoBean getUserInfoBean() {
@@ -54,5 +57,13 @@ public class DynamicShareBean implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

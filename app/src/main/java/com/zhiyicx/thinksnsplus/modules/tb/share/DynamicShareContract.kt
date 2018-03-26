@@ -26,7 +26,7 @@ interface DynamicShareContract {
          */
         fun submitInviteCode(inviteCode: String)
 
-        fun shareTask(sourceId:String)
+        fun shareTask(sourceId:DynamicShareBean)
         fun getShareLink()
     }
 
