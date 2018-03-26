@@ -19,6 +19,7 @@ import com.bumptech.glide.signature.StringSignature;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideRoundTransform;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -523,6 +524,16 @@ public class ImageUtils {
         final Canvas canvas = new Canvas(bitmap);
         scrollView.draw(canvas);
         return bitmap;
+    }
+
+    public  static  void loadRounRectImage(ImageView imageView, String url, int radus) {
+        Glide.with(imageView.getContext())
+                .load(url)
+                .placeholder(R.drawable.shape_default_image_radus)
+                .placeholder(R.drawable.shape_default_error_image_radus)
+                .centerCrop()
+                .bitmapTransform(new GlideRoundTransform(imageView.getContext().getApplicationContext(), radus))
+                .into(imageView);
     }
 
 }

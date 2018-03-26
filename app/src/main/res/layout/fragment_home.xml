@@ -17,9 +17,8 @@
             android:id="@+id/ll_home"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="center_horizontal|bottom"
             android:orientation="vertical">
 
             <ImageView
@@ -33,6 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/icon_for_home_bottom_text_margin"
+                android:paddingBottom="@dimen/spacing_mid_small_8dp"
                 android:text="@string/home"
                 android:textColor="@color/home_bottom_navigate_text_normal"
                 android:textSize="@dimen/size_note_assist"/>
@@ -43,49 +43,54 @@
             android:id="@+id/ll_message"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="center_horizontal|bottom"
             android:orientation="vertical">
 
-            <RelativeLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/icon_for_home_bottom">
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|bottom"
+                >
 
                 <ImageView
                     android:id="@+id/iv_message"
                     android:layout_width="@dimen/icon_for_home_bottom"
                     android:layout_height="@dimen/icon_for_home_bottom"
                     android:layout_centerHorizontal="true"
+                    android:layout_gravity="bottom|center_horizontal"
                     android:src="@mipmap/ic_launcher"/>
 
-                <View
+                <com.zhiyicx.baseproject.widget.BadgeView
                     android:id="@+id/v_message_tip"
                     android:layout_width="@dimen/chat_message_bottom_tip_size"
                     android:layout_height="@dimen/chat_message_bottom_tip_size"
-                    android:layout_alignRight="@id/iv_message"
-                    android:layout_margin="@dimen/spacing_tiny"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginRight="-8dp"
                     android:background="@drawable/shape_dot_red"
                     android:visibility="invisible"
                     />
-            </RelativeLayout>
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/tv_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/icon_for_home_bottom_text_margin"
+                android:paddingBottom="@dimen/spacing_mid_small_8dp"
                 android:text="@string/message"
+
                 android:textColor="@color/home_bottom_navigate_text_normal"
                 android:textSize="@dimen/size_note_assist"/>
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/ll_find"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="center_horizontal|bottom"
             android:orientation="vertical">
 
             <ImageView
@@ -99,6 +104,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/icon_for_home_bottom_text_margin"
+                android:paddingBottom="@dimen/spacing_mid_small_8dp"
                 android:text="@string/find"
                 android:textColor="@color/home_bottom_navigate_text_normal"
                 android:textSize="@dimen/size_note_assist"/>
@@ -108,9 +114,8 @@
             android:id="@+id/ll_mine"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="center_horizontal|bottom"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -130,6 +135,7 @@
                     android:layout_height="@dimen/chat_message_bottom_tip_size"
                     android:layout_alignRight="@id/iv_mine"
                     android:layout_margin="@dimen/spacing_tiny"
+
                     android:background="@drawable/shape_dot_red"
                     android:visibility="invisible"
                     />
@@ -141,6 +147,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/icon_for_home_bottom_text_margin"
+                android:paddingBottom="@dimen/spacing_mid_small_8dp"
                 android:text="@string/mine"
                 android:textColor="@color/home_bottom_navigate_text_normal"
                 android:textSize="@dimen/size_note_assist"/>

@@ -3,7 +3,7 @@
     <!--#########################################      图标尺寸       ################################-->
 
     <!-- 底部操作栏图标  -->
-    <dimen name="icon_for_home_bottom">24dp</dimen>
+    <dimen name="icon_for_home_bottom">18dp</dimen>
     <dimen name="icon_for_home_bottom_text_margin">2dp</dimen>
     <!-- 顶部标题栏图标  -->
     <dimen name="icon_for_toolbar">24dp</dimen>

@@ -70,7 +70,7 @@ public class BadgeView extends TextView {
         setTextColor(Color.WHITE);
         setTypeface(Typeface.DEFAULT);
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        setPadding(dip2Px(5f),0, dip2Px(5f), 0);
+        setPadding(dip2Px(5f), 0, dip2Px(5f), 0);
 
         // set default background
         setBackground(20, Color.parseColor("#f4504d"));
@@ -128,7 +128,11 @@ public class BadgeView extends TextView {
     }
 
     public void setBadgeCount(int count) {
-        setText(String.valueOf(count));
+        if (count == 0) {
+            setText("");
+        } else {
+            setText(String.valueOf(count));
+        }
     }
 
     public Integer getBadgeCount() {

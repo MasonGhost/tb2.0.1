@@ -63,7 +63,7 @@ public class MessageListPresenter extends AppBasePresenter<MessageListContract.V
                 .observeOn(Schedulers.io())
                 .map(tbMessageBeans -> {
                             for (TbMessageBean tbMessageBean : tbMessageBeans) {
-                                if (tbMessageBean.getMIsRead()) {
+                                if (!tbMessageBean.getMIsRead()) {
                                     mHasUnreadMessage = true;
                                     break;
                                 } else {
@@ -115,8 +115,9 @@ public class MessageListPresenter extends AppBasePresenter<MessageListContract.V
                     try {
                         tbMessageBean = gson.fromJson(jpushMessageBean1.getExtras(), TbMessageBean.class);
                         tbMessageBean.setMIsRead(false);
-                        tbMessageBean.setUser_id(TbMessageBean.FEED.equals(tbMessageBean.getChannel()) ? tbMessageBean.getFeed().getUser_id() : tbMessageBean
-                                .getNews().getUser_id());
+                        tbMessageBean.setUser_id(TbMessageBean.FEED.equals(tbMessageBean.getChannel()) ? tbMessageBean.getFeed().getUser_id() :
+                                tbMessageBean
+                                        .getNews().getUser_id());
                         tbMessageBean.setMLoginUserId(AppApplication.getMyUserIdWithdefault());
                     } catch (Exception ignored) {
                         ignored.printStackTrace();
@@ -145,7 +146,7 @@ public class MessageListPresenter extends AppBasePresenter<MessageListContract.V
                                 }
                             }
                         }
-
+                        mHasUnreadMessage = true;
                     }
 
                     return tbMessageBean;

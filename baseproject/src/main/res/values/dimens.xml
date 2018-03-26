@@ -12,7 +12,7 @@
     <dimen name="toolbar_center_text_size">@dimen/size_primary_title</dimen>
     <dimen name="toolbar_right_text_size">@dimen/size_sub_title</dimen>
     <!-- custom navigationbar -->
-    <dimen name="custom_navigationbar_height">48dp</dimen>
+    <dimen name="custom_navigationbar_height">49dp</dimen>
     <dimen name="edit_line_height">48dp</dimen>
 
 

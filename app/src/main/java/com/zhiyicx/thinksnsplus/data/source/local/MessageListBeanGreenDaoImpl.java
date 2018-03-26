@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.TbMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.TbMessageBeanDao;
@@ -64,12 +65,14 @@ public class MessageListBeanGreenDaoImpl extends CommonCacheImpl<TbMessageBean> 
     @Override
     public List<TbMessageBean> getMultiDataFromCache() {
         TbMessageBeanDao tbMessageBeanDao = getRDaoSession().getTbMessageBeanDao();
-//        return tbMessageBeanDao.queryBuilder()
-//                .where(TbMessageBeanDao.Properties.Channel.isNotNull(), TbMessageBeanDao.Properties.MLoginUserId.eq(AppApplication
-//                        .getmCurrentLoginAuth()))
-//                .orderAsc(TbMessageBeanDao.Properties.PinnedTime)
-//                .list();
-        return tbMessageBeanDao.loadAll();
+        return tbMessageBeanDao
+                .queryBuilder()
+                .where(TbMessageBeanDao.Properties.Channel.isNotNull(), TbMessageBeanDao.Properties.MLoginUserId.eq(AppApplication
+                        .getMyUserIdWithdefault()))
+                .orderAsc(TbMessageBeanDao.Properties.PinnedTime)
+                .build()
+                .list();
+
     }
 
 

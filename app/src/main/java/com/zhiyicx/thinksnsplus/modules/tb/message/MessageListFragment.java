@@ -6,9 +6,12 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideRoundTransform;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.imageview.SquareImageView;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -21,6 +24,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
 import com.zhiyicx.thinksnsplus.modules.tb.detail.MerchainMessagelistActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.search.SearchMechanismUserActivity;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -143,7 +147,7 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
     }
 
     private void updateList() {
-        if (getActivity() != null && mPresenter != null) {
+        if (getUserVisibleHint()&&getActivity() != null && mPresenter != null) {
             mPresenter.requestCacheData(DEFAULT_PAGE_MAX_ID, false);
         }
 
@@ -154,19 +158,17 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
         CommonAdapter adapter = new CommonAdapter<TbMessageBean>(mActivity, R.layout.item_tbmessage, mListDatas) {
             @Override
             protected void convert(ViewHolder holder, TbMessageBean tbMessageBean, int position) {
-               holder.setBackgroundRes(R.id.ll_container, tbMessageBean.getMIsPinned() ? R.drawable.selector_bg_item_message_pinned : R.drawable.selector_bg_item_message);
+                holder.setBackgroundRes(R.id.ll_container
+                        , tbMessageBean.getMIsPinned() ? R.drawable.selector_bg_item_message_pinned : R.drawable.selector_bg_item_message
+                );
                 switch (tbMessageBean.getChannel()) {
                     case FEED: {
                         DynamicDetailBeanV2 feed = tbMessageBean.getFeed();
                         UserInfoBean userInfoBean = feed.getUserInfoBean();
                         if (userInfoBean.getAvatar() != null) {
-                            SquareImageView squareImageView = holder.getView(R.id.iv_message_headpic);
-                            Glide.with(mActivity)
-                                    .load(userInfoBean.getAvatar())
-                                    .placeholder(R.drawable.shape_default_image)
-                                    .placeholder(R.drawable.shape_default_error_image)
-                                    .centerCrop()
-                                    .into(squareImageView);
+                            ImageView squareImageView = holder.getView(R.id.iv_message_headpic);
+                            ImageUtils.loadRounRectImage(squareImageView,userInfoBean.getAvatar(),5);
+
                         }
                         holder.setText(R.id.name, userInfoBean.getName());
                         holder.setText(R.id.content, feed.getFeed_content());
@@ -177,13 +179,8 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
                         InfoListDataBean news = tbMessageBean.getNews();
                         UserInfoBean userInfoBean = news.getUser();
                         if (userInfoBean.getAvatar() != null) {
-                            SquareImageView squareImageView = holder.getView(R.id.iv_message_headpic);
-                            Glide.with(mActivity)
-                                    .load(userInfoBean.getAvatar())
-                                    .placeholder(R.drawable.shape_default_image)
-                                    .placeholder(R.drawable.shape_default_error_image)
-                                    .centerCrop()
-                                    .into(squareImageView);
+                            ImageView squareImageView = holder.getView(R.id.iv_message_headpic);
+                            ImageUtils.loadRounRectImage(squareImageView,userInfoBean.getAvatar(),5);
                         }
                         holder.setText(R.id.name, userInfoBean.getName());
                         if (TextUtils.isEmpty(news.getText_content())) {
@@ -198,6 +195,7 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
                         break;
                 }
                 ((BadgeView) holder.getView(R.id.tv_read_tip)).setVisibility(tbMessageBean.getMIsRead() ? View.GONE : View.VISIBLE);
+                ((BadgeView) holder.getView(R.id.tv_read_tip)).setText("");
 
             }
         };
