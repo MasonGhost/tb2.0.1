@@ -258,11 +258,6 @@ public abstract class TSWebFragment extends TSFragment {
     }
 
     @Override
-    protected int setToolBarBackgroud() {
-        return R.color.white;
-    }
-
-    @Override
     protected boolean showToolBarDivider() {
         return true;
     }

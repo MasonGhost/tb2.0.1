@@ -109,11 +109,6 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     }
 
     @Override
-    protected int setToolBarBackgroud() {
-        return R.color.white;
-    }
-
-    @Override
     protected String setCenterTitle() {
         return getString(R.string.register_by_phone);
     }

@@ -85,11 +85,6 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
     }
 
     @Override
-    protected int setToolBarBackgroud() {
-        return R.color.white;
-    }
-
-    @Override
     protected String setCenterTitle() {
         return getString(R.string.forget_password);
     }

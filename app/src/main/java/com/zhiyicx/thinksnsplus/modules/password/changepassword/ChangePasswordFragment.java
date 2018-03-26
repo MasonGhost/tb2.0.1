@@ -65,11 +65,6 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
     }
 
     @Override
-    protected int setToolBarBackgroud() {
-        return R.color.white;
-    }
-
-    @Override
     protected boolean showToolBarDivider() {
         return true;
     }

@@ -253,11 +253,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     }
 
     @Override
-    protected int setToolBarBackgroud() {
-        return R.color.white;
-    }
-
-    @Override
     protected String setCenterTitle() {
         return getString(R.string.bt_login);
     }
