@@ -66,6 +66,7 @@ import butterknife.BindView;
 import static android.app.Activity.RESULT_OK;
 import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
+import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_2;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_LIST_DELETE;
@@ -171,6 +172,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public void updateInfoHeader(InfoListDataBean infoDetailBean) {
+        mInfoMation = infoDetailBean;
         initcenterView();
         if (mInfoMation != null && mInfoMation.getUser() != null && infoDetailBean.getUser() != null) {
             infoDetailBean.setUser(mInfoMation.getUser());
@@ -185,9 +187,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     private void initcenterView() {
         setDigg(mPresenter.isDiged());
-        if (mInfoMation != null && mInfoMation.getUser() != null) {
-            mTvToolbarCenter.setText(mInfoMation.getUser().getName());
-        }
+        mTvToolbarCenter.setText(mInfoMation.getUser().getName());
         initBottomToolStyle();
     }
 
@@ -287,7 +287,13 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public int getInfoType() {
-        return Integer.valueOf(getArguments().getString(BUNDLE_INFO_TYPE, "-100"));
+        try {
+            return Integer.valueOf(getArguments().getString(BUNDLE_INFO_TYPE, "-100"));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
     @Override
@@ -348,34 +354,42 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     private void initBottomToolStyle() {
 
-        mDdDynamicTool.setItemIsChecked(mInfoMation.isHas_like(), 0);
-        mDdDynamicTool.setButtonText(mInfoMation.getDigg_count() == 0 ? "" : ConvertUtils.numberConvert(mInfoMation.getDigg_count()), 0);
-        mDdDynamicTool.setButtonText(mInfoMation.getShare_count() == 0 ? "" : ConvertUtils.numberConvert(mInfoMation.getShare_count()), 2);
-        mDdDynamicTool.setButtonText(mInfoMation.getComment_count() == 0 ? "" : ConvertUtils.numberConvert(mInfoMation.getComment_count()), 1);
 
         mDdDynamicTool.setImageNormalResourceIds(new int[]{
-                R.mipmap.ico_share,
-                R.mipmap.home_ico_comment_normal,
                 R.mipmap.ico_zan,
+                R.mipmap.home_ico_comment_normal,
+                R.mipmap.ico_share,
                 R.mipmap.home_ico_more,
         });
 
         mDdDynamicTool.setImageCheckedResourceIds(new int[]{
-                R.mipmap.ico_share_on,
-                R.mipmap.home_ico_comment_on,
                 R.mipmap.ico_zan_on,
+                R.mipmap.home_ico_comment_on,
+                R.mipmap.ico_share_on,
                 R.mipmap.home_ico_more,
         });
 
+        updateMenuData();
+
+    }
+
+    private void updateMenuData() {
+        mDdDynamicTool.setButtonText(mInfoMation.getDigg_count() == 0 ? "" : ConvertUtils.numberConvert(mInfoMation.getDigg_count()),
+                ITEM_POSITION_0);
+        mDdDynamicTool.setButtonText(mInfoMation.getShare_count() == 0 ? "" : ConvertUtils.numberConvert(mInfoMation.getShare_count()),
+                ITEM_POSITION_2);
+        mDdDynamicTool.setButtonText(mInfoMation.getComment_count() == 0 ? "" : ConvertUtils.numberConvert(mInfoMation.getComment_count()), 1);
+        mDdDynamicTool.setItemIsChecked(mInfoMation.isHas_like(), ITEM_POSITION_0);
     }
 
     private void initBottomToolListener() {
         mDdDynamicTool.setItemOnClick((parent, v, position) -> {
             mDdDynamicTool.getTag(R.id.view_data);
             switch (position) {
-                case DynamicDetailMenuView.ITEM_POSITION_0:// 点赞
+                case ITEM_POSITION_0:// 点赞
                     mPresenter.handleLike(!mInfoMation.getHas_like(),
                             mInfoMation.getId() + "");
+                    updateMenuData();
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_1:// 评论
                     if (mInfoMation.getComment_status() == 1) {

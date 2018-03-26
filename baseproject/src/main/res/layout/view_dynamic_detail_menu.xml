@@ -7,60 +7,7 @@
     android:baselineAligned="false"
     android:orientation="horizontal">
 
-    <LinearLayout
-        android:id="@+id/ll_dynamic_detail_share"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="horizontal">
 
-        <com.zhiyicx.baseproject.widget.imageview.FilterImageView
-            android:id="@+id/iv_dynamic_detail_share"
-            android:layout_width="@dimen/icon_for_assist_small"
-            android:layout_height="@dimen/icon_for_assist_small"
-            android:src="@mipmap/detail_ico_share_normal"
-            />
-
-        <TextView
-            android:id="@+id/tv_dynamic_detail_share"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/icon_for_home_bottom_text_margin"
-            android:text="@string/share"
-
-            android:textColor="@color/normal_for_disable_button_text"
-            android:textSize="@dimen/size_note_assist"
-            />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_dynamic_detail_comment"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <com.zhiyicx.baseproject.widget.imageview.FilterImageView
-            android:id="@+id/iv_dynamic_detail_comment"
-            android:layout_width="@dimen/icon_for_assist_small"
-            android:layout_height="@dimen/icon_for_assist_small"
-            android:src="@mipmap/home_ico_comment_normal"
-            />
-
-        <TextView
-            android:id="@+id/tv_dynamic_detail_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/icon_for_home_bottom_text_margin"
-            android:text="@string/comment"
-
-            android:textColor="@color/normal_for_disable_button_text"
-            android:textSize="@dimen/size_note_assist"
-            />
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_dynamic_detail_like"
@@ -86,10 +33,63 @@
             android:text="@string/like"
 
             android:textColor="@color/normal_for_disable_button_text"
-            android:textSize="@dimen/size_note_assist"
+            android:textSize="@dimen/size_content_assist"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_dynamic_detail_comment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+            android:id="@+id/iv_dynamic_detail_comment"
+            android:layout_width="@dimen/icon_for_assist_small"
+            android:layout_height="@dimen/icon_for_assist_small"
+            android:src="@mipmap/home_ico_comment_normal"
+            />
+
+        <TextView
+            android:id="@+id/tv_dynamic_detail_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/icon_for_home_bottom_text_margin"
+            android:text="@string/comment"
+
+            android:textColor="@color/normal_for_disable_button_text"
+            android:textSize="@dimen/size_content_assist"
             />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/ll_dynamic_detail_share"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+            android:id="@+id/iv_dynamic_detail_share"
+            android:layout_width="@dimen/icon_for_assist_small"
+            android:layout_height="@dimen/icon_for_assist_small"
+            android:src="@mipmap/detail_ico_share_normal"
+            />
+
+        <TextView
+            android:id="@+id/tv_dynamic_detail_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/icon_for_home_bottom_text_margin"
+            android:text="@string/share"
+
+            android:textColor="@color/normal_for_disable_button_text"
+            android:textSize="@dimen/size_content_assist"
+            />
+    </LinearLayout>
 
     <!--编辑-->
     <LinearLayout
@@ -116,7 +116,7 @@
 
             android:text="@string/qa_detail_edit"
             android:textColor="@color/normal_for_disable_button_text"
-            android:textSize="@dimen/size_note_assist"
+            android:textSize="@dimen/size_content_assist"
             />
     </LinearLayout>
 
@@ -145,7 +145,7 @@
             android:text="@string/collect"
 
             android:textColor="@color/normal_for_disable_button_text"
-            android:textSize="@dimen/size_note_assist"
+            android:textSize="@dimen/size_content_assist"
             />
     </LinearLayout>
 
@@ -173,7 +173,7 @@
             android:text="@string/more"
             android:visibility="gone"
             android:textColor="@color/normal_for_disable_button_text"
-            android:textSize="@dimen/size_note_assist"
+            android:textSize="@dimen/size_content_assist"
             />
     </LinearLayout>
 </LinearLayout>

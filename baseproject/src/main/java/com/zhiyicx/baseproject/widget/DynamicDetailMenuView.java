@@ -33,9 +33,9 @@ public class DynamicDetailMenuView extends FrameLayout {
     public static final int DEFAULT_RESOURES_ID = -1; // 默认 id ，当子类使用默认 id 时，进行占位判断
     // item 数量
     private static final int ITEM_NUMS_MAX = 6;
-    public static final int ITEM_POSITION_0 = 0; // 点赞
+    public static final int ITEM_POSITION_0 = 0; // 分享
     public static final int ITEM_POSITION_1 = 1; // 评论
-    public static final int ITEM_POSITION_2 = 2; // 分享
+    public static final int ITEM_POSITION_2 = 2; //  点赞
     public static final int ITEM_POSITION_3 = 3;
     public static final int ITEM_POSITION_4 = 4; // 编辑
     public static final int ITEM_POSITION_5 = 5; // 收藏
@@ -100,7 +100,7 @@ public class DynamicDetailMenuView extends FrameLayout {
     int mTextNormalColor = R.color.normal_for_disable_button_text;// 正常文本颜色
     protected
     @ColorRes
-    int mTextCheckedColor = R.color.normal_for_disable_button_text;// 选中文本颜色
+    int mTextCheckedColor = R.color.money;// 选中文本颜色
 
     public DynamicDetailMenuView(Context context) {
         super(context);
@@ -358,18 +358,19 @@ public class DynamicDetailMenuView extends FrameLayout {
     public void setButtonText(String texts ,int pos) {
         // 初始化所有的控件图片
         switch (pos){
-            case 0:
+            case ITEM_POSITION_0:
                 mTvDynamicDetailLike.setText(texts);
 
                 break;
-            case 1:
+            case ITEM_POSITION_1:
                 mTvDynamicDetailComment.setText(texts);
                 break;
-            case 2:
+
+            case ITEM_POSITION_2:
                 mTvDynamicDetailShare.setText(texts);
 
                 break;
-            case 3:
+            case ITEM_POSITION_3:
                 mTvDynamicDetailMore.setText(texts);
 
                 break;
