@@ -75,6 +75,11 @@ public class FindFragment extends TSFragment {
     }
 
     @Override
+    protected int setSystemStatusBarCorlorResource() {
+        return R.color.themeColor;
+    }
+
+    @Override
     protected void initData() {
     }
 

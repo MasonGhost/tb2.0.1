@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.tb.contract;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +17,7 @@ import com.zhiyicx.thinksnsplus.data.beans.HintSideBarUserBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.tb.search.SearchMechanismUserActivity;
 import com.zhiyicx.thinksnsplus.widget.hintsidebar.HintSideBar;
 import com.zhiyicx.thinksnsplus.widget.hintsidebar.SideBar;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -91,6 +93,15 @@ public class ContractListFragment extends TSListFragment<ContractListContract.Pr
         return getString(R.string.tb_user_followings);
     }
 
+    @Override
+    protected int setRightImg() {
+        return R.mipmap.ic_search_a_click;
+    }
+
+    @Override
+    protected void setRightClick() {
+        startActivity(new Intent(mActivity, SearchMechanismUserActivity.class));
+    }
     @Override
     protected int setToolBarBackgroud() {
         return R.color.themeColor;

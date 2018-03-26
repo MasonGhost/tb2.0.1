@@ -933,7 +933,6 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_TYPE_V2 = "api/" + API_VERSION_2 + "/news/cates";
     public static final String APP_PATH_INFO_LIST_V2 = "api/" + API_VERSION_2 + "/news";// 资讯列表
     public static final String APP_PATH_INFO_TOP_LIST = "api/" + API_VERSION_2 + "/news/categories/pinneds";// 获取置顶资讯
-    public static final String APP_PATH_INFO_DETAIL = "api/" + API_VERSION_2 + "/news/{news}";// 详情
     public static final String APP_PATH_INFO_DETAIL_RELATION = "api/" + API_VERSION_2 + "/news/{news}/correlations";// 相关资讯
     public static final String APP_PATH_INFO_DIG_V2 = "api/" + API_VERSION_2 + "/news/{news}/likes";// 点赞
     public static final String APP_PATH_INFO_DIG_V2_S = "api/" + API_VERSION_2 + "/news/%s/likes";// 点赞
@@ -1057,5 +1056,6 @@ public class ApiConfig {
     // 机构用户的消息
     public static final String APP_PATH_GET_MERCHAIN_MESSAGE = "api/" + API_VERSION_2 + "/tbm/push/news";
 
+    public static final String APP_PATH_INFO_DETAIL = "api/" + API_VERSION_2 + "/tbm/news/{news}";// 详情
 
 }
