@@ -37,8 +37,6 @@ public class MerchainMessageListPresenter extends AppBasePresenter<MerchainMessa
     @Inject
     UserInfoRepository mUserInfoRepository;
 
-    private boolean mIsNeedScroll = true;
-
     @Inject
     public MerchainMessageListPresenter(MerchainMessageListContract.View rootView) {
         super(rootView);
@@ -68,17 +66,6 @@ public class MerchainMessageListPresenter extends AppBasePresenter<MerchainMessa
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
                         mRootView.onResponseError(null, isLoadMore);
-                        if (mIsNeedScroll) {
-                            mIsNeedScroll = false;
-                            rx.Observable.timer(100, TimeUnit.MILLISECONDS)
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Action1<Long>() {
-                                        @Override
-                                        public void call(Long aLong) {
-                                            mRootView.scroollToBottom();
-                                        }
-                                    });
-                        }
                     }
 
                     @Override

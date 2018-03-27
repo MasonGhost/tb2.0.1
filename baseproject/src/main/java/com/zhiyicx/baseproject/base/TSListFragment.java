@@ -109,7 +109,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     /**
      * 没有更多数据
      */
-    private View mTvNoMoredataText;
+    protected View mTvNoMoredataText;
 
     /**
      * 避免 Glide.resume.重复设置增加开销
@@ -510,7 +510,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         }
     }
 
-    private void layzLoadEmptyView() {
+    protected void layzLoadEmptyView() {
         if (mEmptyView == null) {
             try {
                 ViewStub viewStub = (ViewStub) mRootView.findViewById(R.id.stub_empty_view);
@@ -694,7 +694,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @param data       返回的数据
      * @param isLoadMore 是否是加载更多
      */
-    private void handleReceiveData(List<T> data, boolean isLoadMore, boolean isFromCache) {
+    protected void handleReceiveData(List<T> data, boolean isLoadMore, boolean isFromCache) {
         // 刷新
         if (!isLoadMore) {
 

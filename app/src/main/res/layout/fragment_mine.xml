@@ -99,6 +99,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/spacing_mid_small_8dp"
+                                android:visibility="gone"
                                 android:layout_toRightOf="@id/tv_fans_count"
                                 android:textSize="@dimen/size_icon_assist"
                                 android:textStyle="normal"/>

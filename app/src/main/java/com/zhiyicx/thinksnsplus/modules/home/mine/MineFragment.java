@@ -566,7 +566,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     public void setNewFollowTip(int count) {
-        mVvFansNewCount.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(count)));
+//        mVvFansNewCount.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(count)));
     }
 
     @Override

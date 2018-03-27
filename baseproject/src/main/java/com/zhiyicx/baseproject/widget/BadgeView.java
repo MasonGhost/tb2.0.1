@@ -26,6 +26,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -119,7 +120,7 @@ public class BadgeView extends TextView {
      */
     @Override
     public void setText(CharSequence text, BufferType type) {
-        if (isHideOnNull() && (text == null || text.toString().equalsIgnoreCase("0"))) {
+        if (isHideOnNull() && (TextUtils.isEmpty(text) || text.toString().equalsIgnoreCase("0"))) {
             setVisibility(View.GONE);
         } else {
             setVisibility(View.VISIBLE);
