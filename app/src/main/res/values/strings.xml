@@ -1064,5 +1064,6 @@
     <string name="haode">好的</string>
     <string name="balance_not_enouph">余额不足!</string>
     <string name="app_name_simple">TB</string>
+    <string name="comment_has_send_wait_review">评论已提交，请耐心等待审核！</string>
 
 </resources>

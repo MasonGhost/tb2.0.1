@@ -220,17 +220,20 @@ public class DynamicCommentListPresenter extends AppBasePresenter<
         creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
         // 处理评论数
-        mRootView.getCurrentDynamic().setFeed_comment_count(mRootView.getCurrentDynamic()
-                .getFeed_comment_count() + 1);
-        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentDynamic());
-        if (mRootView.getListDatas().size() == 1 && TextUtils.isEmpty(mRootView.getListDatas()
-                .get(0).getComment_content())) {
-            mRootView.getListDatas().clear();
-        }
-        mRootView.getListDatas().add(0, creatComment);
-        mRootView.refreshData();
+//        mRootView.getCurrentDynamic().setFeed_comment_count(mRootView.getCurrentDynamic()
+//                .getFeed_comment_count() + 1);
+//        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentDynamic());
+        // 占位置图
+//        if (mRootView.getListDatas().size() == 1 && TextUtils.isEmpty(mRootView.getListDatas()
+//                .get(0).getComment_content())) {
+//            mRootView.getListDatas().clear();
+//        }
+//        mRootView.getListDatas().add(0, creatComment);
+//        mRootView.refreshData();
         mBaseDynamicRepository.sendCommentV2(commentContent, mRootView.getCurrentDynamic().getId(),
                 replyToUserId, creatComment.getComment_mark());
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_has_send_wait_review));
+
     }
 
     @Override

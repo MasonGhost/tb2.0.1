@@ -468,14 +468,16 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         createComment.setFromUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(
                 AppApplication.getmCurrentLoginAuth().getUser_id()));
         mInfoCommentListBeanDao.insertOrReplace(createComment);
-        if (mRootView.getListDatas().get(0).getComment_content() == null) {
-            mRootView.getListDatas().remove(0);// 去掉占位图
-        }
-        mRootView.getListDatas().add(0, createComment);
-        mRootView.getCurrentInfo().setComment_count(mRootView.getCurrentInfo().getComment_count() + 1);
-        mRootView.refreshData();
+//        if (mRootView.getListDatas().get(0).getComment_content() == null) {
+//            mRootView.getListDatas().remove(0);// 去掉占位图
+//        }
+//        mRootView.getListDatas().add(0, createComment);
+//        mRootView.getCurrentInfo().setComment_count(mRootView.getCurrentInfo().getComment_count() + 1);
+//        mRootView.refreshData();
         mBaseInfoRepository.sendComment(content, mRootView.getNewsId(), reply_id,
                 createComment.getComment_mark());
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_has_send_wait_review));
+
     }
 
     @Override

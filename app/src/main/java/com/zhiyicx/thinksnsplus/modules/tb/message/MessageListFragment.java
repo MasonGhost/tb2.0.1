@@ -194,8 +194,8 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
                     default:
                         break;
                 }
-                ((BadgeView) holder.getView(R.id.tv_read_tip)).setVisibility(tbMessageBean.getMIsRead() ? View.GONE : View.VISIBLE);
                 ((BadgeView) holder.getView(R.id.tv_read_tip)).setText("");
+                ((BadgeView) holder.getView(R.id.tv_read_tip)).setVisibility(tbMessageBean.getMIsRead() ? View.GONE : View.VISIBLE);
 
             }
         };
