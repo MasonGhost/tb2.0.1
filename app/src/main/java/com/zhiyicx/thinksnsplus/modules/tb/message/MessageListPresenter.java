@@ -140,9 +140,9 @@ public class MessageListPresenter extends AppBasePresenter<MessageListContract.V
                             //列表没有数据
                             for (int i1 = 0; i1 < mRootView.getListDatas().size(); i1++) {
                                 if (mRootView.getListDatas().get(i1).getMIsPinned()) {
-                                    continue;
                                 } else {
                                     mRootView.getListDatas().add(i1, tbMessageBean);
+                                    break;
                                 }
                             }
                         }

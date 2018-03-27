@@ -183,10 +183,10 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
                             ImageUtils.loadRounRectImage(squareImageView,userInfoBean.getAvatar(),5);
                         }
                         holder.setText(R.id.name, userInfoBean.getName());
-                        if (TextUtils.isEmpty(news.getText_content())) {
-                            holder.setText(R.id.content, news.getContent());
+                        if (TextUtils.isEmpty(news.getTitle())) {
+                            holder.setText(R.id.content, news.getTitle());
                         } else {
-                            holder.setText(R.id.content, news.getText_content());
+                            holder.setText(R.id.content, news.getSubject());
                         }
                         holder.setText(R.id.tv_tbtime, TimeUtils.getTimeFriendlyNormal(news.getCreated_at()));
                         break;

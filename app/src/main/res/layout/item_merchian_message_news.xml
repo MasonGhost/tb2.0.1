@@ -31,7 +31,7 @@
         android:background="@drawable/shape_bg_raduis_soid_white"
         android:orientation="vertical">
 
-        <ImageView
+        <com.zhiyicx.thinksnsplus.widget.imageview.ChangeGasStationImageView
             android:id="@+id/iv_head"
             android:layout_width="match_parent"
             android:layout_height="@dimen/merchain_message_item_image_height"

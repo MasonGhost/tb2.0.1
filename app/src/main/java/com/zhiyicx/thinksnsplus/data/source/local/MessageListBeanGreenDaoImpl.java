@@ -69,7 +69,7 @@ public class MessageListBeanGreenDaoImpl extends CommonCacheImpl<TbMessageBean> 
                 .queryBuilder()
                 .where(TbMessageBeanDao.Properties.Channel.isNotNull(), TbMessageBeanDao.Properties.MLoginUserId.eq(AppApplication
                         .getMyUserIdWithdefault()))
-                .orderAsc(TbMessageBeanDao.Properties.PinnedTime)
+                .orderDesc(TbMessageBeanDao.Properties.PinnedTime)
                 .build()
                 .list();
 
