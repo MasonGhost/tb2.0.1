@@ -53,6 +53,11 @@ public class ContractListFragment extends TSListFragment<ContractListContract.Pr
     }
 
     @Override
+    protected int setEmptView() {
+        return R.mipmap.def_follow_prompt;
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         setCenterTextColor(R.color.white);
