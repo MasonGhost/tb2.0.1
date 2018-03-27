@@ -72,6 +72,7 @@ public class SearchMechanismUserFragment extends TSListFragment<SearchMechanismU
         return R.layout.fragment_mehsnism_user_search;
     }
 
+
     @Override
     protected boolean showToolBarDivider() {
         return false;

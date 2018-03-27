@@ -98,6 +98,11 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
     }
 
     @Override
+    protected int setEmptView() {
+        return R.mipmap.def_follow_prompt;
+    }
+
+    @Override
     protected String setCenterTitle() {
         return getString(R.string.message);
     }

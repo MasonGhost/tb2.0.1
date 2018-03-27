@@ -97,4 +97,7 @@ public class TBMainDynamicFragment extends TBDynamicFragment {
         return DEFAULT_LIST_ITEM_SPACING;
     }
 
+    @Override
+    protected int setEmptView() {return R.mipmap.def_news_flash_prompt;
+    }
 }

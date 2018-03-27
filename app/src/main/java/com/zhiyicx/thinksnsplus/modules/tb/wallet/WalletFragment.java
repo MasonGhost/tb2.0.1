@@ -78,6 +78,11 @@ public class WalletFragment extends TSListFragment<WalletContract.Presenter, Rec
     }
 
     @Override
+    protected int setEmptView() {
+        return R.mipmap.def_wallet_prompt;
+    }
+
+    @Override
     public String getBillType() {
         return null/*{""--全部, "income"--收入, "expenses"--支出}*/;
     }

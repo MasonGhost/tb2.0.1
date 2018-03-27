@@ -251,4 +251,9 @@ public class TBDynamicFragment extends DynamicFragment {
             refreshData();
         }
     }
+
+    @Override
+    protected int setEmptView() {
+        return R.mipmap.def_hone_network_prompt;
+    }
 }
