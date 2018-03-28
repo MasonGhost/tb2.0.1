@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.tb.detail;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -14,9 +15,11 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.TbMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbmerchianmessage.MerchianMassageBean;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionData;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.ContributionListPresenterModule;
 import com.zhiyicx.thinksnsplus.modules.tb.contribution.DaggerContributionListComponent;
+import com.zhiyicx.thinksnsplus.modules.tb.search.SearchMechanismUserActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -95,6 +98,16 @@ public class MerchainMessageListFragment extends TSListFragment<MerchainMessageL
         if (mListDatas.size() > 0) {
             mRvList.scrollToPosition(mListDatas.size() - 1);
         }
+    }
+
+    @Override
+    protected int setRightImg() {
+        return R.mipmap.topbar_more_white;
+    }
+
+    @Override
+    protected void setRightClick() {
+        PersonalCenterFragment.startToPersonalCenter(getContext(), mUserInfoBean);
     }
 
     /**

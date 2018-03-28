@@ -48,7 +48,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class TabSelectView extends FrameLayout {
     // 定义默认样式值
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = R.color.normal_for_assist_text;// 缺省的tab未选择文字
-    private static final int DEFAULT_TAB_SELECTED_TEXTCOLOR = R.color.white;// 缺省的tab被选择文字
+    private static final int DEFAULT_TAB_SELECTED_TEXTCOLOR = R.color.themeColor;// 缺省的tab被选择文字
     private static final int DEFAULT_TAB_TEXTSIZE = R.integer.tab_text_size;// 缺省的tab文字大小
     private static final int DEFAULT_TAB_LINE_COLOR = R.color.themeColor;// 缺省的tab的线的颜色
     private int mTabMargin = R.integer.tab_margin;// 缺省的tab左padding

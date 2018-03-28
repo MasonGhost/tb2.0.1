@@ -17,6 +17,7 @@ import com.zhiyicx.thinksnsplus.data.beans.HintSideBarUserBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.tb.detail.MerchainMessagelistActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.search.SearchMechanismUserActivity;
 import com.zhiyicx.thinksnsplus.widget.hintsidebar.HintSideBar;
 import com.zhiyicx.thinksnsplus.widget.hintsidebar.SideBar;
@@ -80,7 +81,7 @@ public class ContractListFragment extends TSListFragment<ContractListContract.Pr
 
     @Override
     protected void setLeftClick() {
-        ((HomeFragment) getParentFragment()).setCurrenPageToContact(PAGE_MESSAGE);
+        ((HomeFragment) getParentFragment()).setCurrenPageToMessage();
     }
 
     @Override
@@ -192,7 +193,13 @@ public class ContractListFragment extends TSListFragment<ContractListContract.Pr
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         UserInfoBean userInfoBean = mPresenter.getLocalUsrinfo(mListDatas.get(position).getId());
         if (userInfoBean != null) {
-            PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+            //
+            // 进入公众号
+            Intent intent = new Intent(getActivity(), MerchainMessagelistActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(MerchainMessagelistActivity.BUNDLE_USER, userInfoBean);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
 
     }

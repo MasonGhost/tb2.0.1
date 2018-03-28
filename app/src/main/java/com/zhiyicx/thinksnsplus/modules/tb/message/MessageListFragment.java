@@ -74,7 +74,7 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
 
     @Override
     protected void setLeftClick() {
-        ((HomeFragment) getParentFragment()).setCurrenPageToContact(PAGE_CONTACT);
+        ((HomeFragment) getParentFragment()).setCurrenPageToContact();
     }
 
     @Override

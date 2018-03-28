@@ -262,14 +262,23 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     /**
      * 通讯录
      *
-     * @param page
      */
-    public void setCurrenPageToContact(int page) {
+    public void setCurrenPageToContact() {
         if (TouristConfig.MESSAGE_CAN_LOOK || !mPresenter.handleTouristControl()) {
-            mVpHome.setCurrentItem(page, false);
+            mVpHome.setCurrentItem(PAGE_CONTACT, false);
         }
-        mCurrenPage = page;
+        mCurrenPage = PAGE_CONTACT;
+    }
 
+    /**
+     * 消息
+     *
+     */
+    public void setCurrenPageToMessage() {
+        if (TouristConfig.MESSAGE_CAN_LOOK || !mPresenter.handleTouristControl()) {
+            mVpHome.setCurrentItem(PAGE_MESSAGE, false);
+        }
+        mCurrenPage = PAGE_MESSAGE;
     }
 
 
