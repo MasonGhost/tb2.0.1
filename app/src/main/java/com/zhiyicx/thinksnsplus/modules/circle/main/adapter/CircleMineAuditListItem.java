@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -75,8 +76,7 @@ public class CircleMineAuditListItem extends BaseCircleItem {
                         .join_wait_audit)
         );
         // 时间
-        // TODO: 2017/12/6  
-
+        holder.setText(R.id.tv_circle_time, TimeUtils.getStandardTimeWithYeay(TimeUtils.utc2LocalLong(circleInfo.getCreated_at())));
         RxView.clicks(holder.getConvertView())
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
