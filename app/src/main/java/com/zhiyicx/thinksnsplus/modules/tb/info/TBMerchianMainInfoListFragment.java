@@ -94,4 +94,8 @@ public class TBMerchianMainInfoListFragment extends InfoListFragment {
     protected boolean setUseStatusView() {
         return false;
     }
+
+    @Override
+    protected int setEmptView() {return R.mipmap.def_informationb_prompt;
+    }
 }

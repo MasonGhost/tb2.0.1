@@ -40,4 +40,28 @@
         android:textSize="@dimen/size_content"
         tools:text="2016-05-06"/>
 
+    <View
+        android:id="@+id/v_line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_line"
+        android:background="@color/general_for_line_light"/>
+
+    <com.zhiyicx.baseproject.widget.TBDynamicListMenuView
+        android:id="@+id/dlmv_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/divider_line"/>
+
+    <include
+        android:id="@+id/fl_tip"
+        layout="@layout/view_hint_info2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        />
+
+    <include
+        layout="@layout/include_dynamic_list_comment_view"
+        />
+
 </LinearLayout>

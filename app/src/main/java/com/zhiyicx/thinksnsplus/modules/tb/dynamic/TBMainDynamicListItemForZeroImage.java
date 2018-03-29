@@ -36,6 +36,22 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 public class TBMainDynamicListItemForZeroImage extends DynamicListBaseItem {
 
+    protected
+    @DrawableRes
+    int[] mImageNormalResourceIds = new int[]{
+            R.mipmap.ico_share,
+            R.mipmap.home_ico_comment_normal,
+            R.mipmap.ico_zan,
+            R.mipmap.home_ico_more,
+    };// 图片 ids 正常状态
+    protected
+    @DrawableRes
+    int[] mImageCheckedResourceIds = new int[]{
+            R.mipmap.ico_share,
+            R.mipmap.home_ico_comment_normal,
+            R.mipmap.ico_zan_on,
+            R.mipmap.home_ico_more,
+    };// 图片 ids 选中状态
 
     public TBMainDynamicListItemForZeroImage(Context context) {
         super(context);
@@ -54,6 +70,86 @@ public class TBMainDynamicListItemForZeroImage extends DynamicListBaseItem {
 
     @Override
     public void convert(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2 lastT, int position, int itemCounts) {
+
+        holder.setVisible(R.id.dlmv_menu, showToolMenu ? View.VISIBLE : View.GONE);
+        // 分割线跟随工具栏显示隐藏
+        holder.setVisible(R.id.v_line, showToolMenu ? View.VISIBLE : View.GONE);
+        // user_id = -1 广告
+        if (showToolMenu && dynamicBean.getUser_id() > 0) {
+            // 显示工具栏
+            DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
+            dynamicListMenuView.setImageNormalResourceIds(mImageNormalResourceIds);
+            dynamicListMenuView.setImageCheckedResourceIds(mImageCheckedResourceIds);
+            // 点赞
+            dynamicListMenuView.setItemTextAndStatus(
+                    dynamicBean.getFeed_digg_count() == 0 ? "" : ConvertUtils.numberConvert(dynamicBean
+                            .getFeed_digg_count())
+                    , dynamicBean.isHas_digg()
+                    , 2
+            );
+            // 分享数量
+            dynamicListMenuView.setItemTextAndStatus(
+                    dynamicBean.getShare_count() == 0 ? "" : ConvertUtils.numberConvert(dynamicBean.getShare_count()),
+                    false
+                    , 0
+            );
+            // 评论数量
+            dynamicListMenuView.setItemTextAndStatus(
+                    dynamicBean.getFeed_comment_count() == 0 ? "" : ConvertUtils.numberConvert(dynamicBean.getFeed_comment_count())
+                    , false
+                    , 1
+            );
+            // 控制更多按钮的显示隐藏
+            dynamicListMenuView.setItemPositionVisiable(0, getVisibleOne());
+            dynamicListMenuView.setItemPositionVisiable(1, getVisibleTwo());
+            dynamicListMenuView.setItemPositionVisiable(2, getVisibleThree());
+            dynamicListMenuView.setItemPositionVisiable(3, getVisibleFour());
+            // 设置工具栏的点击事件
+            dynamicListMenuView.setItemOnClick((parent, v, menuPostion) -> {
+                if (mOnMenuItemClickLisitener != null) {
+                    mOnMenuItemClickLisitener.onMenuItemClick(holder.getConvertView(), position, menuPostion);
+                }
+            });
+        }
+
+        holder.setVisible(R.id.fl_tip, showReSendBtn ? View.VISIBLE : View.GONE);
+        if (showReSendBtn) {
+            // 设置动态发送状态
+            if (dynamicBean.getState() == DynamicBean.SEND_ERROR) {
+                holder.setVisible(R.id.fl_tip, View.VISIBLE);
+            } else {
+                holder.setVisible(R.id.fl_tip, View.GONE);
+            }
+            RxView.clicks(holder.getView(R.id.fl_tip))
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                    .subscribe(aVoid -> {
+                        if (mOnReSendClickListener != null) {
+                            mOnReSendClickListener.onReSendClick(position);
+                        }
+                    });
+        }
+
+        if (showCommentList) {
+            holder.setVisible(R.id.dcv_comment, View.VISIBLE);
+
+            // 设置评论内容
+            DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
+            if (dynamicBean.getComments() == null || dynamicBean.getComments().isEmpty()) {
+                comment.setVisibility(View.GONE);
+            } else {
+                comment.setVisibility(View.VISIBLE);
+            }
+
+            comment.setData(dynamicBean);
+            comment.setOnCommentClickListener(mOnCommentClickListener);
+            comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
+            comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
+
+        } else {
+            holder.setVisible(R.id.dcv_comment, View.GONE);
+        }
+
+
         holder.setText(R.id.tv_time, TimeUtils.getYeayMonthDay(TimeUtils.utc2LocalLong(dynamicBean.getCreated_at())));
         /*
         文本内容处理
@@ -86,5 +182,10 @@ public class TBMainDynamicListItemForZeroImage extends DynamicListBaseItem {
             contentView.setShowDot(!dynamicBean.isOpen(), mMaxlinesShow);
         });
 
+    }
+
+    @Override
+    protected int getVisibleFour() {
+        return View.GONE;
     }
 }

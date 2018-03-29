@@ -17,7 +17,6 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.HintSideBarUserBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
-import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.tb.detail.MerchainMessagelistActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.search.SearchMechanismUserActivity;
 import com.zhiyicx.thinksnsplus.widget.hintsidebar.HintSideBar;
@@ -31,8 +30,6 @@ import java.util.Collections;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-
-import static com.zhiyicx.thinksnsplus.modules.home.HomeFragment.PAGE_MESSAGE;
 
 public class ContractListFragment extends TSListFragment<ContractListContract.Presenter, HintSideBarUserBean>
         implements ContractListContract.View, SideBar.OnChooseLetterChangedListener, MultiItemTypeAdapter.OnItemClickListener {
@@ -147,7 +144,7 @@ public class ContractListFragment extends TSListFragment<ContractListContract.Pr
             @Override
             protected void convert(ViewHolder holder, HintSideBarUserBean hintSideBarUserBean, int position) {
                 HintSideBarUserBean user = mListDatas.get(position);
-                TextView catalog = holder.getView(R.id.catalog);
+                TextView mTvAtalog = holder.getView(R.id.catalog);
                 if (user.getAvatar() != null) {
                     SquareImageView squareImageView = holder.getView(R.id.iv_contact_headpic);
                     Glide.with(mActivity)
@@ -157,13 +154,33 @@ public class ContractListFragment extends TSListFragment<ContractListContract.Pr
                             .centerCrop()
                             .into(squareImageView);
                 }
-                catalog.setText(user.getHeadLetter() + "");
                 holder.setText(R.id.name, user.getUserName());
+                int sectionForPosition = getSectionForPosition(position);
+                int positionForSection = getPositionForSection(sectionForPosition);
+                if (position == positionForSection) {
+                    mTvAtalog.setVisibility(View.VISIBLE);
+                    mTvAtalog.setText(user.getHeadLetter() + "");
+                } else {
+                    mTvAtalog.setVisibility(View.GONE);
+                }
             }
         };
         adapter.setOnItemClickListener(this);
         return adapter;
 
+    }
+
+    public int getPositionForSection(int sectionIndex) {
+        for (int i = 0; i < mListDatas.size(); i++) {
+            if (mListDatas.get(i).getHeadLetter() == sectionIndex) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int getSectionForPosition(int position) {
+        return mListDatas.get(position).getHeadLetter();
     }
 
     @Override
