@@ -113,8 +113,13 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
 
         RxTextView.editorActionEvents(mFragmentInfoSearchEdittext).subscribe(textViewEditorActionEvent -> {
             if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
-                mTvRecommendHint.setVisibility(View.GONE);
-                mPresenter.requestNetData(0, null, mFragmentInfoSearchEdittext.getText().toString(), false);
+                if(TextUtils.isEmpty(mFragmentInfoSearchEdittext.getText())){
+                    mTvRecommendHint.setVisibility(View.VISIBLE);
+                    requestNetData(DEFAULT_PAGE_MAX_ID, false);
+                }else {
+                    mTvRecommendHint.setVisibility(View.GONE);
+                    mPresenter.requestNetData(0, null, mFragmentInfoSearchEdittext.getText().toString(), false);
+                }
             }
         });
 

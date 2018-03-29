@@ -406,13 +406,13 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                     // 跳转搜索选择专家列表
                     Intent intent = new Intent(getActivity(), ExpertSearchActivity.class);
                     Bundle bundle = new Bundle();
-                    String topic_ids = "";
+                    StringBuilder topicIds = new StringBuilder();
                     if (mQAPublishBean.getTopics() != null) {
                         for (QAPublishBean.Topic qaTopicBean : mQAPublishBean.getTopics()) {
-                            topic_ids += qaTopicBean.getId() + ",";
+                            topicIds.append(qaTopicBean.getId()).append(",");
                         }
                     }
-                    bundle.putString(BUNDLE_TOPIC_IDS, topic_ids);
+                    bundle.putString(BUNDLE_TOPIC_IDS, topicIds.toString());
                     intent.putExtras(bundle);
                     startActivityForResult(intent, QA_PUBLISH.id);
                 });
