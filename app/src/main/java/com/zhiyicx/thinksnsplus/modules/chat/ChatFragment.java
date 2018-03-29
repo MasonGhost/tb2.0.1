@@ -203,6 +203,11 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
     }
 
     @Override
+    public void updateCenterText(UserInfoBean userInfoBean) {
+        setCenterText(userInfoBean.getName());
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if (chatType == EaseConstant.CHATTYPE_SINGLE) {

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.chat;
 
 import com.hyphenate.chat.EMMessage;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMRefreshEvent;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
@@ -99,7 +100,8 @@ public class ChatPresenter extends AppBasePresenter<ChatContract.View> implement
         if (chatGroupBean == null) {
             return;
         }
-        Subscription subscription = mBaseFriendsRepository.updateGroup(chatGroupBean.getId(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0, 200, chatGroupBean.isMembersonly(),
+        Subscription subscription = mBaseFriendsRepository.updateGroup(chatGroupBean.getId(), chatGroupBean.getName(), chatGroupBean.getDescription
+                        (), 0, 200, chatGroupBean.isMembersonly(),
                 0, chatGroupBean.getGroup_face(), false, "")
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage("修改中..."))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -128,7 +130,21 @@ public class ChatPresenter extends AppBasePresenter<ChatContract.View> implement
 
     @Override
     public String getUserName(String id) {
-        return mUserInfoBeanGreenDao.getUserName(id);
+        try {
+            return mUserInfoBeanGreenDao.getUserName(id);
+        } catch (Exception e) {
+            Subscription subscribe = mUserInfoRepository.getUserInfoByIds(id)
+                    .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
+                        @Override
+                        protected void onSuccess(List<UserInfoBean> data) {
+                            if (!data.isEmpty()) {
+                                mRootView.updateCenterText(data.get(0));
+                            }
+                        }
+                    });
+            addSubscrebe(subscribe);
+            return mContext.getString(R.string.default_delete_user_name);
+        }
     }
 
     @Override
@@ -150,7 +166,7 @@ public class ChatPresenter extends AppBasePresenter<ChatContract.View> implement
         try {
             return mChatGroupBeanGreenDao.getChatGroupName(id);
         } catch (Exception e) {
-            return "未知用户";
+            return mContext.getString(R.string.default_delete_user_name);
         }
     }
 

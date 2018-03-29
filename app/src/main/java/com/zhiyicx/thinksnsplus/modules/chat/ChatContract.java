@@ -33,6 +33,8 @@ public interface ChatContract {
          * @param
          */
         void updateUserInfoForRefreshList(UserInfoBean data,TSEMRefreshEvent event);
+
+        void updateCenterText(UserInfoBean userInfoBean);
     }
 
     interface Presenter extends IBasePresenter {
