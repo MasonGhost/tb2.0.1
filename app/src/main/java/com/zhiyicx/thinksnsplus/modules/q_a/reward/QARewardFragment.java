@@ -106,6 +106,8 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
 
     @BindView(R.id.tv_custom_money)
     TextView mCustomMoney;
+    @BindView(R.id.ll_invite_line)
+    View mLlInviteLine;
 
     // 悬赏相关
     private List<Float> mRewardLabels; // reward labels
@@ -160,6 +162,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         mEtInput.clearFocus();
         mWcOnlooker.setFocusable(true);
         mWcOnlooker.requestFocus();
+        mLlInviteLine.setVisibility(View.GONE);
     }
 
     @Override
