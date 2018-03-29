@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSListFragment;
@@ -145,6 +146,7 @@ public class ContractListFragment extends TSListFragment<ContractListContract.Pr
             @Override
             protected void convert(ViewHolder holder, HintSideBarUserBean hintSideBarUserBean, int position) {
                 HintSideBarUserBean user = mListDatas.get(position);
+                TextView catalog = holder.getView(R.id.catalog);
                 if (user.getAvatar() != null) {
                     SquareImageView squareImageView = holder.getView(R.id.iv_contact_headpic);
                     Glide.with(mActivity)
@@ -154,7 +156,7 @@ public class ContractListFragment extends TSListFragment<ContractListContract.Pr
                             .centerCrop()
                             .into(squareImageView);
                 }
-                holder.setText(R.id.catalog, user.getHeadLetter() + "");
+                catalog.setText(user.getHeadLetter() + "");
                 holder.setText(R.id.name, user.getUserName());
             }
         };
@@ -193,7 +195,6 @@ public class ContractListFragment extends TSListFragment<ContractListContract.Pr
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         UserInfoBean userInfoBean = mPresenter.getLocalUsrinfo(mListDatas.get(position).getId());
         if (userInfoBean != null) {
-            //
             // 进入公众号
             Intent intent = new Intent(getActivity(), MerchainMessagelistActivity.class);
             Bundle bundle = new Bundle();

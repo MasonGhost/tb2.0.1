@@ -54,7 +54,6 @@
             android:layout_marginLeft="@dimen/spacing_large"
             android:layout_marginRight="@dimen/spacing_large"
             android:ellipsize="end"
-            android:maxEms="15"
             android:singleLine="true"
             android:textColor="@color/normal_for_assist_text"
             android:textSize="@dimen/size_content_assist"

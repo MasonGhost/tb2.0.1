@@ -4,9 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
-import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.R;
 import com.zhiyicx.common.dagger.module.AppModule;
 import com.zhiyicx.common.dagger.module.HttpClientModule;
@@ -45,11 +42,11 @@ public abstract class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (LeakCanary.isInAnalyzerProcess(this)) {
+       // if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
-            return;
-        }
+       //     return;
+       // }
         /**
          * leakCanary 内存泄露检查
          */
@@ -113,7 +110,7 @@ public abstract class BaseApplication extends Application {
     protected void installLeakCanary() {
         if (USE_CANARY) {
             System.out.println(" use  leakcanary ");
-            LeakCanary.install(this);
+        //    LeakCanary.install(this);
         }
     }
 

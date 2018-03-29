@@ -117,8 +117,8 @@ dependencies {
 
     compile dataDependences.gson
     // Development
-    debugCompile developmentDependencies.leakCanaryDebug
-    releaseCompile developmentDependencies.leakCanaryRelease
+    //debugCompile developmentDependencies.leakCanaryDebug
+    //releaseCompile developmentDependencies.leakCanaryRelease
     // Test
     testCompile testDependences.junit
     androidTestCompile(testDependences.espresso) {

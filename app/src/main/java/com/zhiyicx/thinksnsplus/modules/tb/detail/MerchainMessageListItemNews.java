@@ -53,9 +53,17 @@ public class MerchainMessageListItemNews implements ItemViewDelegate<MerchianMas
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyForDetail(dataBean.getCreated_at()));
         holder.setText(R.id.tv_title, dataBean.getSubject());
         if (TextUtils.isEmpty(dataBean.getText_content())) {
-            holder.setText(R.id.tv_des, dataBean.getContent());
+            if(dataBean.getContent().length() > 15){
+                holder.setText(R.id.tv_des, dataBean.getContent().substring(0, 15) + "...");
+            } else {
+                holder.setText(R.id.tv_des, dataBean.getContent());
+            }
         } else {
-            holder.setText(R.id.tv_des, dataBean.getText_content());
+            if(dataBean.getText_content().length() > 15){
+                holder.setText(R.id.tv_des, dataBean.getText_content().substring(0, 15) + "...");
+            } else {
+                holder.setText(R.id.tv_des, dataBean.getText_content());
+            }
         }
         ImageUtils.loadImageDefault(holder.getView(R.id.iv_head), ImageUtils.imagePathConvertV2(dataBean.getImage() == null ? 0 : dataBean
                 .getImage().getId(), 0, 0, 0));
