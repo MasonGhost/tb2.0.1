@@ -1,5 +1,4 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_contaienr"
@@ -8,9 +7,6 @@
     android:background="@color/white"
     android:descendantFocusability="blocksDescendants"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/spacing_normal_large"
-    android:paddingLeft="@dimen/spacing_mid"
-    android:paddingRight="@dimen/spacing_mid"
     android:paddingTop="@dimen/spacing_normal_large"
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
@@ -24,11 +20,12 @@
         android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal_tb"
         android:maxLines="@integer/dynamic_list_content_show_lines"
         android:paddingBottom="@dimen/spacing_large"
+        android:paddingLeft="@dimen/spacing_mid"
+        android:paddingRight="@dimen/spacing_mid"
         android:singleLine="false"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_sub_title"
-        tools:text="了解到富士康垃圾管理的高考了了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送"
-        />
+        tools:text="了解到富士康垃圾管理的高考了了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送" />
 
 
     <TextView
@@ -36,32 +33,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="1"
+        android:paddingLeft="@dimen/spacing_mid"
+        android:paddingRight="@dimen/spacing_mid"
         android:textColor="@color/normal_for_assist_text"
         android:textSize="@dimen/size_content"
-        tools:text="2016-05-06"/>
+        tools:text="2016-05-06" />
 
     <View
         android:id="@+id/v_line"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_line"
-        android:background="@color/general_for_line_light"/>
+        android:layout_marginTop="@dimen/spacing_normal_large"
+        android:background="@color/general_for_line_light" />
 
     <com.zhiyicx.baseproject.widget.TBDynamicListMenuView
         android:id="@+id/dlmv_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/divider_line"/>
+        android:layout_marginTop="@dimen/divider_line" />
 
     <include
         android:id="@+id/fl_tip"
         layout="@layout/view_hint_info2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
-    <include
-        layout="@layout/include_dynamic_list_comment_view"
-        />
+    <include layout="@layout/include_dynamic_list_comment_view" />
 
 </LinearLayout>
