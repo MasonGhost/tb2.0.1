@@ -49,6 +49,8 @@
         android:textColor="@color/normal_for_dynamic_list_content"
         android:textSize="@dimen/size_icon_assist"
         app:layout_constraintHorizontal_bias="0.0"
+        android:maxLines="1"
+        android:ellipsize="end"
         app:layout_constraintLeft_toRightOf="@+id/iv_cover"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title"/>
