@@ -108,6 +108,7 @@ public class ContractListFragment extends TSListFragment<ContractListContract.Pr
     protected void setRightClick() {
         startActivity(new Intent(mActivity, SearchMechanismUserActivity.class));
     }
+
     @Override
     protected int setToolBarBackgroud() {
         return R.color.themeColor;
@@ -161,6 +162,13 @@ public class ContractListFragment extends TSListFragment<ContractListContract.Pr
         adapter.setOnItemClickListener(this);
         return adapter;
 
+    }
+
+    @Override
+    protected void layzLoad() {
+        if (mPresenter != null && getUserVisibleHint()) {
+            getNewDataFromNet();
+        }
     }
 
     @Override
