@@ -54,9 +54,9 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/spacing_mid_small"
                     android:layout_toRightOf="@+id/tv_name"
-                    android:background="@drawable/shape_answer_invite_bg"
                     android:text="@string/qa_question_answer_invite"
-                    android:textColor="@color/dyanmic_top_flag"
+                    android:background="@drawable/shape_answer_adopt_bg"
+                    android:textColor="@color/themeColor"
                     android:textSize="@dimen/size_note_assist"/>
                 <!--采纳的标志-->
                 <TextView
@@ -66,9 +66,9 @@
                     android:layout_alignBaseline="@+id/tv_invite_flag"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/tv_invite_flag"
-                    android:background="@drawable/shape_answer_adopt_bg"
                     android:text="@string/qa_question_answer_adopt"
-                    android:textColor="@color/themeColor"
+                    android:background="@drawable/shape_answer_invite_bg"
+                    android:textColor="@color/dyanmic_top_flag"
                     android:textSize="@dimen/size_note_assist"/>
             </RelativeLayout>
 
