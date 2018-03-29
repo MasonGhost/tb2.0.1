@@ -8,8 +8,6 @@
     tools:context=".modules.q_a.publish.question.PublishQuestionActivity">
 
     <TextView
-        android:maxLines="1"
-        android:ellipsize="end"
         android:id="@+id/tv_content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
