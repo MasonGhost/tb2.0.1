@@ -215,7 +215,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      *
      * @return
      */
-    private void getNewDataFromNet() {
+    protected void getNewDataFromNet() {
         if (isNeedRefreshAnimation() && getUserVisibleHint()) {
             mRefreshlayout.autoRefresh(100);
         } else {
@@ -296,7 +296,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         layzLoad();
     }
 
-    private void layzLoad() {
+    protected void layzLoad() {
         if (mPresenter != null && getUserVisibleHint() && isLayzLoad() && mListDatas.isEmpty()) {
             getNewDataFromNet();
         }
