@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -126,16 +127,10 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
         mOnMoreCommentClickListener = onMoreCommentClickListener;
     }
 
-    private int mTitleMaxShowNum;
-    private int mContentMaxShowNum;
-
     public CirclePostListBaseItem(Context context) {
         mAuthBean = AppApplication.getmCurrentLoginAuth();
         mContext = context;
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        mTitleMaxShowNum = mContext.getResources().getInteger(R.integer
-                .dynamic_list_title_max_show_size);
-        mContentMaxShowNum = DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE;
         mWidthPixels = DeviceUtils.getScreenWidth(context);
         mHightPixels = DeviceUtils.getScreenHeight(context);
         mMargin = 2 * context.getResources().getDimensionPixelSize(R.dimen
@@ -172,6 +167,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(circlePostListBean
                     .getCreated_at()));
             holder.setText(R.id.tv_title, circlePostListBean.getTitle());
+            ((TextView)holder.getView(R.id.tv_title)).setTypeface(Typeface.DEFAULT_BOLD);
             holder.setTextColor(R.id.tv_title, mContext.getResources().getColor(R.color.important_for_content));
 
             String content = circlePostListBean.getSummary();

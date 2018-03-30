@@ -803,6 +803,10 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         adapter.addItemViewDelegate(circlePostListBaseItem);
     }
 
+    /**
+     * 是否显示帖子来原
+     * @return
+     */
     protected boolean showPostFrom() {
         return false;
     }
