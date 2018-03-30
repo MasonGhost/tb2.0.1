@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.recharge;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.thinksnsplus.BuildConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
@@ -45,9 +46,9 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.View> i
         }
         mBillRepository.getPayStr(channel, amount)
                 .doOnSubscribe(() -> {
-            mRootView.configSureBtn(false);
-            mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing));
-        }).subscribe(new BaseSubscribeForV2<PayStrV2Bean>() {
+                    mRootView.configSureBtn(false);
+                    mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing));
+                }).subscribe(new BaseSubscribeForV2<PayStrV2Bean>() {
             @Override
             protected void onSuccess(PayStrV2Bean data) {
                 mRootView.payCredentialsResult(data);
@@ -61,8 +62,7 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.View> i
 
             @Override
             protected void onException(Throwable throwable) {
-                super.onException(throwable);
-                mRootView.showSnackErrorMessage(throwable.getMessage());
+                showErrorTip(throwable);
             }
 
         });
@@ -73,7 +73,7 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.View> i
         Subscription subscribe = mBillRepository.rechargeSuccess(charge).subscribe(new BaseSubscribeForV2<RechargeSuccessBean>() {
             @Override
             protected void onSuccess(RechargeSuccessBean data) {
-              mRootView.showSnackSuccessMessage(mContext.getString(R.string.recharge_success));
+                mRootView.showSnackSuccessMessage(mContext.getString(R.string.recharge_success));
 
             }
 

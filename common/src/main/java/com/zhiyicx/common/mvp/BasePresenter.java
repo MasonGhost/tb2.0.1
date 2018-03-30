@@ -32,7 +32,7 @@ public abstract class BasePresenter<V extends IBaseView> implements IBasePresent
         }
     };
 
-    protected CompositeSubscription mCompositeSubscription;
+    private CompositeSubscription mCompositeSubscription;
     protected V mRootView;
 
     @Inject
@@ -77,11 +77,6 @@ public abstract class BasePresenter<V extends IBaseView> implements IBasePresent
         return false;
     }
 
-
-    protected void handleError(Throwable throwable) {
-
-    }
-
     protected void addSubscrebe(Subscription subscription) {
         if (mCompositeSubscription == null) {
             mCompositeSubscription = new CompositeSubscription();
@@ -89,7 +84,7 @@ public abstract class BasePresenter<V extends IBaseView> implements IBasePresent
         mCompositeSubscription.add(subscription);// 将所有 subscription 放入,集中处理
     }
 
-    protected void unSubscribe() {
+    private void unSubscribe() {
         if (mCompositeSubscription != null) {
             mCompositeSubscription.unsubscribe();// 保证 activity 结束时取消所有正在执行的订阅
         }

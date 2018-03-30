@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.base;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
@@ -137,6 +138,7 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
             return false;
         }
     }
+
     /**
      * 检查异常是否是手动抛出的余额检查异常，如果是不做处理，如果不是需要处理
      *
@@ -151,6 +153,7 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
             return false;
         }
     }
+
     @Override
     public SystemConfigBean getSystemConfigBean() {
         return mSystemRepository.getAppConfigInfoFromLocal();
@@ -178,5 +181,14 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
     @Override
     public int getRatio() {
         return getSystemConfigBean().getWallet_ratio();
+    }
+
+    /**
+     * 根据配置是否显示出服务器错误信息
+     *
+     * @param throwable 错误信息
+     */
+    protected void showErrorTip(Throwable throwable) {
+        mRootView.showSnackErrorMessage(BuildConfig.USE_LOG ? throwable.getMessage() : mContext.getString(R.string.err_net_not_work));
     }
 }
