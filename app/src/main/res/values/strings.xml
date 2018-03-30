@@ -357,7 +357,7 @@
     <string name="appoint_manager">设为圈管理员</string>
     <string name="appoint_blacklist">加入黑名单</string>
     <string name="appoint_circle">设为圈管理员</string>
-    <string name="circle_report_more">[查看更多]</string>
+    <string name="circle_report_more">[查看全部]</string>
     <string name="circle_report_reason">举报原因</string>
     <string name="circle_report_post">%1$s 举报 %2$s 的帖子：</string>
     <string name="circle_report_comment">%1$s 举报 %2$s 的评论：</string>
