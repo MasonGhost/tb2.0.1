@@ -48,7 +48,7 @@ constructor(rootView: IntegrationWithdrawalsContract.View) : AppBasePresenter<In
 
                     override fun onException(throwable: Throwable) {
                         super.onException(throwable)
-                        mRootView.showSnackSuccessMessage(mContext.resources.getString(R.string.err_net_not_work))
+                        showErrorTip(throwable)
                     }
                 })
         addSubscrebe(subscribe)
