@@ -85,8 +85,10 @@ public class TouchableSpan extends TouchableBaseSpan {
         if (link.getClickListener() != null) {
             List<String> splitTextList = new ArrayList<>();
             if (link.getLinkMetadata() != null) {
-                String targetStr = link.getLinkMetadata().getString(LinkMetadata.METADATA_KEY_COTENT);
-                String reg = "<{0,1}((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[#a-zA-Z0-9\\&%_\\./-~-]*)?>{0,1}";
+                NetUrlHandleBean netUrlHandleBean = (NetUrlHandleBean) link.getLinkMetadata().getSeriObj(LinkMetadata.METADATA_KEY_COTENT);
+                String targetStr = netUrlHandleBean.getText();
+                String reg = "<{0,1}((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))" +
+                        "(:[0-9]{1,4})*(/[#a-zA-Z0-9\\&%_\\./-~-]*)?>{0,1}";
                 Pattern pattern = Pattern.compile(reg);
                 Matcher matcher1 = pattern.matcher(targetStr);
                 while (matcher1.find()) {
@@ -96,8 +98,13 @@ public class TouchableSpan extends TouchableBaseSpan {
                     splitTextList.add(result);
                 }
             }
-            String backText = splitTextList.isEmpty() ? link.getText() : splitTextList.get(position);
-            link.getClickListener().onClick(backText, link.getLinkMetadata());
+            try {
+                String backText = splitTextList.isEmpty() ? link.getText() : splitTextList.get(position);
+                link.getClickListener().onClick(backText, link.getLinkMetadata());
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
+
         }
         super.onClick(widget);
     }
@@ -113,8 +120,10 @@ public class TouchableSpan extends TouchableBaseSpan {
         if (link.getLongClickListener() != null) {
             List<String> splitTextList = new ArrayList<>();
             if (link.getLinkMetadata() != null) {
-                String targetStr = link.getLinkMetadata().getString(LinkMetadata.METADATA_KEY_COTENT);
-                String reg = "<{0,1}((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[#a-zA-Z0-9\\&%_\\./-~-]*)?>{0,1}";
+                NetUrlHandleBean netUrlHandleBean = (NetUrlHandleBean) link.getLinkMetadata().getSeriObj(LinkMetadata.METADATA_KEY_COTENT);
+                String targetStr = netUrlHandleBean.getText();
+                String reg = "<{0,1}((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))" +
+                        "(:[0-9]{1,4})*(/[#a-zA-Z0-9\\&%_\\./-~-]*)?>{0,1}";
                 Pattern pattern = Pattern.compile(reg);
                 Matcher matcher1 = pattern.matcher(targetStr);
                 while (matcher1.find()) {
@@ -124,9 +133,13 @@ public class TouchableSpan extends TouchableBaseSpan {
                     splitTextList.add(result);
                 }
             }
-            String backText = splitTextList.isEmpty() ? link.getText() : splitTextList.get(position);
-            link.getLongClickListener().onLongClick(backText, link.getLinkMetadata());
-            Log.d("onLongClick:", position + "");
+            try {
+                String backText = splitTextList.isEmpty() ? link.getText() : splitTextList.get(position);
+                link.getLongClickListener().onLongClick(backText, link.getLinkMetadata());
+                Log.d("onLongClick:", position + "");
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
         }
         super.onLongClick(widget);
     }

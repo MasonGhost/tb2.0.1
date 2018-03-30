@@ -20,9 +20,11 @@ import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
+import com.klinker.android.link_builder.NetUrlHandleBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailContract;
@@ -252,12 +254,12 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
                     .setTextColor(ContextCompat.getColor(mContext, R.color
                             .themeColor))
                     .setLinkMetadata(LinkMetadata.builder()
-                            .putString(LinkMetadata.METADATA_KEY_COTENT, answerInfoBean.getBody())
+                            .putSerializableObj(LinkMetadata.METADATA_KEY_COTENT, new NetUrlHandleBean(answerInfoBean.getBody()))
                             .putSerializableObj(LinkMetadata.METADATA_KEY_TYPE, LinkMetadata.SpanType.NET_SITE)
                             .build())
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color
                             .general_for_hint))
-                    .setHighlightAlpha(.8f)
+                    .setHighlightAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .setOnClickListener((clickedText, linkMetadata) -> {
                         LogUtils.d(clickedText);
                         Intent intent = new Intent();

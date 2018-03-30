@@ -146,7 +146,8 @@ public class JavaTest {
     public void testCatchGroup() {
         String source = "收拾收拾<hr><div><div><br></div><div class=\"block\" contenteditable=\"false\">\n" +
                 "\t\t\t\t<div class=\"img-block\">\n" +
-                "\t\t\t\t<img class=\"images\" data-id=\"5389\" style=\"width: 100px; height: 100px;\" src=\"/storage/emulated/0/HappyGame/ImagePic/1791011779.jpg\">\n" +
+                "\t\t\t\t<img class=\"images\" data-id=\"5389\" style=\"width: 100px; height: 100px;\" " +
+                "src=\"/storage/emulated/0/HappyGame/ImagePic/1791011779.jpg\">\n" +
                 "\t\t\t\t\n" +
                 "\t\t\t\t<div class=\"delete\">\n" +
                 "\t\t\t\t\t<img class=\"error\" src=\"./reload.png\">\n" +
@@ -156,7 +157,8 @@ public class JavaTest {
                 "\t\t\t\t<input class=\"dec\" type=\"text\" placeholder=\"请输入图片名字\">\n" +
                 "\t\t\t</div><div>听说是</div><hr><div><div><br></div><div class=\"block\" contenteditable=\"false\">\n" +
                 "\t\t\t\t<div class=\"img-block\">\n" +
-                "\t\t\t\t<img class=\"images\" data-id=\"6322\" style=\"width: 100px; height: 100px;\" src=\"/storage/emulated/0/HappyGame/ImagePic/1398267336.jpg\">\n" +
+                "\t\t\t\t<img class=\"images\" data-id=\"6322\" style=\"width: 100px; height: 100px;\" " +
+                "src=\"/storage/emulated/0/HappyGame/ImagePic/1398267336.jpg\">\n" +
                 "\t\t\t\t\n" +
                 "\t\t\t\t<div class=\"delete\">\n" +
                 "\t\t\t\t\t<img class=\"error\" src=\"./reload.png\">\n" +
@@ -166,7 +168,8 @@ public class JavaTest {
                 "\t\t\t\t<input class=\"dec\" type=\"text\" placeholder=\"请输入图片名字\">\n" +
                 "\t\t\t</div><div><br></div></div></div>";
 
-        Pattern pattern = Pattern.compile("<div [^>]*class=\"block\"[^>]*>(<div[^>]*>(<div[^>]*>((<div[^>]*>[\\s\\S]*?</div>|[\\s\\S])*?</div>)|[\\s\\S])*?</div>|[\\s\\S])*?</div>");
+        Pattern pattern = Pattern.compile("<div [^>]*class=\"block\"[^>]*>(<div[^>]*>(<div[^>]*>((<div[^>]*>[\\s\\S]*?</div>|[\\s\\S])*?</div>)" +
+                "|[\\s\\S])*?</div>|[\\s\\S])*?</div>");
 
         Matcher matcher = pattern.matcher(source);
         while (matcher.find()) {
@@ -1857,5 +1860,22 @@ public class JavaTest {
             System.out.println(" 2  = ");
 
         }
+    }
+
+    @Test
+    public void testSplit() {
+        String str1 = "我的中国梦，我的天空，我的人生";
+        String str2 = "中国梦，我的天空，我的人生";
+        String str3 = "中国梦，我的天空，我的";
+        String str4 = "我的中国梦，我的天空，我的人生";
+
+        System.out.println("str1 = " + str1.split("我的").length);
+        System.out.println("str2 = " + str2.split("我的").length);
+        System.out.println("str3 = " + str3.split("我的").length);
+        System.out.println("str4 = " + str4.split("我的").length);
+
+
+
+
     }
 }

@@ -15,6 +15,8 @@ public static final int *;
 
 -keep interface  com.zhiyicx.common.** { *; }
 
+-keep class com.klinker.android.link_builder.**{*;} # 网页链接替换
+
 -keep class com.zhiyicx.common.base.BaseJson { *; } #实体类不参与混淆
 -keep class com.zhiyicx.common.base.BaseJsonV2 { *; } #实体类不参与混淆
 -keep class com.zhiyicx.common.net.** { *; } #实体类不参与混淆
