@@ -14,8 +14,6 @@ import com.zhiyicx.thinksnsplus.modules.q_a.mine.container.MyQuestionFragment;
  */
 public class MyCircleContainerActivity extends TSActivity{
 
-    public static final String BUNDLE_MY_QUESTION_TYPE = "bundle_my_question_type";
-
     @Override
     protected Fragment getFragment() {
         return MyCircleContainerFragment.instance();

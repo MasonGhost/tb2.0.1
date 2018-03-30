@@ -32,6 +32,10 @@ public interface RewardListContract {
          */
         long getSourceId();
 
+        /**
+         * 获取打赏缓存数据
+         * @return
+         */
         List<RewardsListBean> getCacheData();
     }
 

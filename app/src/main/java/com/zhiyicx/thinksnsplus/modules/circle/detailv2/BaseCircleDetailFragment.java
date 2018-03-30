@@ -116,6 +116,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     private long mReplyToUserId;// 被评论者的 id
 
     private BaseCircleRepository.CircleMinePostType mCircleMinePostType = BaseCircleRepository.CircleMinePostType.PUBLISH;
+    protected CircleZipBean mCircleZipBean;
 
 
     public static BaseCircleDetailFragment newInstance(BaseCircleRepository.CircleMinePostType circleMinePostType) {
@@ -170,7 +171,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
 
     @Override
     public CircleZipBean getCircleZipBean() {
-        return null;
+        return mCircleZipBean;
     }
 
     @Override
@@ -188,6 +189,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
 
     @Override
     public void allDataReady(CircleZipBean circleZipBean) {
+        mCircleZipBean = circleZipBean;
         closeLoadingView();
     }
 
@@ -267,7 +269,8 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
 
     @Override
     public void onCommentStateClick(CirclePostCommentBean dynamicCommentBean, int position) {
-        initReSendCommentPopupWindow(dynamicCommentBean, mListDatas.get(mPresenter.getCurrenPosiotnInDataList((long)dynamicCommentBean.getPost_id())).getId());
+        initReSendCommentPopupWindow(dynamicCommentBean, mListDatas.get(mPresenter.getCurrenPosiotnInDataList((long) dynamicCommentBean.getPost_id
+                ())).getId());
         mReSendCommentPopWindow.show();
     }
 

@@ -617,7 +617,9 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                             mRootView.getListDatas().add(0, currentPost);
                             mRootView.scrollToTop();
                         }
-                        mRootView.getCircleZipBean().setPinnedCount(mRootView.getCircleZipBean().getPinnedCount() + 1);
+                        if(mRootView.getCircleZipBean()!=null) {
+                            mRootView.getCircleZipBean().setPinnedCount(mRootView.getCircleZipBean().getPinnedCount() + 1);
+                        }
                         mRootView.refreshData();
                     }
 

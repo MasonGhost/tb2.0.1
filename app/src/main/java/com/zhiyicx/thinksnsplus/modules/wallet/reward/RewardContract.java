@@ -16,9 +16,15 @@ public interface RewardContract {
 
     interface View extends IBaseView<Presenter> {
 
-
+        /**
+         * 打赏成功回调
+         */
         void rewardSuccess();
 
+        /**
+         *
+         * @param b true 打赏按钮可用，false 反之
+         */
         void setSureBtEnable(boolean b);
     }
 
