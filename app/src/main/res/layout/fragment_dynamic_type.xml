@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <ImageView
-        android:src="@mipmap/pic_adver_logo"
+        android:src="@mipmap/logo_send_thinksns"
         android:scaleType="centerInside"
         android:layout_width="match_parent"
         android:layout_height="0dp"

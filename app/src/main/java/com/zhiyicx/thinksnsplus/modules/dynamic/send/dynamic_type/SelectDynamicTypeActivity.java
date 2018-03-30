@@ -5,6 +5,12 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 import static com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeFragment.SEND_OPTION;
 
+/**
+ * @Describe 发布按钮选择页
+ * @Author Jungle68
+ * @Date 2017/3/30
+ * @Contact master.jungle68@gmail.com
+ */
 public class SelectDynamicTypeActivity extends TSActivity<SelectDynamicTypePresenter, SelectDynamicTypeFragment> {
 
     @Override
