@@ -78,6 +78,11 @@ public class SearchOnlyCirclePostFragment extends SearchCirclePostFragment {
         return R.layout.fragment_circle_search_only_post_list;
     }
 
+    @Override
+    protected boolean showPostFrom() {
+        return false;
+    }
+
     @OnClick({R.id.fragment_search_cancle, R.id.bt_do})
     public void onViewClicked(View view) {
         switch (view.getId()) {

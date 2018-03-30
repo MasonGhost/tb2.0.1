@@ -106,6 +106,11 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
     }
 
     @Override
+    protected boolean showPostFrom() {
+        return true;
+    }
+
+    @Override
     protected void initDagger() {
         DaggerCircleDetailComponent
                 .builder()
