@@ -402,10 +402,10 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     }
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_2:// 分享
-//                    Bitmap bitmap = FileUtils.readImgFromFile(getActivity(), "info_share");
-//                    mPresenter.shareInfo(bitmap);
+                    Bitmap bitmap = FileUtils.readImgFromFile(getActivity(), "info_share");
+                   mPresenter.shareInfo(bitmap);
 
-                    Intent intent = new Intent(mActivity, DynamicShareActivity.class);
+                    /*Intent intent = new Intent(mActivity, DynamicShareActivity.class);
                     Bundle bundle = new Bundle();
                     String content = TextUtils.isEmpty(mInfoMation.getText_content()) ? mInfoMation.getContent() : mInfoMation.getText_content();
                     if (!TextUtils.isEmpty(content)) {
@@ -419,7 +419,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     );
                     bundle.putSerializable(BUNDLE_SHARE_DATA, dynamicShareBean);
                     intent.putExtras(bundle);
-                    startActivity(intent);
+                    startActivity(intent);*/
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_3:// 更多
                     initDealInfoMationPopupWindow(mInfoMation, mInfoMation.getHas_collect());
