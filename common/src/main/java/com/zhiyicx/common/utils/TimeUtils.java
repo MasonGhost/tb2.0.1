@@ -401,7 +401,12 @@ public class TimeUtils {
     public static String getStandardTimeWithMothAndDay(long timestamp) {
         return getTime(timestamp, "MM-dd");
     }
-
+    /**
+     * 通过时间戳获取 MM.dd
+     */
+    public static String getStandardTimeWithMothAndDayWithDot(long timestamp) {
+        return getTime(timestamp, "MM.dd");
+    }
     /**
      * 通过时间戳获取 dd,MM月
      */
@@ -487,9 +492,9 @@ public class TimeUtils {
             week_index = 0;
         }
         if (intervalDays <= 1) {
-            return weeks[7 + intervalDays] + "\n" + getStandardTimeWithMothAndDay(time);
+            return weeks[7 + intervalDays] + "\n" + getStandardTimeWithMothAndDayWithDot(time);
         }
-        return weeks[week_index] + "\n" + getStandardTimeWithMothAndDay(time);
+        return weeks[week_index] + "\n" + getStandardTimeWithMothAndDayWithDot(time);
     }
 
     public static String string2_Dya_Week_Time(String timeStr) {
