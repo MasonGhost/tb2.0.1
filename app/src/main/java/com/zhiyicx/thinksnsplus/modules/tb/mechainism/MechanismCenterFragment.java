@@ -118,6 +118,8 @@ public class MechanismCenterFragment extends TSFragment {
     TextView mBtFollow;
     @BindView(R.id.ck_pinned)
     CheckBox mCkPinned;
+    @BindView(R.id.ck_no_push)
+    CheckBox mCkNoPush;
 
 
     private UserInfoBean mUserInfoBean;
@@ -259,7 +261,7 @@ public class MechanismCenterFragment extends TSFragment {
         } else {
             mLineBook.setVisibility(View.VISIBLE);
             mLlBookContainer.setVisibility(View.VISIBLE);
-            mTvBook.setText(data.getWhite_paper_name());
+            //mTvBook.setText(data.getWhite_paper_name());
             mTvBook.setOnClickListener(v -> {
                 CustomWEBActivity.startToWEBActivity(getContext(), String.format(Locale.getDefault(), ApiConfig.APP_PATH_STORAGE_GET_FILE,
                         mMerchainInfo.getWhite_paper() + ""));
@@ -313,6 +315,24 @@ public class MechanismCenterFragment extends TSFragment {
                 } else {
                     mTbMessageBean.setPinnedTime(0);
                     mTbMessageBean.setMIsPinned(false);
+                    mMessageListBeanGreenDao.insertOrReplace(mTbMessageBean);
+                }
+            }
+        });
+        mCkNoPush.setChecked(mTbMessageBean != null && mTbMessageBean.getMIsNoPush());
+        mCkNoPush.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (mTbMessageBean == null) {
+                    mTbMessageBean = new TbMessageBean();
+                    mTbMessageBean.setUser_id(mUserInfoBean.getUser_id());
+                }
+                if (isChecked) {
+                    mTbMessageBean.setMIsNoPush(true);
+                    mMessageListBeanGreenDao.insertOrReplace(mTbMessageBean);
+
+                } else {
+                    mTbMessageBean.setMIsNoPush(false);
                     mMessageListBeanGreenDao.insertOrReplace(mTbMessageBean);
                 }
             }

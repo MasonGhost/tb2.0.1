@@ -89,6 +89,7 @@ public class TBDynamicFragment extends DynamicFragment {
             // 关注
             mPresenter.followUser(data.getUserInfoBean());
             data.getUserInfoBean().setFollower(true);
+            refreshData();
         } else {
             // 更多
             initOtherDynamicPopupWindow(data, followView);
@@ -211,7 +212,7 @@ public class TBDynamicFragment extends DynamicFragment {
                             null);
                     ((TextView) followView).setText(getString(R.string.add_follow));
                     followView.setBackgroundResource(R.drawable.shape_radus_box_themecolor);
-//                    refreshData();
+                    refreshData();
                     mOtherDynamicPopWindow.hide();
                 })
                 .item2ClickListener(() -> {                    // 举报帖子

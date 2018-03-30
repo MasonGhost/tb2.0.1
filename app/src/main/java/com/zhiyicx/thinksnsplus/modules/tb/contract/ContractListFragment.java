@@ -73,6 +73,11 @@ public class ContractListFragment extends TSListFragment<ContractListContract.Pr
     }
 
     @Override
+    protected boolean isNeedRefreshAnimation() {
+        return false;
+    }
+
+    @Override
     protected int setLeftImg() {
         return R.mipmap.ic_return_a_click;
     }

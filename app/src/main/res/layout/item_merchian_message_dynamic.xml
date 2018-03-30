@@ -39,6 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_huge_60"
             android:background="@drawable/bg_message"
             android:orientation="vertical">
 
@@ -56,7 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/normal_for_assist_text"
-                android:textSize="@dimen/size_content_assist"
+                android:textSize="@dimen/size_sub_title"
                 tools:text="在建瓯；建档立卡解放东路撒娇歌积分流水金盾股份了肯定是" />
 
         </LinearLayout>

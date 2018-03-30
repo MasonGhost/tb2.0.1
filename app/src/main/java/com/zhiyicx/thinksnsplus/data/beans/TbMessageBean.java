@@ -22,6 +22,7 @@ public class TbMessageBean extends BaseListBean {
     private Long user_id;
     private boolean mIsPinned;
     private boolean mIsRead;
+    private boolean mIsNoPush;
     @Convert(converter = InfoConvert.class, columnType = String.class)
     private InfoListDataBean news;
     @Convert(converter = DynamicConvert.class, columnType = String.class)
@@ -35,14 +36,15 @@ public class TbMessageBean extends BaseListBean {
     private String channel;
     public final static String FEED = "publish:feed";
     public final static String NEWS = "publish:news";
-    @Generated(hash = 1937955951)
-    public TbMessageBean(Long _id, Long user_id, boolean mIsPinned, boolean mIsRead,
-            InfoListDataBean news, DynamicDetailBeanV2 feed, long pinnedTime,
-            long mLoginUserId, String channel) {
+    @Generated(hash = 1300536416)
+    public TbMessageBean(Long _id, Long user_id, boolean mIsPinned, boolean mIsRead, boolean mIsNoPush,
+            InfoListDataBean news, DynamicDetailBeanV2 feed, long pinnedTime, long mLoginUserId,
+            String channel) {
         this._id = _id;
         this.user_id = user_id;
         this.mIsPinned = mIsPinned;
         this.mIsRead = mIsRead;
+        this.mIsNoPush = mIsNoPush;
         this.news = news;
         this.feed = feed;
         this.pinnedTime = pinnedTime;
@@ -75,6 +77,12 @@ public class TbMessageBean extends BaseListBean {
     }
     public void setMIsRead(boolean mIsRead) {
         this.mIsRead = mIsRead;
+    }
+    public boolean getMIsNoPush() {
+        return mIsNoPush;
+    }
+    public void setMIsNoPush(boolean mIsNoPush) {
+        this.mIsNoPush = mIsNoPush;
     }
     public InfoListDataBean getNews() {
         return this.news;

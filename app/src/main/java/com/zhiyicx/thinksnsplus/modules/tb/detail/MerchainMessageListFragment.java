@@ -110,6 +110,11 @@ public class MerchainMessageListFragment extends TSListFragment<MerchainMessageL
         PersonalCenterFragment.startToPersonalCenter(getContext(), mUserInfoBean);
     }
 
+    @Override
+    protected boolean isNeedRefreshAnimation() {
+        return false;
+    }
+
     /**
      * 处理服务器或者缓存中拿到的数据
      *
