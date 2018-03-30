@@ -137,6 +137,16 @@ public class TopicDetailFragment extends TSFragment<TopicDetailContract.Presente
     protected int setToolBarBackgroud() {
         return R.color.white;
     }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+    @Override
+    protected boolean setUseStatusView() {
+        return true;
+    }
+
     @Override
     protected void setRightClick() {
         // 点击弹起分享框

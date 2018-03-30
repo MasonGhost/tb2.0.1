@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
@@ -36,7 +35,7 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetai
  */
 
 public class TopicDetailListFragment extends TSListFragment<TopicDetailListContract.Presenter, QAListInfoBean>
-        implements TopicDetailListContract.View,SpanTextClickable.SpanTextClickListener  {
+        implements TopicDetailListContract.View, SpanTextClickable.SpanTextClickListener {
 
     @Inject
     TopicDetailListPresenter mPresenter;
@@ -60,7 +59,8 @@ public class TopicDetailListFragment extends TSListFragment<TopicDetailListContr
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        mRvList.addItemDecoration(new LinearDecoration(0, getResources().getDimensionPixelOffset(com.zhiyicx.thinksnsplus.R.dimen.spacing_small), 0, 0));
+        mRvList.addItemDecoration(new LinearDecoration(0, getResources().getDimensionPixelOffset(com.zhiyicx.thinksnsplus.R.dimen.spacing_small),
+                0, 0));
 
     }
 
@@ -173,14 +173,15 @@ public class TopicDetailListFragment extends TSListFragment<TopicDetailListContr
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(R.string.qa_pay_for_watch_answer_hint) + getString(R
                                 .string.buy_pay_member),
-                        PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfigBean().getOnlookQuestion(),mPresenter.getRatio())
-                        ,mPresenter.getGoldName()))
+                        mPresenter.getSystemConfigBean().getOnlookQuestion()
+                        , mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.qa_pay_for_watch))
                 .buildTitleStr(getString(R.string.qa_pay_for_watch))
                 .buildItem1Str(getString(R.string.buy_pay_in_payment))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_integration), PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfigBean()
-                        .getOnlookQuestion(),mPresenter.getRatio())))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_integration), mPresenter
+                        .getSystemConfigBean()
+                        .getOnlookQuestion()))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payForOnlook(answer_id, pisotion);
                     mPayWatchPopWindow.hide();
