@@ -5,6 +5,8 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.config.PayConfig;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
@@ -121,7 +123,7 @@ public class BillDetailBean implements Parcelable {
         billDetailBean.setAccount(withdrawalsListBean.getAccount());
         billDetailBean.setAction(2);
         billDetailBean.setAmount((int) PayConfig.realCurrency2GameCurrency(withdrawalsListBean.getValue(), ratio));
-        billDetailBean.setBody("提现");
+        billDetailBean.setBody(AppApplication.getContext().getResources().getString(R.string.withdraw));
         billDetailBean.setChannel(withdrawalsListBean.getType());
         billDetailBean.setCreated_at(withdrawalsListBean.getCreated_at());
         billDetailBean.setStatus(withdrawalsListBean.getStatus());

@@ -121,10 +121,6 @@ public class BillDetailFragment extends TSFragment {
             return;
         }
         dealUserInfo(mBillDetailBean.getUserInfoBean());
-
-        RxView.clicks(mBillUserContainer).throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS).subscribe(aVoid -> {
-            PersonalCenterFragment.startToPersonalCenter(getContext(), mBillDetailBean.getUserInfoBean());
-        });
     }
 
 
