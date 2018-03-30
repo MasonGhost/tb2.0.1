@@ -83,13 +83,13 @@ public class LinkMetadata {
 
         METADATA_KEYS_TYPE.put(METADATA_KEY_SOURCE_ID, METADATA_TYPE_INTEGER);
 
-        METADATA_KEYS_TYPE.put(METADATA_KEY_COTENT, METADATA_TYPE_STRING);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_COTENT, METADATA_TYPE_SERIALIZABLEOBJECT);
 
         METADATA_KEYS_TYPE.put(METADATA_KEY_USER_ID, METADATA_TYPE_LONG);
 
-        METADATA_KEYS_TYPE.put(METADATA_KEY_USER, METADATA_TYPE_SERIALIZABLEOBJECT);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_USER, METADATA_TYPE_PARCELABLEOBJECT);
 
-        METADATA_KEYS_TYPE.put(METADATA_KEY_TYPE, METADATA_TYPE_PARCELABLEOBJECT);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_TYPE, METADATA_TYPE_SERIALIZABLEOBJECT);
     }
 
     /**
@@ -120,7 +120,7 @@ public class LinkMetadata {
     }
 
     @RestrictTo(GROUP_ID)
-    @StringDef({METADATA_KEY_TYPE})
+    @StringDef({METADATA_KEY_TYPE, METADATA_KEY_COTENT})
     @Retention(RetentionPolicy.SOURCE)
     public @interface SZObjectKey {
     }
@@ -181,7 +181,7 @@ public class LinkMetadata {
 
         public Builder putParcelableObj(@PCObjectKey String key, Parcelable value) {
             if (METADATA_KEYS_TYPE.containsKey(key)) {
-                if (METADATA_KEYS_TYPE.get(key) != METADATA_TYPE_SERIALIZABLEOBJECT) {
+                if (METADATA_KEYS_TYPE.get(key) != METADATA_TYPE_PARCELABLEOBJECT) {
                     throw new IllegalArgumentException("The " + key
                             + " key cannot be used to put a Parcelable");
                 }
@@ -192,9 +192,9 @@ public class LinkMetadata {
 
         public Builder putSerializableObj(@SZObjectKey String key, Serializable value) {
             if (METADATA_KEYS_TYPE.containsKey(key)) {
-                if (METADATA_KEYS_TYPE.get(key) != METADATA_TYPE_PARCELABLEOBJECT) {
+                if (METADATA_KEYS_TYPE.get(key) != METADATA_TYPE_SERIALIZABLEOBJECT) {
                     throw new IllegalArgumentException("The " + key
-                            + " key cannot be used to put a Parcelable");
+                            + " key cannot be used to put a Serializable");
                 }
             }
             mBundle.putSerializable(key, value);
@@ -212,6 +212,10 @@ public class LinkMetadata {
 
     public Object getPCObj(@PCObjectKey String key) {
         return mBundle.getParcelable(key);
+    }
+
+    public Object getSeriObj(@SZObjectKey String key) {
+        return mBundle.getSerializable(key);
     }
 
     public SpanType getSZObj(@SZObjectKey String key) {

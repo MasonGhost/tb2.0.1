@@ -31,6 +31,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.klinker.android.link_builder.NetUrlHandleBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView;
@@ -44,7 +45,6 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE;
 
 /**
  * @author Jliuer
@@ -448,7 +448,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
                     .setTextColor(ContextCompat.getColor(mContext, R.color
                             .themeColor))
                     .setLinkMetadata(LinkMetadata.builder()
-                            .putString(LinkMetadata.METADATA_KEY_COTENT, circlePostListBean.getSummary())
+                            .putSerializableObj(LinkMetadata.METADATA_KEY_COTENT, new NetUrlHandleBean(circlePostListBean.getSummary()))
                             .putSerializableObj(LinkMetadata.METADATA_KEY_TYPE, LinkMetadata.SpanType.NET_SITE)
                             .build())
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color

@@ -30,6 +30,7 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.klinker.android.link_builder.NetUrlHandleBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -238,7 +239,7 @@ public class QAListBaseInfoAdapter<T extends BaseListBean> extends CommonAdapter
                     .setTextColor(ContextCompat.getColor(mContext, R.color
                             .themeColor))
                     .setLinkMetadata(LinkMetadata.builder()
-                            .putString(LinkMetadata.METADATA_KEY_COTENT, realContentText)
+                            .putSerializableObj(LinkMetadata.METADATA_KEY_COTENT, new NetUrlHandleBean(realContentText))
                             .putSerializableObj(LinkMetadata.METADATA_KEY_TYPE, LinkMetadata.SpanType.NET_SITE)
                             .build())
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color

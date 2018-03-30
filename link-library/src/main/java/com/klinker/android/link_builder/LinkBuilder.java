@@ -190,7 +190,12 @@ public class LinkBuilder {
         // get the current text
         Pattern pattern = Pattern.compile(Pattern.quote(link.getText()));
         Matcher matcher = pattern.matcher(text);
+        NetUrlHandleBean netUrlHandleBean = null;
+        if (link.getLinkMetadata() != null) {
+            netUrlHandleBean = (NetUrlHandleBean) link.getLinkMetadata().getSeriObj(LinkMetadata.METADATA_KEY_COTENT);
+        }
         int link_position = 0;
+        int link_real_position = 0;
         // find one or more links inside the text
         while (matcher.find()) {
 
@@ -202,9 +207,11 @@ public class LinkBuilder {
                 int end = start + link.getText().length();
 
                 // add link to the spannable text
-                TouchableSpan span = applyLink(link, new Range(start, end), s);
-                if (span != null && link.getLinkMetadata() != null && link.getLinkMetadata().getSZObj(LinkMetadata.METADATA_KEY_TYPE) == LinkMetadata.SpanType.NET_SITE) {
-                    span.position = link_position;
+                if (link.getLinkMetadata() != null && link.getLinkMetadata().getSZObj(LinkMetadata.METADATA_KEY_TYPE) ==
+                        LinkMetadata.SpanType.NET_SITE && netUrlHandleBean != null && netUrlHandleBean.getPositions().contains(link_position)) {
+                    TouchableSpan span = applyLink(link, new Range(start, end), s);
+                    span.position = link_real_position;
+                    link_real_position++;
                 }
                 link_position++;
             }
@@ -217,6 +224,7 @@ public class LinkBuilder {
 
         }
     }
+
 
     /**
      * Add the movement method to handle the clicks.
