@@ -28,7 +28,7 @@ interface IntegrationRechargeContract {
         /**
          * 更新积分配置信息
          */
-        fun updateIntegrationConfig(isGetSuccess: Boolean, data: IntegrationConfigBean)
+        fun updateIntegrationConfig(isGetSuccess: Boolean, data: IntegrationConfigBean?)
 
         /**
          * handle request loading

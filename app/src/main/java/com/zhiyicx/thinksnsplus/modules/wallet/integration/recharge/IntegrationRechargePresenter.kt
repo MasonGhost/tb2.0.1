@@ -186,13 +186,13 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
 
                     override fun onFailure(message: String, code: Int) {
                         super.onFailure(message, code)
-                        mRootView.updateIntegrationConfig(false, null!!)
+                        mRootView.updateIntegrationConfig(false, null)
 
                     }
 
                     override fun onException(throwable: Throwable) {
                         super.onException(throwable)
-                        mRootView.updateIntegrationConfig(false, null!!)
+                        mRootView.updateIntegrationConfig(false, null)
 
                     }
                 })

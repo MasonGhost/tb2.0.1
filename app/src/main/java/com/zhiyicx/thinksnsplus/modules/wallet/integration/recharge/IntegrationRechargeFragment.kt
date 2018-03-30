@@ -143,7 +143,7 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
      * @param isGetSuccess
      * @param data
      */
-    override fun updateIntegrationConfig(isGetSuccess: Boolean, data: IntegrationConfigBean) {
+    override fun updateIntegrationConfig(isGetSuccess: Boolean, data: IntegrationConfigBean?) {
         if (isGetSuccess) {
             mIntegrationConfigBean = data
             updateData()
