@@ -17,6 +17,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserCertificationInfoGreenDaoI
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.container.InfoContainerFragment;
 
 import org.simple.eventbus.EventBus;
 
@@ -60,6 +61,11 @@ public class AllCircleContainerPresenter extends AppBasePresenter< AllCircleCont
 
                     @Override
                     protected void onSuccess(List<CircleTypeBean> data) {
+                        // 创建默认推荐数据，服务器不反会，测试又要要，让我们自己加
+                        CircleTypeBean circleTypeBean=new CircleTypeBean();
+                        circleTypeBean.setId(Long.valueOf(InfoContainerFragment.RECOMMEND_INFO));
+                        circleTypeBean.setName(mContext.getString(R.string.info_recommend));
+                        data.add(circleTypeBean);
                         mRootView.setCategroiesList(data);
                         mCircleTypeBeanGreenDao.saveMultiData(data);
                     }
