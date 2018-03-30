@@ -4,7 +4,7 @@ import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 /**
- * @Describe 打赏页
+ * @Describe 聚合打赏页
  * @Author Jungle68
  * @Date 2017/5/22
  * @Contact master.jungle68@gmail.com
