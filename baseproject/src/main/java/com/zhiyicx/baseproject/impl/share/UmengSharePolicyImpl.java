@@ -1,6 +1,7 @@
 package com.zhiyicx.baseproject.impl.share;
 
 import android.app.Activity;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
@@ -25,6 +26,7 @@ import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -46,7 +48,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListener {
-    private static final int SHARE_COLUMS = 5;// item 列数
+    private static final int SHARE_COLUMS = 3;// item 列数
 
     /**
      * 友盟初始化
@@ -165,6 +167,16 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
     public void shareWechat(Activity activity, OnShareCallbackListener l) {
         if (checkShareContent()) return;
         shareActionConfig(activity, l, SHARE_MEDIA.WEIXIN);
+    }
+
+    /**
+     * 微信分享
+     */
+    @Override
+    public void copyLink(Activity activity) {
+        if (checkShareContent()) return;
+        ((ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE)).setText(getShareContent().getUrl());
+        ToastUtils.showToast(mContext.getString(R.string.link_share));
     }
 
 
@@ -335,21 +347,23 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
 
     private void initSharePopupWindow() {
         List<ShareBean> mDatas = new ArrayList<>();
-        ShareBean qq = new ShareBean(R.mipmap.detail_share_qq, mContext.getString(R.string.qq_share));
-        ShareBean qZone = new ShareBean(R.mipmap.detail_share_zone, mContext.getString(R.string.qZone_share));
+        //ShareBean qq = new ShareBean(R.mipmap.detail_share_qq, mContext.getString(R.string.qq_share));
+        //ShareBean qZone = new ShareBean(R.mipmap.detail_share_zone, mContext.getString(R.string.qZone_share));
         ShareBean weChat = new ShareBean(R.mipmap.detail_share_wechat, mContext.getString(R.string.weChat_share));
         ShareBean weCircle = new ShareBean(R.mipmap.detail_share_friends, mContext.getString(R.string.weCircle_share));
-        ShareBean weibo = new ShareBean(R.mipmap.detail_share_weibo, mContext.getString(R.string.weibo_share));
-        mDatas.add(qq);
-        mDatas.add(qZone);
+        //ShareBean weibo = new ShareBean(R.mipmap.detail_share_weibo, mContext.getString(R.string.weibo_share));
+        ShareBean copyLink = new ShareBean(R.mipmap.detail_share_copylink, mContext.getString(R.string.copy_link));
+        //mDatas.add(qq);
+        //mDatas.add(qZone);
         mDatas.add(weChat);
         mDatas.add(weCircle);
-        mDatas.add(weibo);
+        //mDatas.add(weibo);
+        mDatas.add(copyLink);
 
         mRecyclerViewPopupWindow = RecyclerViewPopupWindow.Builder()
                 .isOutsideTouch(true)
                 .asGrid(SHARE_COLUMS)// 列数
-                .itemSpacing(mContext.getResources().getDimensionPixelSize(R.dimen.spacing_mid)) // 间距
+                .itemSpacing(mContext.getResources().getDimensionPixelSize(R.dimen.spacing_bigger_large_48)) // 间距
                 .with((Activity) mContext)
                 .adapter(new CommonAdapter<ShareBean>(mContext, R.layout.item_share_popup_window, mDatas) {
                     @Override
@@ -362,7 +376,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
                                     @Override
                                     public void call(Void aVoid) {
                                         switch (position) {
-                                            case 0:
+                                            case 3:
                                                 // QQ 和微信 该版本不提供网页支持，故提示安装应用
                                                 if (UMShareAPI.get(mContext).isInstall((Activity) mContext, SHARE_MEDIA.QQ)) {
 
@@ -372,7 +386,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
 
                                                 }
                                                 break;
-                                            case 1:
+                                            case 4:
                                                 if (UMShareAPI.get(mContext).isInstall((Activity) mContext, SHARE_MEDIA.QQ) || (UMShareAPI.get
                                                         (mContext).isInstall((Activity) mContext, SHARE_MEDIA.QZONE))) {
 
@@ -382,7 +396,15 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
 
                                                 }
                                                 break;
-                                            case 2:
+                                            case 5:
+//                                                if (UMShareAPI.get(mContext).isInstall((Activity) mContext, SHARE_MEDIA.SINA)) {
+
+                                                    shareWeibo((Activity) mContext, mOnShareCallbackListener);
+//                                                } else {
+//                                                    installThirdAppTip();
+//                                                }
+                                                break;
+                                            case 0:
                                                 if (UMShareAPI.get(mContext).isInstall((Activity) mContext, SHARE_MEDIA.WEIXIN)) {
 
                                                     shareWechat((Activity) mContext, mOnShareCallbackListener);
@@ -391,7 +413,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
 
                                                 }
                                                 break;
-                                            case 3:
+                                            case 1:
                                                 if (UMShareAPI.get(mContext).isInstall((Activity) mContext, SHARE_MEDIA.WEIXIN) || UMShareAPI.get
                                                         (mContext).isInstall((Activity) mContext, SHARE_MEDIA.WEIXIN_CIRCLE)) {
 
@@ -400,13 +422,8 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
                                                     installThirdAppTip();
                                                 }
                                                 break;
-                                            case 4:
-//                                                if (UMShareAPI.get(mContext).isInstall((Activity) mContext, SHARE_MEDIA.SINA)) {
-
-                                                    shareWeibo((Activity) mContext, mOnShareCallbackListener);
-//                                                } else {
-//                                                    installThirdAppTip();
-//                                                }
+                                            case 2:
+                                                copyLink((Activity) mContext);
                                                 break;
                                             default:
                                         }

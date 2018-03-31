@@ -15,10 +15,13 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.tb.dynamic.comment.DynamicCommentListActivity;
@@ -30,6 +33,9 @@ import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.simple.eventbus.Subscriber;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.CAN_COMMENT;
@@ -138,10 +144,10 @@ public class TBDynamicFragment extends DynamicFragment {
                     if (mListDatas.get(dataPosition).getId() == null || mListDatas.get(dataPosition).getId() == 0) {
                         return;
                     }
-                    Intent commentListIntent = new Intent(getActivity(), DynamicCommentListActivity.class);
+                    Intent commentListIntent = new Intent(getActivity(), DynamicDetailActivity.class);
                     Bundle commentListBundle = new Bundle();
-                    commentListBundle.putParcelable(DynamicCommentListFragment.DYNAMIC_DETAIL_DATA, mListDatas.get(dataPosition));
-                    commentListBundle.putString(DynamicCommentListFragment.DYNAMIC_DETAIL_DATA_TYPE, getDynamicType());
+                    commentListBundle.putParcelable(DynamicDetailFragment.DYNAMIC_DETAIL_DATA, mListDatas.get(dataPosition));
+                    commentListBundle.putString(DynamicDetailFragment.DYNAMIC_DETAIL_DATA_TYPE, getDynamicType());
                     commentListIntent.putExtras(commentListBundle);
                     startActivity(commentListIntent);
                     getActivity().overridePendingTransition(R.anim.slide_in_bottom, R.anim.keep_on);

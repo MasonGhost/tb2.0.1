@@ -40,6 +40,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
+import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentCopyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailHeaderView;
@@ -149,7 +150,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
                 mListDatas);
-        InfoDetailCommentItem infoDetailCommentItem = new InfoDetailCommentItem(new
+        InfoDetailCommentCopyItem infoDetailCommentItem = new InfoDetailCommentCopyItem(new
                 ItemOnCommentListener());
         infoDetailCommentItem.setOnUserInfoClickListener(this);
         multiItemTypeAdapter.addItemViewDelegate(infoDetailCommentItem);
@@ -402,10 +403,10 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     }
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_2:// 分享
-                    Bitmap bitmap = FileUtils.readImgFromFile(getActivity(), "info_share");
-                   mPresenter.shareInfo(bitmap);
+                   /*Bitmap bitmap = FileUtils.readImgFromFile(getActivity(), "info_share");
+                   mPresenter.shareInfo(bitmap);*/
 
-                    /*Intent intent = new Intent(mActivity, DynamicShareActivity.class);
+                    Intent intent = new Intent(mActivity, DynamicShareActivity.class);
                     Bundle bundle = new Bundle();
                     String content = TextUtils.isEmpty(mInfoMation.getText_content()) ? mInfoMation.getContent() : mInfoMation.getText_content();
                     if (!TextUtils.isEmpty(content)) {
@@ -419,7 +420,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     );
                     bundle.putSerializable(BUNDLE_SHARE_DATA, dynamicShareBean);
                     intent.putExtras(bundle);
-                    startActivity(intent);*/
+                    startActivity(intent);
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_3:// 更多
                     initDealInfoMationPopupWindow(mInfoMation, mInfoMation.getHas_collect());
@@ -439,6 +440,8 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         RxView.clicks(mTvToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
+                    Bitmap bitmap = FileUtils.readImgFromFile(getActivity(), "info_share");
+                    mPresenter.shareInfo(bitmap);
                 });
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -590,7 +593,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
 
-    class ItemOnCommentListener implements InfoDetailCommentItem.OnCommentItemListener {
+    class ItemOnCommentListener implements InfoDetailCommentCopyItem.OnCommentItemListener {
         @Override
         public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
             comment(position);

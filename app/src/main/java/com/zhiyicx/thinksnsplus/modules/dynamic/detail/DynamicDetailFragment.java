@@ -274,7 +274,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         dynamicDetailCommentItem.setOnCommentTextClickListener(this);
         dynamicDetailCommentItem.setOnCommentResendListener(this);
         adapter.addItemViewDelegate(dynamicDetailCommentItem);
-        DynamicCommentEmptyItem dynamicCommentEmptyItem = new DynamicCommentEmptyItem();
+        DynamicCommentEmptyItem dynamicCommentEmptyItem = new DynamicCommentEmptyItem(R.mipmap.def_information_prompt);
         adapter.addItemViewDelegate(dynamicCommentEmptyItem);
         adapter.setOnItemClickListener(this);
         return adapter;

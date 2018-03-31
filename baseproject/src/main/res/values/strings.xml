@@ -186,6 +186,7 @@
     <string name="weChat_share">微信</string>
     <string name="weCircle_share">朋友圈</string>
     <string name="weibo_share">微博</string>
+    <string name="link_share">复制成功，可以发给朋友们了。</string>
     <string name="share_sccuess">分享成功</string>
     <string name="share_ing">分享中&#8230;</string>
     <string name="share_fail">分享失败</string>

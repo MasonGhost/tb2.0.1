@@ -14,6 +14,8 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 public abstract class EmptyItem<T> implements ItemViewDelegate<T> {
 
+    private int mEmptyView;
+
     @Override
     public int getItemViewLayoutId() {
         return R.layout.item_dynamic_detail_comment_empty;
@@ -27,6 +29,15 @@ public abstract class EmptyItem<T> implements ItemViewDelegate<T> {
         EmptyView emptyView = holder.getView(R.id.comment_emptyview);
         emptyView.setNeedTextTip(false);
         emptyView.setErrorType(EmptyView.STATE_NODATA);
+        emptyView.setErrorImag(getEmptyView());
+    }
+
+    protected void setEmptView(int emptyView){
+        this.mEmptyView = emptyView;
+    }
+
+    private int getEmptyView(){
+        return mEmptyView;
     }
 
 

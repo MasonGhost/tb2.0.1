@@ -11,6 +11,10 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 
 public class DynamicCommentEmptyItem extends EmptyItem<DynamicCommentBean> {
 
+    public DynamicCommentEmptyItem(int emptyView){
+        super.setEmptView(emptyView);
+    }
+
     @Override
     public boolean isForViewType(DynamicCommentBean item, int position) {
         return item.getComment_content() == null;

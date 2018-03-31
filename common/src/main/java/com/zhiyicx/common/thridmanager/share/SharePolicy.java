@@ -36,6 +36,11 @@ public interface SharePolicy {
     void shareZone(Activity activity, OnShareCallbackListener l);
 
     /**
+     * 复制链接
+     */
+    void copyLink(Activity activity);
+
+    /**
      * 显示分享的弹框
      */
     void showShare(Activity activity);
