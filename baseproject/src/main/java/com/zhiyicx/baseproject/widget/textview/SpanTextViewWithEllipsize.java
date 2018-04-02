@@ -12,6 +12,8 @@ import android.util.AttributeSet;
  * @Contact master.jungle68@gmail.com
  */
 public class SpanTextViewWithEllipsize extends android.support.v7.widget.AppCompatTextView {
+    private SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+
     public SpanTextViewWithEllipsize(Context context) {
         super(context);
     }
@@ -32,11 +34,12 @@ public class SpanTextViewWithEllipsize extends android.support.v7.widget.AppComp
         CharSequence charSequence = getText();
         int lastCharDown = 0;
         try {
+            // 最多显示 3 行
             lastCharDown = getLayout().getLineVisibleEnd(2);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         if (lastCharDown > 0 && charSequence.length() > lastCharDown) {
-            SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+            spannableStringBuilder.clear();
             spannableStringBuilder.append(charSequence.subSequence(0, lastCharDown - 1)).append("...");
             setText(spannableStringBuilder);
         }

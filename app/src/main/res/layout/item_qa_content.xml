@@ -40,7 +40,7 @@
         android:visibility="gone"
         android:paddingRight="@dimen/spacing_normal">
 
-        <TextView
+        <com.zhiyicx.baseproject.widget.textview.SpanTextViewWithEllipsize
             android:id="@+id/item_info_hotcomment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
