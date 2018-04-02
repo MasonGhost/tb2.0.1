@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -72,7 +73,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     @BindView(R.id.tv_invite_hint)
     TextView mTvInviteHint;
     @BindView(R.id.wc_invite)
-    SwitchCompat mWcInvite;
+    CheckBox mWcInvite;
     @BindView(R.id.ll_qa_set_money)
     LinearLayout mLlQaSetMoney;
     @BindView(R.id.et_input)
@@ -80,7 +81,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     @BindView(R.id.bt_qa_select_expert)
     CombinationButton mBtQaSelectExpert;
     @BindView(R.id.wc_onlooker)
-    SwitchCompat mWcOnlooker;
+    CheckBox mWcOnlooker;
     @BindView(R.id.rl_onlooker)
     RelativeLayout mRlOnlooker;
     @BindView(R.id.rb_onlookers_one)

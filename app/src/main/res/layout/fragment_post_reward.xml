@@ -88,13 +88,14 @@
                 android:textColor="@color/important_for_content"
                 android:textSize="@dimen/size_content_assist"/>
 
-            <android.support.v7.widget.SwitchCompat
+            <CheckBox
                 android:id="@+id/wc_invite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/spacing_mid"/>
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:button="@drawable/selector_ckeck_box_normal"/>
 
             <View
                 style="@style/style_divider_horizontal_light"
@@ -131,12 +132,13 @@
                 android:textColor="@color/important_for_content"
                 android:textSize="@dimen/size_content_assist"/>
 
-            <android.support.v7.widget.SwitchCompat
+            <CheckBox
                 android:id="@+id/wc_onlooker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:button="@drawable/selector_ckeck_box_normal"
                 android:layout_marginRight="@dimen/spacing_mid"/>
 
             <View
