@@ -240,7 +240,7 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         dismissPop(mAnonymityAlertPopWindow);
+        super.onDestroyView();
     }
 }

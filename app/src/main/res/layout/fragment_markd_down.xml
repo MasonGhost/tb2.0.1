@@ -55,7 +55,7 @@
         android:id="@+id/cb_syn_to_dynamic"
         android:layout_width="match_parent"
         android:layout_height="@dimen/create_circle_button_height"
-        android:layout_above="@+id/lu_bottom_menu"
+        android:layout_above="@+id/ll_anony"
         android:layout_marginLeft="@dimen/spacing_normal"
         android:background="@color/white"
         android:button="@drawable/selector_circle_post_synchro"
