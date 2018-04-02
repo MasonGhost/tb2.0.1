@@ -228,6 +228,8 @@
     <string name="dynamic_viewer_count">%1$s人浏览</string>
     <string name="dynamic_like">喜欢</string>
     <string name="dig_list">点赞榜</string>
+    <string name="dynamic_comment">精彩留言</string>
+    <string name="dynamic_write_comment">写留言</string>
 
     <!--个人中心-->
     <string name="chat">聊天</string>

@@ -51,4 +51,5 @@
     <color name="color_9b">#9b9b9b</color>
     <color name="tb_color_contact">#8e8e93</color>
     <color name="tb_color_contact_catalog">#eaeaea</color>
+    <color name="tb_color_comment">#8f8f8f</color>
 </resources>

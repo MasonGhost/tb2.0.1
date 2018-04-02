@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -20,7 +19,7 @@
         android:layout_marginTop="@dimen/spacing_large"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/info_title_size"
-        tools:text="xxxxxxxxxxxxxxxxxxxxxxxxx"/>
+        tools:text="xxxxxxxxxxxxxxxxxxxxxxxxx" />
 
     <!--栏目以及来源-->
     <LinearLayout
@@ -39,7 +38,7 @@
             android:textColor="@color/themeColor"
             android:textSize="@dimen/size_advert_launche"
             android:visibility="gone"
-            tools:text="时政"/>
+            tools:text="时政" />
 
         <TextView
             android:id="@+id/item_info_timeform"
@@ -49,7 +48,7 @@
             android:layout_marginStart="@dimen/spacing_small_3dp"
             android:textColor="@color/general_for_hint_tb"
             android:textSize="@dimen/size_content_comment"
-            tools:text="年月日"/>
+            tools:text="年月日" />
 
         <TextView
             android:id="@+id/item_info_author"
@@ -60,7 +59,7 @@
             android:paddingLeft="@dimen/spacing_tiny"
             android:textColor="@color/general_for_hint_tb"
             android:textSize="@dimen/size_content_comment"
-            tools:text="小编"/>
+            tools:text="小编" />
 
         <TextView
             android:id="@+id/item_info_merchain_name"
@@ -70,7 +69,7 @@
             android:layout_marginStart="@dimen/spacing_mid"
             android:textColor="@color/themeColor"
             android:textSize="@dimen/size_content_comment"
-            tools:text="机构用户"/>
+            tools:text="机构用户" />
     </LinearLayout>
 
     <br.tiagohm.markdownview.MarkdownView
@@ -79,7 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_mid"
         android:layout_marginRight="@dimen/spacing_mid"
-        android:layout_marginTop="@dimen/spacing_large"/>
+        android:layout_marginTop="@dimen/spacing_large" />
 
 
     <FrameLayout
@@ -96,7 +95,7 @@
             android:layout_marginTop="@dimen/spacing_large"
             android:visibility="visible"
             app:escapeHtml="false"
-            tools:ignore="WebViewLayout"/>
+            tools:ignore="WebViewLayout" />
 
         <!--用来占位的-->
         <ImageView
@@ -104,34 +103,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/default_pic_personal"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </FrameLayout>
 
 
-    <include
-        layout="@layout/item_dynamic_detail_dig"/>
+    <include layout="@layout/item_dynamic_detail_dig" />
 
     <View
         style="@style/style_divider_horizontal_light"
         android:layout_marginBottom="@dimen/spacing_normal_large"
         android:layout_marginLeft="@dimen/spacing_mid"
         android:layout_marginRight="@dimen/spacing_mid"
-        android:layout_marginStart="@dimen/spacing_mid"
-        />
+        android:layout_marginStart="@dimen/spacing_mid" />
 
-    <include
-        layout="@layout/include_reward"/>
+    <include layout="@layout/include_reward" />
 
-    <include
-        layout="@layout/advert_details"
-        />
+    <include layout="@layout/advert_details" />
 
     <!--相关资讯以及标签-->
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_small_3dp"
-        android:background="@color/general_for_bg_light"/>
+        android:background="@color/general_for_bg_light" />
 
     <FrameLayout
         android:id="@+id/info_relate_list"
@@ -157,17 +151,17 @@
                 android:paddingTop="@dimen/spacing_mid"
                 android:text="@string/info_relate"
                 android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_content_assist"/>
+                android:textSize="@dimen/size_content_assist" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape_line_bottom_themcolor"/>
+                android:background="@drawable/shape_line_bottom_themcolor" />
         </LinearLayout>
 
         <View
             style="@style/style_divider_horizontal_light"
-            android:layout_gravity="bottom"/>
+            android:layout_gravity="bottom" />
     </FrameLayout>
 
     <com.zhy.view.flowlayout.TagFlowLayout
@@ -176,21 +170,20 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_margin="@dimen/spacing_normal"
-        android:visibility="gone"
         android:background="@color/white"
-        app:max_select="0"
-        />
+        android:visibility="gone"
+        app:max_select="0" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_relate_info"
-        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_small_3dp"
-        android:background="@color/general_for_bg_light"/>
+        android:background="@color/general_for_bg_light" />
 
     <!--评论数-->
     <FrameLayout
@@ -198,7 +191,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_small"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -216,16 +210,68 @@
                 android:paddingRight="@dimen/spacing_mid"
                 android:paddingTop="@dimen/spacing_mid"
                 android:textColor="@color/color_9b"
-                android:textSize="@dimen/size_note_assist"/>
+                android:textSize="@dimen/size_note_assist" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape_line_bottom_themcolor"/>
+                android:background="@drawable/shape_line_bottom_themcolor" />
         </LinearLayout>
 
         <View
             style="@style/style_divider_horizontal_light"
-            android:layout_gravity="bottom"/>
+            android:layout_gravity="bottom" />
+
     </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bgColor"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/headpic_for_notification_27dp">
+
+        <View
+            style="@style/style_divider_horizontal_light"
+            android:layout_marginLeft="@dimen/toolbar_padding_left"
+            android:layout_marginRight="@dimen/margin_12"
+            android:layout_weight="1"
+            android:background="@color/general_for_default_line" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dynamic_comment"
+            android:textColor="@color/tb_color_comment"
+            android:textSize="@dimen/size_sub_title" />
+
+        <View
+            style="@style/style_divider_horizontal_light"
+            android:layout_marginLeft="@dimen/margin_12"
+            android:layout_marginRight="@dimen/toolbar_padding_left"
+            android:layout_weight="1"
+            android:background="@color/general_for_default_line" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:background="@color/bgColor"
+        android:gravity="right|center_vertical"
+        android:orientation="horizontal"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/spacing_normal_8dp">
+
+        <TextView
+            android:id="@+id/tv_write_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/message_badge_count_width"
+            android:drawableRight="@mipmap/ico_pen"
+            android:text="@string/dynamic_write_comment"
+            android:textColor="@color/themeColor"
+            android:textSize="@dimen/size_content" />
+    </LinearLayout>
 </LinearLayout>

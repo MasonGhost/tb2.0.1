@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <ScrollView
         android:id="@+id/sl_container"
@@ -22,11 +20,10 @@
                 android:id="@+id/iv_top_logo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@mipmap/bgpic_top_375"/>
+                android:background="@mipmap/bgpic_top_375" />
 
 
-            <RelativeLayout
-                xmlns:android="http://schemas.android.com/apk/res/android"
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:id="@+id/item_contaienr"
@@ -47,7 +44,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_marginLeft="@dimen/spacing_normal"
                     android:src="@drawable/shape_default_image_circle"
-                    app:ts_avatare_size="@dimen/headpic_for_dynamic_list"/>
+                    app:ts_avatare_size="@dimen/headpic_for_dynamic_list" />
 
                 <TextView
                     android:id="@+id/tv_name"
@@ -62,7 +59,7 @@
                     android:textColor="@color/themeColor"
                     android:textSize="@dimen/size_icon_assist"
                     android:textStyle="bold"
-                    tools:text="张三"/>
+                    tools:text="张三" />
 
                 <TextView
                     android:id="@+id/tv_top_flag"
@@ -77,7 +74,7 @@
                     android:textColor="@color/dyanmic_top_flag"
                     android:textSize="@dimen/size_advert_launche"
                     android:visibility="gone"
-                    tools:text="@string/dynamic_top_flag"/>
+                    tools:text="@string/dynamic_top_flag" />
 
                 <TextView
                     android:id="@+id/tv_time"
@@ -93,7 +90,7 @@
                     android:paddingTop="@dimen/spacing_small"
                     android:textColor="@color/general_for_hint"
                     android:textSize="@dimen/size_note_assist"
-                    tools:text="2016-05-06"/>
+                    tools:text="2016-05-06" />
 
                 <TextView
                     android:id="@+id/tv_follow"
@@ -102,8 +99,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="@dimen/spacing_normal"
                     android:gravity="center"
-                    android:visibility="gone"
-                    />
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tv_title"
@@ -119,7 +115,7 @@
                     android:textColor="@color/themeColor"
                     android:textSize="@dimen/size_sub_title"
                     android:visibility="gone"
-                    tools:text="了解到富士康垃圾管理的高考了了"/>
+                    tools:text="了解到富士康垃圾管理的高考了了" />
 
                 <TextView
                     android:id="@+id/tv_content"
@@ -135,8 +131,7 @@
                     android:singleLine="false"
                     android:textColor="@color/important_for_content"
                     android:textSize="@dimen/size_sub_title"
-                    tools:text="了解到富士康垃圾管理的高考了了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送"
-                    />
+                    tools:text="了解到富士康垃圾管理的高考了了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送" />
 
 
                 <TextView
@@ -148,21 +143,21 @@
                     android:paddingBottom="@dimen/dynamic_image_padding_bottom"
                     android:paddingLeft="@dimen/spacing_normal"
                     android:textSize="@dimen/size_icon_assist"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <View
                     android:id="@+id/v_line"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/divider_line"
                     android:layout_below="@+id/tv_from"
-                    android:background="@color/general_for_line_light"/>
+                    android:background="@color/general_for_line_light" />
 
                 <com.zhiyicx.baseproject.widget.TBDynamicListMenuView
                     android:id="@+id/dlmv_menu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/v_line"
-                    android:layout_marginTop="@dimen/divider_line"/>
+                    android:layout_marginTop="@dimen/divider_line" />
 
                 <include
                     android:id="@+id/fl_tip"
@@ -171,12 +166,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/dlmv_menu"
                     android:layout_toRightOf="@+id/iv_headpic"
-                    android:visibility="gone"
-                    />
+                    android:visibility="gone" />
 
-                <include
-                    layout="@layout/include_dynamic_list_comment_view"
-                    />
+                <include layout="@layout/include_dynamic_list_comment_view" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -191,16 +183,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:background="@mipmap/bgpic_bottom"/>
+                    android:background="@mipmap/bgpic_bottom" />
 
                 <LinearLayout
                     android:id="@+id/ll_qr"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="74dp"
-                    android:layout_marginRight="@dimen/spacing_big_large"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -208,7 +198,7 @@
                         android:id="@+id/iv_qr"
                         android:layout_width="@dimen/share_qr_code_with"
                         android:layout_height="@dimen/share_qr_code_with"
-                        android:src="@drawable/shape_default_image"/>
+                        android:src="@drawable/shape_default_image" />
 
                     <TextView
                         android:id="@+id/tv_qr_tip"
@@ -218,13 +208,13 @@
                         android:gravity="center"
                         android:text="@string/scan_get_candy"
                         android:textColor="@color/share_qr_code_tip_text_color"
-                        android:textSize="@dimen/size_content_assist"/>
+                        android:textSize="@dimen/size_content_assist" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/divider_line"
                         android:layout_marginTop="@dimen/spacing_small"
-                        android:background="@drawable/light_linear_driver"/>
+                        android:background="@drawable/light_linear_driver" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -233,7 +223,7 @@
                         android:gravity="center"
                         android:text="@string/read_latest_info"
                         android:textColor="@color/normal_for_assist_text"
-                        android:textSize="@dimen/size_icon_assist"/>
+                        android:textSize="@dimen/size_icon_assist" />
 
                 </LinearLayout>
 
@@ -242,23 +232,23 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_large"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingRight="3dp"
-                        android:textSize="14sp"
+                        android:text="重要程度"
                         android:textColor="#999999"
-                        android:text="重要程度"/>
+                        android:textSize="14sp" />
 
                     <android.support.v7.widget.AppCompatRatingBar
                         style="@style/Base.Widget.AppCompat.RatingBar.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:numStars="5"
-                        android:rating="5"
-                        />
+                        android:rating="5" />
                 </LinearLayout>
 
                 <TextView
@@ -271,7 +261,8 @@
                     android:drawablePadding="@dimen/spacing_small"
                     android:text="分享自TokenBook"
                     android:textColor="#999999"
-                    android:textSize="14sp"/>
+                    android:textSize="14sp"
+                    android:visibility="gone" />
 
             </RelativeLayout>
         </LinearLayout>
@@ -296,7 +287,7 @@
             android:paddingBottom="@dimen/spacing_mid"
             android:paddingLeft="@dimen/spacing_normal_large"
             android:paddingRight="@dimen/spacing_normal_large"
-            android:paddingTop="@dimen/spacing_mid"/>
+            android:paddingTop="@dimen/spacing_mid" />
 
         <ImageView
             android:id="@+id/iv_wechat"
@@ -306,7 +297,7 @@
             android:paddingLeft="@dimen/spacing_mid"
             android:paddingRight="@dimen/spacing_mid"
             android:paddingTop="@dimen/spacing_normal"
-            android:src="@mipmap/ico_wechat_s"/>
+            android:src="@mipmap/ico_wechat_s" />
 
         <ImageView
             android:id="@+id/iv_wechat_friends"
@@ -316,7 +307,7 @@
             android:paddingLeft="@dimen/spacing_mid"
             android:paddingRight="@dimen/spacing_mid"
             android:paddingTop="@dimen/spacing_normal"
-            android:src="@mipmap/ico_circles_s"/>
+            android:src="@mipmap/ico_circles_s" />
 
         <ImageView
             android:id="@+id/iv_phone"
@@ -326,6 +317,6 @@
             android:paddingLeft="@dimen/spacing_mid"
             android:paddingRight="@dimen/spacing_mid"
             android:paddingTop="@dimen/spacing_normal"
-            android:src="@mipmap/ico_save_s"/>
+            android:src="@mipmap/ico_save_s" />
     </LinearLayout>
 </RelativeLayout>

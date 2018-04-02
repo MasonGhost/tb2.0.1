@@ -515,7 +515,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<
         creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
         creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
-        // 处理评论数
+/*        // 处理评论数
         mRootView.getCurrentDynamic().setFeed_comment_count(mRootView.getCurrentDynamic()
                 .getFeed_comment_count() + 1);
         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentDynamic());
@@ -525,9 +525,10 @@ public class DynamicDetailPresenter extends AppBasePresenter<
         }
         mRootView.getListDatas().add(0, creatComment);
         mRootView.refreshData();
-        mRootView.updateCommentCountAndDig();
+        mRootView.updateCommentCountAndDig();*/
         mBaseDynamicRepository.sendCommentV2(commentContent, mRootView.getCurrentDynamic().getId(),
                 replyToUserId, creatComment.getComment_mark());
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_has_send_wait_review));
     }
 
     @Override
