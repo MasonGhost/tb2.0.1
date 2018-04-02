@@ -253,7 +253,7 @@ public class EarningListFragment extends TSListFragment<EarningListContract.Pres
         Calendar selectedDate = Calendar.getInstance();
         //正确设置方式 原因：注意事项有说明
         startDate.set(2000, 0, 1);
-        endDate.set(2020, 11, 31);
+        endDate.set(selectedDate.get(Calendar.YEAR), 11, 31);
 
         mTimePickerView = new TimePickerView.Builder(mActivity, this)
                 .setDate(selectedDate)

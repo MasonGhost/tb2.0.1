@@ -570,7 +570,8 @@ public class WheelView extends View {
             return ((IPickerViewData) item).getPickerViewText();
         } else if (item instanceof Integer) {
             //如果为整形则最少保留两位数.
-            return String.format(Locale.getDefault(), "%02d", (int) item);
+//            return String.format(Locale.getDefault(), "%02d", (int) item);
+            return String.format(Locale.getDefault(), "%d", (int) item);
         }
         return item.toString();
     }
