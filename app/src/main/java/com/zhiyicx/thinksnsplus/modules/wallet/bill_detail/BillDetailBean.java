@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -25,16 +26,21 @@ public class BillDetailBean implements Parcelable {
      * account	string	账户
      * title	string	标题
      * body	string	内容
-     * action	int	1 - 收入 -1 - 支出
+     * action（type）	int	1 - 收入 -1 - 支出
      * amount	int	金额，分单位
      * status	int	订单状态，0: 等待，1：成功，-1: 失败
      */
     private int status;
+    private long owner_id;
+    @SerializedName(value = "action", alternate = {"type"})
     private int action;
     private int amount;
+    @SerializedName(value = "account", alternate = {"target_id"})
     private String account;
+    private String title;
     private String body;
     private String created_at;
+    @SerializedName(value = "channel", alternate = {"target_type"})
     private String channel;
     private UserInfoBean mUserInfoBean;
 
@@ -42,20 +48,6 @@ public class BillDetailBean implements Parcelable {
         return mUserInfoBean;
     }
 
-    public void setUserInfoBean(UserInfoBean userInfoBean) {
-        mUserInfoBean = userInfoBean;
-    }
-
-    public String getChannel() {
-        return channel;
-    }
-
-    public void setChannel(String channel) {
-        this.channel = channel;
-    }
-
-    private BillDetailBean() {
-    }
 
     public int getStatus() {
         return status;
@@ -63,6 +55,14 @@ public class BillDetailBean implements Parcelable {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public long getOwner_id() {
+        return owner_id;
+    }
+
+    public void setOwner_id(long owner_id) {
+        this.owner_id = owner_id;
     }
 
     public int getAction() {
@@ -89,6 +89,14 @@ public class BillDetailBean implements Parcelable {
         this.account = account;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getBody() {
         return body;
     }
@@ -105,31 +113,17 @@ public class BillDetailBean implements Parcelable {
         this.created_at = created_at;
     }
 
-    public static BillDetailBean recharge2Bill(RechargeSuccessBean rechargeSuccessBean, int ratio) {
-        BillDetailBean billDetailBean = new BillDetailBean();
-        billDetailBean.setAccount(rechargeSuccessBean.getAccount());
-        billDetailBean.setAction(rechargeSuccessBean.getAction());
-        billDetailBean.setAmount((int) PayConfig.realCurrency2GameCurrency(rechargeSuccessBean.getAmount(), ratio));
-        billDetailBean.setBody(TextUtils.isEmpty(rechargeSuccessBean.getBody()) ? rechargeSuccessBean.getSubject() : rechargeSuccessBean.getBody());
-        billDetailBean.setChannel(rechargeSuccessBean.getChannel());
-        billDetailBean.setCreated_at(rechargeSuccessBean.getCreated_at());
-        billDetailBean.setStatus(rechargeSuccessBean.getStatus());
-        billDetailBean.setUserInfoBean(rechargeSuccessBean.getUserInfoBean());
-        return billDetailBean;
+    public String getChannel() {
+        return channel;
     }
 
-    public static BillDetailBean withdrawals2Bill(WithdrawalsListBean withdrawalsListBean, int ratio) {
-        BillDetailBean billDetailBean = new BillDetailBean();
-        billDetailBean.setAccount(withdrawalsListBean.getAccount());
-        billDetailBean.setAction(2);
-        billDetailBean.setAmount((int) PayConfig.realCurrency2GameCurrency(withdrawalsListBean.getValue(), ratio));
-        billDetailBean.setBody(AppApplication.getContext().getResources().getString(R.string.withdraw));
-        billDetailBean.setChannel(withdrawalsListBean.getType());
-        billDetailBean.setCreated_at(withdrawalsListBean.getCreated_at());
-        billDetailBean.setStatus(withdrawalsListBean.getStatus());
-        return billDetailBean;
+    public void setChannel(String channel) {
+        this.channel = channel;
     }
 
+    public void setUserInfoBean(UserInfoBean userInfoBean) {
+        mUserInfoBean = userInfoBean;
+    }
 
     @Override
     public int describeContents() {
@@ -139,20 +133,27 @@ public class BillDetailBean implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.status);
+        dest.writeLong(this.owner_id);
         dest.writeInt(this.action);
         dest.writeInt(this.amount);
         dest.writeString(this.account);
+        dest.writeString(this.title);
         dest.writeString(this.body);
         dest.writeString(this.created_at);
         dest.writeString(this.channel);
         dest.writeParcelable(this.mUserInfoBean, flags);
     }
 
+    public BillDetailBean() {
+    }
+
     protected BillDetailBean(Parcel in) {
         this.status = in.readInt();
+        this.owner_id = in.readLong();
         this.action = in.readInt();
         this.amount = in.readInt();
         this.account = in.readString();
+        this.title = in.readString();
         this.body = in.readString();
         this.created_at = in.readString();
         this.channel = in.readString();
@@ -170,4 +171,32 @@ public class BillDetailBean implements Parcelable {
             return new BillDetailBean[size];
         }
     };
+
+    public static BillDetailBean recharge2Bill(RechargeSuccessBean rechargeSuccessBean, int ratio) {
+        BillDetailBean billDetailBean = new BillDetailBean();
+        billDetailBean.setAccount(rechargeSuccessBean.getAccount());
+        billDetailBean.setAction(rechargeSuccessBean.getAction());
+        billDetailBean.setAmount((int) PayConfig.realCurrency2GameCurrency(rechargeSuccessBean.getAmount(), ratio));
+        billDetailBean.setBody(TextUtils.isEmpty(rechargeSuccessBean.getBody()) ? rechargeSuccessBean.getSubject() : rechargeSuccessBean.getBody());
+        billDetailBean.setTitle(rechargeSuccessBean.getSubject());
+        billDetailBean.setChannel(rechargeSuccessBean.getChannel());
+        billDetailBean.setCreated_at(rechargeSuccessBean.getCreated_at());
+        billDetailBean.setStatus(rechargeSuccessBean.getStatus());
+        billDetailBean.setOwner_id(rechargeSuccessBean.getUser_id());
+        billDetailBean.setUserInfoBean(rechargeSuccessBean.getUserInfoBean());
+        return billDetailBean;
+    }
+
+    public static BillDetailBean withdrawals2Bill(WithdrawalsListBean withdrawalsListBean, int ratio) {
+        BillDetailBean billDetailBean = new BillDetailBean();
+        billDetailBean.setAccount(withdrawalsListBean.getAccount());
+        billDetailBean.setAction(2);
+        billDetailBean.setAmount((int) PayConfig.realCurrency2GameCurrency(withdrawalsListBean.getValue(), ratio));
+        billDetailBean.setBody(AppApplication.getContext().getResources().getString(R.string.withdraw));
+        billDetailBean.setChannel(withdrawalsListBean.getType());
+        billDetailBean.setCreated_at(withdrawalsListBean.getCreated_at());
+        billDetailBean.setStatus(withdrawalsListBean.getStatus());
+        return billDetailBean;
+    }
+
 }

@@ -84,24 +84,23 @@ public class BillDetailFragment extends TSFragment {
         mBillDetailBean = getArguments().getParcelable(BILL_INFO);
         int action = mBillDetailBean.getAction(); // action =0代表 money 增加
         int status = mBillDetailBean.getStatus();
-        boolean is_user = mBillDetailBean.getUserInfoBean() != null;
+        boolean isUser = mBillDetailBean.getUserInfoBean() != null;
 //    channel    recharge_ping_p_p - 充值, widthdraw - 提现, user - 转账, reward - 打赏
 
         switch (mBillDetailBean.getChannel()) {
             case "recharge_ping_p_p":
+                mBillUserContainer.setVisibility(View.GONE);
                 mBillUser.setText(getString(R.string.account_form_name));
                 break;
             case "widthdraw":
+                mBillUserContainer.setVisibility(View.GONE);
                 mBillUser.setText(R.string.account_to_name);
                 break;
             case "user":
                 mBillUser.setText(getString(action > 0 ? R.string.account_form_name : R.string.account_to_name));
-
-
                 break;
             case "reward":
                 mBillUser.setText(getString(action > 0 ? R.string.account_to_name : R.string.account_form_name));
-
                 break;
             default:
                 mBillUser.setText(getString(action > 0 ? R.string.account_to_name : R.string.account_form_name));
@@ -111,13 +110,13 @@ public class BillDetailFragment extends TSFragment {
         String moneyStr = (status == 1 ? (action < 0 ? "-" : "+") : "") + String.format(Locale.getDefault(), getString(R.string.money_format),
                 PayConfig.realCurrencyFen2Yuan(mBillDetailBean.getAmount()));
         mTvMineMoney.setText(moneyStr);
-        mBillUserContainer.setVisibility(is_user ? View.VISIBLE : View.GONE);
-        mBillAccountContainer.setVisibility(is_user ? View.GONE : View.VISIBLE);
-        mBillAccount.setText(TextUtils.isEmpty(mBillDetailBean.getAccount()) ? mBillDetailBean.getChannel() : mBillDetailBean.getAccount());
+        mBillAccountContainer.setVisibility(isUser ? View.GONE : View.VISIBLE);
+//        mBillAccount.setText(TextUtils.isEmpty(mBillDetailBean.getAccount()) ? mBillDetailBean.getChannel() : mBillDetailBean.getAccount());
+        mBillAccount.setText(mBillDetailBean.getChannel());
         mBillDesc.setText(!TextUtils.isEmpty(mBillDetailBean.getBody()) ? mBillDetailBean.getBody() : "");
         mBillTime.setText(TimeUtils.string2_Dya_Week_Time(mBillDetailBean.getCreated_at()));
 
-        if (!is_user) {
+        if (!isUser) {
             return;
         }
         dealUserInfo(mBillDetailBean.getUserInfoBean());
