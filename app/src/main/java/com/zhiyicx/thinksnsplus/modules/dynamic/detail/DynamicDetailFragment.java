@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.InputLimitView.OnSendClickListener;
@@ -203,9 +204,9 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                     mVShadow.setVisibility(View.GONE);
 
                 });
-        RxView.clicks(mTvToolbarCenter)
+        /*RxView.clicks(mTvToolbarCenter)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> onUserInfoClick(mDynamicBean.getUserInfoBean()));
+                .subscribe(aVoid -> onUserInfoClick(mDynamicBean.getUserInfoBean()));*/
         RxView.clicks(mIvUserPortrait)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> onUserInfoClick(mDynamicBean.getUserInfoBean()));
@@ -217,14 +218,35 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mDynamicDetailHeader = new DynamicDetailHeader(getContext(), mPresenter.getAdvert());
         mDynamicDetailHeader.setOnImageClickLisenter(this);
+        mDynamicDetailHeader.setOnUserInfoClickLisenter(this);
+        mDynamicDetailHeader.setOnFollowlistener((data, followView) -> {
+            followViewClick(data, followView);
+        });
         mHeaderAndFooterWrapper.addHeaderView(mDynamicDetailHeader.getDynamicDetailHeader());
         View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
-        mDynamicDetailHeader.setReWardViewVisible(mSystemConfigBean.getSite().getReward().hasStatus()
-                && mSystemConfigBean.getFeed().hasReward() ? VISIBLE : GONE);
+        /*mDynamicDetailHeader.setReWardViewVisible(mSystemConfigBean.getSite().getReward().hasStatus()//设置打赏内容
+                && mSystemConfigBean.getFeed().hasReward() ? VISIBLE : GONE);*/
+    }
+
+    protected void followViewClick(DynamicDetailBeanV2 data, TextView followView) {
+        if (mPresenter.handleTouristControl()) {
+            return;
+        }
+        if (!data.getUserInfoBean().getFollower()) {
+            // 关注
+            mPresenter.handleFollowUser(data.getUserInfoBean());
+            data.getUserInfoBean().setFollower(true);
+            refreshData();
+        } else {
+            // 更多
+            initOtherDynamicPopupWindow(data, followView);
+            mOtherDynamicPopWindow.show();
+
+        }
     }
 
     @Override
@@ -326,7 +348,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void upDateFollowFansState(UserInfoBean userInfoBean) {
-        setToolBarRightFollowState(userInfoBean);
+        //setToolBarRightFollowState(userInfoBean);
     }
 
     @Override
@@ -337,7 +359,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     public void updateDynamic(DynamicDetailBeanV2 detailBeanV2) {
         mDynamicBean = detailBeanV2;
-        mDynamicDetailHeader.updateImage(mDynamicBean);
+        //mDynamicDetailHeader.updateImage(mDynamicBean);
     }
 
     @Override
@@ -391,7 +413,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     public void loadAllError() {
         setLoadViewHolderImag(R.mipmap.img_default_internet);
         mTvToolbarRight.setVisibility(View.GONE);
-        mTvToolbarCenter.setVisibility(View.GONE);
+        //mTvToolbarCenter.setVisibility(View.GONE);
         showLoadViewLoadError();
     }
 
@@ -399,7 +421,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     public void dynamicHasBeDeleted() {
         setLoadViewHolderImag(R.mipmap.img_default_delete);
         mTvToolbarRight.setVisibility(View.GONE);
-        mTvToolbarCenter.setVisibility(View.GONE);
+        //mTvToolbarCenter.setVisibility(View.GONE);
         showLoadViewLoadErrorDisableClick();
     }
 
@@ -415,25 +437,25 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             mRvList.post(() -> ((LinearLayoutManager) layoutManager).scrollToPositionWithOffset(0, -mDynamicDetailHeader.scrollCommentToTop()));
         }
         // 如果当前动态所属用户，就是当前用户，隐藏关注按钮
-        long user_id = mDynamicBean.getUser_id();
+        /*long user_id = mDynamicBean.getUser_id();
         if (AppApplication.getmCurrentLoginAuth() != null && user_id == AppApplication.getmCurrentLoginAuth().getUser_id()) {
             mTvToolbarRight.setVisibility(View.GONE);
         } else {
             // 获取用户关注状态
             mTvToolbarRight.setVisibility(View.VISIBLE);
             setToolBarRightFollowState(mDynamicBean.getUserInfoBean());
-        }
+        }*/
 
     }
 
     @Override
     public void updateReward() {
-        if (mDynamicBean.getReward() != null && !TextUtils.isEmpty(mDynamicBean.getReward().getAmount())) {
+        /*if (mDynamicBean.getReward() != null && !TextUtils.isEmpty(mDynamicBean.getReward().getAmount())) {
             mDynamicBean.getReward().setAmount("" + PayConfig.realCurrency2GameCurrency(Double.parseDouble(mDynamicBean.getReward().getAmount()),
                     mPresenter.getRatio()));
         }
         mDynamicDetailHeader.updateReward(mDynamicBean.getId(), mRewardsListBeens, mDynamicBean.getReward(),
-                RewardType.DYNAMIC, mPresenter.getIntegrationGoldName());
+                RewardType.DYNAMIC, mPresenter.getIntegrationGoldName());*/
     }
 
 
@@ -588,6 +610,13 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
+        // 游客处理
+        if (!TouristConfig.USER_INFO_CAN_LOOK && mPresenter.handleTouristControl()) {
+            return;
+        }
+        if (userInfoBean.getUser_id().intValue() == -1) {
+            return;
+        }
         PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 
@@ -618,6 +647,78 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 })
                 .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();
+    }
+
+    /**
+     * 初始化他人动态操作选择弹框
+     *
+     * @param dynamicBean curent dynamic
+     */
+    protected void initOtherDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, View followView) {
+        mOtherDynamicPopWindow = ActionPopupWindow.builder()
+                .item1Str(dynamicBean.getUserInfoBean().getFollower() ? getString(R.string.cancel_follow) : "")
+                .item2Str(dynamicBean.getFeed_from() == -1 ? "" : getString(R.string.report))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(() -> {
+                    // 取消关注
+                    mPresenter.handleFollowUser(dynamicBean.getUserInfoBean());
+                    dynamicBean.getUserInfoBean().setFollower(false);
+                    followView.setVisibility(View.VISIBLE);
+                    ((TextView) followView).setCompoundDrawables(null, null, null,
+                            null);
+                    ((TextView) followView).setText(getString(R.string.add_follow));
+                    followView.setBackgroundResource(R.drawable.shape_radus_box_themecolor);
+                    refreshData();
+                    mOtherDynamicPopWindow.hide();
+                })
+                .item2ClickListener(() -> {                    // 举报帖子
+                    if (mPresenter.handleTouristControl()) {
+                        return;
+                    }
+
+                    String img = "";
+                    if (dynamicBean.getImages() != null && !dynamicBean.getImages().isEmpty()) {
+                        img = ImageUtils.imagePathConvertV2(dynamicBean.getImages().get(0).getFile(), getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img), getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img),
+                                100);
+                    }
+                    ReportResourceBean reportResourceBean = new ReportResourceBean(dynamicBean.getUserInfoBean()
+                            , String.valueOf(dynamicBean.getId())
+                            , "", img,
+                            dynamicBean.getFeed_content()
+                            , ReportType.DYNAMIC);
+                    reportResourceBean.setDesCanlook(dynamicBean.getPaid_node() == null || dynamicBean
+                            .getPaid_node().isPaid());
+                    ReportActivity.startReportActivity(mActivity, reportResourceBean);
+                    mOtherDynamicPopWindow.hide();
+                    showBottomView(true);
+                })
+                .bottomClickListener(() -> {
+                    mOtherDynamicPopWindow.hide();
+                    showBottomView(true);
+                })
+                .build();
+    }
+
+    protected void showBottomView(boolean isShow) {
+        if (isShow) {
+            mVShadow.setVisibility(View.GONE);
+            mIlvComment.setVisibility(View.GONE);
+            mIlvComment.clearFocus();
+            mIlvComment.setSendButtonVisiable(false);
+            DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        } else {
+            mVShadow.setVisibility(View.VISIBLE);
+            mIlvComment.setVisibility(View.VISIBLE);
+            mIlvComment.getFocus();
+            mIlvComment.setSendButtonVisiable(true);
+            DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        }
     }
 
     /**

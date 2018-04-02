@@ -154,7 +154,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 ItemOnCommentListener());
         infoDetailCommentItem.setOnUserInfoClickListener(this);
         multiItemTypeAdapter.addItemViewDelegate(infoDetailCommentItem);
-        multiItemTypeAdapter.addItemViewDelegate(new InfoDetailCommentEmptyItem());
+        multiItemTypeAdapter.addItemViewDelegate(new InfoDetailCommentEmptyItem(R.mipmap.def_information_prompt));
         multiItemTypeAdapter.setOnItemClickListener(this);
         return multiItemTypeAdapter;
     }

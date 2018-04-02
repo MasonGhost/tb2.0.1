@@ -223,7 +223,7 @@
 
     <!--动态详情-->
     <string name="dynamic_dig_count">%1$s人点赞</string>
-    <string name="dynamic_comment_count">%1$s条评论</string>
+    <string name="dynamic_comment_count">精彩留言(%1$s)</string>
     <string name="dynamic_publish_time">发布于%1$s</string>
     <string name="dynamic_viewer_count">%1$s人浏览</string>
     <string name="dynamic_like">喜欢</string>

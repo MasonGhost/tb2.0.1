@@ -12,6 +12,11 @@ import com.zhiyicx.thinksnsplus.widget.EmptyItem;
  * @Description
  */
 public class InfoDetailCommentEmptyItem extends EmptyItem<InfoCommentListBean> {
+
+    public InfoDetailCommentEmptyItem(int emptyView){
+        super.setEmptView(emptyView);
+    }
+
     @Override
     public boolean isForViewType(InfoCommentListBean item, int position) {
         return TextUtils.isEmpty(item.getComment_content());

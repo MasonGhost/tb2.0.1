@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,14 +22,19 @@ import android.widget.TextView;
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkMetadata;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
+import com.zhiyicx.baseproject.widget.textview.SpanTextViewWithEllipsize;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
+import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
@@ -48,9 +55,13 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListFragment;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe 动态详情头部信息
@@ -61,6 +72,11 @@ import java.util.List;
 
 public class DynamicDetailHeader {
 
+    private UserAvatarView mIvHeadPic;
+    private TextView mTvName;
+    private TextView mTvFollow;
+    private TextView mTvTime;
+    private SpanTextViewWithEllipsize mTvContent;
     private LinearLayout mPhotoContainer;
     private TextView mContent;
     private TextView mTitle;
@@ -76,8 +92,11 @@ public class DynamicDetailHeader {
     private View mRewardView;
 
     private OnImageClickLisenter mOnImageClickLisenter;
+    protected OnUserInfoClickListener mOnUserInfoClickListener;
     private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
     private TextViewUtils.OnSpanTextClickListener mOnSpanTextClickListener;
+
+    private int mMaxlinesShow;
 
     public View getDynamicDetailHeader() {
         return mDynamicDetailHeader;
@@ -85,24 +104,31 @@ public class DynamicDetailHeader {
 
     public DynamicDetailHeader(Context context, List<RealAdvertListBean> adverts) {
         this.mContext = context;
+        mMaxlinesShow = context.getResources().getInteger(R.integer
+                .dynamic_list_content_show_lines);
         mDynamicDetailHeader = LayoutInflater.from(context).inflate(R.layout
                 .view_header_dynamic_detial, null);
         mDynamicDetailHeader.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout
                 .LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
-        mTitle = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_title);
-        mContent = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_content);
+
+        mIvHeadPic = (UserAvatarView) mDynamicDetailHeader.findViewById(R.id.iv_headpic);
+        mTvName = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_name);
+        mTvFollow = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_follow);
+        mTvTime = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_time);
+        mTvContent = (SpanTextViewWithEllipsize) mDynamicDetailHeader.findViewById(R.id.tv_content);
+        //mTitle = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_title);
+        //mContent = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_content);
         initAdvert(context, adverts);
         fl_comment_count_container = (FrameLayout) mDynamicDetailHeader.findViewById(R.id
                 .fl_comment_count_container);
-        mPhotoContainer = (LinearLayout) mDynamicDetailHeader.findViewById(R.id
-                .ll_dynamic_photos_container);
+        //mPhotoContainer = (LinearLayout) mDynamicDetailHeader.findViewById(R.id.ll_dynamic_photos_container);
         screenWidth = UIUtils.getWindowWidth(context);
 //        picWidth = UIUtils.getWindowWidth(context) - context.getResources().getDimensionPixelSize
 //                (R.dimen.spacing_normal) * 2;
         picWidth = screenWidth;
-        mReWardView = (ReWardView) mDynamicDetailHeader.findViewById(R.id.v_reward);
+        //mReWardView = (ReWardView) mDynamicDetailHeader.findViewById(R.id.v_reward);
         mLlAdvert = (LinearLayout) mDynamicDetailHeader.findViewById(R.id.ll_advert);
-        mRewardView = mDynamicDetailHeader.findViewById(R.id.v_reward);
+        //mRewardView = mDynamicDetailHeader.findViewById(R.id.v_reward);
     }
 
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
@@ -129,7 +155,58 @@ public class DynamicDetailHeader {
      * @param dynamicBean
      */
     public void setDynamicDetial(DynamicDetailBeanV2 dynamicBean) {
-        String titleText = "";
+        try {
+            ImageUtils.loadCircleUserHeadPic(dynamicBean.getUserInfoBean(), mIvHeadPic);
+            setUserInfoClick(mIvHeadPic, dynamicBean);
+        }catch (Exception ignored){}
+        mTvName.setText(dynamicBean.getUserInfoBean().getName());
+        setUserInfoClick(mTvName, dynamicBean);
+        mTvTime.setText(dynamicBean.getFriendlyTime());
+        // 是否是自己发布的
+        handleFollowView(mDynamicDetailHeader, dynamicBean.getUserInfoBean().getUser_id() == AppApplication.getMyUserIdWithdefault(), dynamicBean.getUserInfoBean
+                ().getFollower());
+        if (mOnFollowlistener != null) {
+            RxView.clicks(mTvFollow)
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                    .subscribe(aVoid -> {
+                        if (!dynamicBean.getUserInfoBean().getFollower()) {
+                            // 没关注，做关注操作
+                            handleFollowView(mDynamicDetailHeader, false, true);
+                        }
+                        mOnFollowlistener.onFollowClick(dynamicBean, mTvFollow);
+                    });
+        }
+        /*
+        文本内容处理
+         */
+        mTvContent.setOnClickListener(v -> mTvContent.performClick());
+        mTvContent.setText(dynamicBean.getFeed_content());
+        ConvertUtils.stringLinkConvert(mTvContent, setLiknks(dynamicBean, mTvContent.getText().toString()), false);
+        if (dynamicBean.isOpen()) {
+            mTvContent.setMaxLines(Integer.MAX_VALUE);
+        } else {
+            mTvContent.setMovementMethod(LinkMovementMethod.getInstance());
+            mTvContent.setMaxLines(mMaxlinesShow);
+            mTvContent.setEllipsize(TextUtils.TruncateAt.END);
+        }
+        mTvContent.setShowDot(!dynamicBean.isOpen(), mMaxlinesShow);
+        mTvContent.setOnClickListener(v -> {
+            if (dynamicBean.isOpen()) {
+                dynamicBean.setOpen(false);
+                mTvContent.setMovementMethod(LinkMovementMethod.getInstance());
+                ((TextView) v).setMaxLines(mMaxlinesShow);
+                mTvContent.setEllipsize(TextUtils.TruncateAt.END);
+
+            } else {
+                dynamicBean.setOpen(true);
+                mTvContent.setMaxLines(Integer.MAX_VALUE);
+                mTvContent.setText(dynamicBean.getFeed_content());
+                ConvertUtils.stringLinkConvert(mTvContent, setLiknks(dynamicBean, mTvContent.getText().toString()), false);
+            }
+            mTvContent.setShowDot(!dynamicBean.isOpen(), mMaxlinesShow);
+        });
+
+        /*String titleText = "";
         if (TextUtils.isEmpty(titleText)) {
             mTitle.setVisibility(View.GONE);
         } else {
@@ -161,7 +238,7 @@ public class DynamicDetailHeader {
             sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
                     .getDrawable(), R.mipmap.icon);
             setImageClickListener(photoList, dynamicBean);
-        }
+        }*/
     }
 
     private void dealLinkWords(DynamicDetailBeanV2 dynamicBean, String content) {
@@ -214,7 +291,7 @@ public class DynamicDetailHeader {
      */
     public void updateHeaderViewData(final DynamicDetailBeanV2 dynamicBean) {
 
-        DynamicHorizontalStackIconView dynamicHorizontalStackIconView =
+        /*DynamicHorizontalStackIconView dynamicHorizontalStackIconView =
                 (DynamicHorizontalStackIconView) mDynamicDetailHeader.findViewById(R.id
                         .detail_dig_view);
 
@@ -233,7 +310,7 @@ public class DynamicDetailHeader {
                     .class);
             intent.putExtras(bundle);
             mDynamicDetailHeader.getContext().startActivity(intent);
-        });
+        });*/
         if (dynamicBean.getFeed_comment_count() <= 0) {
             fl_comment_count_container.setVisibility(View.GONE);
         } else {
@@ -253,10 +330,10 @@ public class DynamicDetailHeader {
      * @param rewardsCountBean all reward data
      * @param rewardType       reward type
      */
-    public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean,
+    /*public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean,
                              RewardType rewardType, String moneyName) {
         mReWardView.initData(sourceId, data, rewardsCountBean, rewardType, moneyName);
-    }
+    }*/
 
     private void showContentImage(Context context, List<DynamicDetailBeanV2.ImagesBean> photoList, final int position, final int user_id,
                                   boolean lastImg, LinearLayout photoContainer) {
@@ -361,9 +438,9 @@ public class DynamicDetailHeader {
         mOnImageClickLisenter = onImageClickLisenter;
     }
 
-    public void setReWardViewVisible(int visible) {
+    /*public void setReWardViewVisible(int visible) {
         mReWardView.setVisibility(visible);
-    }
+    }*/
 
     public ReWardView getReWardView() {
         return mReWardView;
@@ -400,12 +477,66 @@ public class DynamicDetailHeader {
     }
 
     public int scrollCommentToTop() {
-        return mRewardView.getBottom();
+        return fl_comment_count_container.getBottom();
     }
 
     public interface OnImageClickLisenter {
         void onImageClick(int iamgePosition, long amount, int note);
     }
 
+    protected void setUserInfoClick(View view, final DynamicDetailBeanV2 dynamicBean) {
+        RxView.clicks(view)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> {
+                    if (mOnUserInfoClickListener != null) {
+                        mOnUserInfoClickListener.onUserInfoClick(dynamicBean.getUserInfoBean());
+                    }
+                });
+    }
+
+    public void setOnUserInfoClickLisenter(OnUserInfoClickListener onUserInfoClickLisenter) {
+        this.mOnUserInfoClickListener = onUserInfoClickLisenter;
+    }
+
+    /**
+     * 处理关注显示
+     *
+     * @param view
+     * @param isMine
+     * @param isFollowed
+     */
+    private void handleFollowView(View view, boolean isMine, boolean isFollowed) {
+        if (isMine) {
+            mTvFollow.setVisibility(View.INVISIBLE);
+        } else {
+            mTvFollow.setVisibility(View.VISIBLE);
+            if (isFollowed) {
+                // 关注了
+                Drawable moreDb = UIUtils.getCompoundDrawables(view.getContext(), R.mipmap
+                        .home_ico_more);
+                mTvFollow.setCompoundDrawables(moreDb, null, null,
+                        null);
+                mTvFollow.setBackgroundResource(0);
+                mTvFollow.setText("");
+            } else {
+                //没关注
+                mTvFollow.setCompoundDrawables(null, null, null,
+                        null);
+                mTvFollow.setText(view.getResources().getString(R.string.add_follow));
+                mTvFollow.setBackgroundResource(R.drawable.shape_radus_box_themecolor);
+            }
+        }
+    }
+
+    private OnFollowClickLisitener mOnFollowlistener;
+    /**
+     * 关注点击监听
+     */
+    public interface OnFollowClickLisitener {
+        void onFollowClick(DynamicDetailBeanV2 data, TextView followView);
+    }
+    public void setOnFollowlistener(OnFollowClickLisitener onFollowlistener) {
+        mOnFollowlistener = onFollowlistener;
+    }
 
 }

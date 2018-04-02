@@ -1,27 +1,28 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <include
-        layout="@layout/item_dynamic_detail_content"
-        />
+    <include layout="@layout/item_dynamic_detail_content_header" />
 
-    <com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView
+    <!--<include
+        layout="@layout/item_dynamic_detail_content"
+        android:visibility="gone" />-->
+
+    <!--<com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView
         android:id="@+id/detail_dig_view"
         android:layout_width="match_parent"
-        android:background="@color/white"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/spacing_normal_large">
-    </com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView>
+        android:background="@color/white"
+        android:paddingTop="@dimen/spacing_normal_large" />-->
 
-    <include
-        layout="@layout/include_reward"/>
+    <!--<include
+        layout="@layout/include_reward"
+        android:visibility="gone" />-->
 
     <include
         layout="@layout/advert_details"
-        />
+        android:visibility="gone" />
 
     <FrameLayout
         android:id="@+id/fl_comment_count_container"
@@ -46,17 +47,16 @@
                 android:paddingRight="@dimen/spacing_normal"
                 android:paddingTop="@dimen/spacing_mid"
                 android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_content_assist"/>
+                android:textSize="@dimen/size_content_assist" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape_line_bottom_themcolor"/>
+                android:background="@drawable/shape_line_bottom_themcolor" />
         </LinearLayout>
 
         <View
             style="@style/style_divider_horizontal_light"
-            android:layout_gravity="bottom"
-            />
+            android:layout_gravity="bottom" />
     </FrameLayout>
 </LinearLayout>

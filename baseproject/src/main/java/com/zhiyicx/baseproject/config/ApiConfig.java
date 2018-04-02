@@ -1056,6 +1056,6 @@ public class ApiConfig {
     // 机构用户的消息
     public static final String APP_PATH_GET_MERCHAIN_MESSAGE = "api/" + API_VERSION_2 + "/tbm/push/news";
 
-    public static final String APP_PATH_INFO_DETAIL = "api/" + API_VERSION_2 + "/tbm/news/{news}";// 详情
+    public static final String APP_PATH_INFO_DETAIL = "api/" + API_VERSION_2 + "/news/{news}";// 详情
 
 }
