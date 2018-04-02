@@ -61,8 +61,8 @@
         android:button="@drawable/selector_circle_post_synchro"
         android:paddingLeft="@dimen/spacing_small"
         android:text="@string/syn_to_dynamic"
-        android:textColor="@color/important_for_content"
-        android:textSize="@dimen/size_content"
+        android:textColor="@color/normal_for_assist_text"
+        android:textSize="@dimen/size_content_assist"
         android:visibility="gone"/>
 
     <LinearLayout
