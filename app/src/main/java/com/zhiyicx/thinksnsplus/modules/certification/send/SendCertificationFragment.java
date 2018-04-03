@@ -108,7 +108,7 @@ public class SendCertificationFragment extends TSFragment<SendCertificationContr
 
     @Override
     protected String setRightTitle() {
-        return getString(R.string.send_certification);
+        return getString(R.string.submit);
     }
 
 
