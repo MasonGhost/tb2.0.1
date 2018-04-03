@@ -31,6 +31,7 @@ import static com.zhiyicx.thinksnsplus.modules.certification.detail.Certificatio
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleFragment.REQUST_CODE_CATEGORY;
+import static com.zhiyicx.thinksnsplus.modules.circle.create.types.CircleTypesFragment.BUNDLE_CIRCLE_CATEGORY_NAME;
 
 /**
  * @Author Jliuer
@@ -154,6 +155,7 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
             Intent typeIntent = new Intent(getActivity(), CircleTyepsActivity.class);
             Bundle bundle = new Bundle();
             bundle.putBoolean(BUNDLE_ALL_CIRCLE_CATEGORY, true);
+            bundle.putString(BUNDLE_CIRCLE_CATEGORY_NAME, mTitle.get(mVpFragment.getCurrentItem()));
             typeIntent.putExtras(bundle);
             startActivityForResult(typeIntent, REQUST_CODE_CATEGORY);
         });

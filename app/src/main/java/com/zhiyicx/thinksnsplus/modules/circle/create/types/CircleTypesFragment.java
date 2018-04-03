@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -38,6 +39,7 @@ public class CircleTypesFragment extends TSFragment<AllCircleContainerContract.P
         implements AllCircleContainerContract.View {
 
     public static final String BUNDLE_CIRCLE_CATEGORY = "circle_category";
+    public static final String BUNDLE_CIRCLE_CATEGORY_NAME = "circle_category_name";
     private static final int DEFAULT_COLUMN = 4;
 
     @BindView(R.id.fragment_channel_content_unsubscribe)
@@ -45,6 +47,7 @@ public class CircleTypesFragment extends TSFragment<AllCircleContainerContract.P
 
     private List<CircleTypeBean> mCircleTypeBeans;
     private CommonAdapter mAdapter;
+    private String mCurrenChooseName;
 
     @Inject
     AllCircleContainerPresenter mAllCircleContainerPresenter;
@@ -102,6 +105,7 @@ public class CircleTypesFragment extends TSFragment<AllCircleContainerContract.P
         mFragmentChannelContentUnsubscribe.setLayoutManager(new GridLayoutManager(getActivity(),
                 DEFAULT_COLUMN));
         if (getArguments() != null) {
+            mCurrenChooseName = getArguments().getString(BUNDLE_CIRCLE_CATEGORY_NAME);
             boolean isFromAllCircle = getArguments().getBoolean(AllCircleContainerFragment.BUNDLE_ALL_CIRCLE_CATEGORY);
             if (isFromAllCircle) {
                 setToolBarRightImage(R.mipmap.ico_createcircle);
@@ -119,6 +123,12 @@ public class CircleTypesFragment extends TSFragment<AllCircleContainerContract.P
             @Override
             protected void convert(ViewHolder holder, CircleTypeBean data, int position) {
                 holder.setText(R.id.item_info_channel, data.getName());
+
+                if(!TextUtils.isEmpty(mCurrenChooseName)&&mCurrenChooseName.equals(data.getName())){
+                    holder.setBackgroundRes(R.id.item_info_channel,R.drawable.item_react_bg_blue);
+                }else {
+                    holder.setBackgroundRes(R.id.item_info_channel,R.drawable.item_channel_bg_normal);
+                }
             }
         };
 
