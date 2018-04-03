@@ -49,6 +49,7 @@ public class TabSelectView extends FrameLayout {
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = R.color.normal_for_assist_text;// 缺省的tab未选择文字
     private static final int DEFAULT_TAB_SELECTED_TEXTCOLOR = R.color.important_for_content;// 缺省的tab被选择文字
     private static final int DEFAULT_TAB_TEXTSIZE = R.integer.tab_text_size;// 缺省的tab文字大小
+    private static final int DEFAULT_TAB_TEXTSIZE_BIG = R.integer.tab_text_size_big;// 缺省的tab文字大小
     private static final int DEFAULT_TAB_LINE_COLOR = R.color.themeColor;// 缺省的tab的线的颜色
     private int mTabMargin = R.integer.tab_margin;// 缺省的tab左padding
     private int mTabMargin1 = R.integer.tab_margin;// 缺省的tab右padding
@@ -65,6 +66,8 @@ public class TabSelectView extends FrameLayout {
     private boolean mIsAdjustMode;
     private int mLinePagerIndicator = LinePagerIndicator.MODE_WRAP_CONTENT;
     private int mTabSpacing;
+
+    private boolean mIsNeedChooseItemToBig = false;
 
     public TabSelectView(Context context) {
         super(context);
@@ -204,11 +207,16 @@ public class TabSelectView extends FrameLayout {
                 });
     }
 
+    public void setNeedChooseItemToBig(boolean needChooseItemToBig) {
+        mIsNeedChooseItemToBig = needChooseItemToBig;
+    }
+
     private void initMagicIndicator() {
         mMagicIndicator.setBackgroundColor(Color.TRANSPARENT);
         mCommonNavigator = new CommonNavigator(mContext);
         mCommonNavigator.setAdjustMode(mIsAdjustMode);
         mCommonNavigator.setAdapter(new CommonNavigatorAdapter() {
+
 
             @Override
             public int getCount() {
@@ -222,7 +230,11 @@ public class TabSelectView extends FrameLayout {
                 simplePagerTitleView.setPadding(mTabSpacing, 0, mTabSpacing, 0);
                 simplePagerTitleView.setSelectedColor(ContextCompat.getColor(context, DEFAULT_TAB_SELECTED_TEXTCOLOR));
                 simplePagerTitleView.setText(mStringList.get(index));
-                simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, context.getResources().getInteger(DEFAULT_TAB_TEXTSIZE));
+                if (mIsNeedChooseItemToBig && mViewPager.getCurrentItem() == index) {
+                    simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, context.getResources().getInteger(DEFAULT_TAB_TEXTSIZE_BIG));
+                } else {
+                    simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, context.getResources().getInteger(DEFAULT_TAB_TEXTSIZE));
+                }
                 simplePagerTitleView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -239,13 +251,32 @@ public class TabSelectView extends FrameLayout {
                 try {
                     linePagerIndicator.setXOffset(-UIUtil.dip2px(context, context.getResources().getInteger(mTabPadding)));// 每个item边缘到指示器的边缘距离
                     linePagerIndicator.setLineHeight(UIUtil.dip2px(context, context.getResources().getInteger(mLineHeight)));
-                }catch (Exception ignored){}
+                } catch (Exception ignored) {
+                }
                 linePagerIndicator.setColors(ContextCompat.getColor(context, DEFAULT_TAB_LINE_COLOR));
                 return linePagerIndicator;
             }
         });
         mMagicIndicator.setNavigator(mCommonNavigator);
         ViewPagerHelper.bind(mMagicIndicator, mViewPager);
+        if (mIsNeedChooseItemToBig) {
+            mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                    mCommonNavigator.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
+        }
     }
 
     private void initMagicIndicator(CommonNavigatorAdapter customAdapter) {

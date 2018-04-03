@@ -97,6 +97,7 @@
     <integer name="line_height">2</integer>
     <integer name="no_line_height">0</integer>
     <!--tab的文字大小，单位sp-->
+    <integer name="tab_text_size_big">18</integer>
     <integer name="tab_text_size">16</integer>
     <integer name="tab_text_size_15">15</integer>
     <!--标签最多的个数-->

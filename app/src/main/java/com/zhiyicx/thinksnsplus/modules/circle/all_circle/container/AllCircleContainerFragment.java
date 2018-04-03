@@ -134,7 +134,9 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
 
     @Override
     protected void initViewPager(View rootView) {
+
         mTsvToolbar = (TabSelectView) rootView.findViewById(com.zhiyicx.baseproject.R.id.tsv_toolbar);
+        mTsvToolbar.setNeedChooseItemToBig(true);
         mTsvToolbar.setRightImg(R.mipmap.sec_nav_arrow, R.color.white);
         mTsvToolbar.setLeftImg(0);
         mTsvToolbar.setDefaultTabLinehegiht(R.integer.no_line_height);
