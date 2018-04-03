@@ -597,7 +597,7 @@
     <string name="description_hint">该描述会影响审核，请慎重填写</string>
 
     <string name="send_certification_data">上传资料</string>
-    <string name="send_certification_id_card">上传身份证正反面</string>
+    <string name="send_certification_id_card">上传身份证正反面照片</string>
     <string name="send_certification_company">上传企业机构营业执照</string>
     <string name="send_certification_pic_hint">点击上传照片</string>
     <string name="send_certification_pic_next">继续上传</string>
