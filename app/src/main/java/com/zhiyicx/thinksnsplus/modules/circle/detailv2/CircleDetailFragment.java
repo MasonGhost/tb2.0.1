@@ -328,6 +328,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     @Override
+    public boolean isFromMine() {
+        return false;
+    }
+
+    @Override
     protected boolean setUseCenterLoading() {
         return true;
     }
