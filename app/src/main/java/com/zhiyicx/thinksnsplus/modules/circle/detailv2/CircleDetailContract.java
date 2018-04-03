@@ -57,6 +57,12 @@ public interface CircleDetailContract {
         CircleZipBean getCircleZipBean();
 
         void scrollToTop();
+
+        /**
+         * 是否是我的帖子
+         * @return
+         */
+        boolean isFromMine();
     }
 
     interface Presenter extends ITSListPresenter<CirclePostListBean> {
