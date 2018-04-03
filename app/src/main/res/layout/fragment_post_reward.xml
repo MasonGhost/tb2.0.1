@@ -74,6 +74,7 @@
             android:id="@+id/rl_invite_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/full_button_height"
+            android:layout_marginTop="@dimen/spacing_normal"
             android:background="@color/white"
             android:orientation="horizontal">
 
