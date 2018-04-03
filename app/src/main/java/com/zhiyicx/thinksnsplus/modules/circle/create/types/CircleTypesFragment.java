@@ -67,7 +67,7 @@ public class CircleTypesFragment extends TSFragment<AllCircleContainerContract.P
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.info_choose_categorys);
+        return getString(R.string.cirle_type);
     }
 
     @Override
