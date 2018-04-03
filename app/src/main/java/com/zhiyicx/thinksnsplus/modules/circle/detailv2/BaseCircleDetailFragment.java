@@ -296,6 +296,11 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     }
 
     @Override
+    public boolean isFromMine() {
+        return false;
+    }
+
+    @Override
     public boolean isOutsideSerach() {
         return true;
     }

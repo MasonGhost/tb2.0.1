@@ -613,7 +613,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                     protected void onSuccess(BaseJsonV2 data) {
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.post_top_success));
                         // 我发布的页面不需要置顶刷新和置顶标识
-                        if (PUBLISH == mRootView.getCircleMinePostType()) {
+                        if (mRootView.isFromMine()) {
                             return;
                         }
                         CirclePostListBean currentPost = (CirclePostListBean) mRootView.getListDatas().get(position).clone();
