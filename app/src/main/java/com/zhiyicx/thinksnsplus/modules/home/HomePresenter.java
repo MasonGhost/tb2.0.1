@@ -159,6 +159,7 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
         CheckInBean checkInBean = mRootView.getCheckInData();
         if (checkInBean != null) {
             mRootView.showCheckInPop(checkInBean);
+            getCheckInInfo();
         } else {
             mRootView.showCenterLoading(mContext.getString(R.string.loading));
             getCheckInInfo();
