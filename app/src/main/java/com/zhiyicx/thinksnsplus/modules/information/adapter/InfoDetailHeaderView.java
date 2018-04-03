@@ -2,23 +2,17 @@ package com.zhiyicx.thinksnsplus.modules.information.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Message;
-import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -36,18 +30,18 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.data.beans.WordResourceBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
-import com.zhiyicx.thinksnsplus.modules.information.dig.InfoDigListActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.tb.word.WordActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.utils.MarkDownRule;
@@ -65,10 +59,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import br.tiagohm.markdownview.MarkdownView;
-import br.tiagohm.markdownview.css.InternalStyleSheet;
-import br.tiagohm.markdownview.css.styles.Github;
-import br.tiagohm.markdownview.js.ExternalScript;
-import br.tiagohm.markdownview.js.JavaScript;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -103,6 +93,8 @@ public class InfoDetailHeaderView extends BaseWebLoad {
     private Context mContext;
     private List<ImageBean> mImgList;
     private ImageView mIvDetail;
+    private LinearLayout mLLWord;
+    private TextView mTvWriteComment;
     private boolean isReviewIng;
 
     private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
@@ -136,6 +128,8 @@ public class InfoDetailHeaderView extends BaseWebLoad {
         mIvDetail = (ImageView) mInfoDetailHeader.findViewById(R.id.iv_detail);
         mItemInfoAuthor = (TextView) mInfoDetailHeader.findViewById(R.id.item_info_author);
         mItemInfoMerchainName = (TextView) mInfoDetailHeader.findViewById(R.id.item_info_merchain_name);
+        mLLWord = (LinearLayout) mInfoDetailHeader.findViewById(R.id.ll_word);
+        mTvWriteComment = (TextView) mInfoDetailHeader.findViewById(R.id.tv_write_comment);
         initAdvert(context, adverts);
     }
 
@@ -225,6 +219,11 @@ public class InfoDetailHeaderView extends BaseWebLoad {
             }
             // 评论信息
             updateCommentView(infoMain);
+            mLLWord.setVisibility(infoMain.getComment_status() == 1 ? VISIBLE : GONE);
+            mTvWriteComment.setOnClickListener(mTvWriteComment -> {
+                String content = TextUtils.isEmpty(infoMain.getText_content()) ? infoMain.getContent() : infoMain.getText_content();
+                WordActivity.startWordActivity(mContext, new WordResourceBean(infoMain.getUser(), infoMain.getId().toString(), infoMain.getTitle(), content));
+            });
         }
     }
 
@@ -318,7 +317,7 @@ public class InfoDetailHeaderView extends BaseWebLoad {
     public void updateCommentView(InfoListDataBean infoMain) {
         // 评论信息
         if (infoMain.getComment_count() != 0) {
-            mCommentHintView.setVisibility(View.VISIBLE);
+            //mCommentHintView.setVisibility(View.VISIBLE);
             mCommentCountView.setText(mContext.getString(R.string.dynamic_comment_count, infoMain.getComment_count() + ""));
         } else {
             mCommentHintView.setVisibility(View.GONE);

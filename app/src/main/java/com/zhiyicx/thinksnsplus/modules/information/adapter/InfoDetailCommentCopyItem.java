@@ -11,6 +11,7 @@ import com.klinker.android.link_builder.Link;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
@@ -33,12 +34,16 @@ import rx.functions.Action1;
 public class InfoDetailCommentCopyItem implements ItemViewDelegate<InfoCommentListBean> {
 
     private OnCommentItemListener mOnCommentItemListener;
-
+    private OnDeleteClickListener mOnDeleteClickListener;
     private OnUserInfoClickListener mOnUserInfoClickListener;
     private OnUserInfoLongClickListener mOnUserInfoLongClickListener;
 
     public void setOnUserInfoClickListener(OnUserInfoClickListener onUserInfoClickListener) {
         mOnUserInfoClickListener = onUserInfoClickListener;
+    }
+
+    public void setOnDeleteClickListener(OnDeleteClickListener onDeleteClickListener){
+        mOnDeleteClickListener = onDeleteClickListener;
     }
 
     public void setOnUserInfoLongClickListener(OnUserInfoLongClickListener onUserInfoLongClickListener) {
@@ -47,6 +52,10 @@ public class InfoDetailCommentCopyItem implements ItemViewDelegate<InfoCommentLi
 
     public InfoDetailCommentCopyItem(OnCommentItemListener onCommentItemListener) {
         mOnCommentItemListener = onCommentItemListener;
+    }
+
+    public InfoDetailCommentCopyItem(OnDeleteClickListener onDeleteClickListener) {
+        mOnDeleteClickListener = onDeleteClickListener;
     }
 
     @Override
@@ -64,7 +73,7 @@ public class InfoDetailCommentCopyItem implements ItemViewDelegate<InfoCommentLi
                         InfoCommentListBean lastT, final int position, int itemCounts) {
 
         ImageUtils.loadCircleUserHeadPic(infoCommentListBean.getFromUserInfoBean(), holder.getView(R.id.iv_headpic));
-
+        holder.getView(R.id.tv_delete).setVisibility(infoCommentListBean.getUser_id() == AppApplication.getMyUserIdWithdefault() ? View.VISIBLE : View.GONE);
         holder.setText(R.id.tv_name, infoCommentListBean.getFromUserInfoBean().getName());
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(infoCommentListBean
                 .getCreated_at()));
@@ -101,12 +110,21 @@ public class InfoDetailCommentCopyItem implements ItemViewDelegate<InfoCommentLi
         });
         setUserInfoClick(holder.getView(R.id.tv_name), infoCommentListBean.getFromUserInfoBean());
         setUserInfoClick(holder.getView(R.id.iv_headpic), infoCommentListBean.getFromUserInfoBean());
+        setDeleteClick(holder.getView(R.id.tv_delete), position);
     }
 
     private void setUserInfoClick(View v, final UserInfoBean userInfoBean) {
         RxView.clicks(v).subscribe(aVoid -> {
             if (mOnCommentItemListener != null) {
                 mOnCommentItemListener.onUserInfoClick(userInfoBean);
+            }
+        });
+    }
+
+    private void setDeleteClick(View v, int position){
+        RxView.clicks(v).subscribe(aVoid -> {
+            if (mOnDeleteClickListener != null) {
+                mOnDeleteClickListener.onItemDelete(position);
             }
         });
     }
@@ -161,5 +179,9 @@ public class InfoDetailCommentCopyItem implements ItemViewDelegate<InfoCommentLi
         void onItemLongClick(View view, RecyclerView.ViewHolder holder, int position);
 
         void onUserInfoClick(UserInfoBean userInfoBean);
+    }
+
+    public interface OnDeleteClickListener {
+        void onItemDelete(int position);
     }
 }

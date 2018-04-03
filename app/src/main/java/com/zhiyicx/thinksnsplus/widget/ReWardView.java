@@ -44,7 +44,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public class ReWardView extends FrameLayout {
-    private static final int DEFAULT_SHOW_IMAGE_SZIE = 10;
+    private static final int DEFAULT_SHOW_IMAGE_SZIE = 6;
     protected TextView mBtRewards;
     protected TextView mTvRewardsTip;
     protected RecyclerView mRVUsers;

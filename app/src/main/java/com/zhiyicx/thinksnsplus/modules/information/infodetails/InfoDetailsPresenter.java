@@ -457,7 +457,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                 + "" + System.currentTimeMillis();
         createComment.setComment_mark(Long.parseLong(comment_mark));
 
-        if (reply_id == 0) {// 回复资讯
+        if (reply_id == 0) {// 评论资讯
             UserInfoBean userInfoBean = new UserInfoBean();
             userInfoBean.setUser_id(0L);
             createComment.setToUserInfoBean(userInfoBean);
@@ -467,7 +467,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         }
         createComment.setFromUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(
                 AppApplication.getmCurrentLoginAuth().getUser_id()));
-        mInfoCommentListBeanDao.insertOrReplace(createComment);
+        //mInfoCommentListBeanDao.insertOrReplace(createComment);
 //        if (mRootView.getListDatas().get(0).getComment_content() == null) {
 //            mRootView.getListDatas().remove(0);// 去掉占位图
 //        }

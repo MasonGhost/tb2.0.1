@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_normal">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/spacing_mid"
+            android:paddingTop="@dimen/spacing_mid"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_content"
+            tools:text="举报 街角光影 的帖子" />
+
+        <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
+            android:id="@+id/et_word_content"
+            style="@style/style_edit_cursor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_mid"
+            android:padding="@dimen/spacing_normal"
+            app:hintContent="@string/hint_word"
+            app:limitSize="@integer/report_content_max_size"
+            app:showLimitSize="@integer/report_content_input_size"
+            app:showLines="@integer/dynamic_content_show_lines" />
+    </LinearLayout>
+
+    <com.zhiyicx.baseproject.widget.button.LoadingButton
+        android:id="@+id/bt_word"
+        style="@style/style_login_button"
+        android:layout_marginTop="@dimen/spacing_big_large"
+        android:enabled="false"
+        app:text="@string/word" />
+</LinearLayout>

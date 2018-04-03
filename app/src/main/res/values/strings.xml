@@ -928,6 +928,11 @@
     <string name="handle_fail">操作失败！</string>
     <string name="pay_blur_tip">这些东西是需要付费的，给了钱钱你就可以查看了，很厉害吧！！！</string>
 
+    <!--留言-->
+    <string name="word">提交</string>
+    <string name="hint_word">留言将由公众号筛选后显示，对所有人可见。</string>
+    <string name="word_success_tip">留言已提交，请耐心等待审核！</string>
+
     <!--聊天-->
     <string name="chat_delete_conversation_failed">删除聊天失败</string>
     <string name="chat_unconnected">聊天服务器未连接</string>

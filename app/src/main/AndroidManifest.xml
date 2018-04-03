@@ -257,6 +257,9 @@
             android:name=".modules.information.infosearch.SearchActivity"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".modules.tb.word.WordActivity"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".modules.dynamic.send.SendDynamicActivity"
             android:hardwareAccelerated="false"
             android:screenOrientation="portrait"

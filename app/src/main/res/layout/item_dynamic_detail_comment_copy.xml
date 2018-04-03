@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/bgColor"
     android:paddingLeft="@dimen/spacing_mid"
     android:paddingRight="@dimen/spacing_mid"
     android:paddingTop="@dimen/spacing_mid"
@@ -57,6 +57,20 @@
         android:textColor="@color/general_for_hint"
         android:textSize="@dimen/size_icon_assist"
         tools:text="4分钟前" />
+
+    <TextView
+        android:id="@+id/tv_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_content"
+        android:layout_marginLeft="@dimen/__picker_spacing_small"
+        android:layout_toRightOf="@+id/tv_time"
+        android:maxLines="1"
+        android:text="@string/delete"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/size_icon_assist"
+        android:visibility="gone"
+        tools:text="删除" />
 
     <TextView
         android:id="@+id/tv_top_flag"

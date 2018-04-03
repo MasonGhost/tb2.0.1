@@ -82,7 +82,8 @@ import static com.zhiyicx.thinksnsplus.modules.tb.dynamic.TBDynamicFragment.BUND
  */
 public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Presenter,
         InfoCommentListBean> implements InfoDetailsConstract.View, InputLimitView
-        .OnSendClickListener, BaseWebLoad.OnWebLoadListener, MultiItemTypeAdapter.OnItemClickListener, OnUserInfoClickListener {
+        .OnSendClickListener, BaseWebLoad.OnWebLoadListener, MultiItemTypeAdapter.OnItemClickListener, OnUserInfoClickListener,
+        InfoDetailCommentCopyItem.OnDeleteClickListener {
 
     public static final String BUNDLE_INFO_TYPE = "info_type";
     public static final String BUNDLE_INFO_ID = "info_Id";
@@ -152,9 +153,10 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 mListDatas);
         InfoDetailCommentCopyItem infoDetailCommentItem = new InfoDetailCommentCopyItem(new
                 ItemOnCommentListener());
+        infoDetailCommentItem.setOnDeleteClickListener(this);
         infoDetailCommentItem.setOnUserInfoClickListener(this);
         multiItemTypeAdapter.addItemViewDelegate(infoDetailCommentItem);
-        multiItemTypeAdapter.addItemViewDelegate(new InfoDetailCommentEmptyItem(R.mipmap.def_information_prompt));
+        multiItemTypeAdapter.addItemViewDelegate(new InfoDetailCommentEmptyItem(R.mipmap.ico_bg_color));
         multiItemTypeAdapter.setOnItemClickListener(this);
         return multiItemTypeAdapter;
     }
@@ -471,15 +473,15 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      */
     private void initDeleteCommentPopupWindow(final InfoCommentListBean data) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(BuildConfig.USE_TOLL && data.getId() != -1L ? getString(R.string.dynamic_list_top_comment) : null)
-                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
+                //.item1Str(BuildConfig.USE_TOLL && data.getId() != -1L ? getString(R.string.dynamic_list_top_comment) : null)
+                //.item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(() -> {
+                /*.item1ClickListener(() -> {
                     // 跳转置顶页面
                     mDeletCommentPopWindow.hide();
                     Bundle bundle = new Bundle();
@@ -496,7 +498,10 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     showDeleteTipPopupWindow(getString(R.string.delete_comment), () -> {
                         mPresenter.deleteComment(data);
                     }, true);
-
+                })*/
+                .item2ClickListener(() -> {
+                    mPresenter.deleteComment(data);
+                    mDeletCommentPopWindow.hide();
                 })
                 .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();
@@ -592,11 +597,16 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 
+    @Override
+    public void onItemDelete(int position) {
+        comment(position);
+    }
+
 
     class ItemOnCommentListener implements InfoDetailCommentCopyItem.OnCommentItemListener {
         @Override
         public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-            comment(position);
+            //comment(position);
         }
 
         @Override
