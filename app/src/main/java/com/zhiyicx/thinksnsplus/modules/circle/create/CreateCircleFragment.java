@@ -79,6 +79,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     public static final String PERMISSION_OWNER = "permission_owner";
     public static final String PERMISSION_MANAGER = "permission_manager";
 
+    @BindView(R.id.tv_attention)
+    TextView mTvAttention;
     @BindView(R.id.tv_currency_unit)
     TextView mTvCurrencyUnit;
     @BindView(R.id.iv_head_icon)
@@ -531,6 +533,12 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
         mTvNotice.getEtContent().setEnabled(canUpdate);
         mEtCircleIntroduce.getEtContent().setEnabled(canUpdate);
+
+        if (!canUpdate ) {
+            mLlSynchro.setVisibility(View.GONE);
+            mLlBlock.setVisibility(View.GONE);
+            mTvAttention.setVisibility(View.GONE);
+        }
 
     }
 

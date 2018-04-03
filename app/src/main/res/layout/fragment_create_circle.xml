@@ -291,7 +291,8 @@
                     android:id="@+id/wc_synchro"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/spacing_mid"/>
+                    android:layout_marginRight="@dimen/spacing_mid"
+                    android:button="@drawable/selector_ckeck_box_normal"/>
             </LinearLayout>
 
             <include
@@ -318,6 +319,7 @@
                     android:id="@+id/wc_block"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:button="@drawable/selector_ckeck_box_normal"
                     android:layout_marginRight="@dimen/spacing_mid"/>
             </LinearLayout>
 
@@ -381,9 +383,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/create_circle_button_height"
                     android:layout_marginLeft="@dimen/spacing_mid"
+                    android:background="@color/white"
                     android:button="@drawable/selector_circle_post_synchro"
                     android:paddingLeft="@dimen/spacing_small"
-                    android:background="@color/white"
                     android:text="@string/edit_circle_free"
                     android:textColor="@color/important_for_content"
                     android:textSize="@dimen/size_content"/>
@@ -393,16 +395,22 @@
                 layout="@layout/include_horizontal_divider_light"/>
 
             <TextView
+                android:id="@+id/tv_attention"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/create_circle_ps_height"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_small"
                 android:paddingLeft="@dimen/spacing_mid"
                 android:text="@string/edit_circle_join"
                 android:textColor="@color/general_for_loading_more"
                 android:textSize="@dimen/size_note_assist"/>
 
-            <include
-                layout="@layout/include_horizontal_divider_light"/>
+            <View
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/v_horizontal_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/divider_line"
+                android:layout_marginTop="15dp"
+                android:background="@color/general_for_line_light"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
