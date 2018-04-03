@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.SwitchCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.widget.CheckBox;
 
 import com.zhiyicx.thinksnsplus.widget.listener.OnTouchEventListener;
 
@@ -13,7 +14,7 @@ import com.zhiyicx.thinksnsplus.widget.listener.OnTouchEventListener;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class EnableSwitchCompat extends SwitchCompat {
+public class EnableSwitchCompat extends android.support.v7.widget.AppCompatCheckBox {
 
     private OnTouchEventListener mOnTouchEventListener;
 
