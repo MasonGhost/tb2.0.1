@@ -11,7 +11,7 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.BaseCircleDetailFragment
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CollectCirclePostListFragment extends BaseCircleDetailFragment {
+public class CollectCirclePostListFragment extends  BaseCircleDetailFragment {
 
     @Override
     protected boolean showPostFrom() {

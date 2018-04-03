@@ -54,6 +54,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_CIRCLE_POST;
+import static com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository.CircleMinePostType.PUBLISH;
 import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPresenter.DEFAULT_FIRST_SHOW_HISTORY_SIZE;
 
 /**
@@ -291,7 +292,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         creatComment.setId(-1L);
         mRootView.refreshData();
         mCirclePostCommentBeanGreenDao.insertOrReplace(creatComment);
-        mBaseCircleRepository.sendPostComment(creatComment.getContent(),feed_id,
+        mBaseCircleRepository.sendPostComment(creatComment.getContent(), feed_id,
                 creatComment.getReply_to_user_id(),
                 creatComment.getComment_mark());
     }
@@ -611,13 +612,17 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.post_top_success));
+                        // 我发布的页面不需要置顶刷新和置顶标识
+                        if (PUBLISH == mRootView.getCircleMinePostType()) {
+                            return;
+                        }
                         CirclePostListBean currentPost = (CirclePostListBean) mRootView.getListDatas().get(position).clone();
                         if (currentPost != null) {
                             currentPost.setPinned(true);
                             mRootView.getListDatas().add(0, currentPost);
                             mRootView.scrollToTop();
                         }
-                        if(mRootView.getCircleZipBean()!=null) {
+                        if (mRootView.getCircleZipBean() != null) {
                             mRootView.getCircleZipBean().setPinnedCount(mRootView.getCircleZipBean().getPinnedCount() + 1);
                         }
                         mRootView.refreshData();
