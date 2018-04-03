@@ -284,6 +284,7 @@
     <string name="circle_manager_format">圈管理(%d)</string>
     <string name="circle_member_format">成员(%d)</string>
     <string name="circle_post_from">来自	%s</string>
+    <string name="cirle_type">圈子分类</string>
     <string name="from">来自</string>
     <string name="circle_blacklist_format">黑名单(%d)</string>
     <string name="circle_blacklist">黑名单用户只能查看不能操作!</string>
