@@ -150,6 +150,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         if (getArguments() != null && getArguments().containsKey(BUNDLE_QUESTION_ID)) {
             mQuestionId = getArguments().getLong(BUNDLE_QUESTION_ID);
         }
+        // 设置悬赏
         if (!mQuestionId.equals(0L)) {
             mBtPublish.setText(getString(R.string.determine));
             mToolbarCenter.setText(getString(R.string.qa_reward_public));
@@ -524,16 +525,22 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
      * 3、什么都不设置 可以发布
      */
     private void configSureButton() {
-        boolean isEnable = true;
-        // 开了邀请但是居然不设置金额 想空手套白狼吗？？？ 不过这个邀请专家 就只能专家得钱了 万一专家并不想搭理你呢
-        if (mWcInvite.isChecked() && (mRewardMoney <= 0 || TextUtils.isEmpty(mBtQaSelectExpert.getRightText()))) {
-            isEnable = false;
+        if (!mQuestionId.equals(0L)) {
+            // 设置悬赏
+            mBtPublish.setEnabled(mRewardMoney > 0);
+        } else {
+            // 发布
+            boolean isEnable = true;
+            // 开了邀请但是居然不设置金额 想空手套白狼吗？？？ 不过这个邀请专家 就只能专家得钱了 万一专家并不想搭理你呢
+            if (mWcInvite.isChecked() && (mRewardMoney <= 0 || TextUtils.isEmpty(mBtQaSelectExpert.getRightText()))) {
+                isEnable = false;
+            }
+            // 围观都要收钱,但是收多少已经不是我能管的了QwQ.
+            if (mWcOnlooker.isChecked() && mOnLookerMoney <= 0) {
+                //isEnable = false;
+            }
+            mBtPublish.setEnabled(isEnable);
         }
-        // 围观都要收钱,但是收多少已经不是我能管的了QwQ.
-        if (mWcOnlooker.isChecked() && mOnLookerMoney <= 0) {
-            //isEnable = false;
-        }
-        mBtPublish.setEnabled(isEnable);
     }
 
     private void checkData() {
