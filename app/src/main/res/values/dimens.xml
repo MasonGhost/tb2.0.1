@@ -103,6 +103,7 @@
 
     <!--第三方登陆选择框高度-->
     <dimen name="pop_choose_third_type_height">50dp</dimen>
+    <dimen name="pop_choose_third_type_height_samll">40dp</dimen>
     <!--第三方登陆分割线边距-->
     <dimen name="third_margin">40dp</dimen>
 
