@@ -32,6 +32,8 @@ public interface QuestionDetailContract {
         void updateFollowState();
         void updateAnswerCount();
         void handleLoading(boolean isLoading, boolean success, String message);
+
+        void deleteSuccess();
     }
 
     interface Presenter extends ITSListPresenter<AnswerInfoBean>{

@@ -39,12 +39,14 @@ import org.simple.eventbus.Subscriber;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_QA_QUESTION_DETAIL;
@@ -126,7 +128,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.showMessage(message);
+                        mRootView.showSnackErrorMessage(message);
                     }
 
                     @Override
@@ -188,7 +190,8 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     public void deleteQuestion(Long question_id) {
         mRootView.handleLoading(true, false, mContext.getString(R.string.info_deleting));
         Subscription subscription = mBaseQARepository.deleteQuestion(question_id)
-                .compose(mSchedulersTransformer)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
 
                     @Override
@@ -196,13 +199,24 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                         Bundle bundle = new Bundle();
                         bundle.putSerializable(EVENT_UPDATE_QUESTION_DELETE, mRootView.getCurrentQuestion());
                         EventBus.getDefault().post(bundle, EVENT_UPDATE_QUESTION_DELETE);
-                        mRootView.handleLoading(false, true, "");
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.qa_question_delete_success));
+                        Subscription subscribe = Observable.timer(500, TimeUnit.MILLISECONDS)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(aLong -> mRootView.deleteSuccess(), Throwable::printStackTrace);
+                        addSubscrebe(subscribe);
+
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.handleLoading(false, false, message);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        showErrorTip(throwable);
                     }
                 });
         addSubscrebe(subscription);

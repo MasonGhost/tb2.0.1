@@ -61,7 +61,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
 
     @Override
     public void showDeleteSuccess() {
-        showSnackSuccessMessage(getString(R.string.qa_question_delete_success));
+//        showSnackSuccessMessage(getString(R.string.qa_question_delete_success));
     }
 
     @Override
