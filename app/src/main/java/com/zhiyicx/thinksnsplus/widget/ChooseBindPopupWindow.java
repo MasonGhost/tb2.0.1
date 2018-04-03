@@ -12,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 
 /**
@@ -76,12 +78,13 @@ public class ChooseBindPopupWindow extends PopupWindow {
     }
 
     private void initLayout() {
-        mContentView = LayoutInflater.from(mActivity).inflate(R.layout.pop_choose_bind, null);
+        mContentView = LayoutInflater.from(mActivity).inflate(mItemLayout != 0 ? mItemLayout : R.layout.pop_choose_bind, null);
         TextView item1 = (TextView) mContentView.findViewById(R.id.item_1);
         TextView item2 = (TextView) mContentView.findViewById(R.id.item_2);
         TextView item3 = (TextView) mContentView.findViewById(R.id.item_3);
 
-        int itemHeight = mContentView.getContext().getResources().getDimensionPixelOffset(R.dimen.pop_choose_third_type_height);
+        int itemHeight = mContentView.getContext().getResources().getDimensionPixelOffset(mItemLayout != 0 ? R.dimen
+                .pop_choose_third_type_height_samll : R.dimen.pop_choose_third_type_height);
         int space = mContentView.getContext().getResources().getDimensionPixelOffset(R.dimen.spacing_large);
         item1.setVisibility(!TextUtils.isEmpty(mItem1Str) ? View.VISIBLE : View.GONE);
         if (!TextUtils.isEmpty(mItem1Str)) {
@@ -132,6 +135,17 @@ public class ChooseBindPopupWindow extends PopupWindow {
     public void show() {
         setWindowAlpha(mAlpha);
         showAtLocation(mParentView == null ? mContentView : mParentView, Gravity.CENTER, 0, 0);
+    }
+
+    /**
+     * 显示特定位置
+     * @param view
+     */
+    public void showdefine(View view) {
+        int windowPos[] = CustomPopupWindow.calculatePopWindowPos(view, mContentView);
+        int xOff = view.getWidth();// 可以自己调整偏移
+        windowPos[0] -= xOff;
+        showAtLocation(view, Gravity.TOP | Gravity.START, windowPos[0], windowPos[1]);
     }
 
     public void showLeft() {
@@ -236,5 +250,6 @@ public class ChooseBindPopupWindow extends PopupWindow {
     public void canNotRegiterByThirdPlatform(boolean openThirdRegister) {
         mContentView.findViewById(R.id.item_2).setVisibility(openThirdRegister ? View.VISIBLE : View.GONE);
     }
+
 
 }

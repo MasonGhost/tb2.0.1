@@ -16,6 +16,7 @@ import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.HanziToPinyin;
 import com.zhiyicx.common.utils.recycleviewdecoration.StickySectionDecoration;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
@@ -309,13 +310,14 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
         mPopupWindow = ChooseBindPopupWindow.Builder()
                 .with(mActivity)
-                .alpha(0.8f)
+                .alpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .itemlStr(mActivity.getString(mPermissionOwner && isManager ? R.string.cancel_manager :
                         (mPermissionOwner && isMember ? R.string.appoint_manager : (mPermissionOwner || mPermissionManager) && isBlackList ? R.string.cancle_circle : R.string.empty)))
                 .item2Str(mActivity.getString(isManager ? R.string.empty : (isMember ? R.string
                         .cancle_circle : R.string.cancle_blacklist)))
                 .item3Str(mActivity.getString(isManager ? R.string.empty : (isMember ? R.string
                         .appoint_blacklist : R.string.empty)))
+                .itemLayout(R.layout.pop_circle_permission)
                 .isOutsideTouch(true)
                 .itemListener(position -> {
                     MembersPresenter.MemberHandleType type = null;
@@ -342,7 +344,8 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
                     mPopupWindow.hide();
                 })
                 .build();
-        mPopupWindow.showAsDropDown(v);
+//        mPopupWindow.showAsDropDown(v);
+        mPopupWindow.showdefine(v);
     }
 
     private void filterData(CharSequence filterStr) {
