@@ -268,14 +268,29 @@ QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
     }
 
     @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt, String message) {
+        super.snackViewDismissWhenTimeOut(prompt, message);
+        if (getActivity() != null && Prompt.SUCCESS == prompt && message.equals(getString(R.string.qa_question_delete_success))) {
+            deleteSuccess();
+        }
+    }
+
+    @Override
+    public void deleteSuccess() {
+        mDeleteQuestionPopWindow.dismiss();
+        mMorePop.dismiss();
+        getActivity().finish();
+    }
+
+    @Override
     public void handleLoading(boolean isLoading, boolean success, String message) {
         if (isLoading) {
             showSnackLoadingMessage(message);
         } else {
             if (success) {
                 if (TextUtils.isEmpty(message)) {
+                    mDeleteQuestionPopWindow.dismiss();
                     mMorePop.dismiss();
-                    getActivity().finish();
                 } else {
                     showSnackSuccessMessage(message);
                 }
@@ -540,7 +555,7 @@ QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
                     .buildTitleStr(getString(R.string.qa_pay_for_watch))
                     .buildItem1Str(getString(R.string.buy_pay_in_payment))
                     .buildItem2Str(getString(R.string.buy_pay_out))
-                    .buildMoneyStr(getString(R.string.buy_pay_integration,mPresenter.getSystemConfig().getOnlookQuestion()))
+                    .buildMoneyStr(getString(R.string.buy_pay_integration, mPresenter.getSystemConfig().getOnlookQuestion()))
                     .buildCenterPopWindowItem1ClickListener(() -> {
                         AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
                         if (answerInfoBean == null || answerInfoBean.getId() == null) {
@@ -582,6 +597,7 @@ QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
                         public void onRightClicked() {
                             // 删除问题
                             mPresenter.deleteQuestion(mQaListInfoBean.getId());
+                            mDeleteQuestionPopWindow.hide();
                         }
 
                         @Override

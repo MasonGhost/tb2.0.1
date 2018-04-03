@@ -135,9 +135,9 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.V
     protected boolean useEventBus() {
         return true;
     }
-
-    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_QUESTION_DELETE)
-    public void updateList(String message) {
-        mRootView.showDeleteSuccess();
-    }
+//
+//    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_QUESTION_DELETE)
+//    public void updateList(String message) {
+//        mRootView.showDeleteSuccess();
+//    }
 }
