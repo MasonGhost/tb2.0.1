@@ -99,7 +99,7 @@ public class MessageListFragment extends TSListFragment<MessageListContract.Pres
 
     @Override
     protected int setEmptView() {
-        return R.mipmap.def_follow_prompt;
+        return R.mipmap.ico_bg_color;
     }
 
     @Override

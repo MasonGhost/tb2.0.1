@@ -16,26 +16,13 @@ import com.zhiyicx.thinksnsplus.modules.report.ReportContract;
 public class WordContract {
     interface View extends ITSListView<InfoCommentListBean, WordContract.Presenter> {
         Long getNewsId();
-        /**
-         * 留言提交成功
-         *
-         * @param data
-         */
-        void wordSuccess(WordResultBean data);
 
-        /**
-         * 更新用户信息回调
-         *
-         * @param data
-         */
-        void getUserInfoResult(UserInfoBean data);
+        void wordSuccess();
     }
 
     interface Presenter extends ITSListPresenter<InfoCommentListBean> {
 
         void word(int reply_id, String content);
-
-        void getUserInfoById(Long userId);
 
         void deleteComment(InfoCommentListBean data);
     }

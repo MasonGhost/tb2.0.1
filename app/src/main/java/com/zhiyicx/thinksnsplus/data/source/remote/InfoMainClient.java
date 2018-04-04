@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
@@ -36,6 +37,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAIL_RELA
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DIG_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_FOLLOW_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_GET_COMMENT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_GET_MY_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_LIST_TB;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_LIST_V2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REPORT;
@@ -117,6 +119,11 @@ public interface InfoMainClient {
     Observable<InfoCommentBean> getInfoCommentListV2(@Path("news") String news_id,
                                                      @Query("after") Long max_id,
                                                      @Query("limit") Long limit);
+
+    @GET(APP_PATH_INFO_GET_MY_COMMENT)
+    Observable<List<InfoCommentListBean>> getMyInfoCommentListV2(@Path("news") String news_id,
+                                                                 @Query("after") Long max_id,
+                                                                 @Query("limit") Long limit);
 
     /**
      * 资讯投稿

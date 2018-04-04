@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/spacing_mid"
+    android:layout_marginRight="@dimen/spacing_mid"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/tv_hits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dynamic_list_hits"
+        android:textColor="@color/tb_color_dynamic_detail_more"
+        android:textSize="@dimen/size_rank_number" />
+
+    <TextView
+        android:id="@+id/tv_hits_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dynamic_detail_more_margin"
+        android:layout_toRightOf="@+id/tv_hits"
+        android:textColor="@color/tb_color_dynamic_detail_more"
+        android:textSize="@dimen/size_rank_number" />
+
+    <ImageView
+        android:id="@+id/img_digg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/head4_right_margin"
+        android:layout_toRightOf="@+id/tv_hits_count" />
+
+    <TextView
+        android:id="@+id/tv_digg_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/message_badge_count_width"
+        android:layout_toRightOf="@+id/img_digg"
+        android:text="1"
+        android:textColor="@color/tb_color_dynamic_detail_more"
+        android:textSize="@dimen/size_rank_number" />
+
+    <TextView
+        android:id="@+id/tv_complain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="@string/complain"
+        android:textColor="@color/tb_color_dynamic_detail_more"
+        android:textSize="@dimen/size_rank_number" />
+
+</RelativeLayout>

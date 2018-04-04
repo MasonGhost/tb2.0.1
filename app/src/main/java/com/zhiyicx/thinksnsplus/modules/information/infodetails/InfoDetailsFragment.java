@@ -83,7 +83,8 @@ import static com.zhiyicx.thinksnsplus.modules.tb.dynamic.TBDynamicFragment.BUND
 public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Presenter,
         InfoCommentListBean> implements InfoDetailsConstract.View, InputLimitView
         .OnSendClickListener, BaseWebLoad.OnWebLoadListener, MultiItemTypeAdapter.OnItemClickListener, OnUserInfoClickListener,
-        InfoDetailCommentCopyItem.OnDeleteClickListener {
+        InfoDetailCommentCopyItem.OnDeleteClickListener,
+        InfoDetailHeaderView.OnLikeClickListener{
 
     public static final String BUNDLE_INFO_TYPE = "info_type";
     public static final String BUNDLE_INFO_ID = "info_Id";
@@ -346,6 +347,8 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     private void initHeaderView() {
         mInfoDetailHeader = new InfoDetailHeaderView(getContext(), mPresenter.getAdvert());
+        mInfoDetailHeader.setOnUserInfoClickListener(this);
+        mInfoDetailHeader.setOnLikeClickListener(this);
         mInfoDetailHeader.setWebLoadListener(this);
         mHeaderAndFooterWrapper.addHeaderView(mInfoDetailHeader.getInfoDetailHeader());
         View mFooterView = new View(getContext());
@@ -602,6 +605,12 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         comment(position);
     }
 
+    @Override
+    public void onLike() {
+        mPresenter.handleLike(!mInfoMation.getHas_like(),
+                mInfoMation.getId() + "");
+        mInfoDetailHeader.updateLike(mInfoMation);
+    }
 
     class ItemOnCommentListener implements InfoDetailCommentCopyItem.OnCommentItemListener {
         @Override

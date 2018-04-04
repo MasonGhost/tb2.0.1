@@ -7,6 +7,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -26,10 +27,6 @@ import java.util.concurrent.TimeUnit;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
-/**
- * Created by Administrator on 2018/4/3.
- */
-
 public class WordHeaderView {
     /**
      * 当没有 title 时， 描述最多显示 2 行
@@ -39,6 +36,7 @@ public class WordHeaderView {
     private TextView mTvTitle;
     public UserInfoInroduceInputView mEtWordContent;
     public LoadingButton mBtWord;
+    private LinearLayout mLlMyWord;
     private View mWordHeader;
     private AnimationDrawable mLoginAnimationDrawable;
 
@@ -55,6 +53,7 @@ public class WordHeaderView {
         mTvTitle = (TextView) mWordHeader.findViewById(R.id.tv_title);
         mEtWordContent = (UserInfoInroduceInputView) mWordHeader.findViewById(R.id.et_word_content);
         mBtWord = (LoadingButton) mWordHeader.findViewById(R.id.bt_word);
+        mLlMyWord = (LinearLayout) mWordHeader.findViewById(R.id.ll_my_word);
         initListener();
     }
 
@@ -97,5 +96,9 @@ public class WordHeaderView {
     public void hideLoading(){
         mBtWord.handleAnimation(false);
         mBtWord.setEnabled(!TextUtils.isEmpty(mEtWordContent.getInputContent()));
+    }
+
+    public void updateLlMyWord(boolean isEmpty){
+        mLlMyWord.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
     }
 }

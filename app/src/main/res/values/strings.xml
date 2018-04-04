@@ -229,7 +229,10 @@
     <string name="dynamic_like">喜欢</string>
     <string name="dig_list">点赞榜</string>
     <string name="dynamic_comment">精彩留言</string>
+    <string name="dynamic_comment_my">我的留言</string>
     <string name="dynamic_write_comment">写留言</string>
+    <string name="dynamic_list_delete_word">删除留言</string>
+    <string name="dynamic_list_hits">阅读</string>
 
     <!--个人中心-->
     <string name="chat">聊天</string>
@@ -908,6 +911,7 @@
     <string name="circle_publish_hint_certification">只有认证过的用户才可以创建圈子，是否去认证?</string>
 
     <!--举报-->
+    <string name="complain">投诉</string>
     <string name="report">举报</string>
     <string name="report_title_format">举报 %1$s 的%2$s</string>
     <string name="report_title_format_single">举报 %s</string>

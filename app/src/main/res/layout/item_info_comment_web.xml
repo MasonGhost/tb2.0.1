@@ -109,12 +109,14 @@
 
     <include layout="@layout/item_dynamic_detail_dig" />
 
+    <include layout="@layout/item_dynamic_detail_more" />
+
     <View
         style="@style/style_divider_horizontal_light"
         android:layout_marginBottom="@dimen/spacing_normal_large"
         android:layout_marginLeft="@dimen/spacing_mid"
         android:layout_marginRight="@dimen/spacing_mid"
-        android:layout_marginStart="@dimen/spacing_mid" />
+        android:layout_marginTop="@dimen/spacing_large" />
 
     <include layout="@layout/include_reward" />
 
@@ -225,19 +227,19 @@
     </FrameLayout>
 
     <LinearLayout
-        android:id="@+id/ll_word"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/bgColor"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/ll_word"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingTop="@dimen/headpic_for_notification_27dp">
+            android:paddingTop="@dimen/headpic_for_notification_27dp"
+            android:visibility="gone">
 
             <View
                 style="@style/style_divider_horizontal_light"

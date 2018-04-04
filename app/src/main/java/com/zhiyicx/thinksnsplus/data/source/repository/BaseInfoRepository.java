@@ -175,6 +175,38 @@ public class BaseInfoRepository implements IBaseInfoRepository {
     }
 
     @Override
+    public Observable<List<InfoCommentListBean>> getMyInfoCommentListV2(String news_id, Long max_id, Long limit) {
+        return mInfoMainClient.getMyInfoCommentListV2(news_id, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
+                .observeOn(Schedulers.io())
+                .flatMap(infoCommentBean -> {
+                    final List<Object> user_ids = new ArrayList<>();
+                    if (infoCommentBean != null) {
+                        for (InfoCommentListBean commentListBean : infoCommentBean) {
+                            user_ids.add(commentListBean.getUser_id());
+                            user_ids.add(commentListBean.getReply_to_user_id());
+                            user_ids.add(commentListBean.getTarget_user());
+                        }
+                    }
+                    if (user_ids.isEmpty()) {
+                        return Observable.just(infoCommentBean);
+                    }
+                    return mUserInfoRepository.getUserInfo(user_ids)
+                            .map(userInfoBeanList -> {
+                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new
+                                        SparseArray<>();
+                                for (UserInfoBean userInfoBean : userInfoBeanList) {
+                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id()
+                                            .intValue(), userInfoBean);
+                                }
+                                dealCommentData(infoCommentBean, userInfoBeanSparseArray);
+                                mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanList);
+                                return infoCommentBean;
+                            });
+                })
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
     public Observable<List<InfoDigListBean>> getInfoDigListV2(String news_id, Long max_id) {
         return mInfoMainClient.getInfoDigList(news_id, max_id, TSListFragment.DEFAULT_PAGE_SIZE)
                 .flatMap(infoDigListBeen -> {

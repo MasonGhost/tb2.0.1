@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
@@ -78,6 +79,13 @@ public interface IBaseInfoRepository {
                                                      String type,
                                                      Long user_id
     );
+
+    /**
+     * 获取用户对该资讯的所有评论
+     *
+     * @param news_id  资讯ID
+     */
+    Observable<List<InfoCommentListBean>> getMyInfoCommentListV2(String news_id, Long max_id, Long limit);
 
 
 }

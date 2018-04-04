@@ -1,54 +1,25 @@
 package com.zhiyicx.thinksnsplus.modules.tb.word;
 
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.jakewharton.rxbinding.view.RxView;
-import com.jakewharton.rxbinding.widget.RxTextView;
-import com.trycatch.mysnackbar.Prompt;
-import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.widget.InputLimitView;
-import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.config.DefaultUserInfoConfig;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WordResourceBean;
-import com.zhiyicx.thinksnsplus.data.beans.WordResultBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailHeader;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentCopyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
-import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsConstract;
-import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.widget.DynamicCommentEmptyItem;
-import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
-import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
-
-import java.util.concurrent.TimeUnit;
-
-import butterknife.BindView;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
-import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-
-/**
- * Created by Administrator on 2018/4/3.
- */
 
 public class WordFragment extends TSListFragment<WordContract.Presenter, InfoCommentListBean> implements WordContract.View,
         OnUserInfoClickListener,
@@ -71,7 +42,7 @@ public class WordFragment extends TSListFragment<WordContract.Presenter, InfoCom
     }
 
     @Override
-    public void wordSuccess(WordResultBean data) {
+    public void wordSuccess() {
         showSnackSuccessMessage(getString(R.string.word_success_tip));
     }
 
@@ -100,16 +71,6 @@ public class WordFragment extends TSListFragment<WordContract.Presenter, InfoCom
     }
 
     @Override
-    public void getUserInfoResult(UserInfoBean data) {
-        if (data == null) {
-            mWordResourceBean.setUser(DefaultUserInfoConfig.getDefaultDeletUserInfo(mActivity, mWordResourceBean.getUser().getUser_id()));
-        } else {
-            mWordResourceBean.setUser(data);
-        }
-        mWordHeaderView.setWordDetial(mWordResourceBean);
-    }
-
-    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         if (getArguments() != null) {
@@ -127,15 +88,39 @@ public class WordFragment extends TSListFragment<WordContract.Presenter, InfoCom
     }
 
     @Override
+    protected boolean isNeedRefreshAnimation() {
+        return false;
+    }
+
+    @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
+    }
+
+    @Override
+    protected void layzLoad() {
+        if (mPresenter != null && getUserVisibleHint()) {
+            getNewDataFromNet();
+        }
+    }
+
+    @Override
     protected void initData() {
         if (mWordResourceBean.getUser() == null || mWordResourceBean.getUser().getUser_id() == null) {
             throw new IllegalArgumentException("user info not be null!");
         }
-        if (TextUtils.isEmpty(mWordResourceBean.getUser().getName())) {
+        /*if (TextUtils.isEmpty(mWordResourceBean.getUser().getName())) {
             mPresenter.getUserInfoById(mWordResourceBean.getUser().getUser_id());
         } else {
             mWordHeaderView.setWordDetial(mWordResourceBean);
-        }
+        }*/
+        mWordHeaderView.setWordDetial(mWordResourceBean);
+    }
+
+    @Override
+    public void refreshData() {
+        mWordHeaderView.updateLlMyWord((mListDatas.size() == 1 && mListDatas.get(0).getId() == null) || mListDatas.isEmpty());
+        super.refreshData();
     }
 
     @Override
@@ -147,14 +132,6 @@ public class WordFragment extends TSListFragment<WordContract.Presenter, InfoCom
     public void onDestroyView() {
         super.onDestroyView();
         mWordHeaderView.onDestroyView();
-    }
-
-    @Override
-    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
-        super.snackViewDismissWhenTimeOut(prompt);
-        if (mActivity != null && Prompt.SUCCESS == prompt) {
-            mActivity.finish();
-        }
     }
 
     @Override
@@ -210,7 +187,7 @@ public class WordFragment extends TSListFragment<WordContract.Presenter, InfoCom
      */
     private void initDeleteCommentPopupWindow(final InfoCommentListBean data) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.dynamic_list_delete_comment))
+                .item1Str(getString(R.string.dynamic_list_delete_word))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.information.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,11 +18,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -29,6 +32,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
@@ -36,10 +40,14 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.beans.WordResourceBean;
+import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
+import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.word.WordActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
@@ -96,9 +104,17 @@ public class InfoDetailHeaderView extends BaseWebLoad {
     private LinearLayout mLLWord;
     private TextView mTvWriteComment;
     private boolean isReviewIng;
+    private TextView mTvHitsCount;
+    private ImageView mImgDigg;
+    private TextView mTvDiggCount;
+    private TextView mTvComplain;
 
     private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
     private ArrayList<AnimationRectBean> animationRectBeanArrayList;
+    private OnUserInfoClickListener mOnUserInfoClickListener;
+    private OnLikeClickListener mOnLikeClickListener;
+    private Drawable mHasLike;
+    private Drawable mNotLike;
 
     public View getInfoDetailHeader() {
         return mInfoDetailHeader;
@@ -106,6 +122,8 @@ public class InfoDetailHeaderView extends BaseWebLoad {
 
     public InfoDetailHeaderView(Context context, List<RealAdvertListBean> adverts) {
         this.mContext = context;
+        mHasLike = mContext.getResources().getDrawable(R.mipmap.ico_like);
+        mNotLike = mContext.getResources().getDrawable(R.mipmap.ico_dislike);
         mImgList = new ArrayList<>();
         animationRectBeanArrayList = new ArrayList<>();
         mInfoDetailHeader = LayoutInflater.from(context).inflate(R.layout
@@ -130,12 +148,44 @@ public class InfoDetailHeaderView extends BaseWebLoad {
         mItemInfoMerchainName = (TextView) mInfoDetailHeader.findViewById(R.id.item_info_merchain_name);
         mLLWord = (LinearLayout) mInfoDetailHeader.findViewById(R.id.ll_word);
         mTvWriteComment = (TextView) mInfoDetailHeader.findViewById(R.id.tv_write_comment);
+        mTvHitsCount = (TextView) mInfoDetailHeader.findViewById(R.id.tv_hits_count);
+        mImgDigg = (ImageView) mInfoDetailHeader.findViewById(R.id.img_digg);
+        mTvDiggCount = (TextView) mInfoDetailHeader.findViewById(R.id.tv_digg_count);
+        mTvComplain = (TextView) mInfoDetailHeader.findViewById(R.id.tv_complain);
         initAdvert(context, adverts);
     }
 
     public void setDetail(InfoListDataBean infoMain) {
         if (infoMain != null) {
             mTitle.setText(infoMain.getTitle());
+            updateLike(infoMain);
+            mImgDigg.setOnClickListener(mImgDigg -> {
+                if (mOnLikeClickListener != null) {
+                    mOnLikeClickListener.onLike();
+                }
+            });
+            mTvHitsCount.setText(String.valueOf(infoMain.getHits()));
+            mTvComplain.setOnClickListener(view -> {
+                String img = "";
+                if (infoMain.getImage() != null) {
+                    img = ImageUtils.imagePathConvertV2(infoMain.getImage().getId(), mContext.getResources()
+                                    .getDimensionPixelOffset(R.dimen.report_resource_img), mContext.getResources()
+                                    .getDimensionPixelOffset(R.dimen.report_resource_img),
+                            ImageZipConfig.IMAGE_80_ZIP);
+                } else {
+                    int id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, infoMain.getContent());
+                    if (id > 0) {
+                        img = ImageUtils.imagePathConvertV2(id, mContext.getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img), mContext.getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img),
+                                ImageZipConfig.IMAGE_80_ZIP);
+                    }
+                }
+                UserInfoBean userInfoBean = new UserInfoBean();
+                userInfoBean.setUser_id(infoMain.getUser_id());
+                ReportActivity.startReportActivity(mContext, new ReportResourceBean(userInfoBean, String.valueOf(infoMain.getId()),
+                        infoMain.getTitle(), img, infoMain.getSubject(), ReportType.INFO));
+            });
 //            mChannel.setVisibility(infoMain.getCategory() == null ? GONE : VISIBLE);
 //            mChannel.setText(infoMain.getCategory() == null ? "" : infoMain.getCategory().getName());
             String from = TimeUtils.getYeayMonthDay(TimeUtils.utc2LocalLong(infoMain.getCreated_at()));
@@ -144,6 +194,11 @@ public class InfoDetailHeaderView extends BaseWebLoad {
             }
             mItemInfoAuthor.setText(infoMain.getAuthor());
             mItemInfoMerchainName.setText(infoMain.getUser().getName());
+            mItemInfoMerchainName.setOnClickListener(mItemInfoMerchainName -> {
+                if (mOnUserInfoClickListener != null) {
+                    mOnUserInfoClickListener.onUserInfoClick(infoMain.getUser());
+                }
+            });
             try {
                 UserInfoBean userInfoBean=new UserInfoBean();
                 userInfoBean.setName(infoMain.getAuthor());
@@ -219,12 +274,21 @@ public class InfoDetailHeaderView extends BaseWebLoad {
             }
             // 评论信息
             updateCommentView(infoMain);
-            mLLWord.setVisibility(infoMain.getComment_status() == 1 ? VISIBLE : GONE);
+            mLLWord.setVisibility(infoMain.getCommentList().isEmpty() ? GONE : VISIBLE);
+            mTvWriteComment.setVisibility(infoMain.getComment_status() == 1 ? VISIBLE : GONE);
             mTvWriteComment.setOnClickListener(mTvWriteComment -> {
                 String content = TextUtils.isEmpty(infoMain.getText_content()) ? infoMain.getContent() : infoMain.getText_content();
                 WordActivity.startWordActivity(mContext, new WordResourceBean(infoMain.getUser(), infoMain.getId().toString(), infoMain.getTitle(), content));
             });
         }
+    }
+
+    public void updateLlWord(boolean isEmpty){
+        mLLWord.setVisibility(isEmpty ? GONE : VISIBLE);
+    }
+
+    public void setOnUserInfoClickListener(OnUserInfoClickListener onUserInfoClickListener) {
+        mOnUserInfoClickListener = onUserInfoClickListener;
     }
 
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
@@ -454,6 +518,19 @@ public class InfoDetailHeaderView extends BaseWebLoad {
         destryWeb(mContent);
         destryWeb(mContentSubject);
 
+    }
+
+    public interface OnLikeClickListener{
+        void onLike();
+    }
+
+    public void setOnLikeClickListener(OnLikeClickListener onLikeClickListener){
+        this.mOnLikeClickListener = onLikeClickListener;
+    }
+
+    public void updateLike(InfoListDataBean infoMain){
+        mImgDigg.setImageDrawable(infoMain.getHas_like() ? mHasLike : mNotLike);
+        mTvDiggCount.setText(String.valueOf(infoMain.getDigg_count()));
     }
 
     public MarkdownView getContentWebView() {

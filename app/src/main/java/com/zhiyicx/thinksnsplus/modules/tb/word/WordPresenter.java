@@ -2,20 +2,23 @@ package com.zhiyicx.thinksnsplus.modules.tb.word;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.TimeUtils;
-import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.InfoCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.WordResourceBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoCommentListBeanDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Subscription;
 
 import static com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean.SEND_ING;
 
@@ -74,12 +77,7 @@ public class WordPresenter extends AppBasePresenter<WordContract.View>
         mRootView.refreshData();
         mBaseInfoRepository.sendComment(content, mRootView.getNewsId(), reply_id,
                 createComment.getComment_mark());
-        //mRootView.showSnackSuccessMessage(mContext.getString(R.string.word_success_tip));
-
-    }
-
-    @Override
-    public void getUserInfoById(Long userId) {
+        mRootView.wordSuccess();
 
     }
 
@@ -91,13 +89,32 @@ public class WordPresenter extends AppBasePresenter<WordContract.View>
             InfoCommentListBean emptyData = new InfoCommentListBean();
             mRootView.getListDatas().add(emptyData);
         }
-        mRootView.refreshData();
         mBaseInfoRepository.deleteComment(mRootView.getNewsId().intValue(), data.getId().intValue());
+        mRootView.refreshData();
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
+        Subscription subscribe = mBaseInfoRepository.getMyInfoCommentListV2(mRootView.getNewsId() + "", maxId, 0L)
+                .compose(mSchedulersTransformer)
+                .subscribe(new BaseSubscribeForV2<List<InfoCommentListBean>>() {
+                    @Override
+                    protected void onSuccess(List<InfoCommentListBean> data) {
+                        List<InfoCommentListBean> newList = dealComment(data, maxId);
+                        mRootView.onNetResponseSuccess(newList, isLoadMore);
+                    }
 
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        //handleInfoHasBeDeleted(code);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.onResponseError(throwable, isLoadMore);
+                    }
+                });
+        addSubscrebe(subscribe);
     }
 
     @Override
@@ -108,5 +125,30 @@ public class WordPresenter extends AppBasePresenter<WordContract.View>
     @Override
     public boolean insertOrUpdateData(@NotNull List<InfoCommentListBean> data, boolean isLoadMore) {
         return false;
+    }
+
+    private List<InfoCommentListBean> dealComment(List<InfoCommentListBean> infoCommentBean, long max_id) {
+        List<InfoCommentListBean> all = new ArrayList<>();
+        if (max_id == 0) {
+            List<InfoCommentListBean> localComment = mInfoCommentListBeanDao
+                    .getMySendingComment(mRootView.getNewsId());
+            if (!localComment.isEmpty()) {
+                for (int i = 0; i < localComment.size(); i++) {
+                    localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
+                            .getSingleDataFromCache(localComment.get(i).getUser_id()));
+                    if (localComment.get(i).getReply_to_user_id() != 0) {
+                        localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
+                                .getSingleDataFromCache(localComment.get(i)
+                                        .getReply_to_user_id()));
+                    }
+                }
+                all.addAll(localComment);
+            }
+        }
+        if (infoCommentBean != null) {
+            mInfoCommentListBeanDao.saveMultiData(infoCommentBean);
+            all.addAll(infoCommentBean);
+        }
+        return all;
     }
 }
