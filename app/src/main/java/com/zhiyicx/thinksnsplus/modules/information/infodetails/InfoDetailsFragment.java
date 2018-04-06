@@ -601,7 +601,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
-        //PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+        PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 
     @Override

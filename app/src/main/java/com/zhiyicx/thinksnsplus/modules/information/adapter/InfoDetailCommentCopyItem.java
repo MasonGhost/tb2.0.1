@@ -108,8 +108,8 @@ public class InfoDetailCommentCopyItem implements ItemViewDelegate<InfoCommentLi
             }
             return true;
         });
-        setUserInfoClick(holder.getView(R.id.tv_name), infoCommentListBean.getFromUserInfoBean());
-        setUserInfoClick(holder.getView(R.id.iv_headpic), infoCommentListBean.getFromUserInfoBean());
+        //setUserInfoClick(holder.getView(R.id.tv_name), infoCommentListBean.getFromUserInfoBean());
+        //setUserInfoClick(holder.getView(R.id.iv_headpic), infoCommentListBean.getFromUserInfoBean());
         setDeleteClick(holder.getView(R.id.tv_delete), position);
     }
 
