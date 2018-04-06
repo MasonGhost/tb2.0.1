@@ -189,10 +189,12 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     public void shareInfo(Bitmap bitmap) {
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
-        shareContent.setTitle(mContext.getString(R.string.app_name_info, mContext.getString(R.string.app_name)));
+        //shareContent.setTitle(mContext.getString(R.string.app_name_info, mContext.getString(R.string.app_name)));
+        shareContent.setTitle(mRootView.getCurrentInfo().getTitle());
         shareContent.setUrl(String.format(Locale.getDefault(), APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
                 mRootView.getCurrentInfo().getId()));
-        shareContent.setContent(mRootView.getCurrentInfo().getTitle());
+        //shareContent.setContent(mRootView.getCurrentInfo().getTitle());
+        shareContent.setContent(mRootView.getCurrentInfo().getSubject());
 
         if (bitmap == null) {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));

@@ -393,9 +393,13 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             mDdDynamicTool.getTag(R.id.view_data);
             switch (position) {
                 case ITEM_POSITION_0:// 点赞
-                    mPresenter.handleLike(!mInfoMation.getHas_like(),
-                            mInfoMation.getId() + "");
-                    updateMenuData();
+                    if(mInfoMation.getHas_like()){
+                        break;
+                    } else {
+                        mPresenter.handleLike(!mInfoMation.getHas_like(),
+                                mInfoMation.getId() + "");
+                        updateMenuData();
+                    }
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_1:// 评论
                     if (mInfoMation.getComment_status() == 1) {
@@ -597,7 +601,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
-        PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+        //PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 
     @Override
@@ -607,9 +611,13 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public void onLike() {
-        mPresenter.handleLike(!mInfoMation.getHas_like(),
-                mInfoMation.getId() + "");
-        mInfoDetailHeader.updateLike(mInfoMation);
+        if(mInfoMation.getHas_like()){
+            return;
+        } else {
+            mPresenter.handleLike(!mInfoMation.getHas_like(),
+                    mInfoMation.getId() + "");
+            mInfoDetailHeader.updateLike(mInfoMation);
+        }
     }
 
     class ItemOnCommentListener implements InfoDetailCommentCopyItem.OnCommentItemListener {
@@ -625,7 +633,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
         @Override
         public void onUserInfoClick(UserInfoBean userInfoBean) {
-            PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+            //PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
         }
     }
 

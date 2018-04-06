@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.scwang.smartrefresh.header.internal.MaterialProgressDrawable;
 import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshKernel;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -32,9 +33,10 @@ import com.zhiyicx.baseproject.R;
  */
 public class TSRefreshHeader extends FrameLayout implements RefreshHeader {
     private ImageView mReleaseRefreshingView;
-
-
+    private MaterialProgressDrawable mProgress;
     private int mChangeToReleaseRefreshAnimResId;
+    private int[] mDrawableColors;
+
     public TSRefreshHeader(@NonNull Context context) {
         this(context,null);
     }
@@ -50,9 +52,20 @@ public class TSRefreshHeader extends FrameLayout implements RefreshHeader {
     }
 
     private void init() {
-        mChangeToReleaseRefreshAnimResId = R.drawable.refresh_loading;
         mReleaseRefreshingView=new ImageView(getContext());
-        mReleaseRefreshingView.setImageResource(mChangeToReleaseRefreshAnimResId);
+        /*mChangeToReleaseRefreshAnimResId = R.drawable.refresh_loading;
+        mReleaseRefreshingView=new ImageView(getContext());
+        mReleaseRefreshingView.setImageResource(mChangeToReleaseRefreshAnimResId);*/
+
+        mProgress = new MaterialProgressDrawable(getContext(),mReleaseRefreshingView);
+        mProgress.showArrow(true);
+        mProgress.setAlpha(255);
+        mProgress.setStartEndTrim(0f, 0.8f);
+        mProgress.setArrowScale(1f); //0~1之间
+        mProgress.setProgressRotation(1);
+        mProgress.setColorSchemeColors(getResources().getColor(R.color.themeColor));
+        mReleaseRefreshingView.setImageDrawable(mProgress);
+
         addView(mReleaseRefreshingView);
         FrameLayout.LayoutParams layoutParams = (LayoutParams) mReleaseRefreshingView.getLayoutParams();
         layoutParams.height=getResources().getDimensionPixelOffset(R.dimen.refresh_header_height);
@@ -62,7 +75,11 @@ public class TSRefreshHeader extends FrameLayout implements RefreshHeader {
 
     @Override
     public void onPullingDown(float percent, int offset, int headerHeight, int extendHeight) {
-
+        mProgress.showArrow(true);
+        mProgress.setAlpha(255);
+        mProgress.setStartEndTrim(0f, 0.8f);
+        mProgress.setArrowScale(1f);
+        mProgress.setProgressRotation(1);
     }
 
     @Override
@@ -97,11 +114,11 @@ public class TSRefreshHeader extends FrameLayout implements RefreshHeader {
 
     @Override
     public void onStartAnimator(RefreshLayout layout, int height, int extendHeight) {
-        AnimationDrawable background = (AnimationDrawable) mReleaseRefreshingView.getDrawable();
+        /*AnimationDrawable background = (AnimationDrawable) mReleaseRefreshingView.getDrawable();
         if (!background.isRunning()) {
             background.start();
-        }
-
+        }*/
+        mProgress.start();
     }
 
     @Override
@@ -111,10 +128,11 @@ public class TSRefreshHeader extends FrameLayout implements RefreshHeader {
         }else {
             // 刷新失败
         }
-        AnimationDrawable background = (AnimationDrawable) mReleaseRefreshingView.getDrawable();
+        /*AnimationDrawable background = (AnimationDrawable) mReleaseRefreshingView.getDrawable();
         if (background.isRunning()) {
             background.stop();
-        }
+        }*/
+        mProgress.stop();
         return 300;
     }
 

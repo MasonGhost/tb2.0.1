@@ -53,4 +53,5 @@
     <color name="tb_color_contact_catalog">#eaeaea</color>
     <color name="tb_color_comment">#8f8f8f</color>
     <color name="tb_color_dynamic_detail_more">#999999</color>
+    <color name="bt_center_dialog">#b3757575</color>
 </resources>

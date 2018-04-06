@@ -531,7 +531,8 @@ public class ApiConfig {
     public static final String APP_PATH_SHARE_QA_QUESTION_DETAIL = APP_DOMAIN + "h5/questions/%s/detail";// 问答问题分享 h5
     public static final String APP_PATH_SHARE_QA_ANSWER_DETAIL = APP_DOMAIN + "h5/questions/answers/%s";// 问答回答分享 h5
     // 资讯详情网页
-    public static final String APP_PATH_INFO_DETAILS_FORMAT = "/h5/news/%s/detail";
+    //public static final String APP_PATH_INFO_DETAILS_FORMAT = "h5/news/%s/detail";
+    public static final String APP_PATH_INFO_DETAILS_FORMAT = "dist/index.html#/news/%s";
 
     /**
      * 仅仅测试使用

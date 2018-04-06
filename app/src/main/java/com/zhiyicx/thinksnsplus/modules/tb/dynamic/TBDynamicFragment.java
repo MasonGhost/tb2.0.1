@@ -179,19 +179,22 @@ public class TBDynamicFragment extends DynamicFragment {
      * @param dataPosition
      */
     protected void handleLike(int dataPosition, View contentView) {
-
-        // 先更新界面，再后台处理
-        mListDatas.get(dataPosition).setHas_digg(!mListDatas.get(dataPosition)
-                .isHas_digg());
-        mListDatas.get(dataPosition).setFeed_digg_count(mListDatas.get(dataPosition)
-                .isHas_digg() ?
-                mListDatas.get(dataPosition).getFeed_digg_count() + 1 : mListDatas.get
-                (dataPosition).getFeed_digg_count() - 1);
-        DynamicListMenuView dynamicListMenuView = (DynamicListMenuView) contentView.findViewById(R.id.dlmv_menu);
-        dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(mListDatas.get(dataPosition)
-                .getFeed_digg_count()), mListDatas.get(dataPosition).isHas_digg(), 2);
-        mPresenter.handleLike(mListDatas.get(dataPosition).isHas_digg(),
-                mListDatas.get(dataPosition).getId(), dataPosition);
+        if(mListDatas.get(dataPosition).isHas_digg()){
+            return;
+        } else {
+            // 先更新界面，再后台处理
+            mListDatas.get(dataPosition).setHas_digg(!mListDatas.get(dataPosition)
+                    .isHas_digg());
+            mListDatas.get(dataPosition).setFeed_digg_count(mListDatas.get(dataPosition)
+                    .isHas_digg() ?
+                    mListDatas.get(dataPosition).getFeed_digg_count() + 1 : mListDatas.get
+                    (dataPosition).getFeed_digg_count() - 1);
+            DynamicListMenuView dynamicListMenuView = (DynamicListMenuView) contentView.findViewById(R.id.dlmv_menu);
+            dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(mListDatas.get(dataPosition)
+                    .getFeed_digg_count()), mListDatas.get(dataPosition).isHas_digg(), 2);
+            mPresenter.handleLike(mListDatas.get(dataPosition).isHas_digg(),
+                    mListDatas.get(dataPosition).getId(), dataPosition);
+        }
     }
 
 

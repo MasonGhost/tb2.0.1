@@ -496,9 +496,13 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             switch (postion) {
                 case DynamicDetailMenuView.ITEM_POSITION_0:
                     // 处理喜欢逻辑，包括服务器，数据库，ui
-                    mPresenter.handleLike(!mDynamicBean.isHas_digg(),
-                            mDynamicBean.getId(), mDynamicBean);
-                    break;
+                    if(mDynamicBean.isHas_digg()){
+                        break;
+                    } else {
+                        mPresenter.handleLike(!mDynamicBean.isHas_digg(),
+                                mDynamicBean.getId(), mDynamicBean);
+                        break;
+                    }
                 case DynamicDetailMenuView.ITEM_POSITION_1:
                     // 评论
                     showCommentView();

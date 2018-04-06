@@ -17,6 +17,7 @@ import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentCopyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.widget.CenterDialog;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
@@ -29,6 +30,7 @@ public class WordFragment extends TSListFragment<WordContract.Presenter, InfoCom
     private WordResourceBean mWordResourceBean;
     private ActionPopupWindow mDeletCommentPopWindow;
     private WordHeaderView mWordHeaderView;
+    private CenterDialog mWordDialog;
 
     public static WordFragment newInstance(Bundle bundle) {
         WordFragment wordFragment = new WordFragment();
@@ -43,7 +45,8 @@ public class WordFragment extends TSListFragment<WordContract.Presenter, InfoCom
 
     @Override
     public void wordSuccess() {
-        showSnackSuccessMessage(getString(R.string.word_success_tip));
+        //showSnackSuccessMessage(getString(R.string.word_success_tip));
+        mWordDialog.show();
     }
 
     @Override
@@ -73,6 +76,7 @@ public class WordFragment extends TSListFragment<WordContract.Presenter, InfoCom
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        mWordDialog = new CenterDialog(mActivity);
         if (getArguments() != null) {
             mWordResourceBean = (WordResourceBean) getArguments().getSerializable(BUNDLE_WORD_RESOURCE_DATA);
             setCenterText(mWordResourceBean.getUser().getName());

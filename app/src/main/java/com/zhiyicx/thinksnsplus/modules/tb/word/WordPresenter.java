@@ -89,8 +89,8 @@ public class WordPresenter extends AppBasePresenter<WordContract.View>
             InfoCommentListBean emptyData = new InfoCommentListBean();
             mRootView.getListDatas().add(emptyData);
         }
-        mBaseInfoRepository.deleteComment(mRootView.getNewsId().intValue(), data.getId().intValue());
         mRootView.refreshData();
+        mBaseInfoRepository.deleteComment(mRootView.getNewsId().intValue(), data.getId().intValue());
     }
 
     @Override

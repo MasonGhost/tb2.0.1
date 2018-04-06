@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -25,7 +24,7 @@
                 android:id="@+id/iv_home"
                 android:layout_width="@dimen/icon_for_home_bottom"
                 android:layout_height="@dimen/icon_for_home_bottom"
-                android:src="@mipmap/ic_launcher"/>
+                android:src="@mipmap/ic_launcher" />
 
             <TextView
                 android:id="@+id/tv_home"
@@ -35,7 +34,7 @@
                 android:paddingBottom="@dimen/spacing_mid_small_8dp"
                 android:text="@string/home"
                 android:textColor="@color/home_bottom_navigate_text_normal"
-                android:textSize="@dimen/size_note_assist"/>
+                android:textSize="@dimen/size_note_assist" />
         </LinearLayout>
 
 
@@ -45,14 +44,14 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_horizontal|bottom"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:gravity="center_horizontal|bottom"
-                >
+                android:gravity="center_horizontal|bottom">
 
                 <ImageView
                     android:id="@+id/iv_message"
@@ -60,7 +59,7 @@
                     android:layout_height="@dimen/icon_for_home_bottom"
                     android:layout_centerHorizontal="true"
                     android:layout_gravity="bottom|center_horizontal"
-                    android:src="@mipmap/ic_launcher"/>
+                    android:src="@mipmap/ic_launcher" />
 
                 <com.zhiyicx.baseproject.widget.BadgeView
                     android:id="@+id/v_message_tip"
@@ -69,8 +68,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginRight="-8dp"
                     android:background="@drawable/shape_dot_red"
-                    android:visibility="invisible"
-                    />
+                    android:visibility="invisible" />
             </FrameLayout>
 
             <TextView
@@ -82,7 +80,7 @@
                 android:text="@string/message"
 
                 android:textColor="@color/home_bottom_navigate_text_normal"
-                android:textSize="@dimen/size_note_assist"/>
+                android:textSize="@dimen/size_note_assist" />
         </LinearLayout>
 
         <LinearLayout
@@ -97,7 +95,7 @@
                 android:id="@+id/iv_find"
                 android:layout_width="@dimen/icon_for_home_bottom"
                 android:layout_height="@dimen/icon_for_home_bottom"
-                android:src="@mipmap/ic_launcher"/>
+                android:src="@mipmap/ic_launcher" />
 
             <TextView
                 android:id="@+id/tv_find"
@@ -107,7 +105,7 @@
                 android:paddingBottom="@dimen/spacing_mid_small_8dp"
                 android:text="@string/find"
                 android:textColor="@color/home_bottom_navigate_text_normal"
-                android:textSize="@dimen/size_note_assist"/>
+                android:textSize="@dimen/size_note_assist" />
         </LinearLayout>
 
         <LinearLayout
@@ -127,7 +125,7 @@
                     android:layout_width="@dimen/icon_for_home_bottom"
                     android:layout_height="@dimen/icon_for_home_bottom"
                     android:layout_centerHorizontal="true"
-                    android:src="@mipmap/ic_launcher"/>
+                    android:src="@mipmap/ic_launcher" />
 
                 <View
                     android:id="@+id/v_mine_tip"
@@ -137,8 +135,7 @@
                     android:layout_margin="@dimen/spacing_tiny"
 
                     android:background="@drawable/shape_dot_red"
-                    android:visibility="invisible"
-                    />
+                    android:visibility="invisible" />
             </RelativeLayout>
 
 
@@ -150,7 +147,7 @@
                 android:paddingBottom="@dimen/spacing_mid_small_8dp"
                 android:text="@string/mine"
                 android:textColor="@color/home_bottom_navigate_text_normal"
-                android:textSize="@dimen/size_note_assist"/>
+                android:textSize="@dimen/size_note_assist" />
         </LinearLayout>
     </LinearLayout>
 
@@ -164,13 +161,11 @@
             android:id="@+id/vp_home"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            />
+            android:layout_weight="1" />
 
         <View
             android:id="@+id/line_bottom"
-            style="@style/style_divider_horizontal"
-            />
+            style="@style/style_divider_horizontal" />
 
     </LinearLayout>
 </RelativeLayout>
