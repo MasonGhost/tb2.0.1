@@ -43,6 +43,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
@@ -501,14 +502,15 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                     .setOnClickListener((clickedText, linkMetadata) -> {
                         LogUtils.d(clickedText);
                         try {
-                            Intent intent = new Intent();
+                            /*Intent intent = new Intent();
                             intent.setAction("android.intent.action.VIEW");
 //                        if (!clickedText.contains("http") || !clickedText.contains("ftp")) {
 //                            clickedText = "http://" + clickedText;
 //                        }
                             Uri content_url = Uri.parse(clickedText);
                             intent.setData(content_url);
-                            mContext.startActivity(intent);
+                            mContext.startActivity(intent);*/
+                            CustomWEBActivity.startToWEBActivity(mContext, clickedText);
                         } catch (Exception e) {
                             e.printStackTrace();
                             ToastUtils.showToast("链接错误！");

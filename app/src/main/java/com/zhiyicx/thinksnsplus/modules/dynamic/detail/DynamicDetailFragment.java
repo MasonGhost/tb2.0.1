@@ -61,6 +61,7 @@ import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
+import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_2;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_3;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -326,7 +327,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void setLike(boolean isLike) {
-        mDdDynamicTool.setItemIsChecked(isLike, ITEM_POSITION_0);
+        mDdDynamicTool.setItemIsChecked(isLike, ITEM_POSITION_2);
     }
 
     @Override
@@ -463,17 +464,17 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      * 设置底部工具栏UI
      */
     private void initBottomToolUI() {
-        // 初始化底部工具栏数据
-        mDdDynamicTool.setImageNormalResourceIds(new int[]{R.mipmap.home_ico_good_normal
-                , R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal
+        // 初始化底部工具栏数据share
+        mDdDynamicTool.setImageNormalResourceIds(new int[]{R.mipmap.detail_ico_share_normal
+                , R.mipmap.home_ico_comment_normal, R.mipmap.ico_zan
                 , R.mipmap.home_ico_more
         });
-        mDdDynamicTool.setImageCheckedResourceIds(new int[]{R.mipmap.home_ico_good_high
-                , R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal
+        mDdDynamicTool.setImageCheckedResourceIds(new int[]{R.mipmap.detail_ico_share_normal
+                , R.mipmap.home_ico_comment_normal, R.mipmap.ico_zan_on
                 , R.mipmap.home_ico_more
         });
-        mDdDynamicTool.setButtonText(new int[]{R.string.dynamic_like, R.string.comment
-                , R.string.share, R.string.more});
+        mDdDynamicTool.setButtonText(new int[]{R.string.share, R.string.comment
+                , R.string.dynamic_like, R.string.more});
 
     }
 
@@ -482,7 +483,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      */
     private void initBottomToolData(DynamicDetailBeanV2 dynamicBean) {
         // 设置是否喜欢
-        mDdDynamicTool.setItemIsChecked(dynamicBean.getHas_digg(), DynamicDetailMenuView.ITEM_POSITION_0);
+        mDdDynamicTool.setItemIsChecked(dynamicBean.getHas_digg(), ITEM_POSITION_2);
         //设置是否收藏
         mDdDynamicTool.setItemIsChecked(dynamicBean.getHas_collect(), DynamicDetailMenuView.ITEM_POSITION_3);
     }
@@ -495,6 +496,16 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             mDdDynamicTool.getTag(R.id.view_data);
             switch (postion) {
                 case DynamicDetailMenuView.ITEM_POSITION_0:
+                    // 分享
+                    mPresenter.shareDynamic(getCurrentDynamic(), mDynamicDetailHeader.getSharBitmap());
+                    break;
+                case DynamicDetailMenuView.ITEM_POSITION_1:
+                    // 评论
+                    showCommentView();
+                    mReplyUserId = 0;
+                    mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
+                    break;
+                case ITEM_POSITION_2:
                     // 处理喜欢逻辑，包括服务器，数据库，ui
                     if(mDynamicBean.isHas_digg()){
                         break;
@@ -503,18 +514,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                                 mDynamicBean.getId(), mDynamicBean);
                         break;
                     }
-                case DynamicDetailMenuView.ITEM_POSITION_1:
-                    // 评论
-                    showCommentView();
-                    mReplyUserId = 0;
-                    mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
-                    break;
-                case DynamicDetailMenuView.ITEM_POSITION_2:
-                    // 分享
-                    mPresenter.shareDynamic(getCurrentDynamic(), mDynamicDetailHeader.getSharBitmap());
-                    break;
                 case DynamicDetailMenuView.ITEM_POSITION_3:
-                    // 处理喜欢逻辑，包括服务器，数据库，ui
                     if (mDynamicBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
                         initMyDynamicPopupWindow(mDynamicBean, mDynamicBean.getHas_collect());
                         mMyDynamicPopWindow.show();
@@ -732,7 +732,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      */
     private void initOtherDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, boolean isCollected) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+//                .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
 ///                .item2Str(getString(R.string.dynamic_list_share_dynamic))
 //                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .item3Str(getString(R.string.report))
@@ -741,11 +741,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(() -> {
+                /*.item1ClickListener(() -> {
                     // 收藏
                     mPresenter.handleCollect(dynamicBean);
                     mOtherDynamicPopWindow.hide();
-                })
+                })*/
                 .item2ClickListener(() -> {
                     // 分享
                     mPresenter.shareDynamic(getCurrentDynamic(), mDynamicDetailHeader.getSharBitmap());
@@ -781,7 +781,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     private void initMyDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, boolean isCollected) {
         mMyDynamicPopWindow = ActionPopupWindow.builder()
 ///                .item1Str(getString(R.string.dynamic_list_share_dynamic))
-                .item2Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+//                .item2Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .item3Str(getString(R.string.dynamic_list_top_dynamic))
                 .item4Str(getString(R.string.dynamic_list_delete_dynamic))
                 .bottomStr(getString(R.string.cancel))
@@ -803,11 +803,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                         getActivity().finish();
                     }, true);
                 })
-                .item2ClickListener(() -> {
+                /*.item2ClickListener(() -> {
                     // 收藏
                     mPresenter.handleCollect(dynamicBean);
                     mMyDynamicPopWindow.hide();
-                })
+                })*/
                 .item1ClickListener(() -> {
                     // 分享
                     mPresenter.shareDynamic(getCurrentDynamic(), mDynamicDetailHeader.getSharBitmap());

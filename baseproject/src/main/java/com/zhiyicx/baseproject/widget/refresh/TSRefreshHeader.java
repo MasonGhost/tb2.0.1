@@ -35,7 +35,6 @@ public class TSRefreshHeader extends FrameLayout implements RefreshHeader {
     private ImageView mReleaseRefreshingView;
     private MaterialProgressDrawable mProgress;
     private int mChangeToReleaseRefreshAnimResId;
-    private int[] mDrawableColors;
 
     public TSRefreshHeader(@NonNull Context context) {
         this(context,null);

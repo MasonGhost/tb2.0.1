@@ -205,7 +205,7 @@ public class MechanismCenterFragment extends TSFragment {
      * @param follower
      */
     public void updateFollowStat(boolean follower) {
-        mBtFollow.setText(follower ? "进入公众号" : getString(R.string.follow));
+        mBtFollow.setText(follower ? "已关注" : getString(R.string.follow));
     }
 
     private void updateMerchainInfo(MerchainInfo data) {
@@ -234,12 +234,7 @@ public class MechanismCenterFragment extends TSFragment {
             mLineWeb.setVisibility(View.VISIBLE);
             mLlWebsiteContainer.setVisibility(View.VISIBLE);
             mTvWebsite.setText(data.getUrl());
-            mTvWebsite.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CustomWEBActivity.startToWEBActivity(getContext(), data.getUrl());
-                }
-            });
+            mTvWebsite.setOnClickListener(v -> CustomWEBActivity.startToWEBActivity(getContext(), data.getUrl()));
         }
         // 官网
         if (!TextUtils.isEmpty(data.getOther_info())) {
@@ -290,11 +285,11 @@ public class MechanismCenterFragment extends TSFragment {
                     handleFollow();
                 } else {
                     // 进入公众号
-                    Intent intent = new Intent(getActivity(), MerchainMessagelistActivity.class);
+                    /*Intent intent = new Intent(getActivity(), MerchainMessagelistActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(MerchainMessagelistActivity.BUNDLE_USER, mUserInfoBean);
                     intent.putExtras(bundle);
-                    startActivity(intent);
+                    startActivity(intent);*/
                 }
             }
         });

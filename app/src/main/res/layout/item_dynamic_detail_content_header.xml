@@ -1,5 +1,4 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_contaienr"
@@ -19,7 +18,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginLeft="@dimen/spacing_normal"
         android:src="@drawable/shape_default_image_circle"
-        app:ts_avatare_size="@dimen/headpic_for_dynamic_list"/>
+        app:ts_avatare_size="@dimen/headpic_for_dynamic_list" />
 
     <TextView
         android:id="@+id/tv_name"
@@ -30,10 +29,10 @@
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingStart="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_tiny"
-        android:textStyle="bold"
         android:textColor="@color/themeColor"
         android:textSize="@dimen/size_icon_assist"
-        tools:text="张三"/>
+        android:textStyle="bold"
+        tools:text="张三" />
 
     <TextView
         android:id="@+id/tv_top_flag"
@@ -48,7 +47,7 @@
         android:textColor="@color/dyanmic_top_flag"
         android:textSize="@dimen/size_advert_launche"
         android:visibility="gone"
-        tools:text="@string/dynamic_top_flag"/>
+        tools:text="@string/dynamic_top_flag" />
 
     <TextView
         android:id="@+id/tv_time"
@@ -64,7 +63,7 @@
         android:paddingTop="@dimen/spacing_small"
         android:textColor="@color/general_for_hint"
         android:textSize="@dimen/size_note_assist"
-        tools:text="2016-05-06"/>
+        tools:text="2016-05-06" />
 
     <TextView
         android:id="@+id/tv_follow"
@@ -73,8 +72,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/spacing_normal"
         android:gravity="center"
-        android:visibility="visible"
-        />
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_title"
@@ -90,7 +88,7 @@
         android:textColor="@color/themeColor"
         android:textSize="@dimen/size_sub_title"
         android:visibility="gone"
-        tools:text="了解到富士康垃圾管理的高考了了"/>
+        tools:text="了解到富士康垃圾管理的高考了了" />
 
     <com.zhiyicx.baseproject.widget.textview.SpanTextViewWithEllipsize
         android:id="@+id/tv_content"
@@ -107,6 +105,5 @@
         android:singleLine="false"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_sub_title"
-        tools:text="了解到富士康垃圾管理的高考了了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送"
-        />
+        tools:text="了解到富士康垃圾管理的高考了了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送" />
 </RelativeLayout>

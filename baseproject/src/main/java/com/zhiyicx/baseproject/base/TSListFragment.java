@@ -85,6 +85,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     protected RecyclerView mRvList;
     protected TextView mTvTopTip;
     protected RecyclerView.LayoutManager layoutManager;
+    private Handler mHandler;
+    private Runnable mRunnable;
 
     /**
      * 因为添加了 header 和 footer 故取消了 adater 的 emptyview，改为手动判断
@@ -134,8 +136,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     public void showMessage(String message) {
-        showMessageNotSticky(message);
         hideLoading();
+        showMessageNotSticky(message);
     }
 
     @Override
@@ -145,6 +147,15 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     protected void initView(View rootView) {
+        mHandler = new Handler();
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    setTopTipVisible(View.GONE);
+                } catch (Exception ignored) {}
+            }
+        };
         mRefreshlayout = (SmartRefreshLayout) rootView.findViewById(R.id.refreshlayout);
         mRvList = (RecyclerView) rootView.findViewById(R.id.swipe_target);
 
@@ -481,15 +492,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         }
         setTopTipVisible(View.VISIBLE);
         setTopTipText(text);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    setTopTipVisible(View.GONE);
-                } catch (Exception ignored) {
-                }
-            }
-        }, DEFAULT_TIP_STICKY_TIME);
+        mHandler.postDelayed(mRunnable, DEFAULT_TIP_STICKY_TIME);
     }
 
     protected void requestNetData(Long maxId, boolean isLoadMore) {
@@ -604,6 +607,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void onRefresh(RefreshLayout refreshlayout) {
+        try {
+            mHandler.removeCallbacks(mRunnable);
+            setTopTipVisible(View.GONE);
+        } catch (Exception ignored) {}
         // 游客不可以加载更多；并且当前是游客；并且当前已经加载了数据了；再次下拉就触发登录
         if (isUseTouristLoadLimit() && !TouristConfig.LIST_CAN_LOAD_MORE && mPresenter != null && mPresenter.isTourist() && !mListDatas.isEmpty()) {
             hideLoading();

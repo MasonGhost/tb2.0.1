@@ -761,16 +761,20 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * @param dataPosition
      */
     private void handleLike(int dataPosition) {
-        // 先更新界面，再后台处理
-        mListDatas.get(dataPosition).setHas_digg(!mListDatas.get(dataPosition)
-                .isHas_digg());
-        mListDatas.get(dataPosition).setFeed_digg_count(mListDatas.get(dataPosition)
-                .isHas_digg() ?
-                mListDatas.get(dataPosition).getFeed_digg_count() + 1 : mListDatas.get
-                (dataPosition).getFeed_digg_count() - 1);
-        refreshData();
-        mPresenter.handleLike(mListDatas.get(dataPosition).isHas_digg(),
-                mListDatas.get(dataPosition).getId(), dataPosition);
+        if(mListDatas.get(dataPosition).isHas_digg()){
+            return;
+        } else {
+            // 先更新界面，再后台处理
+            mListDatas.get(dataPosition).setHas_digg(!mListDatas.get(dataPosition)
+                    .isHas_digg());
+            mListDatas.get(dataPosition).setFeed_digg_count(mListDatas.get(dataPosition)
+                    .isHas_digg() ?
+                    mListDatas.get(dataPosition).getFeed_digg_count() + 1 : mListDatas.get
+                    (dataPosition).getFeed_digg_count() - 1);
+            refreshData();
+            mPresenter.handleLike(mListDatas.get(dataPosition).isHas_digg(),
+                    mListDatas.get(dataPosition).getId(), dataPosition);
+        }
     }
 
     private void showCommentView() {

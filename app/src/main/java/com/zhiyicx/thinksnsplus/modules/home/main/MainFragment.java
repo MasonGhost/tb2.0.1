@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -57,6 +58,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
      */
     private TextView mChooseBtLeft;
     private TextView mChooseBtRight;
+    private ImageView mImgRight;
 
     public void setOnImageClickListener(DynamicFragment.OnCommentClickListener onCommentClickListener) {
         mOnCommentClickListener = onCommentClickListener;
@@ -129,8 +131,10 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 //        });
         mChooseBtLeft = (TextView) mTsvToolbar.findViewById(R.id.tv_choose_bt_left);
         mChooseBtRight = (TextView) mTsvToolbar.findViewById(R.id.tv_choose_bt_right);
+        mImgRight = (ImageView) mTsvToolbar.findViewById(R.id.img_right);
         mChooseBtLeft.setOnClickListener(v -> mVpFragment.setCurrentItem(0));
         mChooseBtRight.setOnClickListener(v -> mVpFragment.setCurrentItem(1));
+        mImgRight.setOnClickListener(v -> startActivity(new Intent(mActivity, SearchMechanismUserActivity.class)));
     }
 
     @Override

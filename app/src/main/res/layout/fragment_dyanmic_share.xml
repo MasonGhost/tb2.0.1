@@ -6,13 +6,14 @@
     <ScrollView
         android:id="@+id/sl_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/ll_bottom_container">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_bottom_container"
+        android:fillViewport="true">
 
         <LinearLayout
             android:id="@+id/ll_share_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="#fdfdfd"
             android:orientation="vertical">
 

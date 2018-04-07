@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,7 +18,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@mipmap/bgpic_top_480"/>
+                android:background="@mipmap/bgpic_top_480" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -33,7 +32,7 @@
                     android:paddingLeft="@dimen/spacing_mid"
                     android:paddingRight="@dimen/spacing_mid"
                     android:paddingTop="@dimen/spacing_big_large"
-                    android:src="@mipmap/topbar_back_white"/>
+                    android:src="@mipmap/topbar_back_white" />
 
                 <ImageView
                     android:id="@+id/iv_more"
@@ -44,7 +43,7 @@
                     android:paddingLeft="@dimen/spacing_mid"
                     android:paddingRight="@dimen/spacing_mid"
                     android:paddingTop="@dimen/spacing_big_large"
-                    android:src="@mipmap/topbar_more_white"/>
+                    android:src="@mipmap/topbar_more_white" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -56,25 +55,25 @@
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center">
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/spacing_bigger_large">
 
                         <View
                             android:id="@+id/v_userinfo"
                             android:layout_width="70dp"
                             android:layout_height="70dp"
-                            android:layout_gravity="center"
                             android:layout_centerHorizontal="true"
-                            android:background="@drawable/shape_circle_boder_themecolor"
-                            />
+                            android:layout_gravity="center"
+                            android:background="@drawable/shape_circle_boder_themecolor" />
                         <!--头像-->
                         <com.zhiyicx.baseproject.widget.UserAvatarView
                             android:id="@+id/iv_head"
                             android:layout_width="@dimen/headpic_for_user_center"
                             android:layout_height="@dimen/headpic_for_user_center"
-                            android:layout_gravity="center"
                             android:layout_centerHorizontal="true"
+                            android:layout_gravity="center"
                             android:src="@mipmap/pic_default_secret"
-                            app:ts_avatare_size="@dimen/headpic_for_user_center"/>
+                            app:ts_avatare_size="@dimen/headpic_for_user_center" />
 
                     </FrameLayout>
 
@@ -86,7 +85,7 @@
                         android:text="dsfaf"
                         android:textColor="@color/white"
                         android:textSize="@dimen/size_sub_title"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tv_dec"
@@ -95,7 +94,7 @@
                         android:layout_marginTop="@dimen/spacing_mid"
                         android:text="wwwwwwwwww"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/size_content_assist"/>
+                        android:textSize="@dimen/size_content_assist" />
 
                 </LinearLayout>
             </RelativeLayout>
@@ -109,7 +108,7 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:minHeight="@dimen/toolbar_with_tab_height"
-            app:layout_scrollFlags="scroll"/>
+            app:layout_scrollFlags="scroll" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -117,7 +116,7 @@
         android:id="@+id/vp_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <LinearLayout
         android:id="@+id/ll_follow_container"
@@ -125,8 +124,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:gravity="center"
-        android:visibility="gone"
-        android:paddingBottom="@dimen/spacing_big_large">
+        android:paddingBottom="@dimen/spacing_big_large"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_attention"
@@ -142,7 +141,7 @@
             android:text="@string/add_follow"
             android:textColor="@color/white"
             android:textSize="@dimen/size_content"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
     </LinearLayout>
 

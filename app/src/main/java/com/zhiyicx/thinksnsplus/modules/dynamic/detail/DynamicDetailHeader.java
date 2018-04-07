@@ -30,6 +30,7 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.textview.SpanTextViewWithEllipsize;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
@@ -180,7 +181,7 @@ public class DynamicDetailHeader {
         文本内容处理
          */
         mTvContent.setOnClickListener(v -> mTvContent.performClick());
-        mTvContent.setText(dynamicBean.getFeed_content());
+        mTvContent.setText(dynamicBean.getFriendlyContent());
         ConvertUtils.stringLinkConvert(mTvContent, setLiknks(dynamicBean, mTvContent.getText().toString()), false);
         if (dynamicBean.isOpen()) {
             mTvContent.setMaxLines(Integer.MAX_VALUE);
@@ -200,7 +201,7 @@ public class DynamicDetailHeader {
             } else {
                 dynamicBean.setOpen(true);
                 mTvContent.setMaxLines(Integer.MAX_VALUE);
-                mTvContent.setText(dynamicBean.getFeed_content());
+                mTvContent.setText(dynamicBean.getFriendlyContent());
                 ConvertUtils.stringLinkConvert(mTvContent, setLiknks(dynamicBean, mTvContent.getText().toString()), false);
             }
             mTvContent.setShowDot(!dynamicBean.isOpen(), mMaxlinesShow);
@@ -311,7 +312,7 @@ public class DynamicDetailHeader {
             intent.putExtras(bundle);
             mDynamicDetailHeader.getContext().startActivity(intent);
         });*/
-        if (dynamicBean.getFeed_comment_count() <= 0) {
+        if (dynamicBean.getComments().isEmpty()) {
             fl_comment_count_container.setVisibility(View.GONE);
         } else {
             ((TextView) mDynamicDetailHeader.findViewById(R.id.tv_comment_count)).setText
@@ -461,11 +462,21 @@ public class DynamicDetailHeader {
                     .setHighlightAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .setOnClickListener((clickedText, linkMetadata) -> {
                         LogUtils.d(clickedText);
-                        Intent intent = new Intent();
-                        intent.setAction("android.intent.action.VIEW");
-                        Uri content_url = Uri.parse(clickedText);
-                        intent.setData(content_url);
-                        mContext.startActivity(intent);
+                        try {
+                            /*Intent intent = new Intent();
+                            intent.setAction("android.intent.action.VIEW");
+//                        if (!clickedText.contains("http") || !clickedText.contains("ftp")) {
+//                            clickedText = "http://" + clickedText;
+//                        }
+                            Uri content_url = Uri.parse(clickedText);
+                            intent.setData(content_url);
+                            mContext.startActivity(intent);*/
+                            CustomWEBActivity.startToWEBActivity(mContext, clickedText);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            ToastUtils.showToast("链接错误！");
+                        }
+
                     })
                     .setOnLongClickListener((clickedText, linkMetadata) -> {
 
@@ -506,7 +517,7 @@ public class DynamicDetailHeader {
      * @param isFollowed
      */
     private void handleFollowView(View view, boolean isMine, boolean isFollowed) {
-        if (isMine) {
+        /*if (isMine) {
             mTvFollow.setVisibility(View.INVISIBLE);
         } else {
             mTvFollow.setVisibility(View.VISIBLE);
@@ -525,7 +536,7 @@ public class DynamicDetailHeader {
                 mTvFollow.setText(view.getResources().getString(R.string.add_follow));
                 mTvFollow.setBackgroundResource(R.drawable.shape_radus_box_themecolor);
             }
-        }
+        }*/
     }
 
     private OnFollowClickLisitener mOnFollowlistener;

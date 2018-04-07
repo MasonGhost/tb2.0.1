@@ -192,6 +192,8 @@
     <string name="dynamic_list_resend_comment">重发评论</string>
     <string name="resend">重新发送</string>
     <string name="reply">回复 %s:</string>
+    <string name="count_tip">已更新%s条内容</string>
+    <string name="newest">已是最新内容</string>
     <!--发布动态-->
     <string name="send_dynamic">发布动态</string>
     <string name="send_words_dynamic">文字</string>
@@ -226,7 +228,7 @@
     <string name="dynamic_comment_count">精彩留言(%1$s)</string>
     <string name="dynamic_publish_time">发布于%1$s</string>
     <string name="dynamic_viewer_count">%1$s人浏览</string>
-    <string name="dynamic_like">喜欢</string>
+    <string name="dynamic_like">点赞</string>
     <string name="dig_list">点赞榜</string>
     <string name="dynamic_comment">精彩留言</string>
     <string name="dynamic_comment_my">我的留言</string>
