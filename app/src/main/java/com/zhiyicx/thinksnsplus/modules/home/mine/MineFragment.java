@@ -63,7 +63,11 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskBean.TBTASKTRIGGER.CERTIFICATION;
+import static com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskBean.TBTASKTRIGGER.COMMENT;
+import static com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskBean.TBTASKTRIGGER.DIGG;
+import static com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskBean.TBTASKTRIGGER.READ;
 import static com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskBean.TBTASKTRIGGER.SHARE;
+import static com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskBean.TBTASKTRIGGER.SHARE_NEWS;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
 
@@ -104,6 +108,16 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     MineTaskItemView mMtiEditInviteCode;
     @BindView(R.id.mti_share_dynamic)
     MineTaskItemView mMtiShareDynamic;
+
+    @BindView(R.id.mti_read)
+    MineTaskItemView mMtiRead;
+    @BindView(R.id.mti_comment)
+    MineTaskItemView mMtiComment;
+    @BindView(R.id.mti_digg)
+    MineTaskItemView mMtiDigg;
+    @BindView(R.id.mti_share_news)
+    MineTaskItemView mMtiShareNews;
+
     @BindView(R.id.mti_certify)
     MineTaskItemView mMtiCertify;
     @BindView(R.id.iv_setting)
@@ -501,6 +515,34 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                             , tbTaskBean.getName(), tbTaskBean.getDescription(), true,
                             0);
                     mMtiShareDynamic.setprogress(tbTaskBean.getNotes().size() * 100 / tbTaskBean.getFrequency());
+                } else if (DIGG.value.equals(tbTaskBean.getTrigger())) {
+                    setMineTaskViewData(mMtiDigg, String.valueOf(tbTaskBean.getAmount()), true, tbTaskBean.getNotes().size()
+                                    + "/" + tbTaskBean.getFrequency(),
+                            getColor(R.color.themeColor)
+                            , tbTaskBean.getName(), tbTaskBean.getDescription(), true,
+                            0);
+                    mMtiDigg.setprogress(tbTaskBean.getNotes().size() * 100 / tbTaskBean.getFrequency());
+                } else if (COMMENT.value.equals(tbTaskBean.getTrigger())) {
+                    setMineTaskViewData(mMtiComment, String.valueOf(tbTaskBean.getAmount()), true, tbTaskBean.getNotes().size()
+                                    + "/" + tbTaskBean.getFrequency(),
+                            getColor(R.color.themeColor)
+                            , tbTaskBean.getName(), tbTaskBean.getDescription(), true,
+                            0);
+                    mMtiComment.setprogress(tbTaskBean.getNotes().size() * 100 / tbTaskBean.getFrequency());
+                } else if (READ.value.equals(tbTaskBean.getTrigger())) {
+                    setMineTaskViewData(mMtiRead, String.valueOf(tbTaskBean.getAmount()), true, tbTaskBean.getNotes().size()
+                                    + "/" + tbTaskBean.getFrequency(),
+                            getColor(R.color.themeColor)
+                            , tbTaskBean.getName(), tbTaskBean.getDescription(), true,
+                            0);
+                    mMtiRead.setprogress(tbTaskBean.getNotes().size() * 100 / tbTaskBean.getFrequency());
+                } else if (SHARE_NEWS.value.equals(tbTaskBean.getTrigger())) {
+                    setMineTaskViewData(mMtiShareNews, String.valueOf(tbTaskBean.getAmount()), true, tbTaskBean.getNotes().size()
+                                    + "/" + tbTaskBean.getFrequency(),
+                            getColor(R.color.themeColor)
+                            , tbTaskBean.getName(), tbTaskBean.getDescription(), true,
+                            0);
+                    mMtiShareNews.setprogress(tbTaskBean.getNotes().size() * 100 / tbTaskBean.getFrequency());
                 } else if (CERTIFICATION.value.equals(tbTaskBean.getTrigger())) {
 
 
@@ -659,11 +701,12 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 .innerColor(ContextCompat.getColor(getContext(), R.color.checkin_nums_color))
                 .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
                 .format());
-        if (mCheckInBean.getLast_checkin_count() != 0 && mCheckInBean.getLast_checkin_count() % signInData.size() == 0) {
+        /*if (mCheckInBean.getLast_checkin_count() != 0 && mCheckInBean.getLast_checkin_count() % signInData.size() == 0) {
             mCheckInView.setCurretn(signInData.size());
         } else {
             mCheckInView.setCurretn(mCheckInBean.getLast_checkin_count() % 7);
-        }
+        }*/
+        mCheckInView.setCurretn(2);
     }
 
     private void initCheckViewData() {

@@ -42,6 +42,10 @@ public class TBTaskBean {
         INVITE_FIRENDS("INVITE_FIRENDS"),
         EDIT_INVITE_CODE("EDIT_INVITE_CODE"),
         SHARE("share"),
+        DIGG("digg"),
+        COMMENT("comment"),
+        READ("read"),
+        SHARE_NEWS("share_news"),
         CERTIFICATION("certification");
 
         public String value;

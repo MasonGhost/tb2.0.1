@@ -1,145 +1,138 @@
-<com.wcy.overscroll.OverScrollLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/overscroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@color/bgColor"
+    android:fillViewport="true">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/bgColor"
-        android:fillViewport="true">
-
-        <!--<LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-            &lt;!&ndash;资讯&ndash;&gt;
-            <com.zhiyicx.baseproject.widget.button.CombinationButton
-                    android:id="@+id/find_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/full_button_height"
-                    app:dividerLeftMargin="@dimen/spacing_normal"
-                    app:dividerRightMargin="@dimen/spacing_normal"
-                    app:leftImage="@mipmap/discover_ico_information"
-                    app:leftText="@string/information"
-                    app:rightImage="@mipmap/ic_arrow_smallgrey"/>
-
-            &lt;!&ndash;圈子&ndash;&gt;
-            <com.zhiyicx.baseproject.widget.button.CombinationButton
-                    android:id="@+id/find_chanel"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/full_button_height"
-                    android:visibility="visible"
-                    app:dividerLeftMargin="@dimen/spacing_normal"
-                    app:dividerRightMargin="@dimen/spacing_normal"
-                    app:leftImage="@mipmap/discover_ico_channel"
-                    app:leftText="@string/group"
-                    app:rightImage="@mipmap/ic_arrow_smallgrey"
-                    app:showLine="true"/>
-
-            &lt;!&ndash;问答&ndash;&gt;
-            <com.zhiyicx.baseproject.widget.button.CombinationButton
-                    android:id="@+id/find_qa"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/full_button_height"
-                    app:dividerLeftMargin="@dimen/spacing_normal"
-                    app:dividerRightMargin="@dimen/spacing_normal"
-                    android:visibility="visible"
-                    app:leftImage="@mipmap/discover_ico_queansw"
-                    app:leftText="@string/quiz"
-                    app:rightImage="@mipmap/ic_arrow_smallgrey"/>
-
-
-            &lt;!&ndash;活动&ndash;&gt;
-            <com.zhiyicx.baseproject.widget.button.CombinationButton
-                    android:id="@+id/find_active"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/full_button_height"
-                    android:visibility="gone"
-                    app:dividerLeftMargin="@dimen/spacing_normal"
-                    app:dividerRightMargin="@dimen/spacing_normal"
-                    app:leftImage="@mipmap/discover_ico_activity"
-                    app:leftText="@string/active"
-                    app:rightImage="@mipmap/ic_arrow_smallgrey"
-                    app:showLine="false"/>
-
-            &lt;!&ndash;排行榜&ndash;&gt;
-            <com.zhiyicx.baseproject.widget.button.CombinationButton
-                    android:id="@+id/find_rank"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/full_button_height"
-                    android:visibility="visible"
-                    android:layout_marginTop="@dimen/spacing_mid"
-                    app:dividerLeftMargin="@dimen/spacing_normal"
-                    app:dividerRightMargin="@dimen/spacing_normal"
-                    app:leftImage="@mipmap/discover_ico_rankinglist"
-                    app:leftText="@string/rank"
-                    app:rightImage="@mipmap/ic_arrow_smallgrey"/>
-
-            &lt;!&ndash;音乐FM&ndash;&gt;
-            <com.zhiyicx.baseproject.widget.button.CombinationButton
-                    android:id="@+id/find_music"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/full_button_height"
-                    app:dividerLeftMargin="@dimen/spacing_normal"
-                    app:dividerRightMargin="@dimen/spacing_normal"
-                    app:leftImage="@mipmap/discover_ico_music"
-                    app:leftText="@string/music_fm"
-                    app:rightImage="@mipmap/ic_arrow_smallgrey"/>
-            &lt;!&ndash;购物&ndash;&gt;
-            <com.zhiyicx.baseproject.widget.button.CombinationButton
-                    android:id="@+id/find_buy"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/full_button_height"
-                    app:dividerLeftMargin="@dimen/spacing_normal"
-                    app:dividerRightMargin="@dimen/spacing_normal"
-                    app:leftImage="@mipmap/discover_ico_buy"
-                    app:leftText="@string/buy_goods"
-                    app:rightImage="@mipmap/ic_arrow_smallgrey"
-                    app:showLine="false"/>
-
-            &lt;!&ndash;找人&ndash;&gt;
-            <com.zhiyicx.baseproject.widget.button.CombinationButton
-                    android:id="@+id/find_person"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/full_button_height"
-                    android:layout_marginTop="@dimen/spacing_mid"
-                    app:dividerLeftMargin="@dimen/spacing_normal"
-                    app:dividerRightMargin="@dimen/spacing_normal"
-                    app:leftImage="@mipmap/discover_ico_findpeople"
-                    app:leftText="@string/find_person"
-                    app:rightImage="@mipmap/ic_arrow_smallgrey"
-                    app:showLine="false"/>
-
-            &lt;!&ndash;附近的人&ndash;&gt;
-            <com.zhiyicx.baseproject.widget.button.CombinationButton
-                    android:id="@+id/find_nearby"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/full_button_height"
-                    android:visibility="gone"
-                    app:dividerLeftMargin="@dimen/spacing_normal"
-                    app:dividerRightMargin="@dimen/spacing_normal"
-                    app:leftImage="@mipmap/discover_ico_nearby"
-                    app:leftText="@string/near_person"
-                    app:rightImage="@mipmap/ic_arrow_smallgrey"
-                    app:showLine="false"/>
-
-
-        </LinearLayout>-->
-        <LinearLayout
+    <!--<LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ImageView
+        &lt;!&ndash;资讯&ndash;&gt;
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/find_info"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:src="@mipmap/ico_candy" />
+                android:layout_height="@dimen/full_button_height"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
+                app:leftImage="@mipmap/discover_ico_information"
+                app:leftText="@string/information"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
 
-        </LinearLayout>
-    </ScrollView>
-</com.wcy.overscroll.OverScrollLayout>
+        &lt;!&ndash;圈子&ndash;&gt;
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/find_chanel"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                android:visibility="visible"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
+                app:leftImage="@mipmap/discover_ico_channel"
+                app:leftText="@string/group"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"
+                app:showLine="true"/>
+
+        &lt;!&ndash;问答&ndash;&gt;
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/find_qa"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
+                android:visibility="visible"
+                app:leftImage="@mipmap/discover_ico_queansw"
+                app:leftText="@string/quiz"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+
+
+        &lt;!&ndash;活动&ndash;&gt;
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/find_active"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                android:visibility="gone"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
+                app:leftImage="@mipmap/discover_ico_activity"
+                app:leftText="@string/active"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"
+                app:showLine="false"/>
+
+        &lt;!&ndash;排行榜&ndash;&gt;
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/find_rank"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                android:visibility="visible"
+                android:layout_marginTop="@dimen/spacing_mid"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
+                app:leftImage="@mipmap/discover_ico_rankinglist"
+                app:leftText="@string/rank"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+
+        &lt;!&ndash;音乐FM&ndash;&gt;
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/find_music"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
+                app:leftImage="@mipmap/discover_ico_music"
+                app:leftText="@string/music_fm"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+        &lt;!&ndash;购物&ndash;&gt;
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/find_buy"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
+                app:leftImage="@mipmap/discover_ico_buy"
+                app:leftText="@string/buy_goods"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"
+                app:showLine="false"/>
+
+        &lt;!&ndash;找人&ndash;&gt;
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/find_person"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                android:layout_marginTop="@dimen/spacing_mid"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
+                app:leftImage="@mipmap/discover_ico_findpeople"
+                app:leftText="@string/find_person"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"
+                app:showLine="false"/>
+
+        &lt;!&ndash;附近的人&ndash;&gt;
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/find_nearby"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                android:visibility="gone"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
+                app:leftImage="@mipmap/discover_ico_nearby"
+                app:leftText="@string/near_person"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"
+                app:showLine="false"/>
+
+
+    </LinearLayout>-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@mipmap/ico_candy" />
+
+    </LinearLayout>
+</ScrollView>

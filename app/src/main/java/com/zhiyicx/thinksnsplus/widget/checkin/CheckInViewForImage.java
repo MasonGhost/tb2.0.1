@@ -52,7 +52,7 @@ public class CheckInViewForImage extends View {
     private static final int DEF_HEIGHT = 49; //默认高度
     private static final float SECTION_SCALE = 1.5F / 2; //截面的缩放值
     private static final float SIGN_IN_BALL_SCALE = 1F / 2; //签到 六边形的缩放值
-    private static final float SIGN_BG_RECT_SCALE = 1F / 7; //横线的 缩放值
+    private static final float SIGN_BG_RECT_SCALE = 1F / 2; //横线的 缩放值
 
 
     private int signInBgColor;  //签到背景颜色
@@ -153,9 +153,11 @@ public class CheckInViewForImage extends View {
         signInBallRadio = (int) (bitmapCheck.getWidth() / 2);
         signInRectHeight = (int) (signInBallRadio * SIGN_BG_RECT_SCALE);
 
-        signInBgRectF = new RectF(0 + 2 * signInBallRadio, viewHeight * SECTION_SCALE - signInBallRadio - signInRectHeight, viewWidth -
-                2 * signInBallRadio, viewHeight * SECTION_SCALE -
-                signInBallRadio);
+        signInBgRectF = new RectF(
+                0 + 2 * signInBallRadio,
+                viewHeight * SECTION_SCALE - signInBallRadio - signInRectHeight,
+                viewWidth - 2 * signInBallRadio,
+                viewHeight * SECTION_SCALE - signInBallRadio);
 
         circleY = (int) (signInBgRectF.top + signInRectHeight / 2);
 

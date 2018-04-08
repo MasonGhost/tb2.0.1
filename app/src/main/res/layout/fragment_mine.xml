@@ -285,9 +285,41 @@
 
                     android:layout_marginTop="@dimen/spacing_small"
                     android:visibility="gone"/>
+                <!--点赞-->
+                <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
+                    android:id="@+id/mti_digg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:visibility="gone"/>
+                <!--评论-->
+                <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
+                    android:id="@+id/mti_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:visibility="gone"/>
                 <!--分享快讯-->
                 <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
                     android:id="@+id/mti_share_dynamic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:visibility="gone"/>
+                <!--分享资讯-->
+                <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
+                    android:id="@+id/mti_share_news"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:visibility="gone"/>
+                <!--阅读-->
+                <com.zhiyicx.thinksnsplus.widget.MineTaskItemView
+                    android:id="@+id/mti_read"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
