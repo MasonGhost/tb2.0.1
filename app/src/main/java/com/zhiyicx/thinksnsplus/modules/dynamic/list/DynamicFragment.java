@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -121,6 +122,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private ActionPopupWindow mReSendCommentPopWindow;
     private ActionPopupWindow mReSendDynamicPopWindow;
     private PayPopWindow mPayImagePopWindow;
+    private Handler mHandler;
+    private Runnable mRunnable;
 
     /**
      * 当前动态所属用户
@@ -217,6 +220,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        mHandler = new Handler();
+        mRunnable = () -> showMessage(mListDatas.isEmpty() ? getString(R.string.newest)
+                : getString(R.string.count_tip, String.valueOf(mListDatas.size())));
         initInputView();
         AndroidBug5497Workaround.assistActivity(mActivity);
         Observable.create(subscriber -> {
@@ -396,8 +402,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             data.add(DynamicListAdvert.advert2Dynamic(advert, maxId));
         } catch (Exception ignore) {
         }
-        showMessage(data.isEmpty() ? getString(R.string.newest)
-                : getString(R.string.count_tip, String.valueOf(data.size())));
+        mHandler.postDelayed(mRunnable, 600);
         super.onNetResponseSuccess(data, isLoadMore);
     }
 

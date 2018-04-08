@@ -235,6 +235,7 @@
     <string name="dynamic_write_comment">写留言</string>
     <string name="dynamic_list_delete_word">删除留言</string>
     <string name="dynamic_list_hits">阅读</string>
+    <string name="dynamic_tip">以上留言由公众号筛选后显示</string>
 
     <!--个人中心-->
     <string name="chat">聊天</string>
@@ -1079,5 +1080,6 @@
     <string name="balance_not_enouph">余额不足!</string>
     <string name="app_name_simple">TB</string>
     <string name="comment_has_send_wait_review">评论已提交，请耐心等待审核！</string>
+    <string name="empty"></string>
 
 </resources>

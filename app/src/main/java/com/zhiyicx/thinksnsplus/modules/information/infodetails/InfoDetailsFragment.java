@@ -9,8 +9,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -65,6 +67,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 
 import static android.app.Activity.RESULT_OK;
+import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_2;
@@ -118,6 +121,8 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      */
     private InfoListDataBean mInfoMation;
     private long mInfoId;
+    private View mFootView;
+    private LinearLayout mLlFooter;
 
     private int mReplyUserId;// 被评论者的 id ,评论动态 id = 0
 
@@ -184,6 +189,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mCoordinatorLayout.setEnabled(true);
         this.mInfoMation = infoDetailBean;
         mInfoDetailHeader.setDetail(infoDetailBean);
+        mLlFooter.setVisibility(infoDetailBean.getCommentList().isEmpty() ? GONE : VISIBLE);
         mInfoDetailHeader.updateDigList(infoDetailBean);
         mInfoDetailHeader.setRelateInfo(infoDetailBean);
         onNetResponseSuccess(infoDetailBean.getCommentList(), false);
@@ -353,6 +359,9 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mHeaderAndFooterWrapper.addHeaderView(mInfoDetailHeader.getInfoDetailHeader());
         View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
+        mFootView = LayoutInflater.from(mActivity).inflate(R.layout.footer_infodetails, null);
+        mLlFooter = (LinearLayout) mFootView.findViewById(R.id.ll_footer);
+        mHeaderAndFooterWrapper.addFootView(mFootView);
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();

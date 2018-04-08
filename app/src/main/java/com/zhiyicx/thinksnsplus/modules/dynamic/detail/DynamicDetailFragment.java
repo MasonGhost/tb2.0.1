@@ -473,9 +473,10 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 , R.mipmap.home_ico_comment_normal, R.mipmap.ico_zan_on
                 , R.mipmap.home_ico_more
         });
-        mDdDynamicTool.setButtonText(new int[]{R.string.share, R.string.comment
-                , R.string.dynamic_like, R.string.more});
-
+        /*mDdDynamicTool.setButtonText(new int[]{R.string.share, R.string.comment
+                , R.string.dynamic_like, R.string.more});*/
+        mDdDynamicTool.setButtonText(new int[]{R.string.empty, R.string.empty
+                , R.string.empty, R.string.empty});
     }
 
     /**
