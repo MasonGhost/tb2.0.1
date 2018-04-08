@@ -1,22 +1,22 @@
-<com.wcy.overscroll.OverScrollLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/overscroll"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+<com.wcy.overscroll.OverScrollLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/overscroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/bgColor">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bgColor"
+        android:fillViewport="true">
 
-        <LinearLayout
+        <!--<LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-            <!--资讯-->
+            &lt;!&ndash;资讯&ndash;&gt;
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                     android:id="@+id/find_info"
                     android:layout_width="match_parent"
@@ -27,7 +27,7 @@
                     app:leftText="@string/information"
                     app:rightImage="@mipmap/ic_arrow_smallgrey"/>
 
-            <!--圈子-->
+            &lt;!&ndash;圈子&ndash;&gt;
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                     android:id="@+id/find_chanel"
                     android:layout_width="match_parent"
@@ -40,7 +40,7 @@
                     app:rightImage="@mipmap/ic_arrow_smallgrey"
                     app:showLine="true"/>
 
-            <!--问答-->
+            &lt;!&ndash;问答&ndash;&gt;
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                     android:id="@+id/find_qa"
                     android:layout_width="match_parent"
@@ -53,7 +53,7 @@
                     app:rightImage="@mipmap/ic_arrow_smallgrey"/>
 
 
-            <!--活动-->
+            &lt;!&ndash;活动&ndash;&gt;
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                     android:id="@+id/find_active"
                     android:layout_width="match_parent"
@@ -66,7 +66,7 @@
                     app:rightImage="@mipmap/ic_arrow_smallgrey"
                     app:showLine="false"/>
 
-            <!--排行榜-->
+            &lt;!&ndash;排行榜&ndash;&gt;
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                     android:id="@+id/find_rank"
                     android:layout_width="match_parent"
@@ -79,7 +79,7 @@
                     app:leftText="@string/rank"
                     app:rightImage="@mipmap/ic_arrow_smallgrey"/>
 
-            <!--音乐FM-->
+            &lt;!&ndash;音乐FM&ndash;&gt;
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                     android:id="@+id/find_music"
                     android:layout_width="match_parent"
@@ -89,7 +89,7 @@
                     app:leftImage="@mipmap/discover_ico_music"
                     app:leftText="@string/music_fm"
                     app:rightImage="@mipmap/ic_arrow_smallgrey"/>
-            <!--购物-->
+            &lt;!&ndash;购物&ndash;&gt;
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                     android:id="@+id/find_buy"
                     android:layout_width="match_parent"
@@ -101,7 +101,7 @@
                     app:rightImage="@mipmap/ic_arrow_smallgrey"
                     app:showLine="false"/>
 
-            <!--找人-->
+            &lt;!&ndash;找人&ndash;&gt;
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                     android:id="@+id/find_person"
                     android:layout_width="match_parent"
@@ -114,7 +114,7 @@
                     app:rightImage="@mipmap/ic_arrow_smallgrey"
                     app:showLine="false"/>
 
-            <!--附近的人-->
+            &lt;!&ndash;附近的人&ndash;&gt;
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                     android:id="@+id/find_nearby"
                     android:layout_width="match_parent"
@@ -127,6 +127,18 @@
                     app:rightImage="@mipmap/ic_arrow_smallgrey"
                     app:showLine="false"/>
 
+
+        </LinearLayout>-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@mipmap/ico_candy" />
 
         </LinearLayout>
     </ScrollView>

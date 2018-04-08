@@ -205,9 +205,9 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
             return;
         }
         // 只有推荐才加载广告
-        if (!mInfoType.equals(RECOMMEND_INFO)) {
+        /*if (!mInfoType.equals(RECOMMEND_INFO)) {
             return;
-        }
+        }*/
         List<RealAdvertListBean> advertList = mPresenter.getBannerAdvert();
 
         if (advertList == null || advertList.isEmpty()) {
