@@ -27,7 +27,7 @@ public class ApiConfig {
     //public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
 
     public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 自定义证书时使用false
-    public static final String APP_DOMAIN_DEV = "http://dev.zhibocloud.cn/";// 模拟在线正式服务器
+    public static final String APP_DOMAIN_DEV = "https://dev.zhibocloud.cn/";// 模拟在线正式服务器
     public static final String APP_DOMAIN_TEST = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
     public static final String APP_DOMAIN_FORMAL = "https://tsplus.zhibocloud.cn/";// 正式服务器
     public static final String APP_DOMAIN_FOR_TEARCHER_QIAO = "http://192.168.2.200/";// 乔老师本地服务器

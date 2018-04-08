@@ -205,13 +205,15 @@ public class LinkBuilder {
             //int start = text.indexOf(link.getText());
             if (start >= 0) {
                 int end = start + link.getText().length();
-
                 // add link to the spannable text
                 if (link.getLinkMetadata() != null && link.getLinkMetadata().getSZObj(LinkMetadata.METADATA_KEY_TYPE) ==
                         LinkMetadata.SpanType.NET_SITE && netUrlHandleBean != null && netUrlHandleBean.getPositions().contains(link_position)) {
                     TouchableSpan span = applyLink(link, new Range(start, end), s);
                     span.position = link_real_position;
                     link_real_position++;
+                } else if (!Link.DEFAULT_NET_SITE.equals(link.getText())) {
+                    TouchableSpan spanNor = applyLink(link, new Range(start, end), s);
+                    spanNor.position = link_position;
                 }
                 link_position++;
             }
