@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 
 public class Link {
 
-    public static final String DEFAULT_NET_SITE = "[查看全文]";
+    public static final String DEFAULT_NET_SITE = "[查看详情]";
 
     public static final int DEFAULT_COLOR = Color.parseColor("#33B5E5");
     private static final float DEFAULT_ALPHA = .20f;

@@ -211,12 +211,6 @@
                         android:textColor="@color/share_qr_code_tip_text_color"
                         android:textSize="@dimen/size_content_assist" />
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/divider_line"
-                        android:layout_marginTop="@dimen/spacing_small"
-                        android:background="@drawable/light_linear_driver" />
-
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

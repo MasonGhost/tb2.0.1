@@ -701,12 +701,11 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 .innerColor(ContextCompat.getColor(getContext(), R.color.checkin_nums_color))
                 .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
                 .format());
-        /*if (mCheckInBean.getLast_checkin_count() != 0 && mCheckInBean.getLast_checkin_count() % signInData.size() == 0) {
+        if (mCheckInBean.getLast_checkin_count() != 0 && mCheckInBean.getLast_checkin_count() % signInData.size() == 0) {
             mCheckInView.setCurretn(signInData.size());
         } else {
             mCheckInView.setCurretn(mCheckInBean.getLast_checkin_count() % 7);
-        }*/
-        mCheckInView.setCurretn(2);
+        }
     }
 
     private void initCheckViewData() {
