@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -56,8 +55,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS_FORMAT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_QA_ANSWER_DETAIL;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_INFO_LIST_COLLECT;
 import static com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean.SEND_ING;

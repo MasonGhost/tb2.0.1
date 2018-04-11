@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/info_channel_list_height"
@@ -18,13 +17,12 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_mid"
         android:scaleType="centerCrop"
-        android:src="@drawable/shape_default_image"/>
+        android:src="@drawable/shape_default_image" />
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/item_info_imag"
         android:orientation="vertical">
 
@@ -39,8 +37,7 @@
             android:minLines="2"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_content"
-            tools:text="流动性捉襟见肘，新三板如履薄冰"/>
-
+            tools:text="流动性捉襟见肘，新三板如履薄冰" />
         <!--资讯信息-->
         <FrameLayout
             android:layout_width="match_parent"
@@ -55,19 +52,20 @@
                 android:textColor="@color/normal_for_assist_text"
                 android:textSize="@dimen/size_content_assist"
                 android:visibility="gone"
-                tools:text="xxxx"/>
+                tools:text="xxxx" />
             <!--通用信息-->
             <RelativeLayout
                 android:id="@+id/ll_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <ImageView
                     android:id="@+id/iv_merhcain_headpic"
                     android:layout_width="@dimen/headpic_for_info_list"
                     android:layout_height="@dimen/headpic_for_info_list"
-                    android:src="@mipmap/pic_default_woman"/>
+                    android:src="@mipmap/pic_default_woman" />
 
                 <TextView
                     android:id="@+id/tv_top_flag"
@@ -79,7 +77,7 @@
                     android:text="@string/info_top"
                     android:textColor="@color/info_top"
                     android:textSize="@dimen/size_note_assist"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tv_from_channel"
@@ -90,13 +88,12 @@
                     android:textColor="@color/themeColor"
                     android:textSize="@dimen/size_note_assist"
                     android:visibility="gone"
-                    tools:text="时政"/>
+                    tools:text="时政" />
 
                 <TextView
                     android:id="@+id/item_info_timeform"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/iv_merhcain_headpic"
                     android:layout_marginLeft="@dimen/spacing_normal"
                     android:layout_marginStart="@dimen/spacing_normal"
                     android:layout_toRightOf="@id/iv_merhcain_headpic"
@@ -104,14 +101,13 @@
                     android:singleLine="true"
                     android:textColor="@color/general_for_hint"
                     android:textSize="@dimen/size_advert_launche"
-                    tools:text="三小时前"/>
-
+                    tools:text="三小时前" />
 
                 <TextView
                     android:id="@+id/item_info_comment_num"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/iv_merhcain_headpic"
+                    android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
                     android:drawableLeft="@mipmap/btn_comment_disabled"
                     android:drawablePadding="@dimen/spacing_small_3dp"
@@ -119,26 +115,23 @@
                     android:singleLine="true"
                     android:textColor="@color/general_for_hint"
                     android:textSize="@dimen/size_note_assist"
-                    tools:text="12"/>
+                    tools:text="12" />
 
                 <TextView
                     android:id="@+id/item_info_look_num"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/iv_merhcain_headpic"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginRight="@dimen/spacing_mid_tb"
                     android:layout_toLeftOf="@id/item_info_comment_num"
                     android:drawableLeft="@mipmap/btn_browse_disabled"
-                    android:layout_marginRight="@dimen/spacing_mid_tb"
                     android:drawablePadding="@dimen/spacing_small_3dp"
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:textColor="@color/general_for_hint"
                     android:textSize="@dimen/size_note_assist"
-                    tools:text="12"/>
+                    tools:text="12" />
             </RelativeLayout>
         </FrameLayout>
-
-
     </LinearLayout>
-
 </RelativeLayout>

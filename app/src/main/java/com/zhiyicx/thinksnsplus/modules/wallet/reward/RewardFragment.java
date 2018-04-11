@@ -166,7 +166,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     @Override
     protected void initData() {
         initRechargeLables();
-        mCustomMoney.setText(R.string.app_name_simple);
+        mCustomMoney.setText(R.string.et_top_input);
         if (mUserInfoBean != null) {
             mImageView.setVisibility(View.VISIBLE);
             ImageUtils.loadUserHead( mUserInfoBean,mImageView ,false);
@@ -241,9 +241,10 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     private void setCheckboxText(RadioButton checkboxText, double text) {
         mLlRechargeChooseMoneyItem.setVisibility(View.VISIBLE);
         checkboxText.setText(String.format(getString(R.string.money_format_tb), text));
-        Spannable spannable = new SpannableString(checkboxText.getText());
+        //前两个加粗
+        /*Spannable spannable = new SpannableString(checkboxText.getText());
         spannable.setSpan(new AbsoluteSizeSpan(10, true), checkboxText.getText().length() - 2, checkboxText.getText().length(), 0);
-        checkboxText.setText(spannable);
+        checkboxText.setText(spannable);*/
     }
 
     @Override

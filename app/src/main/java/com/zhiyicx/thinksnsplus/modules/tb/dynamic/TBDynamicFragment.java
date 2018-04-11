@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
+import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -37,6 +38,8 @@ import org.simple.eventbus.Subscriber;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.CAN_COMMENT;
 
@@ -48,6 +51,10 @@ import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.CAN_COMMEN
  */
 public class TBDynamicFragment extends DynamicFragment {
     public static final String BUNDLE_SHARE_DATA = "data";
+    @BindView(R.id.ilv_comment)
+    InputLimitView mIlvComment;
+    @BindView(R.id.v_shadow)
+    View mVShadow;
 
     private int mCurrentClickItemPosition = -1;
 
@@ -138,25 +145,30 @@ public class TBDynamicFragment extends DynamicFragment {
                 mCurrentClickItemPosition = dataPosition;
                 break;
             case 1:
+                mCurrentClickItemPosition = dataPosition;
                 // 评论
                 if (CAN_COMMENT == mListDatas.get(dataPosition).getCan_comment()) {
-                    // 还未发送成功的动态列表不查看详情
-                    if (mListDatas.get(dataPosition).getId() == null || mListDatas.get(dataPosition).getId() == 0) {
-                        return;
+                    if(mListDatas.get(dataPosition).getComments().isEmpty()){
+                        // 直接评论
+                        showCommentView();
+                        mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
+                    } else {
+                        // 还未发送成功的动态列表不查看详情
+                        if (mListDatas.get(dataPosition).getId() == null || mListDatas.get(dataPosition).getId() == 0) {
+                            return;
+                        }
+                        Intent commentListIntent = new Intent(getActivity(), DynamicDetailActivity.class);
+                        Bundle commentListBundle = new Bundle();
+                        commentListBundle.putParcelable(DynamicDetailFragment.DYNAMIC_DETAIL_DATA, mListDatas.get(dataPosition));
+                        commentListBundle.putString(DynamicDetailFragment.DYNAMIC_DETAIL_DATA_TYPE, getDynamicType());
+                        commentListIntent.putExtras(commentListBundle);
+                        startActivity(commentListIntent);
+                        getActivity().overridePendingTransition(R.anim.slide_in_bottom, R.anim.keep_on);
                     }
-                    Intent commentListIntent = new Intent(getActivity(), DynamicDetailActivity.class);
-                    Bundle commentListBundle = new Bundle();
-                    commentListBundle.putParcelable(DynamicDetailFragment.DYNAMIC_DETAIL_DATA, mListDatas.get(dataPosition));
-                    commentListBundle.putString(DynamicDetailFragment.DYNAMIC_DETAIL_DATA_TYPE, getDynamicType());
-                    commentListIntent.putExtras(commentListBundle);
-                    startActivity(commentListIntent);
-                    getActivity().overridePendingTransition(R.anim.slide_in_bottom, R.anim.keep_on);
-
                 } else {
                     showSnackWarningMessage(getString(R.string.dynamic_not_support_comment));
                 }
                 break;
-
             case 2:
                 // 喜欢
                 if ((!TouristConfig.DYNAMIC_CAN_DIGG && mPresenter.handleTouristControl()) ||
@@ -166,11 +178,23 @@ public class TBDynamicFragment extends DynamicFragment {
                 }
                 handleLike(dataPosition, contentView);
                 break;
-
-
             default:
 
         }
+    }
+
+    /**
+     * comment send
+     *
+     * @param text
+     */
+    @Override
+    public void onSendClick(View v, final String text) {
+        com.zhiyicx.imsdk.utils.common.DeviceUtils.hideSoftKeyboard(getContext(), v);
+        mIlvComment.setVisibility(View.GONE);
+        mVShadow.setVisibility(View.GONE);
+        mPresenter.sendCommentV2(mCurrentClickItemPosition, 0, text);
+        showBottomView(true);
     }
 
     /**

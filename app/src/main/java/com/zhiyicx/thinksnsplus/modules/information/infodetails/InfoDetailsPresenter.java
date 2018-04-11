@@ -192,7 +192,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         //shareContent.setTitle(mContext.getString(R.string.app_name_info, mContext.getString(R.string.app_name)));
         shareContent.setTitle(mRootView.getCurrentInfo().getTitle());
         shareContent.setUrl(String.format(Locale.getDefault(), APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
-                mRootView.getCurrentInfo().getId()));
+                mRootView.getCurrentInfo().getId(), mRootView.getCurrentInfo().getUser().getUser_id()));
         //shareContent.setContent(mRootView.getCurrentInfo().getTitle());
         shareContent.setContent(mRootView.getCurrentInfo().getSubject());
 

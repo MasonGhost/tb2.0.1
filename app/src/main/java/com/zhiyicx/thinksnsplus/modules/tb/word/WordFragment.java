@@ -29,6 +29,7 @@ public class WordFragment extends TSListFragment<WordContract.Presenter, InfoCom
 
     private WordResourceBean mWordResourceBean;
     private ActionPopupWindow mDeletCommentPopWindow;
+    private ActionPopupWindow mFinishPopupWindow;
     private WordHeaderView mWordHeaderView;
     private CenterDialog mWordDialog;
 
@@ -47,6 +48,17 @@ public class WordFragment extends TSListFragment<WordContract.Presenter, InfoCom
     public void wordSuccess() {
         //showSnackSuccessMessage(getString(R.string.word_success_tip));
         mWordDialog.show();
+    }
+
+    @Override
+    protected void setLeftClick() {
+        if(!TextUtils.isEmpty(mWordHeaderView.mEtWordContent.getInputContent())){
+            initFinishPopupWindow();
+            mFinishPopupWindow.show();
+        } else {
+            DeviceUtils.hideSoftKeyboard(mActivity, mRootView);
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -202,6 +214,26 @@ public class WordFragment extends TSListFragment<WordContract.Presenter, InfoCom
                     mDeletCommentPopWindow.hide();
                 })
                 .bottomClickListener(() -> mDeletCommentPopWindow.hide())
+                .build();
+    }
+
+    /**
+     * 初始化退出当前页面弹框
+     */
+    private void initFinishPopupWindow() {
+        mFinishPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.word_finish_tip))
+                .item2Str(getString(R.string.word_finish_confirm))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item2ClickListener(() -> {
+                    DeviceUtils.hideSoftKeyboard(mActivity, mRootView);
+                    getActivity().finish();
+                })
+                .bottomClickListener(() -> mFinishPopupWindow.hide())
                 .build();
     }
 }

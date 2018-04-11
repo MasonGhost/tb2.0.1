@@ -15,6 +15,7 @@ public class InfoDetailCommentEmptyItem extends EmptyItem<InfoCommentListBean> {
 
     public InfoDetailCommentEmptyItem(int emptyView){
         super.setEmptView(emptyView);
+        super.setHeight(0);
     }
 
     @Override

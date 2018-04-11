@@ -745,7 +745,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         }
     }
 
-    private void showCommentView() {
+    public void showCommentView() {
         showBottomView(false);
 
     }

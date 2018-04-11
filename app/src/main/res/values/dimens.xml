@@ -150,5 +150,6 @@
     <dimen name="message_time">11sp</dimen>
     <dimen name="merchain_message_item_image_height">196dp</dimen>
 
+    <dimen name="reward_edt_width">99dp</dimen>
     <dimen name="dynamic_detail_more_margin">7dp</dimen>
 </resources>

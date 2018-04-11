@@ -5,6 +5,9 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -15,6 +18,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 public abstract class EmptyItem<T> implements ItemViewDelegate<T> {
 
     private int mEmptyView;
+    private int mHeight = -1;
 
     @Override
     public int getItemViewLayoutId() {
@@ -30,6 +34,9 @@ public abstract class EmptyItem<T> implements ItemViewDelegate<T> {
         emptyView.setNeedTextTip(false);
         emptyView.setErrorType(EmptyView.STATE_NODATA);
         emptyView.setErrorImag(getEmptyView());
+        if(mHeight != -1){
+            emptyView.getLayoutParams().height = getHeight();
+        }
     }
 
     protected void setEmptView(int emptyView){
@@ -40,5 +47,12 @@ public abstract class EmptyItem<T> implements ItemViewDelegate<T> {
         return mEmptyView;
     }
 
+    protected void setHeight(int height){
+        this.mHeight = height;
+    }
+
+    private int getHeight(){
+        return this.mHeight;
+    }
 
 }

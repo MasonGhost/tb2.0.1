@@ -318,7 +318,7 @@ public class DynamicDetailHeader {
             ((TextView) mDynamicDetailHeader.findViewById(R.id.tv_comment_count)).setText
                     (mDynamicDetailHeader.getResources().getString(R.string
                             .dynamic_comment_count, ConvertUtils.numberConvert(dynamicBean
-                            .getFeed_comment_count())));
+                            .getComments().size())));
             fl_comment_count_container.setVisibility(View.VISIBLE);
         }
     }

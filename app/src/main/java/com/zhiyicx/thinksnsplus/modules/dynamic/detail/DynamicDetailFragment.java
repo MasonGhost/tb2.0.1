@@ -297,7 +297,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         dynamicDetailCommentItem.setOnCommentTextClickListener(this);
         dynamicDetailCommentItem.setOnCommentResendListener(this);
         adapter.addItemViewDelegate(dynamicDetailCommentItem);
-        DynamicCommentEmptyItem dynamicCommentEmptyItem = new DynamicCommentEmptyItem(R.mipmap.def_information_prompt);
+        DynamicCommentEmptyItem dynamicCommentEmptyItem = new DynamicCommentEmptyItem(R.mipmap.ico_bg_color);
         adapter.addItemViewDelegate(dynamicCommentEmptyItem);
         adapter.setOnItemClickListener(this);
         return adapter;
@@ -465,11 +465,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      */
     private void initBottomToolUI() {
         // 初始化底部工具栏数据share
-        mDdDynamicTool.setImageNormalResourceIds(new int[]{R.mipmap.detail_ico_share_normal
+        mDdDynamicTool.setImageNormalResourceIds(new int[]{R.mipmap.ico_share
                 , R.mipmap.home_ico_comment_normal, R.mipmap.ico_zan
                 , R.mipmap.home_ico_more
         });
-        mDdDynamicTool.setImageCheckedResourceIds(new int[]{R.mipmap.detail_ico_share_normal
+        mDdDynamicTool.setImageCheckedResourceIds(new int[]{R.mipmap.ico_share
                 , R.mipmap.home_ico_comment_normal, R.mipmap.ico_zan_on
                 , R.mipmap.home_ico_more
         });

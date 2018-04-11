@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/overscroll"
@@ -35,10 +34,10 @@
                     android:layout_height="58dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="28dp"
-                    app:ts_avatare_size="58dp"
                     android:src="@mipmap/pic_default_secret"
+                    android:visibility="gone"
                     app:pressShape="circle"
-                    android:visibility="gone"/>
+                    app:ts_avatare_size="58dp" />
 
                 <TextView
                     android:id="@+id/tv_name"
@@ -48,7 +47,7 @@
                     android:layout_marginTop="@dimen/spacing_mid"
                     android:textSize="@dimen/size_content_comment"
                     android:visibility="gone"
-                    tools:text="习惯"/>
+                    tools:text="习惯" />
 
                 <LinearLayout
                     android:id="@+id/ll_recharge_choose_money_item"
@@ -58,20 +57,19 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <include
-                        layout="@layout/view_choose_item"/>
+                    <include layout="@layout/view_choose_item" />
 
                     <View
                         android:id="@+id/v_line"
                         style="@style/style_divider_horizontal"
-                        android:layout_marginLeft="@dimen/spacing_mid"
-                        />
+                        android:layout_marginLeft="@dimen/spacing_mid" />
                 </LinearLayout>
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/full_button_height"
+                    android:layout_marginTop="@dimen/introduce_padding_top"
                     android:background="@color/white"
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -84,8 +82,7 @@
                         android:layout_weight="1"
                         android:text="@string/custom_recharge_money"
                         android:textColor="@color/important_for_content"
-                        android:textSize="@dimen/size_content"
-                        />
+                        android:textSize="@dimen/size_content" />
 
                     <LinearLayout
                         android:id="@+id/ll_input_contanier"
@@ -101,19 +98,17 @@
                         <EditText
                             android:id="@+id/et_input"
                             style="@style/style_dynamic_editext"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/et_top_input"
-                            tools:hint="输入金额"/>
+                            android:layout_width="@dimen/reward_edt_width"
+                            android:layout_height="@dimen/qa_top_select_height" />
 
                         <TextView
                             android:id="@+id/tv_custom_money"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/yuan"
-                            android:textColor="#9d9d9d"
+                            android:text="@string/et_top_input"
+                            android:textColor="@color/tb_mark_txt"
                             android:textSize="@dimen/size_note_assist"
-                            tools:text="元"/>
+                            tools:text="@string/et_top_input" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -131,7 +126,7 @@
                     android:layout_height="92dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="70dp"
-                    android:src="@mipmap/bth_prompt_disablde"/>
+                    android:src="@mipmap/bth_prompt_disablde" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -139,7 +134,7 @@
                     android:layout_marginTop="@dimen/spacing_big_large"
                     android:text="成功打赏"
                     android:textColor="#808080"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/tv_reward_success_money"
@@ -148,14 +143,13 @@
                     android:layout_marginTop="@dimen/spacing_mid"
                     android:textColor="#ff9600"
                     android:textSize="26sp"
-                    tools:text="成功打赏"/>
+                    tools:text="成功打赏" />
 
                 <View
                     style="@style/style_divider_horizontal"
                     android:layout_marginLeft="33dp"
                     android:layout_marginRight="33dp"
-                    android:layout_marginTop="25dp"
-                    />
+                    android:layout_marginTop="25dp" />
             </LinearLayout>
 
             <TextView
@@ -168,8 +162,7 @@
                 android:layout_marginTop="@dimen/button_login_margin_top"
                 android:background="@drawable/selector_button_corner_solid_small"
                 android:enabled="false"
-                android:text="@string/reward"
-                />
+                android:text="@string/reward" />
         </LinearLayout>
 
         <ImageView
@@ -180,6 +173,6 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="45dp"
             android:padding="@dimen/spacing_mid"
-            android:src="@mipmap/ic_click_close"/>
+            android:src="@mipmap/ic_click_close" />
     </RelativeLayout>
 </FrameLayout>

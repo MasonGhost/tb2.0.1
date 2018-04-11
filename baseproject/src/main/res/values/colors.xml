@@ -46,4 +46,5 @@
     <color name="user_tag_bg">#def0f7</color>
     <color name="certification_result_hint_bg">#b34bb893</color>
     <color name="info_top">#49b691</color>
+    <color name="tb_mark_txt">#9d9d9d</color>
 </resources>

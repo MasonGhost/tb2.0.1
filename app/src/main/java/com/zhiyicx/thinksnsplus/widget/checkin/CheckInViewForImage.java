@@ -331,8 +331,10 @@ public class CheckInViewForImage extends View {
                 Point descPoint = new Point((int) ((i) * onePiece + ((i + 1) * 2 - 1) * signInBallRadio -
                         signInTextPaint.measureText(viewData.get(i)) / 2), circleY + height / 2);
                 //签到的矩形
-                RectF rectF = new RectF(0 + signInBallRadio + 3, viewHeight * SECTION_SCALE - signInBallRadio - signInRectHeight, circlePoint.x -
-                        signInBallRadio + 3,
+                RectF rectF = new RectF(
+                        0 + signInBallRadio + 3,
+                        viewHeight * SECTION_SCALE - signInBallRadio - signInRectHeight,
+                        circlePoint.x + signInBallRadio + 3 + onePiece / 2,
                         viewHeight * SECTION_SCALE - signInBallRadio);
                 //签到时候矩形的路径
                 Path selectPath = new Path();//选择矩形

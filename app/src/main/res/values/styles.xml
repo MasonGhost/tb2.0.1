@@ -41,7 +41,7 @@
         <item name="android:background">@drawable/selector_radiobutton_cornaer_dynamic_top</item>
         <item name="android:layout_weight">1</item>
         <item name="android:width">0dp</item>
-        <item name="android:height">@dimen/dynamice_top_select_day_height</item>
+        <item name="android:layout_height">@dimen/dynamice_top_input_height</item>
     </style>
 
     <!--动态置顶输入金额-->
