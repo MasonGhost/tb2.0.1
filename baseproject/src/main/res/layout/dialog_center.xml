@@ -41,15 +41,16 @@
         android:background="@drawable/shape_center_dialog_corner_circle"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:paddingBottom="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/margin_25"
+        android:paddingRight="@dimen/margin_25"
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/upload_info_cover_width"
-            android:layout_marginRight="@dimen/upload_info_cover_width"
-            android:layout_marginTop="@dimen/floating_button_bottom_margin"
+            android:layout_marginTop="@dimen/margin_25"
             android:text="@string/word_finish_title"
             android:textColor="@color/text_color_black"
             android:textSize="@dimen/qa_search_empty_size" />
@@ -63,34 +64,38 @@
             android:textColor="@color/tb_word_notice"
             android:textSize="@dimen/size_icon_assist" />
 
-        <View
-            style="@style/style_divider_horizontal"
-            android:layout_marginTop="@dimen/edit_code_et_margin" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/location_search_item_space"
             android:gravity="center"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tv_confirm"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:background="@drawable/shape_button_rec_white"
                 android:gravity="center"
-                android:padding="@dimen/integration_withdrawals_et_padding"
+                android:paddingBottom="@dimen/btn_margin_top"
+                android:paddingLeft="@dimen/music_icon_size"
+                android:paddingRight="@dimen/music_icon_size"
+                android:paddingTop="@dimen/btn_margin_top"
                 android:text="@string/word_finish_confirm"
                 android:textColor="@color/tb_word_notice"
                 android:textSize="@dimen/qa_search_empty_size" />
 
             <TextView
                 android:id="@+id/tv_cancel"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/btn_margin"
+                android:background="@drawable/shape_button_rec_blue"
                 android:gravity="center"
-                android:padding="@dimen/integration_withdrawals_et_padding"
+                android:paddingBottom="@dimen/btn_margin_top"
+                android:paddingLeft="@dimen/music_icon_size"
+                android:paddingRight="@dimen/music_icon_size"
+                android:paddingTop="@dimen/btn_margin_top"
                 android:text="@string/word_finish_cancel"
                 android:textColor="@color/themeColor"
                 android:textSize="@dimen/qa_search_empty_size" />

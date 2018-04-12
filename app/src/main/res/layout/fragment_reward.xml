@@ -89,6 +89,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/shape_dynamic_topday_bg_radus_grey"
+                        android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingBottom="@dimen/spacing_normal"
                         android:paddingLeft="@dimen/spacing_mid"
@@ -151,6 +152,17 @@
                     android:layout_marginRight="33dp"
                     android:layout_marginTop="25dp" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_notice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/button_login_margin_top"
+                android:text="@string/reward_notice"
+                android:textColor="@color/tb_reward_notice"
+                android:textSize="@dimen/size_content"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/bt_top"

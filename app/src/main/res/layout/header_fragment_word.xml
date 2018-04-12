@@ -39,7 +39,7 @@
 
     <com.zhiyicx.baseproject.widget.button.LoadingButton
         android:id="@+id/bt_word"
-        style="@style/style_login_button"
+        style="@style/style_word_button"
         android:layout_marginTop="@dimen/spacing_big_large"
         android:enabled="false"
         app:text="@string/word" />

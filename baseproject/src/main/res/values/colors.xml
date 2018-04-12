@@ -49,4 +49,5 @@
     <color name="tb_mark_txt">#9d9d9d</color>
     <color name="tb_word_notice">#c1c1c1</color>
     <color name="tb_progress">#ff9600</color>
+    <color name="tb_word_confirm">#d8d8d8</color>
 </resources>

@@ -530,7 +530,7 @@
             android:name=".modules.wallet.reward.RewardActivity"
             android:hardwareAccelerated="false"
             android:screenOrientation="portrait"
-
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/NoTitleTranslucentTheme"/>
         <activity
             android:name=".modules.wallet.reward.list.RewardListActivity"

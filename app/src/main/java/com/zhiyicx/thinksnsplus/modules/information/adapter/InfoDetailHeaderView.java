@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
@@ -68,6 +69,8 @@ import java.util.regex.Pattern;
 
 import br.tiagohm.markdownview.MarkdownView;
 
+import static android.view.Gravity.CENTER;
+import static android.view.Gravity.RIGHT;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
@@ -102,6 +105,7 @@ public class InfoDetailHeaderView extends BaseWebLoad {
     private List<ImageBean> mImgList;
     private ImageView mIvDetail;
     private LinearLayout mLLWord;
+    private LinearLayout mLlWordBottom;
     private TextView mTvWriteComment;
     private boolean isReviewIng;
     private TextView mTvHitsCount;
@@ -147,6 +151,7 @@ public class InfoDetailHeaderView extends BaseWebLoad {
         mItemInfoAuthor = (TextView) mInfoDetailHeader.findViewById(R.id.item_info_author);
         mItemInfoMerchainName = (TextView) mInfoDetailHeader.findViewById(R.id.item_info_merchain_name);
         mLLWord = (LinearLayout) mInfoDetailHeader.findViewById(R.id.ll_word);
+        mLlWordBottom = (LinearLayout) mInfoDetailHeader.findViewById(R.id.ll_word_bottom);
         mTvWriteComment = (TextView) mInfoDetailHeader.findViewById(R.id.tv_write_comment);
         mTvHitsCount = (TextView) mInfoDetailHeader.findViewById(R.id.tv_hits_count);
         mImgDigg = (ImageView) mInfoDetailHeader.findViewById(R.id.img_digg);
@@ -275,7 +280,14 @@ public class InfoDetailHeaderView extends BaseWebLoad {
             // 评论信息
             updateCommentView(infoMain);
             mLLWord.setVisibility(infoMain.getCommentList().isEmpty() ? GONE : VISIBLE);
-            mTvWriteComment.setVisibility(infoMain.getComment_status() == 1 ? VISIBLE : GONE);
+            mLlWordBottom.setVisibility(infoMain.getComment_status() == 1 ? VISIBLE : GONE);
+            mLlWordBottom.setGravity(infoMain.getCommentList().isEmpty() ? CENTER : RIGHT);
+            mLlWordBottom.setPadding(
+                    0,
+                    0,
+                    infoMain.getCommentList().isEmpty() ? 0 : 15,
+                    0
+            );
             mTvWriteComment.setOnClickListener(mTvWriteComment -> {
                 String content = TextUtils.isEmpty(infoMain.getText_content()) ? infoMain.getContent() : infoMain.getText_content();
                 WordActivity.startWordActivity(mContext, new WordResourceBean(infoMain.getUser(), infoMain.getId().toString(), infoMain.getTitle(), content));

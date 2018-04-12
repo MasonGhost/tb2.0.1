@@ -232,7 +232,7 @@
     <string name="dig_list">点赞榜</string>
     <string name="dynamic_comment">精彩留言</string>
     <string name="dynamic_comment_my">我的留言</string>
-    <string name="dynamic_write_comment">写留言</string>
+    <string name="dynamic_write_comment">留言</string>
     <string name="dynamic_list_delete_word">删除留言</string>
     <string name="dynamic_list_hits">阅读</string>
     <string name="dynamic_tip">以上留言由公众号筛选后显示</string>
@@ -575,6 +575,7 @@
     <string name="choose_reward_money">选择打赏金额</string>
     <string name="reward_success">打赏成功</string>
     <string name="reward_failed">打赏失败</string>
+    <string name="reward_notice">本次打赏不可超过2000</string>
 
     <!--认证-->
     <string name="certification_personage">个人认证</string>
@@ -936,7 +937,7 @@
     <string name="pay_blur_tip">这些东西是需要付费的，给了钱钱你就可以查看了，很厉害吧！！！</string>
 
     <!--留言-->
-    <string name="word">提交</string>
+    <string name="word">留言</string>
     <string name="hint_word">留言将由公众号筛选后显示，对所有人可见。</string>
     <string name="word_success_tip">留言已提交，请耐心等待审核！</string>
 

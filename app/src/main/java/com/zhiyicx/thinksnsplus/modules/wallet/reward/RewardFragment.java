@@ -87,6 +87,8 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     UserAvatarView mImageView;
     @BindView(R.id.tv_name)
     TextView mTvName;
+    @BindView(R.id.tv_notice)
+    TextView mTvNotice;
     /**
      * reward type
      */
@@ -328,7 +330,6 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                         configSureButton();
                     }
                 });
-
     }
 
     private void setresultSuccess() {
@@ -341,16 +342,18 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
      */
     private void setCustomMoneyDefault() {
         mEtInput.setText("");
+        DeviceUtils.hideSoftKeyboard(getContext(), mEtInput);
     }
 
     private void configSureButton() {
-        setSureBtEnable(mRewardMoney > 0);
+        setSureBtEnable(mRewardMoney > 0 && mRewardMoney <= 2000);
 //        mToolbarRight.setEnabled(mRewardMoney > 0);
     }
 
     @Override
     public void setSureBtEnable(boolean b) {
         mBtTop.setEnabled(b);
+        mTvNotice.setVisibility(mRewardMoney > 2000 ? View.VISIBLE : View.GONE);
     }
 
     /**
