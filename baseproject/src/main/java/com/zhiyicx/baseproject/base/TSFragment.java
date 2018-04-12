@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
@@ -21,6 +23,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -83,6 +86,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      */
     private View mCenterLoadingView;
     /**
+     * 加载
+     */
+    private ProgressBar mPgCenterLoading;
+    /**
      * 头部左边的刷新控件
      */
     protected ImageView mIvRefresh;
@@ -111,9 +118,25 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected SystemConfigBean mSystemConfigBean;
 
     private ActionPopupWindow mDeleteTipPopupWindow;// 删除二次确认弹框
+    private Handler mHandler;
+    private static final int MSG_UPDATE = 0x100;
 
     @Override
     protected View getContentView() {
+        mHandler = new Handler(){
+            public void handleMessage(android.os.Message msg) {
+                if (msg.what == MSG_UPDATE) {
+                    int pp = mPgCenterLoading.getProgress();
+                    if (pp<90) {
+                        pp++;
+                        mHandler.sendEmptyMessageDelayed(MSG_UPDATE, 100);
+                    } else {
+                        mHandler.removeMessages(MSG_UPDATE);
+                    }
+                    mPgCenterLoading.setProgress(pp);
+                }
+            };
+        };
         LinearLayout linearLayout = new LinearLayout(getActivity());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -167,12 +190,15 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             frameLayout.addView(bodyContainer);
 
             mCenterLoadingView = mLayoutInflater.inflate(R.layout.view_center_loading, null);
+            //加载进度条
+            mPgCenterLoading = (ProgressBar) mCenterLoadingView.findViewById(R.id.pg_center_load);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             if (!showToolbar()) {
                 params.setMargins(0, getstatusbarAndToolbarHeight(), 0, 0);
             }
             mCenterLoadingView.setLayoutParams(params);
             if (setUseCenterLoadingAnimation()) {
+                mHandler.sendEmptyMessage(MSG_UPDATE);
                 ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).start();
             }
             RxView.clicks(mCenterLoadingView.findViewById(R.id.iv_center_holder))
@@ -393,6 +419,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             return;
         }
         if (mCenterLoadingView.getVisibility() == View.VISIBLE) {
+            mPgCenterLoading.setProgress(100);
+            mHandler.removeMessages(MSG_UPDATE);
             ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).stop();
             mCenterLoadingView.animate().alpha(0.3f).setListener(new Animator.AnimatorListener() {
                 @Override
@@ -428,10 +456,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             return;
         }
         if (mCenterLoadingView.getVisibility() == View.GONE) {
-            mCenterLoadingView.findViewById(R.id
-                    .iv_center_load).setVisibility(View.VISIBLE);
-            ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id
-                    .iv_center_load)).getDrawable()).start();
+            //mCenterLoadingView.findViewById(R.id.iv_center_load).setVisibility(View.VISIBLE);
+            ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).start();
             mCenterLoadingView.setVisibility(View.VISIBLE);
         }
     }
@@ -444,7 +470,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             return;
         }
         mCenterLoadingView.setVisibility(View.VISIBLE);
-        mCenterLoadingView.findViewById(R.id.iv_center_load).setVisibility(View.VISIBLE);
+        //mCenterLoadingView.findViewById(R.id.iv_center_load).setVisibility(View.VISIBLE);
         mCenterLoadingView.findViewById(R.id.iv_center_holder).setVisibility(View.GONE);
         ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).start();
 

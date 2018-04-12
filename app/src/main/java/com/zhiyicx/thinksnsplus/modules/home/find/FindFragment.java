@@ -91,7 +91,7 @@ public class FindFragment extends TSFragment {
 
     @Override
     protected boolean showToolBarDivider() {
-        return true;
+        return false;
     }
 
     @Override

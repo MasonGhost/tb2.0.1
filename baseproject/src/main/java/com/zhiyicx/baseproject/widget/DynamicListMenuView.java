@@ -91,7 +91,7 @@ public class DynamicListMenuView extends LinearLayout {
     int mTextNormalColor = R.color.normal_for_disable_button_text;// 正常文本颜色
     protected
     @ColorRes
-    int mTextCheckedColor = R.color.important_for_note;// 选中文本颜色
+    int mTextCheckedColor = R.color.themeColor;// 选中文本颜色
 
     public DynamicListMenuView(Context context) {
         super(context);

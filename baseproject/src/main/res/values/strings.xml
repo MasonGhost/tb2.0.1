@@ -59,6 +59,13 @@
     <string name="collect">收藏</string>
     <string name="loading_state">加载中&#8230;</string>
 
+    <!--CenterDialog-->
+    <string name="word_success">留言成功</string>
+    <string name="word_finish_tip">你还未提交留言，是否现在退出？</string>
+    <string name="word_finish_confirm">退出</string>
+    <string name="word_finish_cancel">暂不</string>
+    <string name="word_finish_title">退出留言</string>
+
     <!-- 注册 -->
     <string name="regist">注册</string>
     <string name="username_input_hint">用户名不能低于2个中文或4个英文</string>
@@ -186,7 +193,7 @@
     <string name="weChat_share">微信</string>
     <string name="weCircle_share">朋友圈</string>
     <string name="weibo_share">微博</string>
-    <string name="link_share">复制成功，可以发给朋友们了。</string>
+    <string name="link_share">复制成功，可以发给朋友</string>
     <string name="share_sccuess">分享成功</string>
     <string name="share_ing">分享中&#8230;</string>
     <string name="share_fail">分享失败</string>

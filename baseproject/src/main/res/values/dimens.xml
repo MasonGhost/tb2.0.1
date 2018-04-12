@@ -77,4 +77,16 @@
     <dimen name="margin_30">30dp</dimen>
     <dimen name="music_icon_size">24dp</dimen>
     <dimen name="main_choose_bt_min_with">80dp</dimen>
+    <!--中心dialog-->
+    <dimen name="dialog_width">112dp</dimen>
+    <dimen name="dialog_height">113dp</dimen>
+    <dimen name="upload_info_cover_width">95dp</dimen>
+    <dimen name="floating_button_bottom_margin">21dp</dimen>
+    <dimen name="location_search_item_space">18dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="qa_search_empty_size">18sp</dimen>
+    <dimen name="integration_withdrawals_et_padding">14dp</dimen>
+    <dimen name="edit_code_et_margin">28dp</dimen>
+
+    <dimen name="progressbar_height">5sp</dimen>
 </resources>

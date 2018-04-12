@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:clickable="true"
-    android:focusableInTouchMode="true"
-    >
+    android:focusableInTouchMode="true">
+
+    <ProgressBar
+        android:id="@+id/pg_center_load"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/progressbar_height"
+        android:max="100"
+        android:progressDrawable="@drawable/progressbar" />
 
     <ImageView
         android:id="@+id/iv_center_load"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/frame_loading_cen" />
+        android:src="@drawable/frame_loading_cen"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/iv_center_holder"
@@ -21,7 +28,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:src="@mipmap/img_default_nothing"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
 </FrameLayout>

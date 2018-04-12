@@ -21,6 +21,7 @@ import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.UmengConfig;
+import com.zhiyicx.baseproject.widget.CenterDialog;
 import com.zhiyicx.baseproject.widget.popwindow.RecyclerViewPopupWindow;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
@@ -49,6 +50,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListener {
     private static final int SHARE_COLUMS = 3;// item 列数
+    private CenterDialog mCenterDialog;
 
     /**
      * 友盟初始化
@@ -71,6 +73,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
 
     public UmengSharePolicyImpl(Context mContext) {
         mOnShareCallbackListener = this;
+        mCenterDialog = new CenterDialog(mContext);
         this.mContext = mContext;
         init(mContext);
     }
@@ -170,13 +173,15 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
     }
 
     /**
-     * 微信分享
+     * 复制链接
      */
     @Override
     public void copyLink(Activity activity) {
         if (checkShareContent()) return;
         ((ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE)).setText(getShareContent().getUrl());
-        ToastUtils.showToast(mContext.getString(R.string.link_share));
+        mCenterDialog.setCurrentView(CenterDialog.SUCCESS);
+        mCenterDialog.setTvTip(mContext.getString(R.string.link_share));
+        mCenterDialog.show();
     }
 
 

@@ -14,6 +14,7 @@ import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
+import com.zhiyicx.baseproject.widget.TBTabSelectViewForMain;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -47,6 +48,8 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     View mStatusBarPlaceholder;
     @BindView(R.id.v_shadow)
     View mVShadow;
+    @BindView(R.id.tsv_toolbar)
+    TBTabSelectViewForMain mTsvToolBar;
 
     @Inject
     AuthRepository mIAuthRepository;
@@ -117,6 +120,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, DeviceUtils
                 .getStatuBarHeight(getContext()));
         mStatusBarPlaceholder.setLayoutParams(layoutParams);
+        mTsvToolBar.showDivider(false);
         // 适配非6.0以上、非魅族系统、非小米系统状态栏
         if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0) {
             mStatusBarPlaceholder.setBackgroundResource(R.color.themeColor);

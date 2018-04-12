@@ -17,19 +17,19 @@ import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentCopyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.widget.CenterDialog;
+import com.zhiyicx.baseproject.widget.CenterDialog;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 
 public class WordFragment extends TSListFragment<WordContract.Presenter, InfoCommentListBean> implements WordContract.View,
         OnUserInfoClickListener,
-        InfoDetailCommentCopyItem.OnDeleteClickListener{
+        InfoDetailCommentCopyItem.OnDeleteClickListener,
+        CenterDialog.OnConfirmClickListener {
     public static final String BUNDLE_WORD_RESOURCE_DATA = "word_resource_data";
 
     private WordResourceBean mWordResourceBean;
     private ActionPopupWindow mDeletCommentPopWindow;
-    private ActionPopupWindow mFinishPopupWindow;
     private WordHeaderView mWordHeaderView;
     private CenterDialog mWordDialog;
 
@@ -47,14 +47,15 @@ public class WordFragment extends TSListFragment<WordContract.Presenter, InfoCom
     @Override
     public void wordSuccess() {
         //showSnackSuccessMessage(getString(R.string.word_success_tip));
+        mWordDialog.setCurrentView(CenterDialog.SUCCESS);
         mWordDialog.show();
     }
 
     @Override
     protected void setLeftClick() {
         if(!TextUtils.isEmpty(mWordHeaderView.mEtWordContent.getInputContent())){
-            initFinishPopupWindow();
-            mFinishPopupWindow.show();
+            mWordDialog.setCurrentView(CenterDialog.FINISH);
+            mWordDialog.show();
         } else {
             DeviceUtils.hideSoftKeyboard(mActivity, mRootView);
             getActivity().finish();
@@ -78,6 +79,12 @@ public class WordFragment extends TSListFragment<WordContract.Presenter, InfoCom
         PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 
+    @Override
+    public void onConfirmClick() {
+        DeviceUtils.hideSoftKeyboard(mActivity, mRootView);
+        getActivity().finish();
+    }
+
     class OnDeleteClickListener implements InfoDetailCommentCopyItem.OnDeleteClickListener {
         @Override
         public void onItemDelete(int position) {
@@ -89,6 +96,7 @@ public class WordFragment extends TSListFragment<WordContract.Presenter, InfoCom
     protected void initView(View rootView) {
         super.initView(rootView);
         mWordDialog = new CenterDialog(mActivity);
+        mWordDialog.setOnConfirmClickListener(this);
         if (getArguments() != null) {
             mWordResourceBean = (WordResourceBean) getArguments().getSerializable(BUNDLE_WORD_RESOURCE_DATA);
             setCenterText(mWordResourceBean.getUser().getName());
@@ -214,26 +222,6 @@ public class WordFragment extends TSListFragment<WordContract.Presenter, InfoCom
                     mDeletCommentPopWindow.hide();
                 })
                 .bottomClickListener(() -> mDeletCommentPopWindow.hide())
-                .build();
-    }
-
-    /**
-     * 初始化退出当前页面弹框
-     */
-    private void initFinishPopupWindow() {
-        mFinishPopupWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.word_finish_tip))
-                .item2Str(getString(R.string.word_finish_confirm))
-                .bottomStr(getString(R.string.cancel))
-                .isOutsideTouch(true)
-                .isFocus(true)
-                .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .with(getActivity())
-                .item2ClickListener(() -> {
-                    DeviceUtils.hideSoftKeyboard(mActivity, mRootView);
-                    getActivity().finish();
-                })
-                .bottomClickListener(() -> mFinishPopupWindow.hide())
                 .build();
     }
 }

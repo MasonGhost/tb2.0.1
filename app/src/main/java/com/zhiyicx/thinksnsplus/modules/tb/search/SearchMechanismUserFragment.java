@@ -260,7 +260,7 @@ public class SearchMechanismUserFragment extends TSListFragment<SearchMechanismU
 
     @Override
     protected int setEmptView() {
-        return R.mipmap.img_default_search;
+        return R.color.white;
     }
 
     @Override

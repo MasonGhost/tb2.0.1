@@ -3,7 +3,7 @@
     android:shape="rectangle">
 
     <!-- 纯色 -->
-    <solid android:color="@color/bt_center_dialog" />
+    <solid android:color="@color/white" />
     <corners android:radius="@dimen/button_corner_big"></corners>
 
 </shape>

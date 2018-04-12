@@ -97,10 +97,6 @@
     <dimen name="qa_watch_button_height">25dp</dimen>
     <dimen name="qa_item_my_question_height">90dp</dimen>
 
-    <!--中心dialog-->
-    <dimen name="dialog_width">112dp</dimen>
-    <dimen name="dialog_height">113dp</dimen>
-
     <!--启动广告-->
     <dimen name="iamge_logo_height">114dp</dimen>
 

@@ -939,9 +939,6 @@
     <string name="word">提交</string>
     <string name="hint_word">留言将由公众号筛选后显示，对所有人可见。</string>
     <string name="word_success_tip">留言已提交，请耐心等待审核！</string>
-    <string name="word_success">已留言</string>
-    <string name="word_finish_tip">您的内容还没提交，是否放弃？</string>
-    <string name="word_finish_confirm">确定</string>
 
     <!--聊天-->
     <string name="chat_delete_conversation_failed">删除聊天失败</string>
