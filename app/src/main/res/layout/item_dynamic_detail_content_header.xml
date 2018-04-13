@@ -71,8 +71,7 @@
         android:layout_alignBaseline="@id/tv_name"
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/spacing_normal"
-        android:gravity="center"
-        android:visibility="gone" />
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/tv_title"

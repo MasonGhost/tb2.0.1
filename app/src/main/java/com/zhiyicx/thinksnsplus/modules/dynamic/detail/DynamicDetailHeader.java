@@ -62,6 +62,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -75,7 +77,7 @@ public class DynamicDetailHeader {
 
     private UserAvatarView mIvHeadPic;
     private TextView mTvName;
-    private TextView mTvFollow;
+    public TextView mTvFollow;
     private TextView mTvTime;
     private SpanTextViewWithEllipsize mTvContent;
     private LinearLayout mPhotoContainer;
@@ -164,7 +166,7 @@ public class DynamicDetailHeader {
         setUserInfoClick(mTvName, dynamicBean);
         mTvTime.setText(dynamicBean.getFriendlyTime());
         // 是否是自己发布的
-        handleFollowView(mDynamicDetailHeader, dynamicBean.getUserInfoBean().getUser_id() == AppApplication.getMyUserIdWithdefault(), dynamicBean.getUserInfoBean
+        handleFollowView(dynamicBean.getUserInfoBean().getUser_id() == AppApplication.getMyUserIdWithdefault(), dynamicBean.getUserInfoBean
                 ().getFollower());
         if (mOnFollowlistener != null) {
             RxView.clicks(mTvFollow)
@@ -172,7 +174,7 @@ public class DynamicDetailHeader {
                     .subscribe(aVoid -> {
                         if (!dynamicBean.getUserInfoBean().getFollower()) {
                             // 没关注，做关注操作
-                            handleFollowView(mDynamicDetailHeader, false, true);
+                            handleFollowView(false, true);
                         }
                         mOnFollowlistener.onFollowClick(dynamicBean, mTvFollow);
                     });
@@ -313,13 +315,13 @@ public class DynamicDetailHeader {
             mDynamicDetailHeader.getContext().startActivity(intent);
         });*/
         if (dynamicBean.getComments().isEmpty()) {
-            fl_comment_count_container.setVisibility(View.GONE);
+            fl_comment_count_container.setVisibility(GONE);
         } else {
             ((TextView) mDynamicDetailHeader.findViewById(R.id.tv_comment_count)).setText
                     (mDynamicDetailHeader.getResources().getString(R.string
                             .dynamic_comment_count, ConvertUtils.numberConvert(dynamicBean
                             .getComments().size())));
-            fl_comment_count_container.setVisibility(View.VISIBLE);
+            fl_comment_count_container.setVisibility(VISIBLE);
         }
     }
 
@@ -343,7 +345,7 @@ public class DynamicDetailHeader {
         FilterImageView imageView = (FilterImageView) view.findViewById(R.id.dynamic_content_img);
         // 隐藏最后一张图的下间距
         if (lastImg) {
-            view.findViewById(R.id.img_divider).setVisibility(View.GONE);
+            view.findViewById(R.id.img_divider).setVisibility(GONE);
         }
 
         int height = (imageBean.getHeight() * picWidth / imageBean.getWidth());
@@ -512,31 +514,20 @@ public class DynamicDetailHeader {
     /**
      * 处理关注显示
      *
-     * @param view
      * @param isMine
      * @param isFollowed
      */
-    private void handleFollowView(View view, boolean isMine, boolean isFollowed) {
-        /*if (isMine) {
-            mTvFollow.setVisibility(View.INVISIBLE);
+    public void handleFollowView(boolean isMine, boolean isFollowed) {
+        if (isMine || isFollowed) {
+            mTvFollow.setVisibility(GONE);
         } else {
-            mTvFollow.setVisibility(View.VISIBLE);
-            if (isFollowed) {
-                // 关注了
-                Drawable moreDb = UIUtils.getCompoundDrawables(view.getContext(), R.mipmap
-                        .home_ico_more);
-                mTvFollow.setCompoundDrawables(moreDb, null, null,
-                        null);
-                mTvFollow.setBackgroundResource(0);
-                mTvFollow.setText("");
-            } else {
-                //没关注
-                mTvFollow.setCompoundDrawables(null, null, null,
-                        null);
-                mTvFollow.setText(view.getResources().getString(R.string.add_follow));
-                mTvFollow.setBackgroundResource(R.drawable.shape_radus_box_themecolor);
-            }
-        }*/
+            mTvFollow.setVisibility(VISIBLE);
+            //没关注
+            mTvFollow.setCompoundDrawables(null, null, null,
+                    null);
+            mTvFollow.setText(mContext.getResources().getString(R.string.add_follow));
+            mTvFollow.setBackgroundResource(R.drawable.shape_radus_box_themecolor);
+        }
     }
 
     private OnFollowClickLisitener mOnFollowlistener;

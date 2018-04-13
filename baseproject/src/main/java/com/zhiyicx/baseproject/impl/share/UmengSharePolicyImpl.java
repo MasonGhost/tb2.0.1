@@ -73,7 +73,6 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
 
     public UmengSharePolicyImpl(Context mContext) {
         mOnShareCallbackListener = this;
-        mCenterDialog = new CenterDialog(mContext);
         this.mContext = mContext;
         init(mContext);
     }
@@ -129,7 +128,9 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
      */
     @Override
     public void shareMoment(Activity activity, final OnShareCallbackListener l) {
-        if (checkShareContent()) return;
+        if (checkShareContent()) {
+            return;
+        }
         shareActionConfig(activity, l, SHARE_MEDIA.WEIXIN_CIRCLE);
 
     }
@@ -140,7 +141,9 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
      */
     @Override
     public void shareQQ(Activity activity, OnShareCallbackListener l) {
-        if (checkShareContent()) return;
+        if (checkShareContent()) {
+            return;
+        }
         shareActionConfig(activity, l, SHARE_MEDIA.QQ);
     }
 
@@ -149,7 +152,9 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
      */
     @Override
     public void shareZone(Activity activity, OnShareCallbackListener l) {
-        if (checkShareContent()) return;
+        if (checkShareContent()) {
+            return;
+        }
         shareActionConfig(activity, l, SHARE_MEDIA.QZONE);
 
     }
@@ -159,7 +164,9 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
      */
     @Override
     public void shareWeibo(Activity activity, OnShareCallbackListener l) {
-        if (checkShareContent()) return;
+        if (checkShareContent()) {
+            return;
+        }
         shareActionConfig(activity, l, SHARE_MEDIA.SINA);
     }
 
@@ -168,7 +175,9 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
      */
     @Override
     public void shareWechat(Activity activity, OnShareCallbackListener l) {
-        if (checkShareContent()) return;
+        if (checkShareContent()) {
+            return;
+        }
         shareActionConfig(activity, l, SHARE_MEDIA.WEIXIN);
     }
 
@@ -177,7 +186,12 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
      */
     @Override
     public void copyLink(Activity activity) {
-        if (checkShareContent()) return;
+        if (checkShareContent()) {
+            return;
+        }
+        if (mCenterDialog == null) {
+            mCenterDialog = new CenterDialog(mContext);
+        }
         ((ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE)).setText(getShareContent().getUrl());
         mCenterDialog.setCurrentView(CenterDialog.SUCCESS);
         mCenterDialog.setTvTip(mContext.getString(R.string.link_share));
@@ -404,7 +418,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
                                             case 5:
 //                                                if (UMShareAPI.get(mContext).isInstall((Activity) mContext, SHARE_MEDIA.SINA)) {
 
-                                                    shareWeibo((Activity) mContext, mOnShareCallbackListener);
+                                                shareWeibo((Activity) mContext, mOnShareCallbackListener);
 //                                                } else {
 //                                                    installThirdAppTip();
 //                                                }

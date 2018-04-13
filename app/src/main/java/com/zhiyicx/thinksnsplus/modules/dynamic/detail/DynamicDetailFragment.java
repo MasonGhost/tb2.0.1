@@ -114,7 +114,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     private long mReplyUserId;// 被评论者的 id ,评论动态 id = 0
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mOtherDynamicPopWindow;
-    private ActionPopupWindow mMyDynamicPopWindow;
     private PayPopWindow mPayImagePopWindow;
 
     private ActionPopupWindow mReSendCommentPopWindow;
@@ -192,11 +191,9 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .subscribe(aVoid -> getActivity().finish());
         RxView.clicks(mTvToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> {
-                    initOtherDynamicPopupWindow(mDynamicBean, mDynamicBean.getHas_collect());
-                    mOtherDynamicPopWindow.show();
-                    //mPresenter.handleFollowUser(mDynamicBean.getUserInfoBean());
-                });
+                .subscribe(aVoid ->
+                    handleFollowView(mDynamicBean.getUserInfoBean().getUser_id() == AppApplication.getMyUserIdWithdefault()
+                    , mDynamicBean.getUserInfoBean().getFollower()));
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
@@ -215,6 +212,26 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .subscribe(aVoid -> onUserInfoClick(mDynamicBean.getUserInfoBean()));
         mIlvComment.setOnSendClickListener(this);
 
+    }
+
+    /**
+     * 处理关注显示
+     *
+     * @param isMine
+     * @param isFollowed
+     */
+    private void handleFollowView(boolean isMine, boolean isFollowed) {
+        if (isMine) {
+            return;
+        } else {
+            if(isFollowed){
+                initOtherDynamicPopupWindow(mDynamicBean, mDynamicDetailHeader.mTvFollow);
+                mOtherDynamicPopWindow.show();
+            } else {
+                initOtherDynamicPopupWindow(mDynamicBean);
+                mOtherDynamicPopWindow.show();
+            }
+        }
     }
 
     private void initHeaderView() {
@@ -477,8 +494,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         });
         /*mDdDynamicTool.setButtonText(new int[]{R.string.share, R.string.comment
                 , R.string.dynamic_like, R.string.more});*/
-        mDdDynamicTool.setButtonText(new int[]{R.string.empty, R.string.empty
-                , R.string.empty, R.string.empty});
+        mDdDynamicTool.setButtonText(new int[]{R.string.empty, R.string.empty, R.string.empty, R.string.empty});
+        mDdDynamicTool.setItemPositionVisiable(ITEM_POSITION_3, GONE);
     }
 
     /**
@@ -508,7 +525,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                     mReplyUserId = 0;
                     mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
                     break;
-                case ITEM_POSITION_2:
+                case DynamicDetailMenuView.ITEM_POSITION_2:
                     // 处理喜欢逻辑，包括服务器，数据库，ui
                     if(mDynamicBean.isHas_digg()){
                         break;
@@ -517,16 +534,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                                 mDynamicBean.getId(), mDynamicBean);
                         break;
                     }
-                case DynamicDetailMenuView.ITEM_POSITION_3:
-                    if (mDynamicBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-                        initMyDynamicPopupWindow(mDynamicBean, mDynamicBean.getHas_collect());
-                        mMyDynamicPopWindow.show();
-                    } else {
-                        initOtherDynamicPopupWindow(mDynamicBean, mDynamicBean.getHas_collect());
-                        mOtherDynamicPopWindow.show();
-                    }
-                    break;
                 default:
+                    break;
             }
         });
     }
@@ -733,11 +742,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      *
      * @param dynamicBean curent dynamic
      */
-    private void initOtherDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, boolean isCollected) {
+    private void initOtherDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
-//                .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
-///                .item2Str(getString(R.string.dynamic_list_share_dynamic))
-//                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .item3Str(getString(R.string.report))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -755,7 +761,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                     mOtherDynamicPopWindow.hide();
                 })
                 .item3ClickListener(() -> {
-                    // 举报
+                    // 投诉
                     String img = "";
                     if (dynamicBean.getImages() != null && !dynamicBean.getImages().isEmpty()) {
                         img = ImageUtils.imagePathConvertV2(dynamicBean.getImages().get(0).getFile(), getResources()
@@ -773,53 +779,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                     mOtherDynamicPopWindow.hide();
                 })
                 .bottomClickListener(() -> mOtherDynamicPopWindow.hide())
-                .build();
-    }
-
-    /**
-     * 初始化我的动态操作弹窗
-     *
-     * @param dynamicBean curent dynamic
-     */
-    private void initMyDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, boolean isCollected) {
-        mMyDynamicPopWindow = ActionPopupWindow.builder()
-///                .item1Str(getString(R.string.dynamic_list_share_dynamic))
-//                .item2Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
-                .item3Str(getString(R.string.dynamic_list_top_dynamic))
-                .item4Str(getString(R.string.dynamic_list_delete_dynamic))
-                .bottomStr(getString(R.string.cancel))
-                .isOutsideTouch(true)
-                .isFocus(true)
-                .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .with(getActivity())
-                .item3ClickListener(() -> {
-                    // 置顶
-                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_DYNAMIC, dynamicBean.getId());
-                    mMyDynamicPopWindow.hide();
-                })
-                .item4ClickListener(() -> {
-                    // 删除
-                    mMyDynamicPopWindow.hide();
-                    showDeleteTipPopupWindow(getString(R.string.dynamic_list_delete_dynamic), () -> {
-                        mPresenter.setNeedDynamicListRefresh(false);
-                        EventBus.getDefault().post(dynamicBean, DYNAMIC_LIST_DELETE_UPDATE);
-                        getActivity().finish();
-                    }, true);
-                })
-                /*.item2ClickListener(() -> {
-                    // 收藏
-                    mPresenter.handleCollect(dynamicBean);
-                    mMyDynamicPopWindow.hide();
-                })*/
-                .item1ClickListener(() -> {
-                    // 分享
-                    mPresenter.shareDynamic(getCurrentDynamic(), mDynamicDetailHeader.getSharBitmap());
-                    mMyDynamicPopWindow.hide();
-                })
-                .bottomClickListener(() -> {
-                    //取消
-                    mMyDynamicPopWindow.hide();
-                })
                 .build();
     }
 
@@ -918,7 +877,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         super.onDestroyView();
         dismissPop(mDeletCommentPopWindow);
         dismissPop(mOtherDynamicPopWindow);
-        dismissPop(mMyDynamicPopWindow);
         dismissPop(mPayImagePopWindow);
         dismissPop(mReSendCommentPopWindow);
     }

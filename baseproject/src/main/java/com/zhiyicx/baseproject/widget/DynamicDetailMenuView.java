@@ -385,4 +385,30 @@ public class DynamicDetailMenuView extends FrameLayout {
         mLlDynamicDetailEdit.setVisibility(isMine ? VISIBLE : GONE);
         mLlDynamicDetailCollection.setVisibility(GONE);
     }
+
+    /**
+     * 设置 item 可见
+     *
+     * @param position
+     * @param visibility
+     */
+    public void setItemPositionVisiable(int position, int visibility) {
+
+        switch (position) {
+            case ITEM_POSITION_0:
+                mLlDynamicDetailLike.setVisibility(visibility);
+                break;
+            case ITEM_POSITION_1:
+                mLlDynamicDetailComment.setVisibility(visibility);
+
+                break;
+            case ITEM_POSITION_2:
+                mLlDynamicDetailShare.setVisibility(visibility);
+                break;
+            case ITEM_POSITION_3:
+                mLlDynamicDetailMore.setVisibility(visibility);
+                break;
+            default:
+        }
+    }
 }

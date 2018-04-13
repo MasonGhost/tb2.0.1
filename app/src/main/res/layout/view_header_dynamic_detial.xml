@@ -46,13 +46,14 @@
                 android:paddingLeft="@dimen/spacing_normal"
                 android:paddingRight="@dimen/spacing_normal"
                 android:paddingTop="@dimen/spacing_mid"
-                android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_content_assist" />
+                android:textColor="@color/color_9b"
+                android:textSize="@dimen/size_content_comment" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape_line_bottom_themcolor" />
+                android:background="@drawable/shape_line_bottom_themcolor"
+                android:visibility="gone" />
         </LinearLayout>
 
         <View
