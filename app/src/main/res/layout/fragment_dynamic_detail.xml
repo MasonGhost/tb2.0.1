@@ -101,13 +101,13 @@
                     android:layout_alignParentRight="true"
                     android:layout_gravity="right"
                     android:drawablePadding="@dimen/spacing_small"
+                    android:drawableRight="@mipmap/topbar_more_white"
                     android:gravity="center"
                     android:paddingBottom="@dimen/divider_line"
                     android:paddingLeft="@dimen/toolbar_padding_left"
                     android:paddingRight="@dimen/toolbar_padding_right"
                     android:textColor="@color/selector_theme_color_toolbar_text_color"
                     android:textSize="@dimen/toolbar_right_text_size"
-                    android:visibility="invisible"
                     tools:text="右边" />
 
             </RelativeLayout>

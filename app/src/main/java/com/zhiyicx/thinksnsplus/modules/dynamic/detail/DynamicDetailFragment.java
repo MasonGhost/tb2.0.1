@@ -193,7 +193,9 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         RxView.clicks(mTvToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    mPresenter.handleFollowUser(mDynamicBean.getUserInfoBean());
+                    initOtherDynamicPopupWindow(mDynamicBean, mDynamicBean.getHas_collect());
+                    mOtherDynamicPopWindow.show();
+                    //mPresenter.handleFollowUser(mDynamicBean.getUserInfoBean());
                 });
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
