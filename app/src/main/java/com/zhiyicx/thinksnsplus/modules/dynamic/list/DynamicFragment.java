@@ -17,6 +17,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
+import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
@@ -230,6 +231,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             DaggerDynamicComponent
                     .builder()
                     .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .shareModule(new ShareModule(mActivity))
                     .dynamicPresenterModule(new DynamicPresenterModule(DynamicFragment.this))
                     .build()
                     .inject(DynamicFragment.this);

@@ -85,7 +85,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
     private SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2GreenDao;
     private TopDynamicBeanGreenDaoImpl mTopDynamicBeanGreenDao;
 
-    private SharePolicy mSharePolicy;
+    @Inject
+    public SharePolicy mSharePolicy;
     private AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
     private BaseDynamicRepository mDynamicRepository;
     private UserInfoRepository mUserInfoRepository;
@@ -108,9 +109,6 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
         mDynamicCommentBeanGreenDao = dynamicCommentBeanGreenDao;
         mSendDynamicDataBeanV2GreenDao = sendDynamicDataBeanV2GreenDao;
         mTopDynamicBeanGreenDao = topDynamicBeanGreenDao;
-        if (rootView instanceof Fragment) {
-            mSharePolicy = new UmengSharePolicyImpl(((Fragment) rootView).getActivity());
-        }
         mDynamicRepository = baseDynamicRepository;
         mUserInfoRepository = userInfoRepository;
     }
