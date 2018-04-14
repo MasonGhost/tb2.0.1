@@ -100,7 +100,8 @@
                             android:id="@+id/et_input"
                             style="@style/style_dynamic_editext"
                             android:layout_width="@dimen/reward_edt_width"
-                            android:layout_height="@dimen/qa_top_select_height" />
+                            android:layout_height="@dimen/qa_top_select_height"
+                            android:paddingTop="@dimen/reward_edt_padtop" />
 
                         <TextView
                             android:id="@+id/tv_custom_money"
@@ -148,8 +149,8 @@
 
                 <View
                     style="@style/style_divider_horizontal"
-                    android:layout_marginLeft="33dp"
-                    android:layout_marginRight="33dp"
+                    android:layout_marginLeft="@dimen/spacing_mid"
+                    android:layout_marginRight="@dimen/spacing_mid"
                     android:layout_marginTop="25dp" />
             </LinearLayout>
 

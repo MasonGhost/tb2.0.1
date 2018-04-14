@@ -148,4 +148,5 @@
 
     <dimen name="reward_edt_width">99dp</dimen>
     <dimen name="dynamic_detail_more_margin">7dp</dimen>
+    <dimen name="reward_edt_padtop">3sp</dimen>
 </resources>

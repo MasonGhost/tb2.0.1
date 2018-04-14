@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
@@ -24,6 +25,7 @@ import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -33,6 +35,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.i.OnCommentTextClickListener;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailCommentItem;
@@ -40,6 +43,8 @@ import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageComme
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
+import com.zhiyicx.thinksnsplus.modules.tb.share.DynamicShareActivity;
+import com.zhiyicx.thinksnsplus.modules.tb.share.DynamicShareBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -66,6 +71,7 @@ import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE;
+import static com.zhiyicx.thinksnsplus.modules.tb.dynamic.TBDynamicFragment.BUNDLE_SHARE_DATA;
 
 /**
  * @author LiuChao
@@ -478,7 +484,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 RewardType.DYNAMIC, mPresenter.getIntegrationGoldName());*/
     }
 
-
     /**
      * 设置底部工具栏UI
      */
@@ -517,7 +522,20 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             switch (postion) {
                 case DynamicDetailMenuView.ITEM_POSITION_0:
                     // 分享
-                    mPresenter.shareDynamic(getCurrentDynamic(), mDynamicDetailHeader.getSharBitmap());
+//                  mPresenter.shareDynamic(getCurrentDynamic(), mDynamicDetailHeader.getSharBitmap());
+                    Intent intent = new Intent(mActivity, DynamicShareActivity.class);
+                    Bundle bundle = new Bundle();
+                    String content = getCurrentDynamic().getFeed_content();
+                    if (!TextUtils.isEmpty(content)) {
+                        content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, "");
+                    }
+                    DynamicShareBean dynamicShareBean = new DynamicShareBean(getCurrentDynamic().getUserInfoBean(),
+                            TimeUtils.utc2LocalStr(getCurrentDynamic().getCreated_at()),
+                            content,
+                            String.valueOf(getCurrentDynamic().getId()), UserInfoRepository.SHARETYPEENUM.FEED.value);
+                    bundle.putSerializable(BUNDLE_SHARE_DATA, dynamicShareBean);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_1:
                     // 评论
@@ -644,22 +662,24 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      */
     private void initDeleteComentPopupWindow(final long comment_id, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
+                //.item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(() -> {
+                /*.item1ClickListener(() -> {
                     StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_DYNAMIC, getCurrentDynamic().getId(), comment_id);
                     mDeletCommentPopWindow.hide();
-                })
+                })*/
                 .item2ClickListener(() -> {
+                    mPresenter.deleteCommentV2(comment_id, commentPosition);
                     mDeletCommentPopWindow.hide();
-                    showDeleteTipPopupWindow(getString(R.string.delete_comment), () -> {
+                    //第二次弹出来删除评论确认popwindow
+                    /*showDeleteTipPopupWindow(getString(R.string.delete_comment), () -> {
                         mPresenter.deleteCommentV2(comment_id, commentPosition);
-                    }, true);
+                    }, true);*/
                 })
                 .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();

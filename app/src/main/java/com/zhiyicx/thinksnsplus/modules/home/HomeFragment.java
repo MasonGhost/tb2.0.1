@@ -359,7 +359,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         if (mPresenter.isLogin()) {
             mFragmentList.add(MessageListFragment.newInstance());
         }
-        if (TouristConfig.MESSAGE_CAN_LOOK || mPresenter.isLogin()) {
+        if (TouristConfig.FIND_CAN_LOOK || mPresenter.isLogin()) {
 //            UserInfoBean userInfoBean = new UserInfoBean();
 //            userInfoBean.setUser_id(8L);
 //            userInfoBean.setName("头条哈哈");

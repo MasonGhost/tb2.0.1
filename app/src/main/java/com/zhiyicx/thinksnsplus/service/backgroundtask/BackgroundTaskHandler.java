@@ -1020,17 +1020,18 @@ public class BackgroundTaskHandler {
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-//                        try {
-//                            JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
-//                            circlePostCommentBean.setComment_id(jsonObject.getJSONObject("comment").getLong("id"));
-//                            circlePostCommentBean.setState(DynamicBean.SEND_SUCCESS);
-//                            mDynamicCommentBeanGreenDao.insertOrReplace(circlePostCommentBean);
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
+                            circlePostCommentBean.setComment_id(jsonObject.getJSONObject("comment").getLong("id"));
+                            circlePostCommentBean.setState(DynamicBean.SEND_SUCCESS);
+                            circlePostCommentBean.setIs_show(jsonObject.getJSONObject("comment").getInt("is_show"));
+                            mDynamicCommentBeanGreenDao.insertOrReplace(circlePostCommentBean);
                             mDynamicCommentBeanGreenDao.deleteSingleCache(circlePostCommentBean);
-//                            EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                            EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
                             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
 
                     }

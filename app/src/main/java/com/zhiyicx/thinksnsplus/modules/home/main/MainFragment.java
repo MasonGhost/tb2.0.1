@@ -138,7 +138,14 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
         mImgRight = (ImageView) mTsvToolbar.findViewById(R.id.img_right);
         mChooseBtLeft.setOnClickListener(v -> mVpFragment.setCurrentItem(0));
         mChooseBtRight.setOnClickListener(v -> mVpFragment.setCurrentItem(1));
-        mImgRight.setOnClickListener(v -> startActivity(new Intent(mActivity, SearchMechanismUserActivity.class)));
+        mImgRight.setOnClickListener(v -> {
+            // 游客处理
+            if (!TouristConfig.INFO_CAN_SEARCH && !mIAuthRepository.isLogin()) {
+                showLoginPop();
+                return;
+            }
+            startActivity(new Intent(mActivity, SearchMechanismUserActivity.class));
+        });
     }
 
     @Override
@@ -153,11 +160,11 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
             @Override
             public void onPageSelected(int position) {
                 // 游客处理
-                if (!TouristConfig.FOLLOW_CAN_LOOK && position == mVpFragment.getChildCount() - 1 && !mIAuthRepository.isLogin()) {
+                /*if (!TouristConfig.FOLLOW_CAN_LOOK && position == mVpFragment.getChildCount() - 1 && !mIAuthRepository.isLogin()) {
                     showLoginPop();
                     // 转回热门
                     mVpFragment.setCurrentItem(1);
-                }
+                }*/
                 onPageChanged(position);
 
             }

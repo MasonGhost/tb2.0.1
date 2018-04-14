@@ -944,7 +944,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private void goLogin() {
         //创建一个隐式的 Intent 对象，
         Intent intent = new Intent();
-        intent.setAction("zhiyicx.intent.action.LOGIN");
+        intent.setAction("tokenbook.intent.action.LOGIN");
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         intent.putExtra("bundle_tourist_login", true);
         intent.setType("text/plain");

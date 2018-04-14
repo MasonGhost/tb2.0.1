@@ -115,7 +115,9 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
         if (mFragmentList == null) {
             mFragmentList = new ArrayList();
             mFragmentList.add(MechanismCenterFragment.newInstance(getArguments()));
-            mFragmentList.add(TBMainDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this, getArguments().getParcelable
+            /*mFragmentList.add(TBMainDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this, getArguments().getParcelable
+                    (PersonalCenterFragment.PERSONAL_CENTER_DATA)));*/
+            mFragmentList.add(TBDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this, getArguments().getParcelable
                     (PersonalCenterFragment.PERSONAL_CENTER_DATA)));
             mFragmentList.add(TBMerchianMainInfoListFragment.newInstance(mUserInfoBean.getUser_id()));
         }

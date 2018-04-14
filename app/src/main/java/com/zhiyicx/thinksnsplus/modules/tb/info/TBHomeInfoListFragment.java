@@ -44,6 +44,11 @@ public class TBHomeInfoListFragment extends InfoListFragment {
     }
 
     @Override
+    protected boolean isUseTouristLoadLimit() {//游客也可以看资讯列表
+        return false;
+    }
+
+    @Override
     protected int setEmptView() {return R.mipmap.def_home_information_prompt;
     }
 }

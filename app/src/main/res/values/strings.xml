@@ -493,7 +493,7 @@
     <string name="detail">明细</string>
     <string name="get_it">知道了</string>
     <string name="choose_recharge_money">选择充值金额</string>
-    <string name="custom_recharge_money">自定义金额</string>
+    <string name="custom_recharge_money">自定义数量</string>
     <string name="choose_recharge_style">选择充值方式</string>
     <string name="choose_recharge_style_formart">%s充值</string>
     <string name="choose_withdrawals_style_formart">%s提现</string>
@@ -572,7 +572,7 @@
     <string name="reward_list_tip_dynamic">%s打赏了动态</string>
     <string name="reward_list_tip_user">%s打赏了该用户</string>
     <string name="reward_list_tip_answer">%s打赏了回答</string>
-    <string name="choose_reward_money">选择打赏金额</string>
+    <string name="choose_reward_money">选择打赏数量</string>
     <string name="reward_success">打赏成功</string>
     <string name="reward_failed">打赏失败</string>
     <string name="reward_notice">本次打赏不可超过2000</string>
@@ -1079,6 +1079,7 @@
     <string name="haode">好的</string>
     <string name="balance_not_enouph">余额不足!</string>
     <string name="app_name_simple">TB</string>
+    <string name="comment_has_send">评论成功！</string>
     <string name="comment_has_send_wait_review">评论已提交，请耐心等待审核！</string>
     <string name="empty"></string>
 

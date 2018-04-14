@@ -168,6 +168,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     @Override
     protected void initData() {
         initRechargeLables();
+        mEtInput.setCursorVisible(false);
         mCustomMoney.setText(R.string.et_top_input);
         if (mUserInfoBean != null) {
             mImageView.setVisibility(View.VISIBLE);
@@ -271,7 +272,8 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                             initStickTopInstructionsPop();
                         } else {
                             setSureBtEnable(false);
-                            mPresenter.reward(PayConfig.realCurrencyYuan2Fen(mRewardMoney), mRewardType, mSourceId);
+                            //mPresenter.reward(PayConfig.realCurrencyYuan2Fen(mRewardMoney), mRewardType, mSourceId);
+                            mPresenter.reward(mRewardMoney, mRewardType, mSourceId);
                         }
                     }
                 });// 传入的是真实货币分单位
@@ -282,6 +284,14 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     getActivity().finish();
+                });
+
+        // 点击后显示光标
+        RxView.clicks(mEtInput)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> {
+                    mEtInput.setCursorVisible(true);
                 });
 
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
@@ -342,6 +352,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
      */
     private void setCustomMoneyDefault() {
         mEtInput.setText("");
+        mEtInput.setCursorVisible(false);
         DeviceUtils.hideSoftKeyboard(getContext(), mEtInput);
     }
 

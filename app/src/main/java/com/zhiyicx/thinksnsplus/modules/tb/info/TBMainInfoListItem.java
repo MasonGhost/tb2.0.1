@@ -9,6 +9,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.common.base.BaseApplication;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -59,6 +60,9 @@ public abstract class TBMainInfoListItem implements ItemViewDelegate<BaseListBea
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> itemClick(position, imageView, title, realData));
 
+        ImageUtils.loadUserHead(realData.getUser(), (ImageView) holder.getView(R.id.iv_merhcain_headpic),false);
+        holder.setText(R.id.item_info_look_num, ConvertUtils.numberConvert(realData.getHits()));
+        holder.setText(R.id.item_info_comment_num, ConvertUtils.numberConvert(realData.getComment_count()));
         holder.setText(R.id.item_info_timeform, TimeUtils.getYeayMonthDay(TimeUtils.utc2LocalLong(realData
                 .getCreated_at())));
 

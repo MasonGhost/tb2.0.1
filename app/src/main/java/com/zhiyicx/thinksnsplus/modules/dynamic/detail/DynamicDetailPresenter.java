@@ -528,7 +528,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<
         mRootView.updateCommentCountAndDig();*/
         mBaseDynamicRepository.sendCommentV2(commentContent, mRootView.getCurrentDynamic().getId(),
                 replyToUserId, creatComment.getComment_mark());
-        mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_has_send_wait_review));
+        mRootView.refreshData();
     }
 
     @Override
@@ -572,6 +572,18 @@ public class DynamicDetailPresenter extends AppBasePresenter<
                 .subscribe(integer -> {
                     if (integer != -1) {
                         mRootView.refreshData(); // 加上 header
+                        switch (mRootView.getListDatas().get(integer).getIs_show()){
+                            case 0:
+                                //提交评论成功，等待审核
+                                mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_has_send_wait_review));
+                                break;
+                            case 1:
+                                //评论成功，不用等待审核
+                                mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_has_send));
+                                break;
+                            default:
+                                break;
+                        }
                     }
 
                 }, throwable -> throwable.printStackTrace());

@@ -56,7 +56,7 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
     private UserInfoBean replyUser;// 被评论的用户信息
     private int state = SEND_SUCCESS;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
     private boolean pinned ;// 是否是被固定（置顶）的评论 1 置顶 0 不置顶
-
+    private int is_show;//1评论成功；0评论已提交成功，等待审核
 
     public DynamicCommentBean() {
     }
@@ -183,6 +183,14 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
         this.commentable_id = commentable_id;
     }
 
+    public int getIs_show() {
+        return is_show;
+    }
+
+    public void setIs_show(int is_show) {
+        this.is_show = is_show;
+    }
+
     @Override
     public String toString() {
         return "DynamicCommentBean{" +
@@ -202,6 +210,7 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
                 ", replyUser=" + replyUser +
                 ", state=" + state +
                 ", pinned=" + pinned +
+                ", is_show=" + is_show +
                 '}';
     }
 
@@ -230,6 +239,7 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
         dest.writeParcelable(this.replyUser, flags);
         dest.writeInt(this.state);
         dest.writeByte(this.pinned ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.is_show);
     }
 
     /** To-one relationship, resolved on first access. */
@@ -359,13 +369,13 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
         this.replyUser = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.state = in.readInt();
         this.pinned = in.readByte() != 0;
+        this.is_show = in.readInt();
     }
 
-    @Generated(hash = 706783494)
-    public DynamicCommentBean(Long _id, Long comment_id, Long feed_mark, Long comment_mark,
-            String created_at, String updated_at, String comment_content, String commentable_type,
-            long commentable_id, long feed_user_id, long user_id, long reply_to_user_id, int state,
-            boolean pinned) {
+    @Generated(hash = 1678220513)
+    public DynamicCommentBean(Long _id, Long comment_id, Long feed_mark, Long comment_mark, String created_at,
+            String updated_at, String comment_content, String commentable_type, long commentable_id,
+            long feed_user_id, long user_id, long reply_to_user_id, int state, boolean pinned, int is_show) {
         this._id = _id;
         this.comment_id = comment_id;
         this.feed_mark = feed_mark;
@@ -380,6 +390,7 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
         this.reply_to_user_id = reply_to_user_id;
         this.state = state;
         this.pinned = pinned;
+        this.is_show = is_show;
     }
 
     public static final Creator<DynamicCommentBean> CREATOR = new Creator<DynamicCommentBean>() {

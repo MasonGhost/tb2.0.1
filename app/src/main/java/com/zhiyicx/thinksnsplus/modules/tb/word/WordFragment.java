@@ -47,6 +47,7 @@ public class WordFragment extends TSListFragment<WordContract.Presenter, InfoCom
     @Override
     public void wordSuccess() {
         //showSnackSuccessMessage(getString(R.string.word_success_tip));
+        mWordHeaderView.mEtWordContent.setText("");
         mWordDialog.setCurrentView(CenterDialog.SUCCESS);
         mWordDialog.show();
     }

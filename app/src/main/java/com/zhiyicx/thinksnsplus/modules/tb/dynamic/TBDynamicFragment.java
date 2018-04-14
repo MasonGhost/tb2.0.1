@@ -78,6 +78,11 @@ public class TBDynamicFragment extends DynamicFragment {
     }
 
     @Override
+    protected boolean isUseTouristLoadLimit() {//游客也可以看快讯列表
+        return false;
+    }
+
+    @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
         return true;
     }
@@ -145,8 +150,13 @@ public class TBDynamicFragment extends DynamicFragment {
                 mCurrentClickItemPosition = dataPosition;
                 break;
             case 1:
-                mCurrentClickItemPosition = dataPosition;
                 // 评论
+                if ((!TouristConfig.DYNAMIC_CAN_COMMENT && mPresenter.handleTouristControl()) ||
+                        mListDatas.get(dataPosition).getId() == null || mListDatas.get
+                        (dataPosition).getId() == 0) {
+                    return;
+                }
+                mCurrentClickItemPosition = dataPosition;
                 if (CAN_COMMENT == mListDatas.get(dataPosition).getCan_comment()) {
                     if(mListDatas.get(dataPosition).getComments().isEmpty()){
                         // 直接评论

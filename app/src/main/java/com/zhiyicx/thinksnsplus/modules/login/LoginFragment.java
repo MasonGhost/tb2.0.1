@@ -130,6 +130,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         boolean openRegister = mSystemConfigBean.getRegisterSettings() == null
                 || mSystemConfigBean.getRegisterSettings() != null && !mSystemConfigBean.getRegisterSettings().getType().equals(SystemConfig
                 .REGITER_MODE_THIRDPART);
+        setToolBarLeftImage(R.mipmap.topbar_back_white);
+        mToolbarLeft.setVisibility((!mIsToourist && mPresenter.isTourist()) ? View.GONE : View.VISIBLE);
         mToolbarRight.setVisibility(openRegister ? View.VISIBLE : View.GONE);
         mEtCompleteInput.setDropDownWidth(UIUtils.getWindowWidth(getContext()));
         initListener();
@@ -289,6 +291,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     @Override
     public void setLogining() {
         mFlPlaceholder.setVisibility(View.VISIBLE);
+        mToolbarLeft.setEnabled(false);
         mToolbarRight.setEnabled(false);
         mBtLoginLogin.handleAnimation(true);
         mBtLoginLogin.setEnabled(false);
@@ -309,6 +312,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         } else {
             // 失败立马停止，成功的话 ondestroy 中处理
             mBtLoginLogin.handleAnimation(false);
+            mToolbarLeft.setEnabled(true);
             mToolbarRight.setEnabled(true);
             mFlPlaceholder.setVisibility(View.GONE);
             mBtLoginLogin.setEnabled(true);
@@ -342,9 +346,12 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         }
     }
 
-    @OnClick({R.id.tv_look_around, R.id.tv_forget_password})
+    @OnClick({R.id.tv_toolbar_left, R.id.tv_look_around, R.id.tv_forget_password})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.tv_toolbar_left:
+                getActivity().finish();
+                break;
             case R.id.tv_look_around:
                 goHome();
                 break;
