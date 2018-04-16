@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.tb.mechainism;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -10,17 +11,28 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.TouristConfig;
+import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
 import com.zhiyicx.thinksnsplus.modules.tb.detail.MerchainMessageListContract;
@@ -43,6 +55,7 @@ import butterknife.OnClick;
 import rx.Subscription;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.CAN_COMMENT;
 
 /**
  * @Author Jliuer
@@ -50,8 +63,10 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MechanismCenterContainerFragment extends TSViewPagerFragment implements DynamicFragment.OnCommentClickListener,
-        MechanismCenterFragment.OnMerchainismInfoChangedListener {
+public class MechanismCenterContainerFragment extends TSViewPagerFragment implements
+        MechanismCenterFragment.OnMerchainismInfoChangedListener,
+        TBMainDynamicFragment.OnItemCommentClickListener,
+        InputLimitView.OnSendClickListener{
 
     @BindView(R.id.mechainism_appbar_layout)
     AppBarLayout mAppBarLayout;
@@ -63,15 +78,37 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
     TextView mTvDes;
     @BindView(R.id.ll_follow_container)
     View mLlFollowContainer;
+    @BindView(R.id.ilv_comment)
+    InputLimitView mIlvComment;
+    @BindView(R.id.v_shadow)
+    View mVShadow;
 
     private UserInfoBean mUserInfoBean;
 
     protected ActionPopupWindow mMorePop;
 
+    private MechanismCenterFragment mMechanismCenterFragment;
+    private TBMainDynamicFragment mTBMainDynamicFragment;
+    private TBMerchianMainInfoListFragment mTBMerchianMainInfoListFragment;
+    private DynamicDetailBeanV2 mDynamicDetailBeanV2;
+
 
     @Inject
     UserInfoRepository mUserInfoRepository;
-    private Subscription mUserinfoSub;
+
+    @Inject
+    BaseDynamicRepository mBaseDynamicRepository;
+
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
+    @Inject
+    DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
+
+    @Inject
+    DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
+
+    //private Subscription mUserinfoSub;
 
 
     @Override
@@ -114,30 +151,29 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
     protected List<Fragment> initFragments() {
         if (mFragmentList == null) {
             mFragmentList = new ArrayList();
-            mFragmentList.add(MechanismCenterFragment.newInstance(getArguments()));
-            /*mFragmentList.add(TBMainDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this, getArguments().getParcelable
+            mMechanismCenterFragment = MechanismCenterFragment.newInstance(getArguments());
+            mTBMainDynamicFragment = TBMainDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, (UserInfoBean) getArguments().getParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA));
+            mTBMainDynamicFragment.setOnItemCommentClickListener(this);
+            mTBMerchianMainInfoListFragment = TBMerchianMainInfoListFragment.newInstance(mUserInfoBean.getUser_id());
+            mFragmentList.add(mMechanismCenterFragment);
+            mFragmentList.add(mTBMainDynamicFragment);
+            /*mFragmentList.add(TBDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this, getArguments().getParcelable
                     (PersonalCenterFragment.PERSONAL_CENTER_DATA)));*/
-            mFragmentList.add(TBDynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this, getArguments().getParcelable
-                    (PersonalCenterFragment.PERSONAL_CENTER_DATA)));
-            mFragmentList.add(TBMerchianMainInfoListFragment.newInstance(mUserInfoBean.getUser_id()));
+            mFragmentList.add(mTBMerchianMainInfoListFragment);
         }
         return mFragmentList;
-    }
-
-    @Override
-    public void onButtonMenuShow(boolean isShow) {
-
     }
 
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         AppApplication.AppComponentHolder.getAppComponent().inject(this);
+        initInputView();
         mTsvToolbar.setLeftImg(0);
         initListener();
     }
 
-    private void getUserinfo() {
+    /*private void getUserinfo() {
         mUserinfoSub = mUserInfoRepository.getSpecifiedUserInfo(mUserInfoBean.getUser_id(), null, null)
                 .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
                     @Override
@@ -146,7 +182,7 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
                         updateUseFollow();
                     }
                 });
-    }
+    }*/
 
     private void initListener() {
         mAppBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
@@ -184,7 +220,7 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
         // 设置用户名
         mTvUserName.setText(mUserInfoBean.getName());
         updateUserDes(mUserInfoBean.getIntro());
-        getUserinfo();
+        //getUserinfo();
 
     }
 
@@ -200,8 +236,8 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
     private void updateUseFollow() {
 //        mLlFollowContainer.setVisibility(mUserInfoBean.getFollower() ? View.GONE : View.VISIBLE);
         try {
-            ((MechanismCenterFragment) mFragmentList.get(0)).updateFollowStat(mUserInfoBean.getFollower());
-
+            mMechanismCenterFragment.updateFollowStat(mUserInfoBean.getFollower());
+            mTBMainDynamicFragment.updateFollower(mUserInfoBean.getFollower());
         } catch (Exception e) {
         }
     }
@@ -223,15 +259,10 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
                 initMorePop();
                 break;
             case R.id.tv_attention:
-                handleUser();
+                handleFollow();
                 break;
             default:
         }
-    }
-
-    private void handleUser() {
-        mUserInfoRepository.handleFollow(mUserInfoBean);
-        updateUseFollow();
     }
 
     protected void initMorePop() {
@@ -245,10 +276,8 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     // 取消关注
-                    mUserInfoRepository.handleFollow(mUserInfoBean);
-                    mUserInfoBean.setFollower(false);
+                    handleFollow();
                     mMorePop.hide();
-                    updateUseFollow();
                 })  // 关注
                 .item2ClickListener(() -> {                    // 举报帖子
                     ReportResourceBean reportResourceBean = new ReportResourceBean(mUserInfoBean, String.valueOf(mUserInfoBean
@@ -268,9 +297,9 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
     public void onDestroyView() {
         super.onDestroyView();
         dismissPop(mMorePop);
-        if (mUserinfoSub != null && !mUserinfoSub.isUnsubscribed()) {
+        /*if (mUserinfoSub != null && !mUserinfoSub.isUnsubscribed()) {
             mUserinfoSub.unsubscribe();
-        }
+        }*/
     }
 
     @Override
@@ -281,8 +310,115 @@ public class MechanismCenterContainerFragment extends TSViewPagerFragment implem
 
     }
 
+    public void showCommentView() {
+        showBottomView(false);
+
+    }
+
+    protected void showBottomView(boolean isShow) {
+        if (isShow) {
+            mVShadow.setVisibility(View.GONE);
+            mIlvComment.setVisibility(View.GONE);
+            mIlvComment.clearFocus();
+            mIlvComment.setSendButtonVisiable(false);
+            DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        } else {
+            mVShadow.setVisibility(View.VISIBLE);
+            mIlvComment.setVisibility(View.VISIBLE);
+            mIlvComment.getFocus();
+            mIlvComment.setSendButtonVisiable(true);
+            DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        }
+    }
+
     @Override
     public void handleFollow() {
-        handleUser();
+        mUserInfoRepository.handleFollow(mUserInfoBean);
+        updateUseFollow();
+    }
+
+    @Override
+    public void setPresenter(Object presenter) {
+
+    }
+
+    @Override
+    public void onItemCommentClick(int pos, DynamicDetailBeanV2 detailBeanV2, String dynamicType) {
+        mDynamicDetailBeanV2 = detailBeanV2;
+        if (CAN_COMMENT == detailBeanV2.getCan_comment()) {
+            if(detailBeanV2.getComments().isEmpty()){
+                // 直接评论
+                showCommentView();
+                mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
+            } else {
+                // 还未发送成功的动态列表不查看详情
+                if (detailBeanV2.getId() == null || detailBeanV2.getId() == 0) {
+                    return;
+                }
+                Intent commentListIntent = new Intent(getActivity(), DynamicDetailActivity.class);
+                Bundle commentListBundle = new Bundle();
+                commentListBundle.putParcelable(DynamicDetailFragment.DYNAMIC_DETAIL_DATA, detailBeanV2);
+                commentListBundle.putString(DynamicDetailFragment.DYNAMIC_DETAIL_DATA_TYPE, dynamicType);
+                commentListIntent.putExtras(commentListBundle);
+                startActivity(commentListIntent);
+                getActivity().overridePendingTransition(R.anim.slide_in_bottom, R.anim.keep_on);
+            }
+        } else {
+            showSnackWarningMessage(getString(R.string.dynamic_not_support_comment));
+        }
+    }
+
+    private void initInputView() {
+        mVShadow.setOnClickListener(v -> closeInputView());
+        mIlvComment.setOnSendClickListener(this);
+    }
+
+    public void closeInputView() {
+        if (mIlvComment.getVisibility() == View.VISIBLE) {
+            mIlvComment.setVisibility(View.GONE);
+            DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        }
+        mVShadow.setVisibility(View.GONE);
+    }
+
+    /**
+     * comment send
+     *
+     * @param text
+     */
+    @Override
+    public void onSendClick(View v, final String text) {
+        com.zhiyicx.imsdk.utils.common.DeviceUtils.hideSoftKeyboard(getContext(), v);
+        mIlvComment.setVisibility(View.GONE);
+        mVShadow.setVisibility(View.GONE);
+        sendCommentV2(mDynamicDetailBeanV2, 0, text);
+        showBottomView(true);
+    }
+
+    public void sendCommentV2(DynamicDetailBeanV2 detailBeanV2, long replyToUserId, String commentContent) {
+        // 生成一条评论
+        DynamicCommentBean creatComment = new DynamicCommentBean();
+        creatComment.setState(DynamicCommentBean.SEND_ING);
+        creatComment.setComment_content(commentContent);
+        creatComment.setFeed_mark(detailBeanV2.getFeed_mark());
+        String comment_mark = AppApplication.getMyUserIdWithdefault() + "" + System
+                .currentTimeMillis();
+        creatComment.setComment_mark(Long.parseLong(comment_mark));
+        creatComment.setReply_to_user_id(replyToUserId);
+        //当回复动态的时候
+        UserInfoBean userInfoBean = new UserInfoBean();
+        userInfoBean.setUser_id(replyToUserId);
+        creatComment.setReplyUser(userInfoBean);
+        creatComment.setUser_id(AppApplication.getMyUserIdWithdefault());
+        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
+        creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
+        mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
+        // 处理评论数
+        detailBeanV2.setFeed_comment_count(detailBeanV2.getFeed_comment_count() + 1);
+        detailBeanV2.getComments().add(creatComment);
+        mDynamicDetailBeanV2GreenDao.insertOrReplace(detailBeanV2);
+        mBaseDynamicRepository.sendCommentV2(commentContent, detailBeanV2.getId(),
+                replyToUserId, creatComment.getComment_mark());
+        mTBMainDynamicFragment.refreshData();
     }
 }

@@ -30,7 +30,7 @@ import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetai
  */
 public class TBMerchianMainInfoListFragment extends InfoListFragment {
 
-    public static InfoListFragment newInstance(long userId) {
+    public static TBMerchianMainInfoListFragment newInstance(long userId) {
         TBMerchianMainInfoListFragment fragment = new TBMerchianMainInfoListFragment();
         Bundle args = new Bundle();
         args.putLong(BUNDLE_USERID, userId);

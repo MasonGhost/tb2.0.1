@@ -68,7 +68,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     public static final int DEFAULT_PAGE = 1;
 
-    private static final int DEFAULT_TIP_STICKY_TIME = 3000;
+    private static final int DEFAULT_TIP_STICKY_TIME = 1000;
     public static final float DEFAULT_LIST_ITEM_SPACING = 0.5f;
 
     private static final boolean DEFAULT_NEED_REFRESH = false;

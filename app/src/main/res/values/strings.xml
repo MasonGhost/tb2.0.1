@@ -194,6 +194,7 @@
     <string name="reply">回复 %s:</string>
     <string name="count_tip">已更新%s条内容</string>
     <string name="newest">已是最新内容</string>
+    <string name="count_tip_news">已更新%s篇内容</string>
     <!--发布动态-->
     <string name="send_dynamic">发布动态</string>
     <string name="send_words_dynamic">文字</string>

@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseInfoRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseRewardRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.VertifyCodeRepository;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -70,11 +71,7 @@ import static com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean.SEND_ING;
  * @Description
  */
 @FragmentScoped
-public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.View> implements InfoDetailsConstract.Presenter,
-        OnShareCallbackListener {
-
-    @Inject
-    public SharePolicy mSharePolicy;
+public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.View> implements InfoDetailsConstract.Presenter {
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
@@ -91,6 +88,8 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     BaseInfoRepository mBaseInfoRepository;
     @Inject
     BaseRewardRepository mBaseRewardRepository;
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     @Inject
     public InfoDetailsPresenter(InfoDetailsConstract
@@ -183,34 +182,6 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         } else {
             mRootView.loadAllError();
         }
-    }
-
-    @Override
-    public void shareInfo(Bitmap bitmap) {
-        ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
-        ShareContent shareContent = new ShareContent();
-        //shareContent.setTitle(mContext.getString(R.string.app_name_info, mContext.getString(R.string.app_name)));
-        shareContent.setTitle(mRootView.getCurrentInfo().getTitle());
-        shareContent.setUrl(String.format(Locale.getDefault(), APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
-                mRootView.getCurrentInfo().getId(), mRootView.getCurrentInfo().getUser().getUser_id()));
-        //shareContent.setContent(mRootView.getCurrentInfo().getTitle());
-        shareContent.setContent(mRootView.getCurrentInfo().getSubject());
-
-        if (bitmap == null) {
-            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
-        } else {
-            shareContent.setBitmap(bitmap);
-        }
-
-        if (mRootView.getCurrentInfo().getImage() != null) {
-            shareContent.setImage(ImageUtils.imagePathConvertV2(mRootView.getCurrentInfo()
-                            .getImage().getId()
-                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
-                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
-                    , ImageZipConfig.IMAGE_70_ZIP));
-        }
-        mSharePolicy.setShareContent(shareContent);
-        mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }
 
     @Override
@@ -388,6 +359,54 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     }
 
     @Override
+    public void shareTask(InfoListDataBean mInfoMation) {
+        Subscription subscription = mUserInfoRepository.shareCount(UserInfoRepository.SHARETYPEENUM.NEWS.value, String.valueOf(mInfoMation.getId()))
+                .compose(mSchedulersTransformer)
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<Object> data) {
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));
+                        EventBus.getDefault().post(mInfoMation, EventBusTagConfig.EVENT_UPDATE_INFOMATION_SHARE);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                    }
+                });
+        addSubscrebe(subscription);
+    }
+
+    @Override
+    public void infoReadCount() {
+        Subscription subscription = mBaseInfoRepository.infoReadCount()
+                .compose(mSchedulersTransformer)
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<Object> data) {
+                        mRootView.updateReadCount();
+                        mRootView.refreshData();
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                    }
+                });
+        addSubscrebe(subscription);
+    }
+
+    @Override
     public void deleteComment(InfoCommentListBean data) {
         mInfoCommentListBeanDao.deleteSingleCache(data);
         mRootView.getListDatas().remove(data);
@@ -405,7 +424,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_INFO_LIST)
     public void handleSendComment(InfoCommentListBean infoCommentListBean) {
-        LogUtils.d(TAG, "dynamicCommentBean = " + infoCommentListBean.toString());
+        LogUtils.d(TAG, "infoCommentListBean = " + infoCommentListBean.toString());
         mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
         Subscription subscribe = Observable.just(infoCommentListBean)
                 .subscribeOn(Schedulers.newThread())
@@ -480,25 +499,6 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                 createComment.getComment_mark());
         mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_has_send_wait_review));
 
-    }
-
-    @Override
-    public void onStart(Share share) {
-    }
-
-    @Override
-    public void onSuccess(Share share) {
-        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));
-    }
-
-    @Override
-    public void onError(Share share, Throwable throwable) {
-        mRootView.showSnackErrorMessage(mContext.getString(R.string.share_fail));
-    }
-
-    @Override
-    public void onCancel(Share share) {
-        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_cancel));
     }
 
     @Override

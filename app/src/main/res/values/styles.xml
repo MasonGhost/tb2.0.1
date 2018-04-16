@@ -48,7 +48,7 @@
     <style name="style_dynamic_editext" parent="style_edit_cursor">
         <item name="android:layout_marginLeft">@dimen/spacing_small</item>
         <item name="android:inputType">numberDecimal</item>
-        <item name="android:digits">0123456789.</item>
+        <item name="android:digits">0123456789</item>
         <item name="android:maxLength">@integer/money_input_max_size</item>
         <item name="android:layout_marginRight">@dimen/spacing_small</item>
         <item name="android:textSize">@dimen/size_content_assist</item>

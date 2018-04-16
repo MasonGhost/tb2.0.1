@@ -504,6 +504,10 @@ public class InfoDetailHeaderView extends BaseWebLoad {
         mReWardView.setVisibility(visible);
     }
 
+    public ReWardView getRewardView(){
+        return this.mReWardView;
+    }
+
     public void setAdvertViewVisible(int visible) {
         if (visible == View.GONE || !com.zhiyicx.common.BuildConfig.USE_ADVERT) {
             mDynamicDetailAdvertHeader.hideAdvert();

@@ -88,7 +88,7 @@
     <dimen name="integration_withdrawals_et_padding">14dp</dimen>
     <dimen name="edit_code_et_margin">28dp</dimen>
 
-    <dimen name="progressbar_height">3sp</dimen>
+    <dimen name="progressbar_height">2sp</dimen>
     <dimen name="btn_margin">36dp</dimen>
     <dimen name="btn_margin_top">6dp</dimen>
 </resources>

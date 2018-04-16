@@ -261,12 +261,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     protected boolean setUseCenterLoading() {
-        return true;
+        return false;
     }
 
     @Override
     protected boolean setUseCenterLoadingAnimation() {
-        return true;
+        return false;
     }
 
     @Override

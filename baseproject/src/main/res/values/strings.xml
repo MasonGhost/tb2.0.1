@@ -88,7 +88,7 @@
     <string name="password_diffrent">两次密码输入不一致</string>
     <string name="find_password_success">找回密码成功</string>
     <string name="change_password_success">更改成功</string>
-    <string name="register_by_phone">手机注册</string>
+    <string name="register_by_phone">注册</string>
     <string name="register_by_email">邮箱注册</string>
     <string name="find_password_by_phone">手机找回</string>
     <string name="find_password_by_email">邮箱找回</string>

@@ -23,6 +23,7 @@ import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.BuildConfig;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -409,7 +410,30 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void refreshData() {
+        setToolText();
         mHeaderAndFooterWrapper.notifyDataSetChanged();
+    }
+
+    private void setToolText(){
+        // 点赞
+        mDdDynamicTool.setItemTextAndStatus(
+                mDynamicBean.getFeed_digg_count() == 0 ? "" : ConvertUtils.numberConvert(mDynamicBean
+                        .getFeed_digg_count())
+                , mDynamicBean.isHas_digg()
+                , 2
+        );
+        // 分享数量
+        mDdDynamicTool.setItemTextAndStatus(
+                mDynamicBean.getShare_count() == 0 ? "" : ConvertUtils.numberConvert(mDynamicBean.getShare_count()),
+                false
+                , 0
+        );
+        // 评论数量
+        mDdDynamicTool.setItemTextAndStatus(
+                mDynamicBean.getComments().isEmpty() ? "" : ConvertUtils.numberConvert(mDynamicBean.getComments().size())
+                , false
+                , 1
+        );
     }
 
 
@@ -511,6 +535,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mDdDynamicTool.setItemIsChecked(dynamicBean.getHas_digg(), ITEM_POSITION_2);
         //设置是否收藏
         mDdDynamicTool.setItemIsChecked(dynamicBean.getHas_collect(), DynamicDetailMenuView.ITEM_POSITION_3);
+
+        setToolText();
     }
 
     /**
@@ -610,7 +636,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 initDeleteComentPopupWindow(mListDatas.get(position).getComment_id(), position);
                 mDeletCommentPopWindow.show();
             }
-        } else {
+        } /*else {
             mReplyUserId = mListDatas.get(position).getUser_id();
             showCommentView();
             String contentHint = getString(R.string.default_input_hint);
@@ -618,7 +644,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 contentHint = getString(R.string.reply, mListDatas.get(position).getCommentUser().getName());
             }
             mIlvComment.setEtContentHint(contentHint);
-        }
+        }*/
     }
 
     @Override

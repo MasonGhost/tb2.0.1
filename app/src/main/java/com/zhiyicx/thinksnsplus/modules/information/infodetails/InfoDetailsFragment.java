@@ -2,7 +2,12 @@ package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.DrawableRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
@@ -12,28 +17,39 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
+import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
+import com.zhiyicx.common.config.ConstantConfig;
+import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
+import com.zhiyicx.common.thridmanager.share.Share;
+import com.zhiyicx.common.thridmanager.share.ShareContent;
+import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
@@ -59,16 +75,23 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
+import me.iwf.photopicker.utils.AndroidLifecycleUtils;
 
 import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS_FORMAT;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_2;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
@@ -87,7 +110,8 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         InfoCommentListBean> implements InfoDetailsConstract.View, InputLimitView
         .OnSendClickListener, BaseWebLoad.OnWebLoadListener, MultiItemTypeAdapter.OnItemClickListener, OnUserInfoClickListener,
         InfoDetailCommentCopyItem.OnDeleteClickListener,
-        InfoDetailHeaderView.OnLikeClickListener{
+        InfoDetailHeaderView.OnLikeClickListener,
+        OnShareCallbackListener {
 
     public static final String BUNDLE_INFO_TYPE = "info_type";
     public static final String BUNDLE_INFO_ID = "info_Id";
@@ -124,6 +148,22 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     private View mFootView;
     private LinearLayout mLlFooter;
 
+    /**
+     * 关于统计
+     */
+    private int mReadCount;//统计阅读次数
+    private int mTimeCount;//在页面停留时间
+    private final static int mStayTime = 10;
+    private Point mPoint;
+    private int mScreenWidth;
+    private int mScreenHeight;
+    private Rect mRect;
+    private int[] mLocation;
+    private Handler mHandler;
+    private Runnable mRunnable;
+
+    private SharePolicy mSharePolicy;
+
     private int mReplyUserId;// 被评论者的 id ,评论动态 id = 0
 
     /**
@@ -149,11 +189,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     @Override
-    protected boolean showToolBarDivider() {
-        return false;
-    }
-
-    @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
                 mListDatas);
@@ -173,8 +208,9 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         this.mRewardsListBeen.clear();
         this.mRewardsListBeen.addAll(datas);
         if (rewardsCountBean1 != null && !TextUtils.isEmpty(rewardsCountBean1.getAmount())) {
-            rewardsCountBean1.setAmount("" + PayConfig.realCurrency2GameCurrency(Double.parseDouble(rewardsCountBean1.getAmount()), mPresenter
-                    .getRatio()));
+            /*rewardsCountBean1.setAmount("" + PayConfig.realCurrency2GameCurrency(Double.parseDouble(rewardsCountBean1.getAmount()), mPresenter
+                    .getRatio()));*/
+            rewardsCountBean1.setAmount("" + Double.parseDouble(rewardsCountBean1.getAmount()));
         }
         mInfoDetailHeader.updateReward(mInfoMation.getId(), mRewardsListBeen, rewardsCountBean1, RewardType.INFO, mPresenter.getWalletGoldName());
     }
@@ -217,6 +253,19 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    /**
+     * 更新当前页面浏览统计次数
+     * */
+    @Override
+    public void updateReadCount() {
+        mReadCount++;
+    }
+
+    @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
         super.snackViewDismissWhenTimeOut(prompt);
         if (getActivity() != null && Prompt.SUCCESS == prompt && mIsClose) {
@@ -232,6 +281,21 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        mSharePolicy = new UmengSharePolicyImpl(mActivity);
+        mReadCount = 0;
+        mTimeCount = 0;
+        mHandler = new Handler();
+        mRunnable = () ->{
+            if(mTimeCount < mStayTime && mReadCount == 0){
+                mTimeCount++;
+                mHandler.postDelayed(mRunnable, 1000);
+            } else {
+                if(mReadCount == 0 && btnRewardVisible(mInfoDetailHeader.getRewardView())){
+                    mPresenter.infoReadCount();
+                }
+                mHandler.removeCallbacks(mRunnable);
+            }
+        };
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
         mInfoMation = (InfoListDataBean) getArguments().getSerializable(BUNDLE_INFO);
         mInfoId = getArguments().getLong(BUNDLE_INFO_ID);
@@ -248,10 +312,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         initHeaderView();
         initBottomToolListener();
         initListener();
+        initLocation();
         mTvToolbarCenter.setVisibility(View.VISIBLE);
         mInfoMation.setIs_collection_news(mPresenter.isCollected() ? 1 : 0);
         mInfoMation.setIs_digg_news(mPresenter.isDiged() ? 1 : 0);
-
+        mHandler.post(mRunnable);
 
         // 投稿中的资讯隐藏底部操作以及打赏
 //        mDdDynamicTool.setVisibility(mInfoMation.getAudit_status() == 0 ? View.VISIBLE : View.GONE);
@@ -451,6 +516,18 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     private void initListener() {
+        ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
+        mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE
+                        && mTimeCount >= mStayTime
+                        && btnRewardVisible(mInfoDetailHeader.getRewardView())
+                        && mReadCount == 0) {
+                    mPresenter.infoReadCount();
+                }
+            }
+        });
         mCoordinatorLayout.setEnabled(false);
         RxView.clicks(mTvToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -459,7 +536,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     Bitmap bitmap = FileUtils.readImgFromFile(getActivity(), "info_share");
-                    mPresenter.shareInfo(bitmap);
+                    shareInfo(bitmap);
                 });
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -629,6 +706,32 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         }
     }
 
+    @Override
+    public void onStart(Share share) {
+
+    }
+
+    @Override
+    public void onSuccess(Share share) {
+        mPresenter.shareTask(mInfoMation);
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_INFOMATION_SHARE)
+    private void updateInfoMationShare(InfoListDataBean data) {
+        mInfoMation.setShare_count(data.getShare_count() + 1);
+        refreshData();
+    }
+
+    @Override
+    public void onError(Share share, Throwable throwable) {
+        showSnackErrorMessage(getString(R.string.share_fail));
+    }
+
+    @Override
+    public void onCancel(Share share) {
+        showSnackSuccessMessage(getString(R.string.share_cancel));
+    }
+
     class ItemOnCommentListener implements InfoDetailCommentCopyItem.OnCommentItemListener {
         @Override
         public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
@@ -730,7 +833,51 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     public void onDestroyView() {
         mInfoDetailHeader.destroyedWeb();
         super.onDestroyView();
+        mHandler.removeCallbacks(mRunnable);
         dismissPop(mDeletCommentPopWindow);
         dismissPop(mDealInfoMationPopWindow);
+    }
+
+    /**
+     * 判断打赏按钮是否可见
+     */
+    private boolean btnRewardVisible(View view){
+        view.getLocationInWindow(mLocation);
+        return view.getLocalVisibleRect(mRect);
+    }
+
+    private void initLocation(){
+        mPoint = new Point();
+        mActivity.getWindowManager().getDefaultDisplay().getSize(mPoint);
+        mScreenWidth = mPoint.x;
+        mScreenHeight = mPoint.y;
+        mRect = new Rect(0,0, mScreenWidth, mScreenHeight);
+        mLocation = new int[2];
+    }
+
+    public void shareInfo(Bitmap bitmap) {
+        ShareContent shareContent = new ShareContent();
+        //shareContent.setTitle(mContext.getString(R.string.app_name_info, mContext.getString(R.string.app_name)));
+        shareContent.setTitle(getCurrentInfo().getTitle());
+        shareContent.setUrl(String.format(Locale.getDefault(), APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
+                getCurrentInfo().getId(), getCurrentInfo().getUser().getUser_id()));
+        //shareContent.setContent(mRootView.getCurrentInfo().getTitle());
+        shareContent.setContent(getCurrentInfo().getSubject());
+
+        if (bitmap == null) {
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(getResources(), R.mipmap.icon)));
+        } else {
+            shareContent.setBitmap(bitmap);
+        }
+
+        if (getCurrentInfo().getImage() != null) {
+            shareContent.setImage(ImageUtils.imagePathConvertV2(getCurrentInfo()
+                            .getImage().getId()
+                    , getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                    , getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                    , ImageZipConfig.IMAGE_70_ZIP));
+        }
+        mSharePolicy.setShareContent(shareContent);
+        mSharePolicy.showShare(mActivity);
     }
 }

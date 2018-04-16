@@ -40,6 +40,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_GET_COMMENT
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_GET_MY_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_LIST_TB;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_LIST_V2;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_READ;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REPORT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS_COUNT;
@@ -91,6 +92,12 @@ public interface InfoMainClient {
     Observable<List<InfoDigListBean>> getInfoDigList(@Path("news") String news_id,
                                                      @Query("after") Long max_id,
                                                      @Query("limit") int limit);
+
+    /**
+     * 浏览统计
+     */
+    @POST(APP_PATH_INFO_READ)
+    Observable<BaseJsonV2<Object>> infoReadCount();
 
     /**
      * 获取一条资讯的相关资讯

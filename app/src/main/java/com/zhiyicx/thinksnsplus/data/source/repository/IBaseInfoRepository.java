@@ -87,5 +87,10 @@ public interface IBaseInfoRepository {
      */
     Observable<List<InfoCommentListBean>> getMyInfoCommentListV2(String news_id, Long max_id, Long limit);
 
+    /**
+     * 统计浏览次数
+     */
+    Observable<BaseJsonV2<Object>> infoReadCount();
+
 
 }

@@ -246,6 +246,11 @@ public class BaseInfoRepository implements IBaseInfoRepository {
         return mInfoMainClient.getInfoDetail(news_id);
     }
 
+    @Override
+    public Observable<BaseJsonV2<Object>> infoReadCount() {
+        return mInfoMainClient.infoReadCount();
+    }
+
     private void dealCommentData(List<InfoCommentListBean> list, SparseArray<UserInfoBean> userInfoBeanSparseArray) {
         if (list != null) {
             for (InfoCommentListBean commentListBean : list) {

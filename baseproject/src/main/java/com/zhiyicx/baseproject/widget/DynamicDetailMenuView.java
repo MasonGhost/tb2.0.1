@@ -95,12 +95,15 @@ public class DynamicDetailMenuView extends FrameLayout {
             R.string.collect
     };// 文字 ids
 
+    private
+    String[] mText = new String[mTexts.length];// 文字内容
+
     protected
     @ColorRes
     int mTextNormalColor = R.color.normal_for_disable_button_text;// 正常文本颜色
     protected
     @ColorRes
-    int mTextCheckedColor = R.color.money;// 选中文本颜色
+    int mTextCheckedColor = R.color.themeColor;// 选中文本颜色
 
     public DynamicDetailMenuView(Context context) {
         super(context);
@@ -231,7 +234,21 @@ public class DynamicDetailMenuView extends FrameLayout {
      * @param postion   当前 item 的位置
      */
     public void setItemIsChecked(boolean isChecked, int postion) {
-        setItemIsChecked(isChecked, postion, false);
+        setItemIsChecked(isChecked, postion, true);
+    }
+
+    /**
+     * 设置 item text 内容与状态
+     *
+     * @param string  当前内容
+     * @param postion 当前 item 的位置
+     */
+    public void setItemTextAndStatus(String string, boolean isChecked, int postion) {
+        if (postion >= ITEM_NUMS_MAX) {
+            throw new IllegalArgumentException("postion is out of index");
+        }
+        mText[postion] = string;
+        setItemIsChecked(isChecked, postion, true);
     }
 
     /**
@@ -294,7 +311,8 @@ public class DynamicDetailMenuView extends FrameLayout {
             textView.setTextColor(ContextCompat.getColor(getContext(), mTextNormalColor));
         }
         if (isNeedSetText) {
-            textView.setText(getResources().getString(mTexts[position]));
+            //textView.setText(getResources().getString(mTexts[position]));
+            textView.setText(mText[position]);
         }
     }
 

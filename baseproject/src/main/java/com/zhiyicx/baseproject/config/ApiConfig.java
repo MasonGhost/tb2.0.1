@@ -219,6 +219,9 @@ public class ApiConfig {
     // 订阅资讯频道
     public static final String APP_PATH_INFO_FOLLOW_LIST = "api/" + API_VERSION_2 + "/news/categories/follows";
 
+    // 资讯阅读
+    public static final String APP_PATH_INFO_READ = "api/" + API_VERSION_2 + "/tbm/read";
+
 
     //置顶资讯、评论
     public static final String APP_PATH_TOP_INFO = "/api/" + API_VERSION_2 + "/news/{news_id}/currency-pinneds";

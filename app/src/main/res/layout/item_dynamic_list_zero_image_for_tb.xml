@@ -45,7 +45,7 @@
         android:background="@drawable/shape_dynamic_top_flag"
         android:gravity="center"
         android:maxLines="1"
-        android:textColor="@color/dyanmic_top_flag"
+        android:textColor="@color/net_link_color"
         android:textSize="@dimen/size_advert_launche"
         android:visibility="gone"
         tools:text="@string/dynamic_top_flag"/>

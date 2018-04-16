@@ -50,13 +50,13 @@ public interface InfoDetailsConstract {
         void updateInfoHeader(InfoListDataBean infoDetailBean);
 
         void deleteInfo(boolean deleting, boolean success, String message);
+
+        void updateReadCount();
     }
 
     interface Presenter extends ITSListPresenter<InfoCommentListBean> {
 
         void sendComment(int reply_id, String content);
-
-        void shareInfo(Bitmap bitmap);
 
         void handleCollect(boolean isCollected, final String news_id);
 
@@ -75,6 +75,10 @@ public interface InfoDetailsConstract {
         void deleteInfo();
 
         List<RealAdvertListBean> getAdvert();
+
+        void shareTask(InfoListDataBean mInfoMation);
+
+        void infoReadCount();
     }
 
 }

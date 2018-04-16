@@ -394,6 +394,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<
         mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicToolBean);
         // 通知服务器
         mBaseDynamicRepository.handleLike(isLiked, feed_id);
+        mRootView.refreshData();
     }
 
     @Override
@@ -571,7 +572,6 @@ public class DynamicDetailPresenter extends AppBasePresenter<
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(integer -> {
                     if (integer != -1) {
-                        mRootView.refreshData(); // 加上 header
                         switch (mRootView.getListDatas().get(integer).getIs_show()){
                             case 0:
                                 //提交评论成功，等待审核
@@ -580,10 +580,24 @@ public class DynamicDetailPresenter extends AppBasePresenter<
                             case 1:
                                 //评论成功，不用等待审核
                                 mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_has_send));
+                                // 处理评论数
+                                mRootView.getCurrentDynamic().setFeed_comment_count(mRootView.getCurrentDynamic()
+                                        .getFeed_comment_count() + 1);
+                                mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentDynamic());
+                                if (mRootView.getListDatas().size() == 1 && TextUtils.isEmpty(mRootView.getListDatas()
+                                        .get(0).getComment_content())) {
+                                    mRootView.getListDatas().clear();
+                                }
+                                mRootView.getListDatas().add(0, dynamicCommentBean);
+                                mRootView.getCurrentDynamic().setComments(mRootView.getListDatas());
+                                mRootView.updateDynamic(mRootView.getCurrentDynamic());
+                                mRootView.updateCommentCountAndDig();
+                                mRootView.refreshData();
                                 break;
                             default:
                                 break;
                         }
+                        mRootView.refreshData(); // 加上 header
                     }
 
                 }, throwable -> throwable.printStackTrace());

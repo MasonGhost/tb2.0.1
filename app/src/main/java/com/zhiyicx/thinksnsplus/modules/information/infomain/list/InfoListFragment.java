@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.information.infomain.list;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -62,6 +63,8 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     private List<RealAdvertListBean> mListAdvert;
 
     private InfoBannerHeader mInfoBannerHeader;
+    private Handler mHandler;
+    private Runnable mRunnable;
 
     public static InfoListFragment newInstance(String params) {
         InfoListFragment fragment = new InfoListFragment();
@@ -106,6 +109,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
             }
         } catch (Exception e) {
         }
+        mHandler.postDelayed(mRunnable, 600);
         super.onNetResponseSuccess(data, isLoadMore);
         if (mInfoBannerHeader == null) {
             return;
@@ -161,6 +165,9 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        mHandler = new Handler();
+        mRunnable = () -> showMessage(mListDatas.isEmpty() ? getString(R.string.newest)
+                : getString(R.string.count_tip_news, String.valueOf(mListDatas.size())));
         mInfoType = getArguments().getString(BUNDLE_INFO_TYPE, RECOMMEND_INFO);
         mUserId = getArguments().getLong(BUNDLE_USERID, 0);
         Observable.create(subscriber -> {
@@ -310,6 +317,12 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         LogUtils.d("handleDeleteInfo");
         mListDatas.remove(mListDatas.indexOf(info));
         refreshData();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mHandler.removeCallbacks(mRunnable);
     }
 
     public void setInfoType(String infoType) {

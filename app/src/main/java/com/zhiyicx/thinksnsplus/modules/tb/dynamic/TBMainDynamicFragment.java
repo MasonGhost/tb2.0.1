@@ -1,24 +1,30 @@
 package com.zhiyicx.thinksnsplus.modules.tb.dynamic;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForAdvert;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForEightImage;
@@ -36,8 +42,11 @@ import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.tb.dynamic.comment.DynamicCommentListActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.dynamic.comment.DynamicCommentListFragment;
+import com.zhiyicx.thinksnsplus.modules.tb.mechainism.MechanismCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.tb.share.DynamicShareActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.share.DynamicShareBean;
+import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -54,20 +63,18 @@ import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.CAN_COMMEN
  */
 public class TBMainDynamicFragment extends TBDynamicFragment {
 
-    private int mCurrentClickItemPosition = -1;
+    private int mCurrentPostion = -1;
 
-    public static TBMainDynamicFragment newInstance(String dynamicType, OnCommentClickListener l) {
+    public static TBMainDynamicFragment newInstance(String dynamicType) {
         TBMainDynamicFragment fragment = new TBMainDynamicFragment();
-        fragment.setOnCommentClickListener(l);
         Bundle args = new Bundle();
         args.putString(BUNDLE_DYNAMIC_TYPE, dynamicType);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public static TBMainDynamicFragment newInstance(String dynamicType, OnCommentClickListener l, UserInfoBean userInfoBean) {
+    public static TBMainDynamicFragment newInstance(String dynamicType, UserInfoBean userInfoBean) {
         TBMainDynamicFragment fragment = new TBMainDynamicFragment();
-        fragment.setOnCommentClickListener(l);
         Bundle args = new Bundle();
         args.putString(BUNDLE_DYNAMIC_TYPE, dynamicType);
         args.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, userInfoBean);
@@ -79,6 +86,12 @@ public class TBMainDynamicFragment extends TBDynamicFragment {
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
         TBMainDynamicListItemForZeroImage dynamicListItemForZeroImage = new TBMainDynamicListItemForZeroImage(getContext());
+        /*
+         关注
+          */
+        dynamicListItemForZeroImage.setOnFollowlistener((data, followView) -> {
+            followClick(data, followView);
+        });
         setAdapter(adapter, dynamicListItemForZeroImage);
         setAdapter(adapter, new DynamicListItemForOneImage(getContext()));
         setAdapter(adapter, new DynamicListItemForTwoImage(getContext()));
@@ -92,6 +105,27 @@ public class TBMainDynamicFragment extends TBDynamicFragment {
         setAdapter(adapter, new DynamicListItemForAdvert(getContext()));
         adapter.setOnItemClickListener(this);
         return adapter;
+    }
+
+    private void followClick(DynamicDetailBeanV2 data, TextView followView) {
+        if (mPresenter.handleTouristControl()) {
+            return;
+        }
+        if (!data.getUserInfoBean().getFollower()) {
+            // 关注
+            mPresenter.followUser(data.getUserInfoBean());
+            data.getUserInfoBean().setFollower(true);
+            refreshData();
+        } else {
+            // 更多
+            initOtherDynamicPopupWindow(data, followView);
+            mOtherDynamicPopWindow.show();
+
+        }
+        if (getParentFragment() != null && getParentFragment() instanceof MechanismCenterFragment.OnMerchainismInfoChangedListener) {
+            ((MechanismCenterFragment.OnMerchainismInfoChangedListener) getParentFragment()).handleFollow();
+        }
+
     }
 
     @Override
@@ -129,28 +163,20 @@ public class TBMainDynamicFragment extends TBDynamicFragment {
                 bundle.putSerializable(BUNDLE_SHARE_DATA, dynamicShareBean);
                 intent.putExtras(bundle);
                 startActivity(intent);
-                mCurrentClickItemPosition = dataPosition;
+                mCurrentPostion = dataPosition;
                 break;
             case 1:
                 // 评论
-                if (CAN_COMMENT == mListDatas.get(dataPosition).getCan_comment()) {
-                    // 还未发送成功的动态列表不查看详情
-                    if (mListDatas.get(dataPosition).getId() == null || mListDatas.get(dataPosition).getId() == 0) {
-                        return;
-                    }
-                    Intent commentListIntent = new Intent(getActivity(), DynamicCommentListActivity.class);
-                    Bundle commentListBundle = new Bundle();
-                    commentListBundle.putParcelable(DynamicCommentListFragment.DYNAMIC_DETAIL_DATA, mListDatas.get(dataPosition));
-                    commentListBundle.putString(DynamicCommentListFragment.DYNAMIC_DETAIL_DATA_TYPE, getDynamicType());
-                    commentListIntent.putExtras(commentListBundle);
-                    startActivity(commentListIntent);
-                    getActivity().overridePendingTransition(R.anim.slide_in_bottom, R.anim.keep_on);
-
-                } else {
-                    showSnackWarningMessage(getString(R.string.dynamic_not_support_comment));
+                if ((!TouristConfig.DYNAMIC_CAN_COMMENT && mPresenter.handleTouristControl()) ||
+                        mListDatas.get(dataPosition).getId() == null || mListDatas.get
+                        (dataPosition).getId() == 0) {
+                    return;
+                }
+                mCurrentPostion = dataPosition;
+                if (mOnItemCommentClickListener != null) {
+                    mOnItemCommentClickListener.onItemCommentClick(dataPosition, mListDatas.get(dataPosition), getDynamicType());
                 }
                 break;
-
             case 2:
                 // 喜欢
                 if ((!TouristConfig.DYNAMIC_CAN_DIGG && mPresenter.handleTouristControl()) ||
@@ -160,8 +186,6 @@ public class TBMainDynamicFragment extends TBDynamicFragment {
                 }
                 handleLike(dataPosition, contentView);
                 break;
-
-
             default:
 
         }
@@ -250,11 +274,35 @@ public class TBMainDynamicFragment extends TBDynamicFragment {
 
     @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_DYNAMIC_SHARE)
     private void updateDynamicShare(DynamicShareBean data) {
-        if (mCurrentClickItemPosition > -1) {
-            mListDatas.get(mCurrentClickItemPosition).setShare_count(mListDatas.get(mCurrentClickItemPosition).getShare_count() + 1);
+        if (mCurrentPostion > -1) {
+            mListDatas.get(mCurrentPostion).setShare_count(mListDatas.get(mCurrentPostion).getShare_count() + 1);
             refreshData();
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        releasePop(mOtherDynamicPopWindow);
+        releasePop(mMyDynamicPopWindow);
+    }
+
+    public void setOnItemCommentClickListener(OnItemCommentClickListener onItemCommentClickListener) {
+        mOnItemCommentClickListener = onItemCommentClickListener;
+    }
+
+    public interface OnItemCommentClickListener {
+        void onItemCommentClick(int pos, DynamicDetailBeanV2 detailBeanV2, String dynamicType);
+    }
+
+    public void updateFollower(boolean follower){
+        for(DynamicDetailBeanV2 dynamicDetailBeanV2 : mListDatas){
+            dynamicDetailBeanV2.getUserInfoBean().setFollower(follower);
+        }
+        refreshData();
+    }
+
+    private OnItemCommentClickListener mOnItemCommentClickListener;
 
     @Override
     protected int setEmptView() {return R.mipmap.def_news_flash_prompt;

@@ -9,7 +9,6 @@
             <gradient
                 android:angle="0"
                 android:centerColor="@color/bgColor"
-                android:centerY="0.75"
                 android:endColor="@color/bgColor"
                 android:startColor="@color/bgColor" />
         </shape>
@@ -41,9 +40,9 @@
 
                 <gradient
                     android:angle="0"
-                    android:centerColor="@color/tb_progress"
-                    android:endColor="@color/tb_progress"
-                    android:startColor="@color/tb_progress" />
+                    android:centerColor="@color/themeColor"
+                    android:endColor="@color/themeColor"
+                    android:startColor="@color/themeColor" />
             </shape>
         </clip>
     </item>

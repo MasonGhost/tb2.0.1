@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/info_channel_list_height"
+    android:layout_height="wrap_content"
     android:background="@android:color/white"
     android:paddingBottom="@dimen/spacing_mid"
     android:paddingLeft="@dimen/spacing_normal"
@@ -14,124 +14,118 @@
         android:layout_width="@dimen/info_channel_list_image_width"
         android:layout_height="69dp"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_mid"
         android:scaleType="centerCrop"
         android:src="@drawable/shape_default_image" />
 
-
-    <LinearLayout
+    <com.zhiyicx.thinksnsplus.widget.NoDefaultPadingTextView
+        android:id="@+id/item_info_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_normal"
         android:layout_toLeftOf="@+id/item_info_imag"
-        android:orientation="vertical">
+        android:ellipsize="end"
+        android:gravity="top"
+        android:maxLines="2"
+        android:minLines="2"
+        android:textColor="@color/important_for_content"
+        android:textSize="@dimen/size_content"
+        tools:text="流动性捉襟见肘，新三板如履薄冰" />
+    <!--资讯信息-->
+    <!--仅在被驳回和投稿中显示-->
+    <TextView
+        android:id="@+id/tv_info_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/normal_for_assist_text"
+        android:textSize="@dimen/size_content_assist"
+        android:visibility="gone"
+        tools:text="xxxx" />
+    <!--通用信息-->
+    <RelativeLayout
+        android:id="@+id/ll_info"
+        android:layout_width="match_parent"
+        android:layout_height="70.5dp"
+        android:layout_toLeftOf="@+id/item_info_imag"
+        android:gravity="bottom"
+        android:orientation="horizontal">
 
-        <com.zhiyicx.thinksnsplus.widget.NoDefaultPadingTextView
-            android:id="@+id/item_info_title"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tv_from_channel"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_normal"
+            android:background="@drawable/shape_info_list_channel"
+            android:padding="@dimen/spacing_tiny"
+            android:textColor="@color/themeColor"
+            android:textSize="@dimen/size_note_assist"
+            android:visibility="gone"
+            tools:text="时政" />
+
+        <TextView
+            android:id="@+id/item_info_comment_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:drawableLeft="@mipmap/btn_comment_disabled"
+            android:drawablePadding="@dimen/spacing_small_3dp"
             android:ellipsize="end"
-            android:gravity="top"
-            android:maxLines="2"
-            android:minLines="2"
-            android:textColor="@color/important_for_content"
-            android:textSize="@dimen/size_content"
-            tools:text="流动性捉襟见肘，新三板如履薄冰" />
-        <!--资讯信息-->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <!--仅在被驳回和投稿中显示-->
-            <TextView
-                android:id="@+id/tv_info_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/normal_for_assist_text"
-                android:textSize="@dimen/size_content_assist"
-                android:visibility="gone"
-                tools:text="xxxx" />
-            <!--通用信息-->
-            <RelativeLayout
-                android:id="@+id/ll_info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+            android:singleLine="true"
+            android:textColor="@color/general_for_hint"
+            android:textSize="@dimen/size_note_assist"
+            tools:text="12" />
 
-                <ImageView
-                    android:id="@+id/iv_merhcain_headpic"
-                    android:layout_width="@dimen/headpic_for_info_list"
-                    android:layout_height="@dimen/headpic_for_info_list"
-                    android:src="@mipmap/pic_default_woman" />
+        <TextView
+            android:id="@+id/item_info_look_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_mid_tb"
+            android:layout_toLeftOf="@id/item_info_comment_num"
+            android:drawableLeft="@mipmap/btn_browse_disabled"
+            android:drawablePadding="@dimen/spacing_small_3dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/general_for_hint"
+            android:textSize="@dimen/size_note_assist"
+            tools:text="12" />
+    </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/tv_top_flag"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/spacing_small_3dp"
-                    android:background="@drawable/shape_info_top_bg"
-                    android:padding="@dimen/spacing_tiny"
-                    android:text="@string/info_top"
-                    android:textColor="@color/info_top"
-                    android:textSize="@dimen/size_note_assist"
-                    android:visibility="gone" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="72.5dp"
+        android:layout_toLeftOf="@+id/item_info_imag"
+        android:gravity="bottom">
 
-                <TextView
-                    android:id="@+id/tv_from_channel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/shape_info_list_channel"
-                    android:padding="@dimen/spacing_tiny"
-                    android:textColor="@color/themeColor"
-                    android:textSize="@dimen/size_note_assist"
-                    android:visibility="gone"
-                    tools:text="时政" />
+        <ImageView
+            android:id="@+id/iv_merhcain_headpic"
+            android:layout_width="@dimen/headpic_for_info_list"
+            android:layout_height="@dimen/headpic_for_info_list"
+            android:src="@mipmap/pic_default_woman" />
 
-                <TextView
-                    android:id="@+id/item_info_timeform"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing_normal"
-                    android:layout_marginStart="@dimen/spacing_normal"
-                    android:layout_toRightOf="@id/iv_merhcain_headpic"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:textColor="@color/general_for_hint"
-                    android:textSize="@dimen/size_advert_launche"
-                    tools:text="三小时前" />
+        <TextView
+            android:id="@+id/tv_top_flag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_small_3dp"
+            android:background="@drawable/shape_info_top_bg"
+            android:padding="@dimen/spacing_tiny"
+            android:text="@string/info_top"
+            android:textColor="@color/info_top"
+            android:textSize="@dimen/size_note_assist"
+            android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/item_info_comment_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentRight="true"
-                    android:drawableLeft="@mipmap/btn_comment_disabled"
-                    android:drawablePadding="@dimen/spacing_small_3dp"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:textColor="@color/general_for_hint"
-                    android:textSize="@dimen/size_note_assist"
-                    tools:text="12" />
-
-                <TextView
-                    android:id="@+id/item_info_look_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginRight="@dimen/spacing_mid_tb"
-                    android:layout_toLeftOf="@id/item_info_comment_num"
-                    android:drawableLeft="@mipmap/btn_browse_disabled"
-                    android:drawablePadding="@dimen/spacing_small_3dp"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:textColor="@color/general_for_hint"
-                    android:textSize="@dimen/size_note_assist"
-                    tools:text="12" />
-            </RelativeLayout>
-        </FrameLayout>
-    </LinearLayout>
+        <TextView
+            android:id="@+id/item_info_timeform"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_marginStart="@dimen/spacing_normal"
+            android:layout_toRightOf="@id/iv_merhcain_headpic"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/general_for_hint"
+            android:textSize="@dimen/size_advert_launche"
+            tools:text="三小时前" />
+    </RelativeLayout>
 </RelativeLayout>

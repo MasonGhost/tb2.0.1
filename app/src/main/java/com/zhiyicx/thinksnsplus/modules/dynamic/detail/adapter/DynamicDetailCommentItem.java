@@ -99,8 +99,8 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
             return true;
         });
         ImageUtils.loadCircleUserHeadPic(dynamicCommentBean.getCommentUser(), holder.getView(R.id.iv_headpic));
-        setUserInfoClick(holder.getView(R.id.tv_name), dynamicCommentBean.getCommentUser());
-        setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicCommentBean.getCommentUser());
+        //setUserInfoClick(holder.getView(R.id.tv_name), dynamicCommentBean.getCommentUser());
+        //setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicCommentBean.getCommentUser());
     }
 
     private void setUserInfoClick(View v, final UserInfoBean userInfoBean) {
