@@ -39,7 +39,7 @@ class DynamicShareActivity : TSActivity<DynamicSharePresenter, DynamicShareFragm
 
     override fun onDestroy() {
         super.onDestroy()
-        UmengSharePolicyImpl.onDestroy(this)
+        //UmengSharePolicyImpl.onDestroy(this)
     }
 
 

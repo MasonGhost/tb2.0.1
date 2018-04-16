@@ -440,12 +440,6 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".apshare.ShareEntryActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <!-- Ping++ 支付SDK -->
         <activity
             android:name="com.pingplusplus.android.PaymentActivity"

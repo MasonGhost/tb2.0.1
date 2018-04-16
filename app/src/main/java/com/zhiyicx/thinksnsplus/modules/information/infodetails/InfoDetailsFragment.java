@@ -714,12 +714,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     public void onSuccess(Share share) {
         mPresenter.shareTask(mInfoMation);
-    }
-
-    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_INFOMATION_SHARE)
-    private void updateInfoMationShare(InfoListDataBean data) {
-        mInfoMation.setShare_count(data.getShare_count() + 1);
-        refreshData();
+        showSnackSuccessMessage(getString(R.string.share_sccuess));
     }
 
     @Override

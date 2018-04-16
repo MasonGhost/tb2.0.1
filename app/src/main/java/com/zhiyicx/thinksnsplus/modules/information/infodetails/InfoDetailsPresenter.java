@@ -360,26 +360,13 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
 
     @Override
     public void shareTask(InfoListDataBean mInfoMation) {
-        Subscription subscription = mUserInfoRepository.shareCount(UserInfoRepository.SHARETYPEENUM.NEWS.value, String.valueOf(mInfoMation.getId()))
-                .compose(mSchedulersTransformer)
-                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+        mUserInfoRepository.shareCount(UserInfoRepository.SHARETYPEENUM.NEWS.value, String.valueOf(mInfoMation.getId()))
+                .subscribe(new BaseSubscribeForV2() {
                     @Override
-                    protected void onSuccess(BaseJsonV2<Object> data) {
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));
-                        EventBus.getDefault().post(mInfoMation, EventBusTagConfig.EVENT_UPDATE_INFOMATION_SHARE);
-                    }
+                    protected void onSuccess(Object data) {
 
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        super.onFailure(message, code);
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        super.onException(throwable);
                     }
                 });
-        addSubscrebe(subscription);
     }
 
     @Override
@@ -390,7 +377,6 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
                         mRootView.updateReadCount();
-                        mRootView.refreshData();
                     }
 
                     @Override

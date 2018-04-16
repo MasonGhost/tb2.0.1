@@ -243,9 +243,4 @@ public class EventBusTagConfig {
      */
     public static final String EVENT_UPDATE_DYNAMIC_SHARE = "update_dynmaic_share";
 
-    /**
-     * 更新资讯分享
-     */
-    public static final String EVENT_UPDATE_INFOMATION_SHARE = "update_info_share";
-
 }

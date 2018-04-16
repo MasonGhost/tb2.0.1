@@ -27,7 +27,7 @@ public class InfoDetailsActivity extends TSActivity<InfoDetailsPresenter, InfoDe
         DaggerInfoDetailsComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .infoDetailsPresenterMudule(new InfoDetailsPresenterMudule(mContanierFragment))
-                .shareModule(new ShareModule(this))
+                //.shareModule(new ShareModule(this))
                 .build()
                 .inject(this);
     }
@@ -43,6 +43,6 @@ public class InfoDetailsActivity extends TSActivity<InfoDetailsPresenter, InfoDe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        UmengSharePolicyImpl.onDestroy(this);
+        //UmengSharePolicyImpl.onDestroy(this);
     }
 }
