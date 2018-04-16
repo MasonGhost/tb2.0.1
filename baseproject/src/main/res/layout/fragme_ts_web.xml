@@ -2,20 +2,12 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent">
 
-    <com.wcy.overscroll.OverScrollLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/overscroll"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/bgColor"
-        android:orientation="vertical">
 
-        <com.tencent.smtt.sdk.WebView
-            android:id="@+id/wv_about_us"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </com.tencent.smtt.sdk.WebView>
-    </com.wcy.overscroll.OverScrollLayout>
+    <com.tencent.smtt.sdk.WebView
+        android:id="@+id/wv_about_us"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </com.tencent.smtt.sdk.WebView>
 
     <ProgressBar
         android:id="@+id/pb_bar"

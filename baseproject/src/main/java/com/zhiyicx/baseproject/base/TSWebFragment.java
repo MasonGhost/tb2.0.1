@@ -61,7 +61,6 @@ public abstract class TSWebFragment extends TSFragment {
     protected TextView mCloseView;
     private ProgressBar mProgressBar;
     private EmptyView mEmptyView;// 错误提示
-    private OverScrollLayout mOverScrollLayout;
 
     private boolean mIsNeedProgress = true;// 是否需要进度条
     private List<String> mImageList = new ArrayList<>();// 网页内图片地址
@@ -289,8 +288,6 @@ public abstract class TSWebFragment extends TSFragment {
                         mWebView.reload();
                     }
                 });
-        mOverScrollLayout = (OverScrollLayout) rootView.findViewById(R.id.overscroll);
-//        mOverScrollLayout.setTopOverScrollEnable(false);
     }
 
 
