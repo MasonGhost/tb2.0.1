@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_candy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/ico_rectangle_candy"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/spacing_mid_tb"
+        android:paddingRight="@dimen/exchange_notice_size">
+
+        <com.zhiyicx.baseproject.widget.UserAvatarView
+            android:id="@+id/iv_headpic"
+            android:layout_width="@dimen/candy_headpic_size"
+            android:layout_height="@dimen/candy_headpic_size"
+            android:src="@drawable/shape_default_image_circle"
+            app:ts_avatare_size="@dimen/candy_headpic_size" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/integration_withdrawals_et_padding"
+            android:layout_weight="0.8"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_coin_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BTP"
+                android:textColor="@color/white"
+                android:textSize="@dimen/qa_user_tag_height" />
+
+            <TextView
+                android:id="@+id/tv_time_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="距离结束还有2天"
+                android:textColor="@color/white"
+                android:textSize="@dimen/mine_point_margint_right" />
+
+            <TextView
+                android:id="@+id/tv_coin_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BTP"
+                android:textColor="@color/white"
+                android:textSize="@dimen/mine_point_margint_right" />
+
+        </LinearLayout>
+
+        <View style="@style/style_divider_veitical" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_join"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="已参与TBM"
+                android:textColor="@color/white"
+                android:textSize="@dimen/mine_point_margint_right" />
+
+            <TextView
+                android:id="@+id/tv_join_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3K"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_margin" />
+
+            <TextView
+                android:id="@+id/bt_exchange"
+                android:layout_width="@dimen/channel_subscrib_btn_width"
+                android:layout_height="@dimen/answer_list_portrait_width"
+                android:background="@drawable/selector_button_corner_solid_big_for_exchange"
+                android:enabled="true"
+                android:gravity="center"
+                android:text="@string/exchange_btn"
+                android:textColor="@color/tb_reward_notice"
+                android:textSize="@dimen/info_container_tab_spacing" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

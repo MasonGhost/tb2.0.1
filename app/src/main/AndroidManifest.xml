@@ -746,6 +746,11 @@
         <activity
             android:name=".modules.tb.detail.MerchainMessagelistActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.tb.tbmark_detail.TBMarkDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".modules.tb.exchange.ExchangeActivity"
+            android:screenOrientation="portrait"/>
 
 
     </application>

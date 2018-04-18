@@ -1,28 +1,25 @@
 package com.zhiyicx.thinksnsplus.modules.home.find;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.config.TouristConfig;
+import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
-import com.zhiyicx.thinksnsplus.modules.circle.main.CircleMainActivity;
-import com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContainerActivity;
-import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
-import com.zhiyicx.thinksnsplus.modules.rank.main.container.RankIndexActivity;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicPresenter;
+import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListPresenter;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import javax.inject.Inject;
 
-import butterknife.OnClick;
 import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
@@ -31,10 +28,13 @@ import rx.schedulers.Schedulers;
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class FindFragment extends TSFragment {
+public class FindFragment extends TSListFragment<FindContract.Presenter, RechargeSuccessBean> implements FindContract.View{
 
     @Inject
     AuthRepository mAuthRepository;
+
+    @Inject
+    FindPresenter mFindPresenter;
 
     public FindFragment() {
     }
@@ -42,14 +42,6 @@ public class FindFragment extends TSFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Observable.create(subscriber -> {
-            AppApplication.AppComponentHolder.getAppComponent().inject(FindFragment.this);
-            subscriber.onCompleted();
-        })
-                .subscribeOn(Schedulers.io())
-                .subscribe(o -> {
-                }, Throwable::printStackTrace);
     }
 
     public static FindFragment newInstance() {
@@ -61,7 +53,33 @@ public class FindFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
+        super.initView(rootView);
+        Observable.create(subscriber -> {
+            DaggerFindComponent
+                    .builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .findPresenterModule(new FindPresenterModule(FindFragment.this))
+                    .build()
+                    .inject(FindFragment.this);
+            subscriber.onCompleted();
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        initData();
+                    }
 
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                    }
+                });
     }
 
     @Override
@@ -81,13 +99,10 @@ public class FindFragment extends TSFragment {
 
     @Override
     protected void initData() {
+        if (mPresenter != null) {
+            super.initData();
+        }
     }
-
-    @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_find;
-    }
-
 
     @Override
     protected boolean showToolBarDivider() {
@@ -197,5 +212,14 @@ public class FindFragment extends TSFragment {
                 break;
         }
     }*/
+
+    @Override
+    protected MultiItemTypeAdapter getAdapter() {
+        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
+        CandyItem candyItem = new CandyItem(getContext());
+        adapter.addItemViewDelegate(candyItem);
+        adapter.addItemViewDelegate(new InfoDetailCommentEmptyItem(R.mipmap.ico_bg_color));
+        return adapter;
+    }
 
 }

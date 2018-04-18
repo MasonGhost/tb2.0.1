@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.tb.wallet;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +10,10 @@ import android.widget.TextView;
 
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.tb.mechainism.MechainsmCenterContainerActivity;
+import com.zhiyicx.thinksnsplus.modules.tb.tbmark_detail.TBMarkDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.tb.tbmark_detail.TBMarkDetailFragment;
 
 /**
  * @author Jliuer
@@ -26,6 +32,13 @@ public class WalletHeader {
         mHeader.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT));
         mTvAccountUnit = (TextView) mHeader.findViewById(R.id.tv_account_unit);
         mTvMineMoney = (TextView) mHeader.findViewById(R.id.tv_mine_money);
+        mTvMineMoney.setOnClickListener(view -> {
+            Intent intent = new Intent(context, TBMarkDetailActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(TBMarkDetailFragment.BILL_TYPE, null);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
+        });
     }
 
     /**

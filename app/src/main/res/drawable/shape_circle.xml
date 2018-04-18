@@ -1,0 +1,9 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:innerRadius="0dp"
+    android:shape="ring"
+    android:useLevel="false">
+    <solid android:color="@color/themeColor" />
+    <size
+        android:width="@dimen/qa_top_select_height"
+        android:height="@dimen/qa_top_select_height" />
+</shape>

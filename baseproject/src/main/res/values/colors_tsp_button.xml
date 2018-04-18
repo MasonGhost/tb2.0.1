@@ -3,6 +3,7 @@
     <color name="bt_normal">@color/themeColor</color>
     <color name="bt_disable">@color/general_for_hint</color>
     <color name="bt_pressed">#3a9fff</color>
+    <color name="bt_pressed_exchange">#f8d045</color>
     <color name="bt_pressed_hollow">#3a9fff</color>
 
     <color name="bt_normal_money">@color/money</color>

@@ -149,4 +149,14 @@
     <dimen name="reward_edt_width">99dp</dimen>
     <dimen name="dynamic_detail_more_margin">7dp</dimen>
     <dimen name="reward_edt_padtop">3sp</dimen>
+
+    <dimen name="exchange_tip_margin">33dp</dimen>
+    <dimen name="exchange_tip_margin_top">34dp</dimen>
+    <dimen name="exchange_tip_min_height">64dp</dimen>
+    <dimen name="exchange_tip_min_width">79dp</dimen>
+    <dimen name="exchange_btn_margin">29dp</dimen>
+    <dimen name="exchange_btn_width">117dp</dimen>
+    <dimen name="exchange_notice_size">11dp</dimen>
+
+    <dimen name="candy_headpic_size">62dp</dimen>
 </resources>

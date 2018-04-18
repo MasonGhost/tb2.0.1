@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/themeColor"
-    android:layout_height="match_parent">
-
-    <include layout="@layout/fragment_tslist"/>
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/wallet_toolbar"
@@ -35,26 +33,24 @@
                 android:maxLines="1"
                 android:paddingLeft="@dimen/toolbar_padding_left"
                 android:paddingRight="@dimen/toolbar_padding_right"
+                android:text="@string/wallet"
                 android:textColor="@color/white"
                 android:textSize="@dimen/toolbar_center_text_size"
-                android:textStyle="bold"
-                android:text="@string/wallet"
-                />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/wallet_tv_toolbar_left"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
+                android:drawableLeft="@mipmap/topbar_back_white"
                 android:drawablePadding="@dimen/spacing_small"
                 android:gravity="center"
                 android:paddingLeft="@dimen/toolbar_padding_left"
-                android:drawableLeft="@mipmap/topbar_back_white"
                 android:paddingRight="@dimen/toolbar_padding_right"
                 android:textColor="@color/toolbar_text_corlor_normal"
                 android:textSize="@dimen/toolbar_left_text_size"
-                tools:text="左边"
-                />
+                tools:text="左边" />
 
             <ImageView
                 android:id="@+id/wallet_iv_refresh"
@@ -63,7 +59,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/tv_toolbar_left"
                 android:src="@drawable/frame_loading_grey"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/wallet_tv_toolbar_right_left"
@@ -77,8 +73,7 @@
                 android:paddingLeft="@dimen/toolbar_padding_left"
                 android:textColor="@color/selector_theme_color_toolbar_text_color"
                 android:textSize="@dimen/toolbar_right_text_size"
-                tools:text="右边"
-                />
+                tools:text="右边" />
 
             <TextView
                 android:id="@+id/wallet_tv_toolbar_right"
@@ -93,9 +88,10 @@
                 android:paddingRight="@dimen/toolbar_padding_right"
                 android:textColor="@color/selector_theme_color_toolbar_text_color"
                 android:textSize="@dimen/toolbar_right_text_size"
-                tools:text="右边"
-                />
+                tools:text="右边" />
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
 
-</FrameLayout>
+    <include layout="@layout/fragment_tslist" />
+
+</LinearLayout>

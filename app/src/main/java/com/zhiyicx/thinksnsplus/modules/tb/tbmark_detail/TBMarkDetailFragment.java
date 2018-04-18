@@ -1,54 +1,36 @@
-package com.zhiyicx.thinksnsplus.modules.tb.wallet;
+package com.zhiyicx.thinksnsplus.modules.tb.tbmark_detail;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.tb.tbmark_detail.TBMarkDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.tb.tbmark_detail.TBMarkDetailFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-import butterknife.BindView;
-
 /**
- * @Author Jliuer
- * @Date 2018/02/28/19:14
- * @Email Jliuer@aliyun.com
+ * @Author MasonGhost
+ * @Date 2018/04/17/14:55
+ * @Email lx1993m@gmail.com
  * @Description
  */
-public class WalletFragment extends TSListFragment<WalletContract.Presenter, RechargeSuccessBean> implements WalletContract.View {
 
-    @BindView(R.id.wallet_toolbar)
-    Toolbar mWalletToolbar;
-    @BindView(R.id.wallet_tv_toolbar_left)
-    TextView mTvToolbarLeft;
-    @BindView(R.id.wallet_tv_toolbar_right)
-    TextView mTvToolbarRight;
+public class TBMarkDetailFragment extends TSListFragment<TBMarkDetailContract.Presenter, RechargeSuccessBean> implements TBMarkDetailContract.View{
 
-    private WalletHeader mWalletHeader;
+    public static final String BILL_TYPE = "bill_type";
+
+    // 上一个页面传过来的用户信息
+    private String mBillType;
     private UserInfoBean mUserInfoBean;
-
-
-    @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_wallet_for_tb;
-    }
 
     @Override
     protected boolean showToolbar() {
-        return false;
+        return true;
     }
 
     @Override
@@ -64,31 +46,26 @@ public class WalletFragment extends TSListFragment<WalletContract.Presenter, Rec
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        //mWalletToolbar.setPadding(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0);
-        mTvToolbarLeft.setOnClickListener(v -> getActivity().finish());
-        mTvToolbarRight.setText(getString(R.string.detail));
-        mTvToolbarRight.setOnClickListener(v -> {
-            Intent intent = new Intent(mActivity, TBMarkDetailActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(TBMarkDetailFragment.BILL_TYPE, null);
-            intent.putExtras(bundle);
-            mActivity.startActivity(intent);
-        });
+        setCenterText(mPresenter.getWalletGoldName());
         mRvList.setBackgroundResource(R.color.bgColor);
     }
 
     @Override
     protected void initData() {
-        mWalletHeader = new WalletHeader(mActivity);
-        mHeaderAndFooterWrapper.addHeaderView(mWalletHeader.getHeader());
         super.initData();
+        mBillType = getArguments().getParcelable(BILL_TYPE);
         mPresenter.getUserInfo();
+    }
+
+    public static TBMarkDetailFragment initFragment(Bundle bundle) {
+        TBMarkDetailFragment tbMarkDetailFragment = new TBMarkDetailFragment();
+        tbMarkDetailFragment.setArguments(bundle);
+        return tbMarkDetailFragment;
     }
 
     @Override
     public void updateUserInfo(UserInfoBean data) {
         mUserInfoBean = data;
-        mWalletHeader.updateWallet(data, mPresenter.getWalletGoldName());
     }
 
     @Override
@@ -98,7 +75,7 @@ public class WalletFragment extends TSListFragment<WalletContract.Presenter, Rec
 
     @Override
     public String getBillType() {
-        return null/*{""--全部, "income"--收入, "expenses"--支出}*/;
+        return mBillType/*{""--全部, "income"--收入, "expenses"--支出}*/;
     }
 
 

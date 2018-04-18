@@ -1083,5 +1083,13 @@
     <string name="comment_has_send">评论成功！</string>
     <string name="comment_has_send_wait_review">评论已提交，请耐心等待审核！</string>
     <string name="empty"></string>
+    
+    <string name="exchange_tip">消耗TBMark数量</string>
+    <string name="exchange_subtraction">-</string>
+    <string name="exchange_plus">+</string>
+    <string name="exchange_btn">兑换</string>
+    <string name="exchange_notice">兑换后会默认关注公众号哟</string>
+    <string name="exchange_project_name">项目名称</string>
+    <string name="exchange_project_intro">项目介绍</string>
 
 </resources>

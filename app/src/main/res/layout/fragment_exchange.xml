@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_mid"
+        android:gravity="center_vertical">
+
+        <com.zhiyicx.baseproject.widget.UserAvatarView
+            android:id="@+id/iv_headpic"
+            android:layout_width="@dimen/circle_detail_toolbar_height"
+            android:layout_height="@dimen/circle_detail_toolbar_height"
+            android:layout_alignBottom="@+id/fl_tip"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:src="@drawable/shape_default_image_circle"
+            app:ts_avatare_size="@dimen/circle_detail_toolbar_height" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv_headpic"
+            android:maxLines="1"
+            android:paddingLeft="@dimen/integration_withdrawals_et_padding"
+            android:paddingStart="@dimen/integration_withdrawals_et_padding"
+            android:paddingTop="@dimen/spacing_tiny"
+            android:textColor="@color/text_color_black"
+            android:textSize="@dimen/integration_withdrawals_et_padding"
+            android:textStyle="bold"
+            tools:text="张三" />
+
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tv_title"
+            android:layout_alignStart="@+id/tv_title"
+            android:layout_below="@+id/tv_name"
+            android:layout_toRightOf="@id/iv_headpic"
+            android:maxLines="1"
+            android:paddingLeft="@dimen/integration_withdrawals_et_padding"
+            android:paddingTop="@dimen/spacing_normal"
+            android:textColor="@color/general_for_hint"
+            android:textSize="@dimen/mine_point_margint_right"
+            tools:text="2016-05-06" />
+
+        <TextView
+            android:id="@+id/tv_follow"
+            style="@style/followButtonStyle"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:gravity="center"
+            android:textSize="@dimen/mine_point_margint_right" />
+
+    </RelativeLayout>
+
+    <View
+        style="@style/style_divider_horizontal"
+        android:layout_marginTop="@dimen/spacing_mid_tb" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/exchange_tip_margin"
+        android:text="@string/exchange_tip"
+        android:textColor="@color/text_color_black"
+        android:textSize="@dimen/select_days_margin_bottom" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/exchange_tip_margin_top"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_subtraction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_exchange_bt_left"
+            android:gravity="center"
+            android:minHeight="@dimen/exchange_tip_margin"
+            android:minWidth="@dimen/exchange_tip_min_height"
+            android:text="@string/exchange_subtraction"
+            android:textColor="@color/tb_create_increate"
+            android:textSize="@dimen/select_days_margin_bottom" />
+
+        <TextView
+            android:id="@+id/tv_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_exchange_bt_center"
+            android:gravity="center"
+            android:minHeight="@dimen/exchange_tip_margin"
+            android:minWidth="@dimen/exchange_tip_min_width"
+            android:text="6000"
+            android:textColor="@color/themeColor"
+            android:textSize="@dimen/select_days_margin_bottom" />
+
+        <TextView
+            android:id="@+id/tv_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_exchange_bt_right"
+            android:gravity="center"
+            android:minHeight="@dimen/exchange_tip_margin"
+            android:minWidth="@dimen/exchange_tip_min_height"
+            android:text="@string/exchange_plus"
+            android:textColor="@color/tb_create_increate"
+            android:textSize="@dimen/select_days_margin_bottom" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dynamic_detail_more_margin"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="TBMark余额：69990000000个"
+        android:textColor="@color/tb_reward_notice"
+        android:textSize="@dimen/integration_withdrawals_et_padding" />
+
+    <TextView
+        android:id="@+id/bt_exchange"
+        style="@style/style_login_button"
+        android:layout_width="@dimen/exchange_btn_width"
+        android:layout_height="@dimen/type_item_user_portrait"
+        android:layout_marginTop="@dimen/exchange_btn_margin"
+        android:background="@drawable/selector_button_corner_solid_big_for_tb"
+        android:enabled="true"
+        android:text="@string/exchange_btn" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/exchange_notice_size"
+        android:text="@string/exchange_notice"
+        android:textColor="@color/tb_exchange_notice"
+        android:textSize="@dimen/exchange_notice_size" />
+
+    <View
+        style="@style/style_divider_horizontal"
+        android:layout_marginTop="@dimen/exchange_notice_size" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/personal_center_dynamic_count_view_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_circle" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/exchange_project_name"
+            android:textColor="@color/themeColor"
+            android:textSize="@dimen/activity_vertical_margin" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_project_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/qa_top_select_height"
+        android:layout_marginTop="@dimen/integration_withdrawals_et_padding"
+        android:text="首个BTP生态入口"
+        android:textColor="@color/text_color_black"
+        android:textSize="@dimen/integration_withdrawals_et_padding" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/personal_center_dynamic_count_view_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_circle" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/exchange_project_intro"
+            android:textColor="@color/themeColor"
+            android:textSize="@dimen/activity_vertical_margin" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_project_intro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/qa_top_select_height"
+        android:layout_marginTop="@dimen/integration_withdrawals_et_padding"
+        android:text="@string/exchange_project_intro"
+        android:textColor="@color/text_color_black"
+        android:textSize="@dimen/integration_withdrawals_et_padding" />
+
+</LinearLayout>
