@@ -1060,7 +1060,15 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_LIST_TB = "api/" + API_VERSION_2 + "/tbm/news";
     // 机构用户的消息
     public static final String APP_PATH_GET_MERCHAIN_MESSAGE = "api/" + API_VERSION_2 + "/tbm/push/news";
+    // 详情
+    public static final String APP_PATH_INFO_DETAIL = "api/" + API_VERSION_2 + "/news/{news}";
 
-    public static final String APP_PATH_INFO_DETAIL = "api/" + API_VERSION_2 + "/news/{news}";// 详情
+    /*******************************************  糖果相关  *********************************************/
+
+    // 获取糖果任务列表
+    public static final String APP_PATH_CANDY_LIST = "api/" + API_VERSION_2 + "/tbm/app-candy/list";
+
+    // 获取某个糖果任务详情
+    public static final String APP_PATH_CANDY = "api/" + API_VERSION_2 + "/tbm/candy/{candy}";
 
 }

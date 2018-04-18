@@ -12,6 +12,7 @@ import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbcandy.CandyBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbmerchianmessage.MerchianMassageBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
@@ -490,4 +491,16 @@ public interface IUserInfoRepository {
             , Integer orgId
             , Integer feedAfter
             , Integer newsAfter);
+
+    /**
+     * 获取糖果列表
+     * @return
+     */
+    Observable<List<CandyBean>> getCandyList();
+
+    /**
+     * 获取某个糖果任务详情
+     * @return
+     */
+    Observable<CandyBean> getCandy(int id);
 }

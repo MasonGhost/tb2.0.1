@@ -10,6 +10,7 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.tb.wallet.WalletHeader;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -23,6 +24,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 public class TBMarkDetailFragment extends TSListFragment<TBMarkDetailContract.Presenter, RechargeSuccessBean> implements TBMarkDetailContract.View{
 
     public static final String BILL_TYPE = "bill_type";
+    private TBMarkDetailHeader mTBMarkDetailHeader;
 
     // 上一个页面传过来的用户信息
     private String mBillType;
@@ -53,6 +55,8 @@ public class TBMarkDetailFragment extends TSListFragment<TBMarkDetailContract.Pr
     @Override
     protected void initData() {
         super.initData();
+        mTBMarkDetailHeader = new TBMarkDetailHeader(mActivity);
+        mHeaderAndFooterWrapper.addHeaderView(mTBMarkDetailHeader.getHeader());
         mBillType = getArguments().getParcelable(BILL_TYPE);
         mPresenter.getUserInfo();
     }

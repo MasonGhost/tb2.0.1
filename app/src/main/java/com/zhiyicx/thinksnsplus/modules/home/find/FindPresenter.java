@@ -1,8 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.home.find;
 
+import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbcandy.CandyBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +19,7 @@ import rx.Subscription;
 /**
  * Created by Administrator on 2018/4/18.
  */
+@FragmentScoped
 public class FindPresenter extends AppBasePresenter<FindContract.View> implements FindContract.Presenter {
 
     @Inject
@@ -29,10 +32,10 @@ public class FindPresenter extends AppBasePresenter<FindContract.View> implement
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscribe = mUserInfoRepository.getBillList(maxId.intValue(), null)
-                .subscribe(new BaseSubscribeForV2<List<RechargeSuccessBean>>() {
+        Subscription subscribe = mUserInfoRepository.getCandyList()
+                .subscribe(new BaseSubscribeForV2<List<CandyBean>>() {
                     @Override
-                    protected void onSuccess(List<RechargeSuccessBean> data) {
+                    protected void onSuccess(List<CandyBean> data) {
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
@@ -57,7 +60,7 @@ public class FindPresenter extends AppBasePresenter<FindContract.View> implement
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<RechargeSuccessBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(@NotNull List<CandyBean> data, boolean isLoadMore) {
         return false;
     }
 }

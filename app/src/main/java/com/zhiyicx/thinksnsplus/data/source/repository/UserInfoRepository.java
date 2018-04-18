@@ -35,6 +35,7 @@ import com.zhiyicx.thinksnsplus.data.beans.request.BindAccountRequstBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.DeleteUserPhoneOrEmailRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.ThirdAccountBindRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequestBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbcandy.CandyBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbmerchianmessage.MerchianMassageBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
@@ -1128,5 +1129,19 @@ public class UserInfoRepository implements IUserInfoRepository {
     public Observable<MerchianMassageBean> getMerchianMessages(Long limit, Integer orgId, Integer feedAfter, Integer newsAfter) {
         return mUserInfoClient.getMerchianMessages(limit, orgId, feedAfter, newsAfter)
                 .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<List<CandyBean>> getCandyList() {
+        return mUserInfoClient.getCandyList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<CandyBean> getCandy(int id) {
+        return mUserInfoClient.getCandy(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

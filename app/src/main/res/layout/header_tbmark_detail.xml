@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/button_login_margin_top"
+    android:paddingLeft="@dimen/type_item_user_portrait"
+    android:paddingRight="@dimen/button_login_margin_top"
+    android:paddingTop="@dimen/setting_icon_size">
+
+    <com.zhiyicx.baseproject.widget.UserAvatarView
+        android:id="@+id/iv_headpic"
+        android:layout_width="@dimen/type_item_user_portrait"
+        android:layout_height="@dimen/type_item_user_portrait"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:src="@drawable/shape_default_image_circle"
+        app:ts_avatare_size="@dimen/type_item_user_portrait" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/tb_mark_detail_padding"
+        android:maxLines="1"
+        android:text="NBTOT"
+        android:textColor="@color/text_color_black"
+        android:textSize="@dimen/select_days_margin_bottom" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right|center_vertical"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_count_available"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="0"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/activity_vertical_margin" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/tb_mark_detail_margin"
+                android:drawablePadding="5dp"
+                android:drawableRight="@mipmap/ico_wallet_tbmark"
+                android:maxLines="1"
+                android:text="@string/tbmark_detail_available"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/select_days_margin_top" />
+
+        </LinearLayout>
+
+        <View
+            style="@style/style_divider_horizontal"
+            android:layout_width="@dimen/question_invite_width" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_count_frozen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="0"
+                android:textColor="@color/tb_create_increate"
+                android:textSize="@dimen/activity_vertical_margin" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/tb_mark_detail_margin"
+                android:drawablePadding="5dp"
+                android:drawableRight="@mipmap/ico_frozen_tbmark"
+                android:maxLines="1"
+                android:text="@string/tbmark_detail_frozen"
+                android:textColor="@color/tb_create_increate"
+                android:textSize="@dimen/select_days_margin_top" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

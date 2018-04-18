@@ -159,4 +159,6 @@
     <dimen name="exchange_notice_size">11dp</dimen>
 
     <dimen name="candy_headpic_size">62dp</dimen>
+    <dimen name="tb_mark_detail_padding">15dp</dimen>
+    <dimen name="tb_mark_detail_margin">6dp</dimen>
 </resources>

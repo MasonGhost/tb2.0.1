@@ -37,7 +37,7 @@ public interface AppComponent extends InjectComponent<AppApplication> {
 
     void inject(MainFragment mainFragment);
 
-    void inject(FindFragment findFragment);
+    //void inject(FindFragment findFragment);
 
     void inject(DeleteComment deleteComment);
 

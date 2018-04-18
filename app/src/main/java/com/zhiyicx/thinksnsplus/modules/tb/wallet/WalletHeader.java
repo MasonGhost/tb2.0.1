@@ -14,6 +14,7 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.tb.mechainism.MechainsmCenterContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.tbmark_detail.TBMarkDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.tb.tbmark_detail.TBMarkDetailFragment;
+import com.zhiyicx.thinksnsplus.widget.CountTimerView;
 
 /**
  * @author Jliuer
@@ -23,8 +24,9 @@ import com.zhiyicx.thinksnsplus.modules.tb.tbmark_detail.TBMarkDetailFragment;
  */
 public class WalletHeader {
     private View mHeader;
-    TextView mTvAccountUnit;
-    TextView mTvMineMoney;
+    private TextView mTvAccountUnit;
+    private TextView mTvMineMoney;
+    private CountTimerView mCountTimerView;
 
     WalletHeader(Context context) {
         mHeader = LayoutInflater.from(context).inflate(R.layout
@@ -39,6 +41,14 @@ public class WalletHeader {
             intent.putExtras(bundle);
             context.startActivity(intent);
         });
+        mCountTimerView = (CountTimerView) mHeader.findViewById(R.id.count_timer);
+        mCountTimerView.setOnStopListener(new CountTimerView.OnStopListener() {
+            @Override
+            public void isStop() {
+                //mCountTimerView.setTime(0);
+            }
+        });
+        mCountTimerView.setTime(320000);
     }
 
     /**

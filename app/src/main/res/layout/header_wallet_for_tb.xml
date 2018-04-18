@@ -50,4 +50,11 @@
         android:textSize="@dimen/size_content_comment"
         android:visibility="gone" />
 
+    <com.zhiyicx.thinksnsplus.widget.CountTimerView
+        android:id="@+id/count_timer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </com.zhiyicx.thinksnsplus.widget.CountTimerView>
+
 </LinearLayout>

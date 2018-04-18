@@ -283,7 +283,11 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    getActivity().finish();
+                    if (mBtTop.getText().equals(getString(R.string.haode))) {
+                        setresultSuccess();
+                    } else {
+                        getActivity().finish();
+                    }
                 });
 
         // 点击后显示光标

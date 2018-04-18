@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbcandy.CandyBean;
 import com.zhiyicx.thinksnsplus.modules.tb.wallet.WalletHeader;
 
 /**
@@ -15,7 +16,7 @@ import com.zhiyicx.thinksnsplus.modules.tb.wallet.WalletHeader;
  * @Description
  */
 
-public class ExchangeFragment extends TSListFragment<ExchangeContract.Presenter, RechargeSuccessBean> implements ExchangeContract.View{
+public class ExchangeFragment extends TSListFragment<ExchangeContract.Presenter, CandyBean> implements ExchangeContract.View{
 
     private ExchangeHeader mExchangeHeader;
 
@@ -50,6 +51,11 @@ public class ExchangeFragment extends TSListFragment<ExchangeContract.Presenter,
     @Override
     public void updateUserInfo(UserInfoBean data) {
 
+    }
+
+    @Override
+    public int getCandyId() {
+        return 0;
     }
 
     @Override

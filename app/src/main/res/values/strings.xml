@@ -1092,4 +1092,7 @@
     <string name="exchange_project_name">项目名称</string>
     <string name="exchange_project_intro">项目介绍</string>
 
+    <string name="tbmark_detail_available">可用</string>
+    <string name="tbmark_detail_frozen">冻结</string>
+
 </resources>

@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.data.beans.request.BindAccountRequstBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.DeleteUserPhoneOrEmailRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.ThirdAccountBindRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequestBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbcandy.CandyBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbmerchianmessage.MerchianMassageBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBShareLinkBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
@@ -656,5 +657,19 @@ public interface UserInfoClient {
             @Query("orgId") Integer orgId
             , @Query("feedAfter") Integer feedAfter
             , @Query("newsAfter") Integer newsAfter);
+
+    /**
+     * 获取糖果任务列表
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_CANDY_LIST)
+    Observable<List<CandyBean>> getCandyList();
+
+    /**
+     * 获取糖果任务列表
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_CANDY)
+    Observable<CandyBean> getCandy(@Path("candy") int candy_id);
 
 }

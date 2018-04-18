@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbcandy.CandyBean;
 
 /**
  * @Author MasonGhost
@@ -14,12 +15,12 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 public interface ExchangeContract {
 
-    interface View extends ITSListView<RechargeSuccessBean,ExchangeContract.Presenter> {
+    interface View extends ITSListView<CandyBean,ExchangeContract.Presenter> {
         void updateUserInfo(UserInfoBean data);
-
+        int getCandyId();
         String getBillType();
     }
-    interface Presenter extends ITSListPresenter<RechargeSuccessBean> {
+    interface Presenter extends ITSListPresenter<CandyBean> {
         void getUserInfo();
     }
 }

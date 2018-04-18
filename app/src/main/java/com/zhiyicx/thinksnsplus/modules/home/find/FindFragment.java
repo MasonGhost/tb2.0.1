@@ -2,18 +2,17 @@ package com.zhiyicx.thinksnsplus.modules.home.find;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.impl.share.ShareModule;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbcandy.CandyBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicPresenter;
-import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
-import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListPresenter;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import javax.inject.Inject;
 
@@ -28,7 +27,7 @@ import rx.schedulers.Schedulers;
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class FindFragment extends TSListFragment<FindContract.Presenter, RechargeSuccessBean> implements FindContract.View{
+public class FindFragment extends TSListFragment<FindContract.Presenter, CandyBean> implements FindContract.View{
 
     @Inject
     AuthRepository mAuthRepository;
@@ -214,11 +213,13 @@ public class FindFragment extends TSListFragment<FindContract.Presenter, Recharg
     }*/
 
     @Override
-    protected MultiItemTypeAdapter getAdapter() {
-        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
-        CandyItem candyItem = new CandyItem(getContext());
-        adapter.addItemViewDelegate(candyItem);
-        adapter.addItemViewDelegate(new InfoDetailCommentEmptyItem(R.mipmap.ico_bg_color));
+    protected RecyclerView.Adapter getAdapter() {
+        CommonAdapter adapter = new CommonAdapter<CandyBean>(mActivity, R.layout.item_candy, mListDatas) {
+            @Override
+            protected void convert(ViewHolder holder, CandyBean candyBean, int position) {
+
+            }
+        };
         return adapter;
     }
 
