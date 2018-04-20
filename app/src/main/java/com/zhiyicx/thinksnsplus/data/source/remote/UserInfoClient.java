@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.CandyWalletBean;
+import com.zhiyicx.thinksnsplus.data.beans.CandyWalletOrderBean;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
@@ -666,10 +668,32 @@ public interface UserInfoClient {
     Observable<List<CandyBean>> getCandyList();
 
     /**
-     * 获取糖果任务列表
+     * 获取某个糖果任务详情
      * @return
      */
     @GET(ApiConfig.APP_PATH_CANDY)
     Observable<CandyBean> getCandy(@Path("candy") int candy_id);
+
+    /**
+     * 参与糖果兑换
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(ApiConfig.APP_PATH_CANDY_ORDER)
+    Observable<CandyBean> orderCandy(@Field("tbmark") int tbmark, @Field("candy_id") int candy_id);
+
+    /**
+     * 参获取我的糖果钱包
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_CANDY_WALLET)
+    Observable<List<CandyWalletBean>> getCandyWallet();
+
+    /**
+     * 获取某糖果流水
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_CANDY_WALLET_ORDER)
+    Observable<List<CandyWalletOrderBean>> getCandyWalletOrder(@Query("candy_cat_id") int candy_cat_id);
 
 }

@@ -20,7 +20,7 @@ public class CandyBean extends BaseListBean {
     private int candy_cat_id;
     private String name;
     private int receipt_pic;
-    private int candy_num;
+    private long candy_num;
     private int time_line;
     private String start_at;
     private String end_at;
@@ -28,9 +28,9 @@ public class CandyBean extends BaseListBean {
     private int status;
     private String created_at;
     private String updated_at;
-    private int tbmark;
-    private int total_tbmark;
-    private int end_sec;
+    private long tbmark;
+    private long total_tbmark;
+    private long end_sec;
     private CandyCateBean candy_cate;
 
     public int getId() {
@@ -73,11 +73,11 @@ public class CandyBean extends BaseListBean {
         this.receipt_pic = receipt_pic;
     }
 
-    public int getCandy_num() {
+    public long getCandy_num() {
         return candy_num;
     }
 
-    public void setCandy_num(int candy_num) {
+    public void setCandy_num(long candy_num) {
         this.candy_num = candy_num;
     }
 
@@ -137,27 +137,27 @@ public class CandyBean extends BaseListBean {
         this.updated_at = updated_at;
     }
 
-    public int getTbmark() {
+    public long getTbmark() {
         return tbmark;
     }
 
-    public void setTbmark(int tbmark) {
+    public void setTbmark(long tbmark) {
         this.tbmark = tbmark;
     }
 
-    public int getTotal_tbmark() {
+    public long getTotal_tbmark() {
         return total_tbmark;
     }
 
-    public void setTotal_tbmark(int total_tbmark) {
+    public void setTotal_tbmark(long total_tbmark) {
         this.total_tbmark = total_tbmark;
     }
 
-    public int getEnd_sec() {
+    public long getEnd_sec() {
         return end_sec;
     }
 
-    public void setEnd_sec(int end_sec) {
+    public void setEnd_sec(long end_sec) {
         this.end_sec = end_sec;
     }
 
@@ -199,7 +199,7 @@ public class CandyBean extends BaseListBean {
         dest.writeString(this.candy_id);
         dest.writeString(this.name);
         dest.writeInt(this.receipt_pic);
-        dest.writeInt(this.candy_num);
+        dest.writeLong(this.candy_num);
         dest.writeInt(this.time_line);
         dest.writeString(this.start_at);
         dest.writeString(this.end_at);
@@ -207,9 +207,9 @@ public class CandyBean extends BaseListBean {
         dest.writeInt(this.status);
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
-        dest.writeInt(this.tbmark);
-        dest.writeInt(this.total_tbmark);
-        dest.writeInt(this.end_sec);
+        dest.writeLong(this.tbmark);
+        dest.writeLong(this.total_tbmark);
+        dest.writeLong(this.end_sec);
         dest.writeParcelable(this.candy_cate, flags);
     }
 

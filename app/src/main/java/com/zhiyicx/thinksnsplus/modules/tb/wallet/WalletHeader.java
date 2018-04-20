@@ -26,7 +26,6 @@ public class WalletHeader {
     private View mHeader;
     private TextView mTvAccountUnit;
     private TextView mTvMineMoney;
-    private CountTimerView mCountTimerView;
 
     WalletHeader(Context context) {
         mHeader = LayoutInflater.from(context).inflate(R.layout
@@ -35,20 +34,12 @@ public class WalletHeader {
         mTvAccountUnit = (TextView) mHeader.findViewById(R.id.tv_account_unit);
         mTvMineMoney = (TextView) mHeader.findViewById(R.id.tv_mine_money);
         mTvMineMoney.setOnClickListener(view -> {
-            Intent intent = new Intent(context, TBMarkDetailActivity.class);
+            /*Intent intent = new Intent(context, TBMarkDetailActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putParcelable(TBMarkDetailFragment.BILL_TYPE, null);
+            bundle.putString(TBMarkDetailFragment.CANDY, String.valueOf(userInfoBean.getWallet().getId()));
             intent.putExtras(bundle);
-            context.startActivity(intent);
+            context.startActivity(intent);*/
         });
-        mCountTimerView = (CountTimerView) mHeader.findViewById(R.id.count_timer);
-        mCountTimerView.setOnStopListener(new CountTimerView.OnStopListener() {
-            @Override
-            public void isStop() {
-                //mCountTimerView.setTime(0);
-            }
-        });
-        mCountTimerView.setTime(320000);
     }
 
     /**

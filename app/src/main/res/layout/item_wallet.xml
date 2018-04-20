@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_holder"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/button_login_margin_top"
+    android:paddingLeft="@dimen/spacing_mid"
+    android:paddingRight="@dimen/spacing_mid"
+    android:paddingTop="@dimen/setting_icon_size">
+
+    <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+        android:id="@+id/iv_headpic"
+        android:layout_width="@dimen/type_item_user_portrait"
+        android:layout_height="@dimen/type_item_user_portrait"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:src="@drawable/shape_default_image_circle"
+        app:ts_avatare_size="@dimen/type_item_user_portrait" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/tb_mark_detail_padding"
+        android:maxLines="1"
+        android:textColor="@color/text_color_black"
+        android:textSize="@dimen/select_days_margin_bottom"
+        tools:text="NBTOT" />
+
+    <TextView
+        android:id="@+id/tv_count"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/tb_mark_detail_padding"
+        android:gravity="right"
+        android:maxLines="1"
+        android:textColor="@color/tb_exchange_notice"
+        android:textSize="@dimen/select_days_margin_bottom"
+        tools:text="1288" />
+</LinearLayout>

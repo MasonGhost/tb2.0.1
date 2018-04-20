@@ -223,7 +223,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         super.initView(rootView);
         mHandler = new Handler();
         mRunnable = () -> showMessage(mListDatas.isEmpty() ? getString(R.string.newest)
-                : getString(R.string.count_tip, String.valueOf(mListDatas.size())));
+                : getString(R.string.count_tip));
         initInputView();
         AndroidBug5497Workaround.assistActivity(mActivity);
         Observable.create(subscriber -> {

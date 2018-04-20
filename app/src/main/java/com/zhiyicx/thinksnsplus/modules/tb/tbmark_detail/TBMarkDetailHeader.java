@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.widget.UserAvatarView;
@@ -25,23 +25,19 @@ public class TBMarkDetailHeader {
     private TextView mTvName;
     private TextView mTvCountAvailable;
     private TextView mTvCountFrozen;
+    private LayoutParams mLp;
 
     public TBMarkDetailHeader(Context context) {
         mHeader = LayoutInflater.from(context).inflate(R.layout
                 .header_tbmark_detail, null);
-        mHeader.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT));
+        mLp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        mLp.setMargins(0, 0, 0, 4);
+        mHeader.setLayoutParams(mLp);
         mIvHeadPic = (UserAvatarView) mHeader.findViewById(R.id.iv_headpic);
         mTvName = (TextView) mHeader.findViewById(R.id.tv_name);
         mTvCountAvailable = (TextView) mHeader.findViewById(R.id.tv_count_available);
         mTvCountFrozen = (TextView) mHeader.findViewById(R.id.tv_count_frozen);
 
-        mIvHeadPic.setOnClickListener(view -> {
-            Intent intent = new Intent(context, TBMarkDetailActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(TBMarkDetailFragment.BILL_TYPE, null);
-            intent.putExtras(bundle);
-            context.startActivity(intent);
-        });
     }
 
     public View getHeader() {

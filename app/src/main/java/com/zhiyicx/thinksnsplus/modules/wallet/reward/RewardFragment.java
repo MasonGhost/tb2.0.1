@@ -252,7 +252,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
 
     @Override
     public void showSnackErrorMessage(String message) {
-        ToastUtils.showToast(message);
+        //ToastUtils.showToast(message);
         configSureButton();
     }
 

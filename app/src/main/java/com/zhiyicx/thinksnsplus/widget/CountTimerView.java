@@ -28,7 +28,7 @@ public class CountTimerView extends LinearLayout {
 
     private Context context;
 
-    private long time;
+    //private long time;
     private MyCount mc;
 
     private int hour_decade;
@@ -42,14 +42,22 @@ public class CountTimerView extends LinearLayout {
     private int days_unit;
 
     private OnStopListener mOnStopListener;
-
+    private OnTickListener mOnTickListener;
 
     public void setOnStopListener(OnStopListener onStopListener) {
         this.mOnStopListener = onStopListener;
     }
 
+    public void setOnTickListener(OnTickListener onTickListener) {
+        this.mOnTickListener = onTickListener;
+    }
+
     public interface OnStopListener {
         void isStop();
+    }
+
+    public interface OnTickListener {
+        void onTick(long l);
     }
 
 
@@ -73,8 +81,8 @@ public class CountTimerView extends LinearLayout {
 
 
     public void setTime(long ms) {
-        time = ms / 1000;
-        mc = new MyCount(time * 1000, 1000);
+        //time = ms / 1000;
+        mc = new MyCount(ms * 1000, 1000);
         mc.start();
     }
 
@@ -102,11 +110,15 @@ public class CountTimerView extends LinearLayout {
             sec_decade = second / 10;
             sec_unit = second % 10;
 
+            if(mOnTickListener != null){
+                mOnTickListener.onTick(ltime);
+            }
+
 
             if (ltime > 86400) {
-                tvOne.setText("天");
+                /*tvOne.setText("天");
                 tvTwo.setText("时");
-                tvThree.setText("分");
+                tvThree.setText("分");*/
 
                 int days = hour / 24;
                 days_decade = days / 10;
@@ -124,9 +136,9 @@ public class CountTimerView extends LinearLayout {
                 tvSecUnit.setText(min_unit + "");
 
             } else {
-                tvOne.setText("时");
+                /*tvOne.setText("时");
                 tvTwo.setText("分");
-                tvThree.setText("秒");
+                tvThree.setText("秒");*/
 
                 tvHourDecade.setText(hour_decade + "");
                 tvHourUnit.setText(hour_unit + "");
@@ -141,6 +153,12 @@ public class CountTimerView extends LinearLayout {
 
         @Override
         public void onFinish() {
+            tvHourDecade.setText(0 + "");
+            tvHourUnit.setText(0 + "");
+            tvMinDecade.setText(0 + "");
+            tvMinUnit.setText(0 + "");
+            tvSecDecade.setText(0 + "");
+            tvSecUnit.setText(0 + "");
             mc.cancel();
             if(mOnStopListener != null){
                 mOnStopListener.isStop();

@@ -183,6 +183,7 @@ public class MechanismCenterFragment extends TSFragment {
         AppApplication.AppComponentHolder.getAppComponent().inject(this);
         mUserInfoBean = getArguments().getParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA);
         mMerchainContentWebLoadView = new MerchainContentWebLoadView(mActivity, rootView);
+        mBtFollow.setText(mUserInfoBean.getFollower() ? getString(R.string.followed) : getString(R.string.follow));
     }
 
     @Override
@@ -205,7 +206,7 @@ public class MechanismCenterFragment extends TSFragment {
      * @param follower
      */
     public void updateFollowStat(boolean follower) {
-        mBtFollow.setText(follower ? "已关注" : getString(R.string.follow));
+        mBtFollow.setText(follower ? getString(R.string.followed) : getString(R.string.follow));
     }
 
     private void updateMerchainInfo(MerchainInfo data) {

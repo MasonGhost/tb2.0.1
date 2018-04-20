@@ -30,7 +30,7 @@ public class ApiConfig {
     public static final String APP_DOMAIN_DEV = "http://192.168.0.199:8085/";// 模拟在线正式服务器
     public static final String APP_DOMAIN_TEST = "http://www.tokenbook.cloud/";// 在线测试服务器
     public static final String APP_DOMAIN_FORMAL = "https://www.tokenbook.one/";// 正式服务器
-    public static String APP_DOMAIN = APP_DOMAIN_TEST;
+    public static String APP_DOMAIN = APP_DOMAIN_FORMAL;
     public static final String URL_ABOUT_US = "api/" + API_VERSION_2 + "/aboutus";// 关于我们网站
     public static final String URL_JIPU_SHOP = "http://demo.jipukeji.com";// 极铺购物地址
     public static final String URL_INTEGRATION_SHOP = "api/" + API_VERSION_2 + "/currency/shop";// 积分商城地址
@@ -1070,5 +1070,14 @@ public class ApiConfig {
 
     // 获取某个糖果任务详情
     public static final String APP_PATH_CANDY = "api/" + API_VERSION_2 + "/tbm/candy/{candy}";
+
+    // 参与糖果兑换
+    public static final String APP_PATH_CANDY_ORDER = "api/" + API_VERSION_2 + "/tbm/candy_order";
+
+    // 获取我的糖果钱包
+    public static final String APP_PATH_CANDY_WALLET = "api/" + API_VERSION_2 + "/tbm/candy_wallet";
+
+    // 获取某糖果流水
+    public static final String APP_PATH_CANDY_WALLET_ORDER = "api/" + API_VERSION_2 + "/tbm/candy_wallet_order";
 
 }

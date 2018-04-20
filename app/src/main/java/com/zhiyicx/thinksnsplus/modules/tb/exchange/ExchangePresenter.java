@@ -4,11 +4,13 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbcandy.CandyBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbtask.TBTaskContainerBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.tb.tbmark_detail.TBMarkDetailContract;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -33,12 +35,24 @@ public class ExchangePresenter extends AppBasePresenter<ExchangeContract.View> i
     }
 
     @Override
-    public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscribe = mUserInfoRepository.getCandyList()
-                .subscribe(new BaseSubscribeForV2<List<CandyBean>>() {
+    public void getCandy() {
+        Subscription subscribe = mUserInfoRepository.getCandy(mRootView.getCurrentCandy().getId())
+                .subscribe(new BaseSubscribeForV2<CandyBean>() {
                     @Override
-                    protected void onSuccess(List<CandyBean> data) {
-                        mRootView.onNetResponseSuccess(data, isLoadMore);
+                    protected void onSuccess(CandyBean data) {
+                        mRootView.getCandySuccess(data);
+                    }
+                });
+        addSubscrebe(subscribe);
+    }
+
+    @Override
+    public void orderCandy(int tbmark, int candy_id) {
+        Subscription subscribe = mUserInfoRepository.orderCandy(tbmark, candy_id)
+                .subscribe(new BaseSubscribeForV2<CandyBean>() {
+                    @Override
+                    protected void onSuccess(CandyBean data) {
+                        //mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
                     @Override
@@ -50,24 +64,9 @@ public class ExchangePresenter extends AppBasePresenter<ExchangeContract.View> i
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.onResponseError(throwable, isLoadMore);
+                        //mRootView.onResponseError(throwable);
                     }
                 });
         addSubscrebe(subscribe);
-    }
-
-    @Override
-    public void requestCacheData(Long maxId, boolean isLoadMore) {
-
-    }
-
-    @Override
-    public boolean insertOrUpdateData(@NotNull List<CandyBean> data, boolean isLoadMore) {
-        return false;
-    }
-
-    @Override
-    public void getUserInfo() {
-
     }
 }

@@ -3,9 +3,12 @@ package com.zhiyicx.thinksnsplus.modules.tb.tbmark_detail;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.CandyWalletBean;
+import com.zhiyicx.thinksnsplus.data.beans.CandyWalletOrderBean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbcandy.CandyCateBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -36,10 +39,10 @@ public class TBMarkDetailPresenter extends AppBasePresenter<TBMarkDetailContract
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscribe = mUserInfoRepository.getBillList(maxId.intValue(), mRootView.getBillType())
-                .subscribe(new BaseSubscribeForV2<List<RechargeSuccessBean>>() {
+        Subscription subscribe = mUserInfoRepository.getCandyWalletOrder(mRootView.getCurrentCandy().getId())
+                .subscribe(new BaseSubscribeForV2<List<CandyWalletOrderBean>>() {
                     @Override
-                    protected void onSuccess(List<RechargeSuccessBean> data) {
+                    protected void onSuccess(List<CandyWalletOrderBean> data) {
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
@@ -64,7 +67,7 @@ public class TBMarkDetailPresenter extends AppBasePresenter<TBMarkDetailContract
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<RechargeSuccessBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(@NotNull List<CandyWalletOrderBean> data, boolean isLoadMore) {
         return false;
     }
 

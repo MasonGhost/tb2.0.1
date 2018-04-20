@@ -13,6 +13,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.CandyWalletBean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.tb.tbmark_detail.TBMarkDetailActivity;
@@ -66,13 +67,14 @@ public class WalletFragment extends TSListFragment<WalletContract.Presenter, Rec
         super.initView(rootView);
         //mWalletToolbar.setPadding(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0);
         mTvToolbarLeft.setOnClickListener(v -> getActivity().finish());
+        mTvToolbarRight.setVisibility(View.GONE);
         mTvToolbarRight.setText(getString(R.string.detail));
         mTvToolbarRight.setOnClickListener(v -> {
-            Intent intent = new Intent(mActivity, TBMarkDetailActivity.class);
+            /*Intent intent = new Intent(mActivity, TBMarkDetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putParcelable(TBMarkDetailFragment.BILL_TYPE, null);
             intent.putExtras(bundle);
-            mActivity.startActivity(intent);
+            mActivity.startActivity(intent);*/
         });
         mRvList.setBackgroundResource(R.color.bgColor);
     }
@@ -107,16 +109,31 @@ public class WalletFragment extends TSListFragment<WalletContract.Presenter, Rec
         CommonAdapter adapter = new CommonAdapter<RechargeSuccessBean>(mActivity, R.layout.item_wallet_for_tb, mListDatas) {
             @Override
             protected void convert(ViewHolder holder, RechargeSuccessBean rechargeSuccessBean, int position) {
-
                 // 收入or支出 图标不一样
                 // 收入 ico_in ，支出 ico_out
-                int action = rechargeSuccessBean.getAction();
+                int type = rechargeSuccessBean.getAction();
+
                 ImageView imageView = holder.getImageViwe(R.id.iv_wallet_income);
-                if (action < -1) {
+                if(type < 1){
                     imageView.setImageResource(R.mipmap.ico_out);
                 } else {
                     imageView.setImageResource(R.mipmap.ico_in);
                 }
+                /*switch (type){
+                    case 1: {
+                        imageView.setImageResource(R.mipmap.ico_in);
+
+                        break;
+                    }
+                    case 2: {
+                        imageView.setImageResource(R.mipmap.ico_out);
+                        // 收支金额
+                        holder.setText(R.id.tv_wallet_count, "-" + candyWalletOrderBean.getCount());
+                        break;
+                    }
+                    default:
+                        break;
+                }*/
 
                 // 收支描述
                 holder.setText(R.id.tv_wallet_dec, rechargeSuccessBean.getSubject());
@@ -125,7 +142,7 @@ public class WalletFragment extends TSListFragment<WalletContract.Presenter, Rec
                 holder.setText(R.id.tv_wallet_time, TimeUtils.utc2LocalStr(rechargeSuccessBean.getCreated_at()));
 
                 // 收支金额
-                holder.setText(R.id.tv_wallet_count, action < 0 ? "-" + rechargeSuccessBean.getAmount() : "+" + rechargeSuccessBean.getAmount());
+                holder.setText(R.id.tv_wallet_count, type < 1 ? "-" + rechargeSuccessBean.getAmount() : "+" + rechargeSuccessBean.getAmount());
             }
         };
         return adapter;

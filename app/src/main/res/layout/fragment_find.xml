@@ -134,5 +134,8 @@
             android:scaleType="fitXY"
             android:src="@mipmap/ico_candy" />
 
+        <include layout="@layout/fragment_tslist"
+            android:visibility="gone"/>
+
     </LinearLayout>
 </ScrollView>

@@ -21,6 +21,8 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.CandyWalletBean;
+import com.zhiyicx.thinksnsplus.data.beans.CandyWalletOrderBean;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
@@ -1141,6 +1143,27 @@ public class UserInfoRepository implements IUserInfoRepository {
     @Override
     public Observable<CandyBean> getCandy(int id) {
         return mUserInfoClient.getCandy(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<CandyBean> orderCandy(int tbmark, int candy_id) {
+        return mUserInfoClient.orderCandy(tbmark, candy_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<CandyWalletBean>> getCandyWallet() {
+        return mUserInfoClient.getCandyWallet()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<CandyWalletOrderBean>> getCandyWalletOrder(int candy_cat_id) {
+        return mUserInfoClient.getCandyWalletOrder(candy_cat_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

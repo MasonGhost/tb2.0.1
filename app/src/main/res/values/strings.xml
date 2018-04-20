@@ -192,9 +192,9 @@
     <string name="dynamic_list_resend_comment">重发评论</string>
     <string name="resend">重新发送</string>
     <string name="reply">回复 %s:</string>
-    <string name="count_tip">已更新%s条内容</string>
+    <string name="count_tip">已更新</string>
     <string name="newest">已是最新内容</string>
-    <string name="count_tip_news">已更新%s篇内容</string>
+    <string name="count_tip_news">已更新</string>
     <!--发布动态-->
     <string name="send_dynamic">发布动态</string>
     <string name="send_words_dynamic">文字</string>
@@ -1091,8 +1091,15 @@
     <string name="exchange_notice">兑换后会默认关注公众号哟</string>
     <string name="exchange_project_name">项目名称</string>
     <string name="exchange_project_intro">项目介绍</string>
+    <string name="exchange_tbmark_left">TBMark余额：%s个</string>
+    <string name="exchange_distribute">正在派发%s个%s</string>
 
     <string name="tbmark_detail_available">可用</string>
     <string name="tbmark_detail_frozen">冻结</string>
+    <string name="tbmark_joined">已参与TBM</string>
+    <string name="tbmark_joined_all">总%s%s/%sTBM</string>
+    <string name="tbmark_end_days">距离结束还有%s天</string>
+    <string name="tbmark_end_time">距结束仅剩：</string>
+    <string name="tbmark_end">已结束</string>
 
 </resources>

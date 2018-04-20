@@ -466,10 +466,11 @@ public class DynamicDetailPresenter extends AppBasePresenter<
         mDynamicCommentBeanGreenDao.deleteSingleCache(mRootView.getListDatas()
                 .get(commentPosition));
         mRootView.getListDatas().remove(commentPosition);
-        if (mRootView.getListDatas().isEmpty()) {
+        /*if (mRootView.getListDatas().isEmpty()) {
             DynamicCommentBean emptyData = new DynamicCommentBean();
             mRootView.getListDatas().add(emptyData);
-        }
+        }*/
+        mRootView.getCurrentDynamic().setComments(mRootView.getListDatas());
         mRootView.refreshData();
         mRootView.updateCommentCountAndDig();
         mBaseDynamicRepository.deleteCommentV2(mRootView.getCurrentDynamic().getId(), comment_id);

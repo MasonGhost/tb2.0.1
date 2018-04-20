@@ -2,8 +2,10 @@ package com.zhiyicx.thinksnsplus.modules.tb.tbmark_detail;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.thinksnsplus.data.beans.CandyWalletOrderBean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbcandy.CandyCateBean;
 
 /**
  * @Author MasonGhost
@@ -14,12 +16,11 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 public interface TBMarkDetailContract {
 
-    interface View extends ITSListView<RechargeSuccessBean,TBMarkDetailContract.Presenter> {
+    interface View extends ITSListView<CandyWalletOrderBean,TBMarkDetailContract.Presenter> {
         void updateUserInfo(UserInfoBean data);
-
-        String getBillType();
+        CandyCateBean getCurrentCandy();
     }
-    interface Presenter extends ITSListPresenter<RechargeSuccessBean> {
+    interface Presenter extends ITSListPresenter<CandyWalletOrderBean> {
         void getUserInfo();
     }
 }

@@ -1,18 +1,36 @@
 package com.zhiyicx.thinksnsplus.modules.home.find;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
+import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
+import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.tbcandy.CandyBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.modules.tb.exchange.ExchangeActivity;
+import com.zhiyicx.thinksnsplus.modules.tb.tbmark_detail.TBMarkDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.tb.tbmark_detail.TBMarkDetailFragment;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.widget.CountTimerView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -27,13 +45,13 @@ import rx.schedulers.Schedulers;
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class FindFragment extends TSListFragment<FindContract.Presenter, CandyBean> implements FindContract.View{
+public class FindFragment extends TSListFragment<FindContract.Presenter, CandyBean> implements FindContract.View {
 
-    @Inject
-    AuthRepository mAuthRepository;
+    /*@Inject
+    AuthRepository mAuthRepository;*/
 
-    @Inject
-    FindPresenter mFindPresenter;
+    /*@Inject
+    FindPresenter mFindPresenter;*/
 
     public FindFragment() {
     }
@@ -53,7 +71,7 @@ public class FindFragment extends TSListFragment<FindContract.Presenter, CandyBe
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        Observable.create(subscriber -> {
+        /*Observable.create(subscriber -> {
             DaggerFindComponent
                     .builder()
                     .appComponent(AppApplication.AppComponentHolder.getAppComponent())
@@ -78,7 +96,12 @@ public class FindFragment extends TSListFragment<FindContract.Presenter, CandyBe
                     @Override
                     public void onNext(Object o) {
                     }
-                });
+                });*/
+    }
+
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_find;
     }
 
     @Override
@@ -213,14 +236,116 @@ public class FindFragment extends TSListFragment<FindContract.Presenter, CandyBe
     }*/
 
     @Override
+    public void onNetResponseSuccess(@NotNull List<CandyBean> data, boolean isLoadMore) {
+        for(int i = 0; i < 8; i++){
+            CandyBean candyBean = new CandyBean();
+            candyBean.setName("BTP");
+            candyBean.setEnd_sec(86430);
+            candyBean.setCandy_num(10000);
+            candyBean.setTotal_tbmark(6000);
+            candyBean.setTbmark(1000);
+            candyBean.setStatus(2);
+            data.add(candyBean);
+        }
+        CandyBean candyBean = new CandyBean();
+        candyBean.setName("EOSTOKEN");
+        candyBean.setEnd_sec(64345);
+        candyBean.setCandy_num(90000);
+        candyBean.setTotal_tbmark(2000);
+        candyBean.setTbmark(3000);
+        candyBean.setStatus(2);
+        data.add(candyBean);
+
+        CandyBean candyBean2 = new CandyBean();
+        candyBean2.setName("EOSTOKEN");
+        candyBean2.setEnd_sec(60000);
+        candyBean2.setCandy_num(90000);
+        candyBean2.setTotal_tbmark(4000);
+        candyBean2.setTbmark(0);
+        candyBean2.setStatus(0);
+        data.add(candyBean2);
+        super.onNetResponseSuccess(data, isLoadMore);
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
         CommonAdapter adapter = new CommonAdapter<CandyBean>(mActivity, R.layout.item_candy, mListDatas) {
             @Override
             protected void convert(ViewHolder holder, CandyBean candyBean, int position) {
-
+                FilterImageView filterImageView = holder.getView(R.id.iv_headpic);
+                LinearLayout mLlCandy = holder.getView(R.id.ll_candy);
+                switch (position % 5){
+                    case 0: {
+                        mLlCandy.setBackgroundResource(R.mipmap.ico_rectangle_candy);
+                        break;
+                    }
+                    case 1: {
+                        mLlCandy.setBackgroundResource(R.mipmap.ico_rectangle2_candy);
+                        break;
+                    }
+                    case 2: {
+                        mLlCandy.setBackgroundResource(R.mipmap.ico_rectangle3_candy);
+                        break;
+                    }
+                    case 3: {
+                        mLlCandy.setBackgroundResource(R.mipmap.ico_rectangle2_candy);
+                        break;
+                    }
+                    case 4: {
+                        mLlCandy.setBackgroundResource(R.mipmap.ico_rectangle4_candy);
+                        break;
+                    }
+                    default:
+                        break;
+                }
+                //头像，记得去掉注释
+                /*Glide.with(BaseApplication.getContext())
+                        .load(ImageUtils.imagePathConvertV2(candyBean.getCandy_cate().getLogo(), filterImageView
+                                        .getWidth(), filterImageView.getHeight(),
+                                ImageZipConfig.IMAGE_80_ZIP))
+                        .placeholder(R.drawable.shape_default_image)
+                        .error(R.drawable.shape_default_image)
+                        .into(filterImageView);*/
+                holder.setText(R.id.tv_coin_name, candyBean.getName());
+                holder.setText(R.id.tv_coin_all, getString(R.string.tbmark_joined_all,
+                        String.valueOf(candyBean.getCandy_num()),
+                        candyBean.getName(),
+                        String.valueOf(candyBean.getTotal_tbmark())));
+                holder.getView(R.id.ll_joined).setVisibility(candyBean.getTbmark() <= 0 ? View.GONE : View.VISIBLE);
+                holder.setText(R.id.tv_join_count, (candyBean.getTbmark() / 1000) + "K");
+                TextView mTvBtnExchange = holder.getView(R.id.bt_exchange);
+                mTvBtnExchange.setEnabled(candyBean.getStatus() == 2 ? true : false);
+                CountTimerView mCountTimerView = holder.getView(R.id.count_timer);
+                mCountTimerView.setOnTickListener(new CountTimerView.OnTickListener() {
+                    @Override
+                    public void onTick(long l) {
+                        if (l > 86400){
+                            mCountTimerView.setVisibility(View.GONE);
+                            int hour = (int) (l / (60 * 60));
+                            int days = hour / 24;
+                            holder.setText(R.id.tv_time_count, getString(R.string.tbmark_end_days,
+                                    String.valueOf(days)));
+                        } else {
+                            mCountTimerView.setVisibility(View.VISIBLE);
+                            holder.setText(R.id.tv_time_count, getString(R.string.tbmark_end_time));
+                        }
+                    }
+                });
+                mCountTimerView.setOnStopListener(new CountTimerView.OnStopListener() {
+                    @Override
+                    public void isStop() {
+                        holder.setText(R.id.tv_time_count, getString(R.string.tbmark_end));
+                        mTvBtnExchange.setEnabled(false);
+                        mCountTimerView.setVisibility(View.GONE);
+                    }
+                });
+                mCountTimerView.setTime(candyBean.getEnd_sec());
+                mTvBtnExchange.setOnClickListener(view -> {
+                    Intent intent = new Intent(mActivity, ExchangeActivity.class);
+                    mActivity.startActivity(intent);
+                });
             }
         };
         return adapter;
     }
-
 }

@@ -167,7 +167,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         super.initView(rootView);
         mHandler = new Handler();
         mRunnable = () -> showMessage(mListDatas.isEmpty() ? getString(R.string.newest)
-                : getString(R.string.count_tip_news, String.valueOf(mListDatas.size())));
+                : getString(R.string.count_tip_news));
         mInfoType = getArguments().getString(BUNDLE_INFO_TYPE, RECOMMEND_INFO);
         mUserId = getArguments().getLong(BUNDLE_USERID, 0);
         Observable.create(subscriber -> {

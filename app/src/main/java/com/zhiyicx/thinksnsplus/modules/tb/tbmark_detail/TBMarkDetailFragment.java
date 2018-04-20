@@ -8,8 +8,10 @@ import android.widget.ImageView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.CandyWalletOrderBean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.tbcandy.CandyCateBean;
 import com.zhiyicx.thinksnsplus.modules.tb.wallet.WalletHeader;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -21,13 +23,13 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
  * @Description
  */
 
-public class TBMarkDetailFragment extends TSListFragment<TBMarkDetailContract.Presenter, RechargeSuccessBean> implements TBMarkDetailContract.View{
+public class TBMarkDetailFragment extends TSListFragment<TBMarkDetailContract.Presenter, CandyWalletOrderBean> implements TBMarkDetailContract.View{
 
-    public static final String BILL_TYPE = "bill_type";
+    public static final String CANDY = "candy";
     private TBMarkDetailHeader mTBMarkDetailHeader;
 
     // 上一个页面传过来的用户信息
-    private String mBillType;
+    private String mCandyCateId;
     private UserInfoBean mUserInfoBean;
 
     @Override
@@ -55,9 +57,11 @@ public class TBMarkDetailFragment extends TSListFragment<TBMarkDetailContract.Pr
     @Override
     protected void initData() {
         super.initData();
-        mTBMarkDetailHeader = new TBMarkDetailHeader(mActivity);
-        mHeaderAndFooterWrapper.addHeaderView(mTBMarkDetailHeader.getHeader());
-        mBillType = getArguments().getParcelable(BILL_TYPE);
+        mCandyCateId = getArguments().getString(CANDY);
+        if(mCandyCateId != null){
+            mTBMarkDetailHeader = new TBMarkDetailHeader(mActivity);
+            mHeaderAndFooterWrapper.addHeaderView(mTBMarkDetailHeader.getHeader());
+        }
         mPresenter.getUserInfo();
     }
 
@@ -73,40 +77,47 @@ public class TBMarkDetailFragment extends TSListFragment<TBMarkDetailContract.Pr
     }
 
     @Override
+    public CandyCateBean getCurrentCandy() {
+        return null;
+    }
+
+    @Override
     protected int setEmptView() {
         return R.mipmap.def_wallet_prompt;
     }
 
     @Override
-    public String getBillType() {
-        return mBillType/*{""--全部, "income"--收入, "expenses"--支出}*/;
-    }
-
-
-    @Override
     protected RecyclerView.Adapter getAdapter() {
-        CommonAdapter adapter = new CommonAdapter<RechargeSuccessBean>(mActivity, R.layout.item_wallet_for_tb, mListDatas) {
+        CommonAdapter adapter = new CommonAdapter<CandyWalletOrderBean>(mActivity, R.layout.item_wallet_for_tb, mListDatas) {
             @Override
-            protected void convert(ViewHolder holder, RechargeSuccessBean rechargeSuccessBean, int position) {
+            protected void convert(ViewHolder holder, CandyWalletOrderBean candyWalletOrderBean, int position) {
 
                 // 收入or支出 图标不一样
                 // 收入 ico_in ，支出 ico_out
-                int action = rechargeSuccessBean.getAction();
+                int type = candyWalletOrderBean.getType();
                 ImageView imageView = holder.getImageViwe(R.id.iv_wallet_income);
-                if (action < -1) {
-                    imageView.setImageResource(R.mipmap.ico_out);
-                } else {
-                    imageView.setImageResource(R.mipmap.ico_in);
+                switch (type){
+                    case 1: {
+                        imageView.setImageResource(R.mipmap.ico_in);
+                        // 收支金额
+                        holder.setText(R.id.tv_wallet_count, "+" + candyWalletOrderBean.getCount());
+                        break;
+                    }
+                    case 2: {
+                        imageView.setImageResource(R.mipmap.ico_out);
+                        // 收支金额
+                        holder.setText(R.id.tv_wallet_count, "-" + candyWalletOrderBean.getCount());
+                        break;
+                    }
+                    default:
+                        break;
                 }
 
                 // 收支描述
-                holder.setText(R.id.tv_wallet_dec, rechargeSuccessBean.getSubject());
+                holder.setText(R.id.tv_wallet_dec, candyWalletOrderBean.getTitle());
 
                 // 收支时间 TimeUtils.getYeayMonthDay()
-                holder.setText(R.id.tv_wallet_time, TimeUtils.utc2LocalStr(rechargeSuccessBean.getCreated_at()));
-
-                // 收支金额
-                holder.setText(R.id.tv_wallet_count, action < 0 ? "-" + rechargeSuccessBean.getAmount() : "+" + rechargeSuccessBean.getAmount());
+                holder.setText(R.id.tv_wallet_time, TimeUtils.utc2LocalStr(candyWalletOrderBean.getCreated_at()));
             }
         };
         return adapter;

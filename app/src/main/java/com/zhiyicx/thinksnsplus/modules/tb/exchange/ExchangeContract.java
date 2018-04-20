@@ -1,7 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.tb.exchange;
 
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.common.mvp.i.IBasePresenter;
+import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.tbcandy.CandyBean;
@@ -15,12 +18,12 @@ import com.zhiyicx.thinksnsplus.data.beans.tbcandy.CandyBean;
 
 public interface ExchangeContract {
 
-    interface View extends ITSListView<CandyBean,ExchangeContract.Presenter> {
-        void updateUserInfo(UserInfoBean data);
-        int getCandyId();
-        String getBillType();
+    interface View extends IBaseView<Presenter> {
+        CandyBean getCurrentCandy();
+        void getCandySuccess(CandyBean candyBean);
     }
-    interface Presenter extends ITSListPresenter<CandyBean> {
-        void getUserInfo();
+    interface Presenter extends IBaseTouristPresenter {
+        void getCandy();
+        void orderCandy(int tbmark, int candy_id);
     }
 }

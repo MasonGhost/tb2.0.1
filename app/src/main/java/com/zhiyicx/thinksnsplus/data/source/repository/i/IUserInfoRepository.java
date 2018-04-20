@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.data.source.repository.i;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.CandyWalletBean;
+import com.zhiyicx.thinksnsplus.data.beans.CandyWalletOrderBean;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
@@ -503,4 +505,22 @@ public interface IUserInfoRepository {
      * @return
      */
     Observable<CandyBean> getCandy(int id);
+
+    /**
+     * 参与糖果兑换
+     * @return
+     */
+    Observable<CandyBean> orderCandy(int tbmark, int candy_id);
+
+    /**
+     * 获取我的糖果钱包
+     * @return
+     */
+    Observable<List<CandyWalletBean>> getCandyWallet();
+
+    /**
+     * 获取某糖果流水
+     * @return
+     */
+    Observable<List<CandyWalletOrderBean>> getCandyWalletOrder(int candy_cat_id);
 }

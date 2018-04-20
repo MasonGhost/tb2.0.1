@@ -1,64 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="#141A21">
+    android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/tvHourDecade"
-        style="@style/CountDownTimerViewStyle"
-        android:layout_marginRight="5dp" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/my_shape_count_down_timer">
 
-    <TextView
-        android:id="@+id/tvHourUnit"
-        style="@style/CountDownTimerViewStyle" />
+        <TextView
+            android:id="@+id/tvHourDecade"
+            style="@style/CountDownTimerViewStyle" />
+
+        <TextView
+            android:id="@+id/tvHourUnit"
+            style="@style/CountDownTimerViewStyle" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tvOne"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:gravity="bottom"
-        android:text="时"
-        android:textColor="#FFCF0E"
-        android:textSize="15sp" />
+        android:gravity="center_vertical"
+        android:text=":"
+        android:textColor="@color/white"
+        android:textSize="@dimen/exchange_notice_size" />
 
-    <TextView
-        android:id="@+id/tvMinDecade"
-        style="@style/CountDownTimerViewStyle"
-        android:layout_marginRight="5dp" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/my_shape_count_down_timer">
 
-    <TextView
-        android:id="@+id/tvMinUnit"
-        style="@style/CountDownTimerViewStyle" />
+        <TextView
+            android:id="@+id/tvMinDecade"
+            style="@style/CountDownTimerViewStyle" />
+
+        <TextView
+            android:id="@+id/tvMinUnit"
+            style="@style/CountDownTimerViewStyle" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tvTwo"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:gravity="bottom"
-        android:text="分"
-        android:textColor="#FFCF0E" />
+        android:gravity="center_vertical"
+        android:text=":"
+        android:textColor="@color/white"
+        android:textSize="@dimen/exchange_notice_size" />
 
-    <TextView
-        android:id="@+id/tvSecDecade"
-        style="@style/CountDownTimerViewStyle"
-        android:layout_marginRight="5dp" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/my_shape_count_down_timer">
 
-    <TextView
-        android:id="@+id/tvSecUnit"
-        style="@style/CountDownTimerViewStyle" />
+        <TextView
+            android:id="@+id/tvSecDecade"
+            style="@style/CountDownTimerViewStyle" />
+
+        <TextView
+            android:id="@+id/tvSecUnit"
+            style="@style/CountDownTimerViewStyle" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tvThree"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginLeft="5dp"
         android:gravity="bottom"
-        android:text="秒"
-        android:textColor="#FFCF0E" />
+        android:text=""
+        android:textColor="@color/white" />
 
 </LinearLayout>
