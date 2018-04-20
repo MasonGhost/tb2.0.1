@@ -543,18 +543,18 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                             , tbTaskBean.getName(), tbTaskBean.getDescription(), true,
                             0);
                     mMtiShareNews.setprogress(tbTaskBean.getNotes().size() * 100 / tbTaskBean.getFrequency());
-                } else if (CERTIFICATION.value.equals(tbTaskBean.getTrigger())) {
+                } else if (CERTIFICATION.value.equals(tbTaskBean.getTrigger())) {//认证
 
 
-                    setMineTaskViewData(mMtiCertify, String.valueOf(tbTaskBean.getAmount()), true, getString(R.string.immediate_certify), getColor
+                    /*setMineTaskViewData(mMtiCertify, String.valueOf(tbTaskBean.getAmount()), true, getString(R.string.immediate_certify), getColor
                                     (R.color.white)
                             , tbTaskBean.getName(), tbTaskBean.getDescription(),
                             false, R
                                     .drawable
                                     .selector_button_corner_circle_solid_small_gradient);
-                    /**
+                    *//**
                      * 0待审核 1已通过 2已驳回 3未认证
-                     */
+                     *//*
                     switch (mTBTaskContainerBean.getCertified()) {
                         case 0:
                             mMtiCertify.setButtonText(getString(R.string.review_ing));
@@ -597,7 +597,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                                 .parentView(v)
                                 .build();
                         mTBCenterInfoPopWindow.show();
-                    });
+                    });*/
                 }
 
 
